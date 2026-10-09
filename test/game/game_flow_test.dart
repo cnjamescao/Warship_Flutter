@@ -25,7 +25,7 @@ void main() {
     testWidgets('加载完成后进入 menu，初始值为 3/0/0', (tester) async {
       final game = await createGame(tester);
 
-      expect(game.isWorldReady, isTrue);
+      expect(game.isWorldBuilt, isTrue);
       expect(game.session.state, GameState.menu);
       expect(game.session.lives, 3);
       expect(game.session.score, 0);
@@ -629,7 +629,16 @@ void main() {
       // onLoad 本身应正常返回，而不是抛异常
       await load;
 
-      expect(game.isWorldReady, isTrue, reason: '就绪信号必须被明确终结，不能悬空');
+      expect(
+        game.isWorldBuilt,
+        isFalse,
+        reason: '取消路径上世界并未建立 —— 这正是 isWorldBuilt 与 isLoadSettled 必须分开的原因',
+      );
+      expect(
+        game.isLoadSettled,
+        isTrue,
+        reason: '就绪信号必须被明确终结，不能悬空',
+      );
       expect(game.ship, isNull, reason: '关闭后不得建立世界');
       expect(game.fleet.alienCount, 0);
       expect(audio.preloadCount, 0, reason: '关闭后不得再预加载音频');
@@ -638,6 +647,46 @@ void main() {
         game.worldReady,
         throwsA(isA<GameLoadCancelled>()),
         reason: '必须以可识别的取消错误结束，便于区分"取消"与"加载失败"',
+      );
+    });
+
+    testWidgets('正常加载：isWorldBuilt 与 isLoadSettled 同时为真', (tester) async {
+      final game = await createGame(tester);
+
+      expect(game.isWorldBuilt, isTrue);
+      expect(game.isLoadSettled, isTrue);
+      await expectLater(game.worldReady, completes);
+    });
+
+    testWidgets('加载中：isLoadSettled 为假', (tester) async {
+      final game = WarshipGame(audio: RecordingGameAudio());
+      addTearDown(game.close);
+
+      // 尚未开始加载
+      expect(game.isWorldBuilt, isFalse);
+      expect(game.isLoadSettled, isFalse);
+
+      final load = game.onLoad();
+      // onLoad 是异步的：刚启动时它停在第一个 await 上，尚未建立世界
+      expect(game.isLoadSettled, isFalse);
+
+      await tester.runAsync(() => load);
+
+      expect(game.isWorldBuilt, isTrue);
+      expect(game.isLoadSettled, isTrue);
+    });
+
+    testWidgets('close 之后 isWorldBuilt 重新变回 false', (tester) async {
+      final game = await createGame(tester);
+      game.startNewGame();
+      expect(game.isWorldBuilt, isTrue);
+
+      game.close();
+
+      expect(
+        game.isWorldBuilt,
+        isFalse,
+        reason: '世界已被摘除，"世界可用"的判据不能继续成立',
       );
     });
   });

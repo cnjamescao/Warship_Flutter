@@ -31,7 +31,7 @@ void main() {
     // 等待确定性就绪（交替 runAsync/pump 推进 Flame 自身的加载流程）
     await settleGameLoad(tester, game);
 
-    expect(game.isWorldReady, isTrue);
+    expect(game.isWorldBuilt, isTrue);
     expect(game.fleet.alienCount, 35, reason: '资源加载完成后世界必须已建好');
     expect(find.text('Alien Invasion'), findsOneWidget);
     expect(find.text('Ships: 3'), findsOneWidget);

@@ -187,7 +187,7 @@ Future<void> settleGameLoad(
   WarshipGame game, {
   int maxRounds = 40,
 }) async {
-  for (var round = 0; round < maxRounds && !game.isWorldReady; round++) {
+  for (var round = 0; round < maxRounds && !game.isWorldBuilt; round++) {
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 10)),
     );

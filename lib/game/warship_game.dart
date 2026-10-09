@@ -89,14 +89,40 @@ class WarshipGame extends FlameGame with KeyboardEvents {
   // ------------------------------------------------------------
   final Completer<void> _readyCompleter = Completer<void>();
 
+  /// 世界是否已经建立完成（[isWorldBuilt] 的底层标志）。
+  ///
+  /// 刻意与 `_readyCompleter.isCompleted` 分开：
+  /// 加载**被取消**时 Completer 同样会结束，但世界从未建立 ——
+  /// 两者混用会让调用方在取消路径上误以为"世界可用"。
+  bool _worldBuilt = false;
+
   /// 精灵资源加载完成、世界初始化完毕后完成。
   ///
   /// 命名说明：FlameGame 自身已经有一个 `ready()` 方法
   /// （语义是"等待组件树挂载操作完成"，且只能在已连接的 game 上等待），
   /// 与"资源就绪"不是一回事，因此这里命名为 `worldReady` 以避免歧义。
+  ///
+  /// 关闭语义：若游戏在加载期间被 [close]，本 Future 以
+  /// [GameLoadCancelled] 结束，而不是永远悬空。
   Future<void> get worldReady => _readyCompleter.future;
 
-  bool get isWorldReady => _readyCompleter.isCompleted;
+  /// 世界是否**已经真正建立完成**（背景 + 飞船 + 舰队都已就位）。
+  ///
+  /// 这是"世界能不能用"的**唯一正确判据**：
+  /// 只在 [_buildWorld] 完整走完之后才为 true，
+  /// [close] 之后重新变回 false（实体已被摘除）。
+  ///
+  /// ⚠️ 不要用"加载 Future 是否结束"来代替它 ——
+  /// 加载被取消时 Future 同样结束了，但世界从未建立。
+  bool get isWorldBuilt => _worldBuilt;
+
+  /// `worldReady` 是否已经**结束**（成功或被取消都算）。
+  ///
+  /// 与 [isWorldBuilt] 组合可精确区分三种情况：
+  ///   * `isLoadSettled && isWorldBuilt`  → 加载成功，世界可用
+  ///   * `isLoadSettled && !isWorldBuilt` → 加载被取消（[GameLoadCancelled]）
+  ///   * `!isLoadSettled`                 → 仍在加载中
+  bool get isLoadSettled => _readyCompleter.isCompleted;
 
   // ------------------------------------------------------------
   // 场景对象
@@ -241,6 +267,10 @@ class WarshipGame extends FlameGame with KeyboardEvents {
 
     _resetShip();
     fleet.createFleet();
+
+    // 只有以上全部成功走完，世界才算真正可用。
+    // 放在最后一行是有意的：中途抛异常时 _worldBuilt 保持 false。
+    _worldBuilt = true;
   }
 
   /// 窗口尺寸变化时触发。
@@ -281,6 +311,10 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     _ship = null;
     _background?.removeFromParent();
     _background = null;
+
+    // 世界已经不存在了 —— isWorldBuilt 必须随之为 false，
+    // 否则"世界可用"的判据会在释放之后继续成立。
+    _worldBuilt = false;
 
     session.dispose();
     audio.dispose();
