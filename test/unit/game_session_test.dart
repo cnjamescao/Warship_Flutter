@@ -144,11 +144,76 @@ void main() {
 
       session.addScore(200);
 
-      expect(observed, isNotNull, reason: '分数变化必须触发通知');
+      // 事务边界：提交之前不得有任何通知
+      expect(observed, isNull, reason: '提交之前不得通知');
+
+      session.commit();
+
+      expect(observed, isNotNull, reason: '提交必须触发通知');
       expect(observed![0], session.score);
       expect(observed![1], session.highScore);
       expect(observed![2], session.lives);
       expect(observed![3], session.state.index);
+    });
+
+    test('一次事务内发生多次变更，只通知一次且回调读到最终值', () {
+      final session = newSession();
+      addTearDown(session.dispose);
+      session.startNewGame();
+      session.commit();
+
+      var notifications = 0;
+      List<int>? observed;
+      void listener() {
+        notifications++;
+        observed = <int>[
+          session.scoreNotifier.value,
+          session.highScoreNotifier.value,
+          session.livesNotifier.value,
+          session.stateNotifier.value.index,
+        ];
+      }
+
+      session.scoreNotifier.addListener(listener);
+      addTearDown(() => session.scoreNotifier.removeListener(listener));
+
+      // 模拟同一帧内先后发生两类规则变更：
+      // 先击毁敌人（加分），随后又有敌人触底（掉命）。
+      session.addScore(150);
+      session.loseLife();
+
+      expect(notifications, 0, reason: '事务未提交前不得对外通知');
+
+      session.commit();
+
+      expect(
+        notifications,
+        1,
+        reason: '一次事务只允许通知一次（旧实现会先通知加分、再通知掉命）',
+      );
+      expect(observed![0], 150, reason: '回调必须读到最终分数');
+      expect(observed![1], 150, reason: '回调必须读到最终最高分');
+      expect(observed![2], 2, reason: '回调必须读到最终生命');
+    });
+
+    test('重复 commit 不会产生多余通知', () {
+      final session = newSession();
+      addTearDown(session.dispose);
+      session.startNewGame();
+      session.commit();
+
+      var notifications = 0;
+      void listener() => notifications++;
+      session.scoreNotifier.addListener(listener);
+      addTearDown(() => session.scoreNotifier.removeListener(listener));
+
+      session.addScore(50);
+      session.commit();
+      session.commit();
+      session.commit();
+
+      expect(notifications, 1);
+      expect(session.hasPendingChanges, isFalse);
     });
 
     test('相同赋值不会产生多余通知', () {
@@ -161,9 +226,11 @@ void main() {
       addTearDown(() => session.stateNotifier.removeListener(listener));
 
       session.setState(GameState.menu); // 本来就是 menu
-      expect(notifications, 0);
+      session.commit();
+      expect(notifications, 0, reason: '没有实际变更时，提交不得通知');
 
       session.setState(GameState.playing);
+      session.commit();
       expect(notifications, 1);
     });
   });

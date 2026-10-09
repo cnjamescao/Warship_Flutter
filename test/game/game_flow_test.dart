@@ -9,9 +9,11 @@
 // 纯数学与纯状态的部分在 test/unit/ 中单独覆盖。
 // ================================================================
 
+import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/game/components.dart';
 import 'package:warship_flutter/game/game_config.dart';
 import 'package:warship_flutter/game/game_session.dart';
 import 'package:warship_flutter/game/warship_game.dart';
@@ -487,6 +489,47 @@ void main() {
     });
   });
 
+  group('T10 单帧事务（集成）', () {
+    testWidgets('击毁敌人的那一帧最多只通知一次', (tester) async {
+      final game = await createGame(tester);
+      game.startNewGame();
+
+      // 对齐到最左列敌人正下方并持续射击，确保必然会击毁敌人
+      game.ship!.x = game.fleet.aliens.first.x.clamp(
+        0.0,
+        game.config.shipMaxX,
+      );
+      game.input.handleKeyEvent(keyDown(LogicalKeyboardKey.space));
+
+      var notifications = 0;
+      void listener() => notifications++;
+      game.session.scoreNotifier.addListener(listener);
+      addTearDown(() => game.session.scoreNotifier.removeListener(listener));
+
+      final scoreBefore = game.session.score;
+      var frames = 0;
+      var lastFrameNotifications = 0;
+
+      while (game.session.score == scoreBefore && frames < 900) {
+        notifications = 0; // 只统计"这一帧"的通知次数
+        game.update(1 / 60);
+        lastFrameNotifications = notifications;
+        frames++;
+      }
+
+      expect(
+        game.session.score,
+        greaterThan(scoreBefore),
+        reason: '前置条件：应当击毁至少一个敌人',
+      );
+      expect(
+        lastFrameNotifications,
+        1,
+        reason: '一次规则事务只允许通知一次（旧实现中"加分"与"掉命"会各通知一次）',
+      );
+    });
+  });
+
   group('T11 释放', () {
     testWidgets('close 之后不再更新、不再通知', (tester) async {
       final game = await createGame(tester);
@@ -501,15 +544,57 @@ void main() {
       expect(game.isClosed, isTrue);
 
       final lives = game.session.lives;
-      final shipX = game.ship!.x;
+      final score = game.session.score;
 
       stepGame(game, frames: 120);
 
       expect(game.session.lives, lives);
-      expect(game.ship!.x, shipX);
+      expect(game.session.score, score);
       expect(notifications, 0, reason: '释放后不得再向 UI 发通知');
 
       game.session.livesNotifier.removeListener(listener);
+    });
+
+    testWidgets('close 会把本游戏创建的实体全部从 World 摘除', (tester) async {
+      final game = await createGame(tester);
+      game.startNewGame();
+      // 制造出子弹，确保场上各类实体都存在
+      game.input.handleKeyEvent(keyDown(LogicalKeyboardKey.space));
+      stepGame(game, frames: 30);
+
+      expect(game.bullets, isNotEmpty, reason: '前置条件：场上应有子弹');
+      expect(game.fleet.alienCount, greaterThan(0));
+      expect(game.ship, isNotNull);
+      // 让 Flame 处理挂载队列，实体真正进入 World
+      game.update(0.016);
+      expect(
+        game.world.children.whereType<PlayerShip>(),
+        isNotEmpty,
+        reason: '前置条件：飞船应在 World 中',
+      );
+
+      game.close();
+
+      // 引用被清空
+      expect(game.ship, isNull);
+      expect(game.bullets, isEmpty);
+      expect(game.fleet.alienCount, 0);
+
+      // 让 Flame 处理移除队列（移除是排队的）
+      game.update(0);
+
+      expect(
+        game.world.children.whereType<PlayerShip>(),
+        isEmpty,
+        reason: '关闭后 World 不应再保留飞船',
+      );
+      expect(game.world.children.whereType<AlienEnemy>(), isEmpty);
+      expect(game.world.children.whereType<Bullet>(), isEmpty);
+      expect(
+        game.world.children.whereType<RectangleComponent>(),
+        isEmpty,
+        reason: '关闭后 World 不应再保留背景',
+      );
     });
 
     testWidgets('close 是幂等的', (tester) async {
@@ -528,6 +613,32 @@ void main() {
 
       expect(() => game.startNewGame(), returnsNormally);
       expect(game.session.state, GameState.menu);
+      expect(game.fleet.alienCount, 0, reason: '关闭后不得重建世界');
+    });
+
+    testWidgets('资源加载未完成时 close：不建立世界，worldReady 以取消结束', (tester) async {
+      final audio = RecordingGameAudio();
+      final game = WarshipGame(audio: audio);
+      addTearDown(game.close);
+
+      // 启动加载但不等待它完成，就在加载途中关闭
+      final load = game.onLoad();
+      game.close();
+      expect(game.isClosed, isTrue);
+
+      // onLoad 本身应正常返回，而不是抛异常
+      await load;
+
+      expect(game.isWorldReady, isTrue, reason: '就绪信号必须被明确终结，不能悬空');
+      expect(game.ship, isNull, reason: '关闭后不得建立世界');
+      expect(game.fleet.alienCount, 0);
+      expect(audio.preloadCount, 0, reason: '关闭后不得再预加载音频');
+
+      await expectLater(
+        game.worldReady,
+        throwsA(isA<GameLoadCancelled>()),
+        reason: '必须以可识别的取消错误结束，便于区分"取消"与"加载失败"',
+      );
     });
   });
 

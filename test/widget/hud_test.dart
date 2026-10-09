@@ -110,6 +110,7 @@ void main() {
       await tester.pump();
 
       game.session.addScore(150);
+      game.session.commit(); // 帧外直接改状态时必须显式提交
       await tester.pump();
 
       expect(find.text('Score: 150'), findsOneWidget);
@@ -122,12 +123,13 @@ void main() {
       await tester.pump();
 
       game.session.loseLife();
+      game.session.commit();
       await tester.pump();
 
       expect(find.text('Ships: 2'), findsOneWidget);
     });
 
-    testWidgets('规则提交后无需额外帧就能读到正确的 UI 值', (tester) async {
+    testWidgets('一次事务内改多项，只需一次提交即可全部体现', (tester) async {
       final game = await mountApp(tester);
       await tester.tap(find.text('Play'));
       await tester.pump();
@@ -135,6 +137,8 @@ void main() {
       // 一次事务同时改分数与生命
       game.session.addScore(250);
       game.session.loseLife();
+      // 只提交一次
+      game.session.commit();
 
       // 只 pump 一次：4 个只读值必须在同一帧内全部体现出来
       await tester.pump();
@@ -142,6 +146,26 @@ void main() {
       expect(find.text('Score: 250'), findsOneWidget);
       expect(find.text('Ships: 2'), findsOneWidget);
       expect(find.text('High Score: 250'), findsOneWidget);
+    });
+
+    testWidgets('未提交的变更不会刷新 UI（事务边界确实生效）', (tester) async {
+      final game = await mountApp(tester);
+      await tester.tap(find.text('Play'));
+      await tester.pump();
+
+      game.session.addScore(150);
+      await tester.pump();
+
+      expect(
+        find.text('Score: 150'),
+        findsNothing,
+        reason: '未 commit 之前不得通知 UI',
+      );
+      expect(find.text('Score: 0'), findsOneWidget);
+
+      game.session.commit();
+      await tester.pump();
+      expect(find.text('Score: 150'), findsOneWidget);
     });
   });
 
@@ -155,6 +179,7 @@ void main() {
       await tester.pump();
 
       game.session.addScore(300);
+      game.session.commit(); // 帧外直接改状态时必须显式提交
       stepUntil(game, () => game.session.state == GameState.gameOver);
       await tester.pump();
 
@@ -172,6 +197,7 @@ void main() {
       await tester.tap(find.text('Play'));
       await tester.pump();
       game.session.addScore(300);
+      game.session.commit(); // 帧外直接改状态时必须显式提交
       stepUntil(game, () => game.session.state == GameState.gameOver);
       await tester.pump();
 
@@ -275,6 +301,7 @@ void main() {
       await tester.tap(find.text('Play'));
       await tester.pump();
       game.session.addScore(150);
+      game.session.commit();
       game.pause();
       await tester.pump();
 

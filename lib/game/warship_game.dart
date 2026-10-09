@@ -33,11 +33,31 @@ import 'package:warship_flutter/game/game_config.dart';
 import 'package:warship_flutter/game/game_session.dart';
 import 'package:warship_flutter/game/input_controller.dart';
 
+/// 资源加载期间游戏被 [WarshipGame.close] 关闭时，`worldReady` 以此结束。
+///
+/// 之所以用专门的类型而不是泛化异常：
+/// 调用方需要能区分"加载被取消"（正常生命周期事件，不该报警）
+/// 与"加载真的失败"（需要排查的缺陷）。
+class GameLoadCancelled implements Exception {
+  const GameLoadCancelled();
+
+  @override
+  String toString() => 'GameLoadCancelled: 游戏在资源加载完成前已被关闭';
+}
+
 /// 游戏世界主体：Flame 生命周期 + 单帧协调。
 class WarshipGame extends FlameGame with KeyboardEvents {
   WarshipGame({GameConfig? config, GameAudio? audio})
     : config = config ?? const GameConfig(),
-      audio = audio ?? FlameGameAudio();
+      audio = audio ?? FlameGameAudio() {
+    // 预挂一个错误处理器：若加载期间被 close()，
+    // worldReady 会以 GameLoadCancelled 结束；当**没有任何人 await** 它时，
+    // 该错误否则会升级为"未处理异步异常"（在测试中会直接判失败）。
+    //
+    // 这不影响显式 await worldReady 的调用方 —— Future 支持多个监听者，
+    // 它们依然能收到这个错误。
+    unawaited(_readyCompleter.future.catchError((Object _) {}));
+  }
 
   /// 不可变规则配置。
   final GameConfig config;
@@ -130,14 +150,27 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     try {
       _setUpFixedViewport();
 
+      // 每个异步边界之后都必须重新确认"游戏是否已被关闭"：
+      // 玩家完全可能在首帧资源加载完成前就离开了页面，
+      // 此时不应再建立世界、也不应再预加载音频。
       _shipSprite = await Sprite.load('ship.png');
+      if (_abortLoadIfClosed()) {
+        return;
+      }
+
       _alienSprite = await Sprite.load('alien.png');
+      if (_abortLoadIfClosed()) {
+        return;
+      }
       fleet.sprite = _alienSprite;
 
       _buildWorld();
 
       // 音频预加载失败不影响对局，因此走 _safeAudioAsync。
       await _safeAudioAsync(audio.preload);
+      if (_abortLoadIfClosed()) {
+        return;
+      }
 
       if (!_readyCompleter.isCompleted) {
         _readyCompleter.complete();
@@ -149,6 +182,24 @@ class WarshipGame extends FlameGame with KeyboardEvents {
       }
       rethrow;
     }
+  }
+
+  /// 若游戏已在异步加载期间被 close()，中止后续初始化。
+  ///
+  /// `worldReady` 的关闭语义：以 [GameLoadCancelled] 结束。
+  /// 用专门的类型而不是泛化异常，让等待者能精确区分
+  /// "**加载被取消**" 与 "**加载真的失败**"，
+  /// 而不会误以为世界已经就绪。
+  ///
+  /// 返回 true 表示调用方应当立即中止 onLoad。
+  bool _abortLoadIfClosed() {
+    if (!_closed) {
+      return false;
+    }
+    if (!_readyCompleter.isCompleted) {
+      _readyCompleter.completeError(const GameLoadCancelled());
+    }
+    return true;
   }
 
   /// 建立固定逻辑画布。
@@ -206,15 +257,31 @@ class WarshipGame extends FlameGame with KeyboardEvents {
   /// 幂等释放入口。
   ///
   /// 由 `_GameScreenState.dispose()` 调用；重复调用是安全的空操作。
-  /// 释放后：不再更新、不再向 UI 发通知、不再播放音频。
+  ///
+  /// 释放后：
+  ///   * 不再更新、不再向 UI 发通知、不再播放音频；
+  ///   * **把本游戏创建的全部实体从 World 摘除**，再清空引用
+  ///     （规格 §4.2「移除监听/组件、释放本游戏拥有的 notifier/资源」）。
+  ///
+  /// 注意"先 detach、后清引用"的顺序：Flame 的移除是排队处理的，
+  /// 保留引用直到 detach 请求发出，语义更清晰。
   void close() {
     if (_closed) {
       return;
     }
     _closed = true;
     input.clear();
-    _bullets.clear();
-    fleet.clear();
+
+    // 敌人与子弹：_clearAliensAndBullets 内部会 fleet.clear()
+    // 并逐颗 detach 子弹。
+    _clearAliensAndBullets();
+
+    // 飞船与背景此前没有清理，这里补齐并清空引用。
+    _ship?.removeFromParent();
+    _ship = null;
+    _background?.removeFromParent();
+    _background = null;
+
     session.dispose();
     audio.dispose();
     pauseEngine();
@@ -293,6 +360,8 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     // 规格 §2.2：暂停时必须清空输入状态，防止恢复后"粘键"继续移动或射击。
     input.clear();
     session.setState(GameState.paused);
+    // 帧外路径：必须显式提交事务，否则暂停菜单不会出现。
+    session.commit();
   }
 
   /// 恢复（仅在 paused 时生效）。
@@ -303,6 +372,8 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     // 同样清空输入：恢复的瞬间不该因为残留按键而立刻移动或开火。
     input.clear();
     session.setState(GameState.playing);
+    // 帧外路径：显式提交。
+    session.commit();
   }
 
   /// 切换暂停 / 恢复。其他状态下是安全的空操作。

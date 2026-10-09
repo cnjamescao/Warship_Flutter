@@ -59,9 +59,7 @@ class _SessionView<T> implements ValueListenable<T> {
 
 /// 对局状态容器：分数 / 最高分 / 生命 / 状态。
 class GameSession {
-  GameSession({required this.config})
-    : _lives = config.initialLives,
-      _publishedLives = config.initialLives;
+  GameSession({required this.config}) : _lives = config.initialLives;
 
   final GameConfig config;
 
@@ -100,11 +98,10 @@ class GameSession {
   GameState _state = GameState.menu;
   bool _disposed = false;
 
-  // 上一次已发布的快照，用于抑制"值没变也通知"
-  int _publishedScore = 0;
-  int _publishedHighScore = 0;
-  int _publishedLives;
-  GameState _publishedState = GameState.menu;
+  /// 本事务内是否有尚未提交的变更。
+  ///
+  /// 规则方法只修改字段并置脏，真正的通知统一发生在 [commit]。
+  bool _dirty = false;
 
   int get score => _score;
   int get highScore => _highScore;
@@ -116,10 +113,25 @@ class GameSession {
   // ------------------------------------------------------------
   // 规则事务
   // ------------------------------------------------------------
+  // 【事务边界】
+  //   * 规则方法（startNewGame / addScore / loseLife / setState）
+  //     只修改字段并把事务标记为脏，**不发送任何通知**；
+  //   * 只有 commit() 才会把本事务累积的全部变更一次性发布出去。
+  //
+  // 为什么必须这样（代码审查反馈 P2）：
+  //   同一帧内完全可能连续发生多次规则变更 —— 例如一帧里既击毁敌人
+  //   （加分）又有一名敌人触底（掉命）。如果每个变更方法各自发布，
+  //   消费者就会收到若干"中间提交"，
+  //   v1.1「一次规则事务只通知一次」的契约并不成立。
+  //
+  // 【调用方责任】
+  //   * 帧循环：在每帧末尾调用一次 commit()（见 WarshipGame.update）；
+  //   * 帧外路径（按钮 / 快捷键触发的 startNewGame、pause、resume）：
+  //     必须在变更后**显式** commit()，否则 UI 不会收到通知。
+  //
   // 所有变更方法在【已释放】之后都是安全的空操作：
   // 释放意味着这个会话彻底结束，不再接受任何规则写入，
-  // 从而杜绝"已释放对象仍被更新"这一类隐患
-  // （代码审查反馈 P2 明确提到的风险）。
+  // 从而杜绝"已释放对象仍被更新"这一类隐患。
   // ------------------------------------------------------------
 
   /// 开始新一局：重置分数与生命，但**保留**进程内最高分。
@@ -130,7 +142,7 @@ class GameSession {
     _score = 0;
     _lives = config.initialLives;
     _state = GameState.playing;
-    _publish();
+    _dirty = true;
   }
 
   /// 增加分数，并同步刷新最高分。
@@ -142,18 +154,16 @@ class GameSession {
     if (_score > _highScore) {
       _highScore = _score;
     }
-    _publish();
+    _dirty = true;
   }
 
   /// 损失一条生命（不会低于 0）。
   void loseLife() {
-    if (_disposed) {
+    if (_disposed || _lives <= 0) {
       return;
     }
-    if (_lives > 0) {
-      _lives -= 1;
-    }
-    _publish();
+    _lives -= 1;
+    _dirty = true;
   }
 
   /// 切换状态。
@@ -162,37 +172,29 @@ class GameSession {
       return;
     }
     _state = value;
-    _publish();
+    _dirty = true;
   }
 
-  /// 提交一次规则事务。
+  /// 提交一次规则事务：把本事务内累积的全部变更**一次性**发布。
   ///
-  /// 对应规格 §5 单帧流程图里的 "Commit GameSession once"：
-  /// 一帧内可以改多次字段，但对外只产生一次通知。
-  void commit() => _publish();
-
-  /// 发布当前已提交的字段值。
+  /// 对应规格 §5 单帧流程图里的 "Commit GameSession once"。
+  ///
+  /// 幂等：没有未提交变更时是安全空操作，不会产生多余通知；
+  /// 释放之后同样是空操作（规格 §4.2：释放后不得再向 UI 发通知）。
   ///
   /// 注意：字段一定在调用本方法**之前**就已经写好，
-  /// 因此 listener 被唤醒时读到的永远是一致的最终值。
-  void _publish() {
-    // 释放之后绝不再向 UI 发通知（规格 §4.2）。
-    if (_disposed) {
+  /// 因此 listener 被唤醒时读到的永远是一致且最终的值。
+  void commit() {
+    if (_disposed || !_dirty) {
       return;
     }
-    // 值没有实际变化时不产生多余通知（与 ValueNotifier 的语义保持一致）。
-    if (_score == _publishedScore &&
-        _highScore == _publishedHighScore &&
-        _lives == _publishedLives &&
-        _state == _publishedState) {
-      return;
-    }
-    _publishedScore = _score;
-    _publishedHighScore = _highScore;
-    _publishedLives = _lives;
-    _publishedState = _state;
+    _dirty = false;
+    // 唯一的通知点：一次事务 = 一次 revision +1。
     _revision.value++;
   }
+
+  /// 是否存在尚未提交的变更（测试与调试用）。
+  bool get hasPendingChanges => _dirty;
 
   /// 幂等释放。
   ///
