@@ -1,0 +1,101 @@
+# ================================================================
+# CI —— 规格 §7「基础设施与工程要求」
+# ================================================================
+# 规则（来自 Spec/Warship产品设计.md §7）：
+#   * 分析和测试是 PR 必需检查；
+#   * macOS build 在已完成 Xcode 首次启动/许可的 runner 上运行；
+#   * 修改 pubspec.yaml 必须同步更新 pubspec.lock；
+#   * 不得提交 build/、.dart_tool/ 或 ephemeral 生成物。
+# ================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# 同一分支的重复推送只保留最新一次运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # 固定 Flutter 版本，保证本地与 CI 行为一致
+  FLUTTER_VERSION: 3.47.1
+
+jobs:
+  # ------------------------------------------------------------
+  # 静态分析 + 测试：不依赖 Xcode，跑得最快，作为第一道门禁
+  # ------------------------------------------------------------
+  analyze-and-test:
+    name: 分析 / 测试
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 安装 Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: 校验 pubspec.lock 与 pubspec.yaml 同步
+        # 规格要求：改了 pubspec.yaml 就必须更新 pubspec.lock
+        run: flutter pub get --enforce-lockfile
+
+      - name: 确认没有提交生成物
+        run: |
+          offenders=$(git ls-files | grep -E '^(build/|\.dart_tool/)|/ephemeral/' || true)
+          if [ -n "$offenders" ]; then
+            echo "::error::以下生成物不应被提交："
+            echo "$offenders"
+            exit 1
+          fi
+
+      - name: flutter analyze
+        run: flutter analyze
+
+      - name: flutter test
+        run: flutter test --reporter expanded
+
+  # ------------------------------------------------------------
+  # macOS 原生构建
+  # ------------------------------------------------------------
+  # 说明：GitHub 的 macos runner 已经预装了 Xcode 并完成首次启动/许可，
+  # 因此这里可以直接构建。如果换到自建 runner，
+  # 需要先在该机器上执行 `sudo xcodebuild -license accept`。
+  # ------------------------------------------------------------
+  build-macos:
+    name: macOS 构建
+    runs-on: macos-latest
+    needs: analyze-and-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 安装 Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: 检查 Xcode 是否就绪
+        id: xcode
+        run: |
+          if xcodebuild -checkFirstLaunchStatus >/dev/null 2>&1; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Xcode 尚未完成首次启动/许可，跳过 macOS 构建"
+          fi
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: flutter build macos --debug
+        if: steps.xcode.outputs.ready == 'true'
+        run: flutter build macos --debug
