@@ -650,6 +650,45 @@ void main() {
       );
     });
 
+    testWidgets('onLoad 尚未开始就 close：就绪信号以取消结束，不会永久挂起', (tester) async {
+      final game = WarshipGame(audio: RecordingGameAudio());
+      addTearDown(game.close);
+
+      // 订阅就绪信号，但**刻意不调用 onLoad()** ——
+      // 模拟"GameWidget 还没挂载，页面就被销毁"的情况。
+      final ready = game.worldReady;
+      expect(game.isLoadSettled, isFalse);
+      expect(game.isWorldBuilt, isFalse);
+
+      game.close();
+
+      // 快速失败点：旧实现下这里恒为 false（Completer 悬空、worldReady 永久 pending）
+      expect(
+        game.isLoadSettled,
+        isTrue,
+        reason: 'close() 必须主动终结就绪信号，否则 worldReady 会永久挂起',
+      );
+      expect(game.isWorldBuilt, isFalse, reason: '世界从未建立');
+      await expectLater(ready, throwsA(isA<GameLoadCancelled>()));
+    });
+
+    testWidgets('先 close 再调用 onLoad：不建立世界，也不重复完成就绪信号', (tester) async {
+      final audio = RecordingGameAudio();
+      final game = WarshipGame(audio: audio);
+      addTearDown(game.close);
+
+      game.close();
+
+      // 之后 Flame 仍可能调用 onLoad（组件树延迟挂载）
+      await tester.runAsync(() => game.onLoad());
+
+      expect(game.isWorldBuilt, isFalse, reason: '已关闭时不得建立世界');
+      expect(game.ship, isNull);
+      expect(game.fleet.alienCount, 0);
+      expect(audio.preloadCount, 0, reason: '已关闭时不得再做无谓的资源加载');
+      await expectLater(game.worldReady, throwsA(isA<GameLoadCancelled>()));
+    });
+
     testWidgets('正常加载：isWorldBuilt 与 isLoadSettled 同时为真', (tester) async {
       final game = await createGame(tester);
 

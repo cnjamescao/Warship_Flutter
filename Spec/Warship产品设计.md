@@ -77,7 +77,7 @@
 | §9 v1.3 | 敌人开火 / 道具 / 难度上限 | [提议] | ⬜ 未开始 |
 | §9 v2.0 | 多敌人 / Boss / 特效 / 排行榜 | [提议] | ⬜ 未开始 |
 
-**v1.1 结论**：除 [提议] 项外**全部完成**；T01–T12 全部通过（共 149 个自动化测试）；
+**v1.1 结论**：除 [提议] 项外**全部完成**；T01–T12 全部通过（共 151 个自动化测试）；
 `flutter analyze` 零问题；`flutter build macos --debug` 成功，应用可正常启动与运行。
 
 ### 0.3 优先级与完成情况
@@ -355,7 +355,7 @@ flutter test
 
 测试分层：纯 Dart（Session/Input/Fleet/Collision）、Flame 集成（资源/组件/帧）、Flutter Widget（HUD/遮罩/焦点）、macOS 构建验证。 **✅ 四层均已覆盖**
 
-**当前实测结果**：`flutter analyze` 零问题；`flutter test` 149 个用例全部通过；
+**当前实测结果**：`flutter analyze` 零问题；`flutter test` 151 个用例全部通过；
 `flutter build macos --debug` 成功；应用可正常启动并稳定运行。
 
 ---

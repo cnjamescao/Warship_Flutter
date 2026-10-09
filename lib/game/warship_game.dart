@@ -173,6 +173,13 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     }
     _loadStarted = true;
 
+    // 若在 onLoad 开始之前游戏就已被关闭，直接放弃：
+    // 既不建立世界，也不做无谓的资源加载。
+    // 此时 worldReady 已由 close() 以 GameLoadCancelled 结束。
+    if (_closed) {
+      return;
+    }
+
     try {
       _setUpFixedViewport();
 
@@ -315,6 +322,18 @@ class WarshipGame extends FlameGame with KeyboardEvents {
     // 世界已经不存在了 —— isWorldBuilt 必须随之为 false，
     // 否则"世界可用"的判据会在释放之后继续成立。
     _worldBuilt = false;
+
+    // 终结就绪信号，保证 worldReady 永远不会"没人给结果"。
+    //
+    // 这里刻意【不】判断 _loadStarted：
+    //   * onLoad 尚未开始（GameWidget 还没挂载，页面就被销毁）时，
+    //     没有任何人会在异步边界上调用 _abortLoadIfClosed() ——
+    //     若不在此处完成，worldReady 会永久 pending、isLoadSettled 永远为 false；
+    //   * onLoad 正在进行时，提前在这里完成同样正确：
+    //     后续的 _abortLoadIfClosed() 会因为"已完成"而跳过，不会重复完成。
+    if (!_readyCompleter.isCompleted) {
+      _readyCompleter.completeError(const GameLoadCancelled());
+    }
 
     session.dispose();
     audio.dispose();
