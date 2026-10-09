@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flame: ^1.38.1
+  flame_audio: ^2.12.2
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +61,8 @@ flutter:
 
   assets:
     - assets/images/
+    # 音效：由 `dart run tool/generate_audio.dart` 合成的原创素材
+    - assets/audio/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
