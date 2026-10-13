@@ -676,10 +676,14 @@ void main() {
 
     test('事件带有 runId / frameIndex / 递增 eventIndex', () {
       final rt = buildRuntime();
-      rt.bus.drain();
-      runSeconds(rt, 0.2);
-
-      final events = rt.bus.drain();
+      // 运行时会在每帧结束时消费事件并把它们交给音频，
+      // 因此这里累积它暴露出来的 lastFrameEvents。
+      // 注意不能只看最后一帧 —— 那一帧可能恰好没有事件。
+      final events = <StampedEvent>[];
+      for (var i = 0; i < 12; i++) {
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        events.addAll(rt.lastFrameEvents);
+      }
       expect(events, isNotEmpty);
 
       var lastIndex = -1;

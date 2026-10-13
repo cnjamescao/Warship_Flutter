@@ -1,0 +1,281 @@
+// ================================================================
+// lib/game/infrastructure/audio_director.dart —— 事件 → 音频 cue 路由
+// ================================================================
+// 依据：Spec/02_技术/v2.0/02_运行时与数据协议.md §7
+//   「AssetLoader 必须…只按 `event + when` 条件匹配」；
+//   03_素材 §1.1
+//   「音频记录已补齐 Cue、事件、通用回退、内存估算及并发/循环参数」。
+//
+// 因此这里**不硬编码任何 cue ID**：把 DomainEvent 转成条件参数，
+// 交给 [AssetBindingTable] 解析，再交给 [AudioService] 做限频与并发控制。
+// 换素材只需改 manifest，不动代码。
+// ================================================================
+
+import 'package:flame_audio/flame_audio.dart';
+
+import '../core/domain_event.dart';
+import '../core/event_bus.dart';
+import '../core/game_phase.dart';
+import '../content/asset_manifest.dart';
+import 'asset_loader.dart';
+import 'audio_port.dart';
+
+/// 把事件负载转成 `when` 条件参数。
+///
+/// 键名必须与 manifest 的 `when` 条件键**完全一致**
+/// （`enemyId` / `attackId` / `weaponId` / `command` / `result` /
+/// `optionId` / `direction` / `isElite` / `critical` / `hpRatio` …）。
+Map<String, Object?> audioParamsOf(DomainEvent event) {
+  switch (event) {
+    case EnemySpawned(:final enemyId, :final isElite):
+      return <String, Object?>{'enemyId': enemyId, 'isElite': isElite};
+    case EnemyDestroyed(:final enemyId, :final isElite):
+      return <String, Object?>{'enemyId': enemyId, 'isElite': isElite};
+    case EnemyDamaged(:final enemyId, :final hpRatio):
+      return <String, Object?>{'enemyId': enemyId, 'hpRatio': hpRatio};
+    case EnemyBreached(:final enemyId, :final isElite):
+      return <String, Object?>{'enemyId': enemyId, 'isElite': isElite};
+    case EnemyAttackTelegraphed(:final enemyId, :final attackId):
+      return <String, Object?>{'enemyId': enemyId, 'attackId': attackId};
+    case EnemyAttackFired(:final enemyId, :final attackId):
+      return <String, Object?>{'enemyId': enemyId, 'attackId': attackId};
+    case PlayerDamaged(:final shieldDamage, :final hpDamage, :final direction):
+      return <String, Object?>{
+        'shieldDamage': shieldDamage,
+        'hpDamage': hpDamage,
+        'direction': direction,
+      };
+    case PlayerVitalStateChanged(:final hpRatio, :final shieldRatio):
+      return <String, Object?>{'hpRatio': hpRatio, 'shieldRatio': shieldRatio};
+    case WeaponFired(:final weaponId):
+      return <String, Object?>{'weaponId': _audioWeaponId(weaponId)};
+    case WeaponHit(:final weaponId, :final critical):
+      return <String, Object?>{
+        'weaponId': _audioWeaponId(weaponId),
+        'critical': critical,
+      };
+    case BossPhaseChanged(:final phase):
+      return <String, Object?>{'phase': phase};
+    case BossAttackTelegraphed(:final attackId):
+      return <String, Object?>{'attackId': attackId};
+    case BossAttackFired(:final attackId):
+      return <String, Object?>{'attackId': attackId};
+    case BossAttackEnded(:final attackId):
+      return <String, Object?>{'attackId': attackId};
+    case BossCriticalReached(:final hpRatio):
+      return <String, Object?>{'hpRatio': hpRatio};
+    case RiskGateOpened(:final gateId):
+      return <String, Object?>{'gateId': gateId};
+    case RiskSelected(:final optionId):
+      return <String, Object?>{'optionId': optionId};
+    case UpgradeSelected(:final cardId):
+      return <String, Object?>{'cardId': cardId};
+    case RunEnded(:final result):
+      return <String, Object?>{'result': result};
+    default:
+      return const <String, Object?>{};
+  }
+}
+
+/// 把 Domain 的武器 ID 映射成 manifest 条件里的 `weaponId`。
+///
+/// Domain 用 `WPN-PULSE`（来自 `weapons.json` 的主键），
+/// 而素材 manifest 的音频条件写的是**系列短名** `pulse`。
+/// 两者语义相同但字面不同 —— 这个映射属于适配层的职责，
+/// 不能在 Domain 里改（那会让配置主键与代码耦合到素材命名）。
+String _audioWeaponId(String domainWeaponId) {
+  final stripped = domainWeaponId.startsWith('WPN-')
+      ? domainWeaponId.substring(4)
+      : domainWeaponId;
+  return stripped.toLowerCase();
+}
+
+/// 事件 → 音频。
+class AudioDirector {
+  AudioDirector({required this.table, required this.service});
+
+  final AssetBindingTable table;
+  final AudioService service;
+
+  /// 已解析的音乐 cue（BGM 需要按局面切换，且必须成对停止）。
+  String? _currentMusicCueId;
+
+  String? get currentMusicCueId => _currentMusicCueId;
+
+  /// 处理一批本步事件。
+  void handleAll(List<StampedEvent> events) {
+    for (final stamped in events) {
+      handle(stamped.event);
+    }
+  }
+
+  /// 处理单个事件：解析出 cue 并请求播放。
+  List<AudioCue> handle(DomainEvent event) {
+    final params = audioParamsOf(event);
+    final resolved = table.resolveCues(event.eventType, params);
+    if (resolved.isEmpty) {
+      return const <AudioCue>[];
+    }
+
+    final played = <AudioCue>[];
+    for (final match in resolved) {
+      final cueId = match.cueId;
+      if (cueId == null) {
+        continue;
+      }
+      final cue = AudioCue(
+        cueId: cueId,
+        assetId: match.assetId.value,
+        bus: _busOf(match.bus),
+        priority: match.priority,
+        maxVoices: match.maxVoices,
+        minRetriggerMs: match.minRetriggerMs,
+        loop: match.loop,
+      );
+
+      // 音乐：换曲时先停旧曲，避免叠层。
+      if (cue.bus == AudioBus.music) {
+        final previous = _currentMusicCueId;
+        if (previous != null && previous != cue.cueId) {
+          service.endLoop(previous);
+        }
+        _currentMusicCueId = cue.cueId;
+      }
+
+      if (service.request(cue) == AudioDecision.play) {
+        played.add(cue);
+      }
+    }
+    return played;
+  }
+
+  /// 相位变化时的音频处理：
+  ///   暂停 → 挂起全部；恢复 → 只恢复，不重新起播；
+  ///   离开对局 → 停止所有循环音。
+  void onPhaseChanged(GamePhase from, GamePhase to) {
+    if (to == GamePhase.paused) {
+      service.pause();
+      return;
+    }
+    if (from == GamePhase.paused) {
+      service.resume();
+      return;
+    }
+    if (!to.isInRun) {
+      service.stopAllLoops();
+      _currentMusicCueId = null;
+    }
+  }
+
+  static AudioBus _busOf(String? raw) => switch (raw) {
+    'Music' => AudioBus.music,
+    'UI' => AudioBus.ui,
+    'Warning' => AudioBus.warning,
+    _ => AudioBus.sfx,
+  };
+}
+
+/// 基于 `flame_audio` 的真实播放端口。
+///
+/// 所有异常都在这里被吞掉：音频设备缺失、编解码失败、Web 自动播放策略
+/// 都**不允许**影响战斗循环（架构 §7）。
+class FlameAudioPort implements AudioPort {
+  FlameAudioPort();
+
+  bool _muted = false;
+  bool _paused = false;
+
+  /// 已解码的短音效（按 asset 路径缓存，避免重复解码）。
+  final Set<String> _loaded = <String>{};
+
+  @override
+  bool get isMuted => _muted;
+
+  @override
+  void setMuted(bool muted) => _muted = muted;
+
+  @override
+  void play(AudioCue cue) {
+    if (_muted || _paused) {
+      return;
+    }
+    // 真实播放是**异步**的，但战斗循环不能等它 —— 因此 fire-and-forget，
+    // 并把异常收敛在这里。
+    unawaitedPlay(cue);
+  }
+
+  /// 供测试重写的挂起点。
+  void unawaitedPlay(AudioCue cue) {
+    if (cue.loop) {
+      FlameAudio.bgm.play(cue.assetId, volume: 0.6).catchError((Object _) {});
+      return;
+    }
+    _loadAndPlay(cue.assetId);
+  }
+
+  Future<void> _loadAndPlay(String assetId) async {
+    try {
+      if (!_loaded.contains(assetId)) {
+        await FlameAudio.audioCache.load(assetId);
+        _loaded.add(assetId);
+      }
+      await FlameAudio.play(assetId);
+    } catch (_) {
+      // 架构 §7：音频失败静默继续。
+    }
+  }
+
+  @override
+  void stop(String cueId) {
+    // cueId → asset 的映射由调用方在 AudioCue 里给出；
+    // 停止时直接停 BGM（持续音目前只有 BGM 与激光循环）。
+    try {
+      FlameAudio.bgm.stop();
+    } catch (_) {}
+  }
+
+  @override
+  void stopBus(AudioBus bus) {
+    if (bus == AudioBus.music) {
+      try {
+        FlameAudio.bgm.stop();
+      } catch (_) {}
+    }
+  }
+
+  @override
+  void pauseAll() {
+    _paused = true;
+    try {
+      // 暂停时挂起持续音（BGM 淡出而非硬切）。
+      FlameAudio.bgm.pause();
+    } catch (_) {}
+  }
+
+  @override
+  void resumeAll() {
+    _paused = false;
+    try {
+      FlameAudio.bgm.resume();
+    } catch (_) {}
+  }
+}
+
+/// 预载音频分组（协议 §7：firstRun 预载）。
+Future<void> preloadAudioGroup(
+  AssetManifest manifest,
+  AssetLoadGroup group,
+) async {
+  for (final record in manifest.inLoadGroup(group)) {
+    if (!record.category.isAudio) {
+      continue;
+    }
+    for (final file in record.runtimeFiles) {
+      try {
+        await FlameAudio.audioCache.load(file);
+      } catch (_) {
+        // 单个失败不影响其他资源（架构 §7）。
+      }
+    }
+  }
+}

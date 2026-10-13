@@ -28,6 +28,7 @@ import '../domain/player_system.dart';
 import '../domain/risk_gate_system.dart';
 import '../domain/upgrade_system.dart';
 import '../domain/values.dart';
+import '../infrastructure/audio_director.dart';
 import '../domain/weapon_system.dart';
 import 'domain_event.dart';
 import 'event_bus.dart';
@@ -152,6 +153,7 @@ class GameRuntime {
     this.upgradeSystem,
     this.bossSystem,
     this.riskGateSystem,
+    this.audioDirector,
   })  : player = PlayerState(
           tuning: tuning ?? PlayerTuning.fromConfig(catalogPlayer),
         );
@@ -180,6 +182,15 @@ class GameRuntime {
 
   /// 风险门系统（可为 null 表示本局不启用风险门）。
   final RiskGateSystem? riskGateSystem;
+
+  /// 音频导演（可为 null 表示本局无音频）。
+  ///
+  /// 放在 runtime 而不是表现层：事件在本步结束时就被消费掉，
+  /// 表现层与音频拿到的是同一批不可变事件，顺序一致。
+  final AudioDirector? audioDirector;
+
+  /// 最近一帧消费掉的事件（供表现层使用）。
+  List<StampedEvent> lastFrameEvents = const <StampedEvent>[];
 
   /// 进行中的风险门；null 表示没有。
   RiskGateSession? riskGate;
@@ -288,7 +299,11 @@ class GameRuntime {
       bus.emit(pauseEvent, runtime);
     }
 
+    // 相位迁移也要让音频知道（暂停/恢复/离开对局）。
+    final phaseBefore = phases.phase;
+
     if (!phases.phase.advancesLogic) {
+      _dispatchEvents();
       return 0;
     }
 
@@ -302,7 +317,25 @@ class GameRuntime {
         _inStep = false;
       }
     });
+
+    _dispatchEvents();
+    if (phaseBefore != phases.phase) {
+      audioDirector?.onPhaseChanged(phaseBefore, phases.phase);
+    }
     return steps;
+  }
+
+  /// 取出本帧事件并交给音频；同时保留给表现层读取。
+  void _dispatchEvents() {
+    final events = bus.drain();
+    if (events.isEmpty) {
+      lastFrameEvents = const <StampedEvent>[];
+      return;
+    }
+    lastFrameEvents = events;
+    audioDirector?.handleAll(events);
+    // 逻辑时间推进音频限频窗口（不用墙上时钟，保证可复现）。
+    audioDirector?.service.advance(GameClock.fixedStepSeconds * events.length);
   }
 
   /// 单个逻辑步（严格九步顺序）。
@@ -1736,6 +1769,8 @@ class GameRuntime {
     collisionSystem.reset();
     ids.reset();
     bus.clear();
+    lastFrameEvents = const <StampedEvent>[];
+    audioDirector?.service.stopAllLoops();
   }
 }
 
