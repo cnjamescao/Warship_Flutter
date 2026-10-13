@@ -28,7 +28,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/game_audio.dart';
 import 'package:warship_flutter/game/game_config.dart';
 import 'package:warship_flutter/game/warship_game.dart';
-import 'package:warship_flutter/main.dart';
+import 'package:warship_flutter/legacy/v1_app.dart';
 
 /// 记录被播放的音效，但不触碰任何真实音频后端。
 ///

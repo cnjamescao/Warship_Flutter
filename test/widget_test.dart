@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/game_audio.dart';
 import 'package:warship_flutter/game/game_session.dart';
-import 'package:warship_flutter/main.dart';
+import 'package:warship_flutter/legacy/v1_app.dart';
 
 import 'support/game_harness.dart';
 
