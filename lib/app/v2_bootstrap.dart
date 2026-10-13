@@ -24,6 +24,7 @@ import '../game/core/random_source.dart';
 import '../game/core/run_context.dart';
 import '../game/domain/director_system.dart';
 import '../game/domain/enemy_system.dart';
+import '../game/domain/upgrade_system.dart';
 import '../game/domain/weapon_system.dart';
 import '../game/infrastructure/asset_loader.dart';
 
@@ -154,8 +155,35 @@ class V2Bootstrap {
       pulse: PulseWeapon(),
       breachNormalHpDamage: (breach['normalHpDamage'] as num?)?.toInt() ?? 8,
       breachEliteHpDamage: (breach['eliteHpDamage'] as num?)?.toInt() ?? 15,
+      upgradeSystem: buildUpgradeSystem(catalog),
     );
   }
+}
+
+/// 由已校验内容构建升级系统。
+UpgradeSystem buildUpgradeSystem(ContentCatalog catalog) {
+  final guaranteed = catalog.upgrades['guaranteed'] as Map?;
+  return UpgradeSystem(
+    cards: catalog.upgradeCards.map(UpgradeCard.fromConfig).toList(),
+    xpThresholds: catalog.xpThresholds,
+    firstDraftEarliestSecond:
+        (catalog.upgrades['firstDraftEarliestSecond'] as num?)?.toDouble() ??
+        15.0,
+    maxDrafts: (catalog.upgrades['maxDrafts'] as num?)?.toInt() ?? 6,
+    draftSize: (catalog.upgrades['draftSize'] as num?)?.toInt() ?? 3,
+    damageCardIds:
+        ((catalog.upgrades['damageCardIds'] as List?) ?? const <Object?>[])
+            .whereType<String>()
+            .toSet(),
+    guaranteedFirstDraft:
+        ((guaranteed?['firstDraft'] as List?) ?? const <Object?>[])
+            .whereType<String>()
+            .toList(),
+    guaranteedSecondDraftAnyOf:
+        ((guaranteed?['secondDraftAnyOf'] as List?) ?? const <Object?>[])
+            .whereType<String>()
+            .toList(),
+  );
 }
 
 /// 内容校验失败。

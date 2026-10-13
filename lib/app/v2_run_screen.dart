@@ -105,6 +105,14 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     }
   }
 
+  /// 选择升级卡（产品基线 §4.2 的三选一）。
+  void _selectCard(int index) {
+    final runtime = widget.runtime;
+    if (runtime.selectDraftCard(index)) {
+      setState(() => _snapshot = runtime.snapshot());
+    }
+  }
+
   void _clearInputAndPause() {
     widget.input.clear();
     final event = widget.runtime.phases.requestPause(PauseSource.appLifecycle);
@@ -157,6 +165,8 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
                     hud: _snapshot.hud!,
                     phase: _snapshot.phase,
                     viewport: viewport,
+                    draft: _snapshot.upgradeDraft,
+                    onSelectCard: _selectCard,
                     onPause: _clearInputAndPause,
                     onResume: () {
                       widget.runtime.phases.requestResume();
@@ -182,6 +192,8 @@ class _HudOverlay extends StatelessWidget {
     required this.onPause,
     required this.onResume,
     this.onQuitToHome,
+    this.draft,
+    this.onSelectCard,
   });
 
   final HudView hud;
@@ -190,6 +202,8 @@ class _HudOverlay extends StatelessWidget {
   final VoidCallback onPause;
   final VoidCallback onResume;
   final VoidCallback? onQuitToHome;
+  final DraftView? draft;
+  final void Function(int index)? onSelectCard;
 
   /// 逻辑坐标 → 屏幕坐标。
   Offset _toScreen(double x, double y) {
@@ -255,6 +269,12 @@ class _HudOverlay extends StatelessWidget {
           kHudSafeArea.bottom,
           _DashIndicator(hud: hud, scale: scale),
         ),
+        if (draft != null && onSelectCard != null)
+          _DraftOverlay(
+            draft: draft!,
+            scale: scale,
+            onSelect: onSelectCard!,
+          ),
         if (isPaused)
           _PauseOverlay(
             onResume: onResume,
@@ -564,6 +584,175 @@ class _IconButton extends StatelessWidget {
             border: Border.all(color: const Color(0x55FFFFFF)),
           ),
           child: Icon(icon, color: Colors.white, size: 26 * scale),
+        ),
+      ),
+    );
+  }
+}
+
+/// 升级三选一覆盖层。
+///
+/// 按产品基线 §4.2 用 1/2/3 或点击选择；战时逻辑已完全冻结。
+class _DraftOverlay extends StatelessWidget {
+  const _DraftOverlay({
+    required this.draft,
+    required this.scale,
+    required this.onSelect,
+  });
+
+  final DraftView draft;
+  final double scale;
+  final void Function(int index) onSelect;
+
+  static const Map<String, Color> _seriesColors = <String, Color>{
+    'pulse': Color(0xFF3FE0FF),
+    'missile': Color(0xFFFFC24B),
+    'laser': Color(0xFFFF5C8A),
+    'drone': Color(0xFF7CF9FF),
+    'survival': Color(0xFF7C6BFF),
+    'damage': Color(0xFFFF8A3A),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: ColoredBox(
+        color: const Color(0xE605030F),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '选择强化',
+              style: TextStyle(
+                color: const Color(0xFF3FE0FF),
+                fontSize: 34 * scale,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 8,
+              ),
+            ),
+            SizedBox(height: 6 * scale),
+            Text(
+              '第 ${draft.draftIndex + 1} 次强化 · 点击卡片或按 1 / 2 / 3',
+              style: TextStyle(color: Colors.white54, fontSize: 15 * scale),
+            ),
+            SizedBox(height: 28 * scale),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                for (var i = 0; i < draft.cards.length; i++) ...<Widget>[
+                  if (i > 0) SizedBox(width: 22 * scale),
+                  _DraftCard(
+                    card: draft.cards[i],
+                    index: i,
+                    color: _seriesColors[draft.cards[i].series] ??
+                        const Color(0xFF3FE0FF),
+                    scale: scale,
+                    onTap: () => onSelect(i),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DraftCard extends StatelessWidget {
+  const _DraftCard({
+    required this.card,
+    required this.index,
+    required this.color,
+    required this.scale,
+    required this.onTap,
+  });
+
+  final DraftCardView card;
+  final int index;
+  final Color color;
+  final double scale;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '强化卡 ${card.cardId}',
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 300 * scale,
+          height: 380 * scale,
+          padding: EdgeInsets.all(20 * scale),
+          decoration: BoxDecoration(
+            color: const Color(0xFF120A26),
+            borderRadius: BorderRadius.circular(16 * scale),
+            border: Border.all(
+              color: card.isGuaranteed ? const Color(0xFFFFC24B) : color,
+              width: (card.isGuaranteed ? 3 : 2) * scale,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10 * scale,
+                      vertical: 4 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(6 * scale),
+                    ),
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 18 * scale,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Lv ${card.nextLevel}/${card.maxLevel}',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 14 * scale,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 18 * scale),
+              Text(
+                card.cardId,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 16 * scale,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10 * scale),
+              Expanded(
+                child: Text(
+                  card.descKey,
+                  style: TextStyle(color: Colors.white70, fontSize: 14 * scale),
+                ),
+              ),
+              if (card.isGuaranteed)
+                Text(
+                  '保底',
+                  style: TextStyle(
+                    color: const Color(0xFFFFC24B),
+                    fontSize: 13 * scale,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

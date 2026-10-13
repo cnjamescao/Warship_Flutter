@@ -316,3 +316,31 @@ class WeaponHit extends DomainEvent {
   @override
   String get eventType => 'WeaponHit';
 }
+
+/// 升级草案开启（产品基线 §4.2）。
+class UpgradeDraftOpened extends DomainEvent {
+  const UpgradeDraftOpened({
+    required this.draftIndex,
+    required this.candidateIds,
+  });
+
+  /// 第几次草案（0 起）。
+  final int draftIndex;
+
+  /// 候选卡 ID，**顺序已固定**。
+  final List<String> candidateIds;
+
+  @override
+  String get eventType => 'UpgradeDraftOpened';
+}
+
+/// 玩家选定一张升级卡。
+class UpgradeSelected extends DomainEvent {
+  const UpgradeSelected({required this.cardId, required this.newLevel});
+
+  final String cardId;
+  final int newLevel;
+
+  @override
+  String get eventType => 'UpgradeSelected';
+}

@@ -19,6 +19,7 @@ import 'package:warship_flutter/game/core/random_source.dart';
 import 'package:warship_flutter/game/core/run_context.dart';
 import 'package:warship_flutter/game/domain/director_system.dart';
 import 'package:warship_flutter/game/domain/enemy_system.dart';
+import 'package:warship_flutter/game/domain/upgrade_system.dart';
 import 'package:warship_flutter/game/domain/values.dart';
 import 'package:warship_flutter/game/domain/weapon_system.dart';
 
@@ -26,7 +27,27 @@ Map<String, Object?> readJson(String name) =>
     jsonDecode(File('assets/config/v2/$name').readAsStringSync())
         as Map<String, Object?>;
 
-GameRuntime buildRuntime() {
+UpgradeSystem buildUpgradeSystem() {
+  final config = readJson('upgrades.json');
+  final guaranteed = config['guaranteed'] as Map;
+  return UpgradeSystem(
+    cards: (config['cards'] as List)
+        .cast<Map>()
+        .map((m) => UpgradeCard.fromConfig(m.cast<String, Object?>()))
+        .toList(),
+    xpThresholds: (config['xpThresholds'] as List).cast<int>(),
+    firstDraftEarliestSecond:
+        (config['firstDraftEarliestSecond'] as num).toDouble(),
+    maxDrafts: config['maxDrafts'] as int,
+    draftSize: config['draftSize'] as int,
+    damageCardIds: (config['damageCardIds'] as List).cast<String>().toSet(),
+    guaranteedFirstDraft: (guaranteed['firstDraft'] as List).cast<String>(),
+    guaranteedSecondDraftAnyOf:
+        (guaranteed['secondDraftAnyOf'] as List).cast<String>(),
+  );
+}
+
+GameRuntime buildRuntime({UpgradeSystem? upgrades}) {
   final playerJson = readJson('player.json');
   final enemiesJson = readJson('enemies.json');
   final wavesJson = readJson('waves_normal.json');
@@ -71,6 +92,7 @@ GameRuntime buildRuntime() {
     ),
     enemySystem: EnemySystem(breachWarningY: 920, breachRemoveY: 1140),
     pulse: PulseWeapon(),
+    upgradeSystem: upgrades,
   );
 }
 
@@ -247,6 +269,116 @@ void main() {
       runSeconds(rt, 150.0);
 
       expect(rt.enemies.length, lessThanOrEqualTo(45));
+    });
+  });
+
+  group('升级系统接入（产品基线 §4.2）', () {
+    test('经验在 15 秒前达阈值不打开草案，15 秒后打开', () {
+      final rt = buildRuntime(upgrades: buildUpgradeSystem());
+
+      // 直接把经验推到阈值，但战斗时间还不到 15 秒。
+      rt.xp = 20;
+      runSeconds(rt, 1.0);
+      expect(rt.phases.phase, GamePhase.playing,
+          reason: '第 1 次草案不得早于 15.0 秒');
+
+      // 推进到 15 秒之后。
+      runSeconds(rt, 15.0);
+
+      // 战斗时间因暂停/相位切换可能不精确，但应已进入草案或已选完。
+      expect(
+        rt.upgradeState.draftCount + (rt.currentOffer == null ? 0 : 1),
+        greaterThanOrEqualTo(1),
+        reason: '15 秒后应打开草案',
+      );
+    });
+
+    test('选中卡片后应用升级、回到 Playing 并提升脉冲数值', () {
+      final rt = buildRuntime(upgrades: buildUpgradeSystem());
+      rt.xp = 20;
+
+      // 推进到草案打开。
+      var guard = 0;
+      while (rt.currentOffer == null && guard < 60 * 25) {
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+      expect(rt.currentOffer, isNotNull, reason: '应打开草案');
+      expect(rt.phases.phase, GamePhase.upgradeDraft);
+      expect(rt.currentOffer!.candidates.length, 3);
+      expect(
+        rt.currentOffer!.candidates,
+        contains('UP-PULSE-RATE'),
+        reason: '第 1 次必有保证卡',
+      );
+
+      // 草案期间逻辑冻结。
+      final stepsBefore = rt.logicSteps;
+      runSeconds(rt, 3.0);
+      expect(rt.logicSteps, stepsBefore, reason: '选卡时逻辑必须冻结');
+
+      // 选第 1 张（保证卡）。
+      final cadenceBefore = rt.pulse.effectiveCadence;
+      final ok = rt.selectDraftCard(0);
+      expect(ok, isTrue);
+      expect(rt.phases.phase, GamePhase.playing);
+      expect(rt.currentOffer, isNull);
+      expect(rt.upgradeCount, 1);
+      expect(rt.pulse.effectiveCadence, lessThan(cadenceBefore),
+          reason: '脉冲增幅应缩短发射间隔');
+      expect(rt.upgradeState.levelOf('UP-PULSE-RATE'), 1);
+    });
+
+    test('选卡后逻辑恢复推进', () {
+      final rt = buildRuntime(upgrades: buildUpgradeSystem());
+      rt.xp = 20;
+      var guard = 0;
+      while (rt.currentOffer == null && guard < 60 * 25) {
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+      rt.selectDraftCard(0);
+
+      // 走到 15 秒的过程中已经攒够了后续草案的经验，选完一张可能立刻
+      // 又开下一次。先把当前所有待选草案清空，再测量逻辑推进。
+      var guard2 = 0;
+      while (rt.currentOffer != null && guard2 < 10) {
+        rt.selectDraftCard(0);
+        guard2++;
+      }
+      expect(rt.phases.phase, GamePhase.playing);
+
+      final stepsBefore = rt.logicSteps;
+      runSeconds(rt, 1.0);
+      expect(rt.logicSteps, greaterThan(stepsBefore),
+          reason: '选卡结束后逻辑应恢复推进');
+    });
+
+    test('快照携带草案卡片数据', () {
+      final rt = buildRuntime(upgrades: buildUpgradeSystem());
+      rt.xp = 20;
+      var guard = 0;
+      while (rt.currentOffer == null && guard < 60 * 25) {
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+
+      final draft = rt.snapshot().upgradeDraft;
+      expect(draft, isNotNull);
+      expect(draft!.cards.length, 3);
+      for (final card in draft.cards) {
+        expect(card.cardId, isNotEmpty);
+        expect(card.maxLevel, greaterThan(0));
+        expect(card.nextLevel, card.currentLevel + 1);
+      }
+    });
+
+    test('未启用升级系统时不会打开草案', () {
+      final rt = buildRuntime();
+      rt.xp = 9999;
+      runSeconds(rt, 20.0);
+      expect(rt.currentOffer, isNull);
+      expect(rt.phases.phase, GamePhase.playing);
     });
   });
 

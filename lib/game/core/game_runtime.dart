@@ -24,6 +24,7 @@ import '../domain/damage.dart';
 import '../domain/director_system.dart';
 import '../domain/enemy_system.dart';
 import '../domain/player_system.dart';
+import '../domain/upgrade_system.dart';
 import '../domain/values.dart';
 import '../domain/weapon_system.dart';
 import 'domain_event.dart';
@@ -146,6 +147,7 @@ class GameRuntime {
     this.tuning,
     this.breachNormalHpDamage = 8,
     this.breachEliteHpDamage = 15,
+    this.upgradeSystem,
   })  : player = PlayerState(
           tuning: tuning ?? PlayerTuning.fromConfig(catalogPlayer),
         );
@@ -165,6 +167,24 @@ class GameRuntime {
   /// 突破伤害（穿透护盾）：普通 8、精英 15。
   final int breachNormalHpDamage;
   final int breachEliteHpDamage;
+
+  /// 升级系统（可为 null 表示本局不启用，供纯战斗测试使用）。
+  final UpgradeSystem? upgradeSystem;
+
+  /// 本局升级状态。
+  late final UpgradeState upgradeState = UpgradeState(
+    maxDrafts: upgradeSystem?.maxDrafts ?? 0,
+  );
+
+  /// 当前待选的升级草案；null 表示没有。
+  DraftOffer? currentOffer;
+
+  /// 已完成的升级次数（产品基线 §6 的"升级数"定义）。
+  int get upgradeCount => upgradeState.draftCount;
+
+  /// 当前选中的卡等级，供结算页与调试。
+  Map<String, int> get selectedUpgrades =>
+      Map<String, int>.unmodifiable(upgradeState.levels);
 
   late final PlayerState player;
   final PlayerSystem playerSystem = PlayerSystem();
@@ -210,6 +230,15 @@ class GameRuntime {
       throw StateError('GameRuntime.advance 不可重入');
     }
     _lockedInput = input;
+
+    // 升级草案：只接受选卡，逻辑完全冻结。
+    if (phases.phase == GamePhase.upgradeDraft) {
+      final index = _lockedInput.cardSelection;
+      if (index != null) {
+        selectDraftCard(index);
+      }
+      return 0;
+    }
 
     // 边沿命令即使不推进逻辑也要处理（例如暂停请求）。
     final pauseEvent = _lockedInput.pauseRequested
@@ -299,6 +328,9 @@ class GameRuntime {
 
     // 9. 提交实体增删。
     _commitPending();
+
+    // 10. 经验阈值 → 打开升级草案（相位迁移，下一步起逻辑冻结）。
+    _checkDraftDue();
   }
 
   // ------------------------------------------------------------
@@ -774,7 +806,8 @@ class GameRuntime {
     _comboTimer = 4.0;
     comboMultiplier = (1.0 + (comboCount ~/ 10) * 0.1).clamp(1.0, 2.0);
 
-    xp += enemy.isElite ? enemy.tuning.xp * 3 : enemy.tuning.xp;
+    final gained = enemy.isElite ? enemy.tuning.xp * 3 : enemy.tuning.xp;
+    xp += (gained * xpMultiplier).round();
 
     bus.emit(
       EnemyDestroyed(
@@ -807,6 +840,146 @@ class GameRuntime {
         runtime,
       );
     }
+  }
+
+  // ------------------------------------------------------------
+  // 升级草案（产品基线 §4.2）
+  // ------------------------------------------------------------
+
+  /// 经验达到阈值且满足时间门时打开草案。
+  ///
+  /// 第 1 次草案不得早于有效战斗时间 15.0 秒 —— 15 秒前积累的经验
+  /// 由 `UpgradeSystem.isDraftDue` 保留，不做任何补偿。
+  void _checkDraftDue() {
+    final system = upgradeSystem;
+    if (system == null) {
+      return;
+    }
+    if (!system.isDraftDue(
+      xp: xp,
+      draftCount: upgradeState.draftCount,
+      combatSeconds: combatSeconds,
+    )) {
+      return;
+    }
+    final offer = system.generateDraft(
+      state: upgradeState,
+      rng: random,
+      context: DraftContext(
+        combatSeconds: combatSeconds,
+        xp: xp,
+        damageCardIds: system.damageCardIds,
+      ),
+    );
+    if (offer == null) {
+      return; // 候选池为空：安全跳过，不崩溃
+    }
+    currentOffer = offer;
+    final event = phases.transitionTo(
+      GamePhase.upgradeDraft,
+      reason: 'xpThreshold',
+    );
+    if (event != null) {
+      bus.emit(event, runtime);
+    }
+    bus.emit(
+      UpgradeDraftOpened(
+        draftIndex: offer.draftIndex,
+        candidateIds: offer.candidates,
+      ),
+      runtime,
+    );
+  }
+
+  /// 玩家选择一张卡（索引对应 [currentOffer] 的顺序）。
+  ///
+  /// 选择后一次性应用升级并回到 Playing（技术架构 §3.1）。
+  bool selectDraftCard(int index) {
+    final system = upgradeSystem;
+    final offer = currentOffer;
+    if (system == null || offer == null) {
+      return false;
+    }
+    if (index < 0 || index >= offer.candidates.length) {
+      return false;
+    }
+    final cardId = offer.candidates[index];
+    final effects = system.applyCard(upgradeState, cardId);
+    if (effects.isEmpty) {
+      return false; // 满级/未知卡：不消耗本次选择
+    }
+    _recomputeModifiers();
+
+    bus.emit(
+      UpgradeSelected(cardId: cardId, newLevel: upgradeState.levelOf(cardId)),
+      runtime,
+    );
+
+    currentOffer = null;
+    final event = phases.transitionTo(GamePhase.playing, reason: 'cardChosen');
+    if (event != null) {
+      bus.emit(event, runtime);
+    }
+    return true;
+  }
+
+  /// 把已选升级折算到武器与玩家数值上。
+  ///
+  /// 用 [ModifierStack] 的语义（同源覆盖、先加后乘），因此重复调用幂等。
+  void _recomputeModifiers() {
+    final system = upgradeSystem;
+    if (system == null) {
+      return;
+    }
+    final accumulator = UpgradeAccumulator();
+    for (final entry in upgradeState.levels.entries) {
+      accumulator.setLevel(entry.key, entry.value);
+    }
+
+    // 脉冲炮
+    pulse.cadenceMultiplier = accumulator.totalMultiply(
+      system,
+      'multiplyWeaponStat',
+    );
+    pulse.bonusDamage = accumulator
+        .totalAdd(system, 'addWeaponStat', 'damage')
+        .round();
+    pulse.criticalChance =
+        accumulator.totalAdd(system, 'addWeaponStat', 'criticalChance');
+
+    // 双联分束：等级 → 弹道数与角度
+    final spreadLevel = upgradeState.levelOf('UP-PULSE-SPREAD');
+    pulse.projectileCount = 1 + spreadLevel;
+    pulse.spreadAngleDegrees = spreadLevel >= 1 ? 6.0 : 0.0;
+
+    // 护盾上限
+    final shieldLevel = upgradeState.levelOf('UP-SHIELD-MAX');
+    if (shieldLevel > 0) {
+      final target = player.tuning.shieldMax + shieldLevel * 10;
+      if (player.shield.max < target) {
+        player.shield.raiseMax(target - player.shield.max,
+            refillSameAmount: true);
+      }
+    }
+
+    // 冲刺层数
+    if (upgradeState.levelOf('UP-DASH-CHARGE') > 0) {
+      player.dash.maxCharges = player.tuning.dashMaxCharges + 1;
+      player.dash.rechargeSeconds = 7.0;
+    }
+  }
+
+  /// 升级带来的经验倍率（能量回路 ×1.15 逐级叠乘）。
+  double get xpMultiplier {
+    final system = upgradeSystem;
+    if (system == null) {
+      return 1.0;
+    }
+    final accumulator = UpgradeAccumulator();
+    for (final entry in upgradeState.levels.entries) {
+      accumulator.setLevel(entry.key, entry.value);
+    }
+    return accumulator.totalMultiply(system, 'multiplyXpGain');
   }
 
   // ------------------------------------------------------------
@@ -899,13 +1072,32 @@ class GameRuntime {
       enemies: List<EntityView>.unmodifiable(enemyViews),
       projectiles: List<EntityView>.unmodifiable(projectileViews),
       hazards: List<HazardView>.unmodifiable(hazardViews),
+      upgradeDraft: currentOffer == null
+          ? null
+          : DraftView(
+              draftIndex: currentOffer!.draftIndex,
+              cards: <DraftCardView>[
+                for (final id in currentOffer!.candidates)
+                  if (upgradeSystem?.card(id) != null)
+                    DraftCardView(
+                      cardId: id,
+                      nameKey: upgradeSystem!.card(id)!.nameKey,
+                      descKey: upgradeSystem!.card(id)!.descKey,
+                      iconAssetId: upgradeSystem!.card(id)!.iconAssetId,
+                      series: upgradeSystem!.card(id)!.series,
+                      currentLevel: upgradeState.levelOf(id),
+                      maxLevel: upgradeSystem!.card(id)!.maxLevel,
+                      isGuaranteed: currentOffer!.guaranteed.contains(id),
+                    ),
+              ],
+            ),
       hud: HudView(
         hp: player.health.current,
         hpMax: player.health.max,
         shield: player.shield.current,
         shieldMax: player.shield.max,
         xp: xp,
-        upgradeLevel: 0,
+        upgradeLevel: upgradeCount,
         score: score,
         comboMultiplier: comboMultiplier,
         comboCount: comboCount,

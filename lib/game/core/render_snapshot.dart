@@ -145,6 +145,42 @@ class HudView {
   String get dashVisualState => dashCharges > 0 ? 'ready' : 'cooldown';
 }
 
+/// 一张升级卡的显示数据。
+class DraftCardView {
+  const DraftCardView({
+    required this.cardId,
+    required this.nameKey,
+    required this.descKey,
+    required this.iconAssetId,
+    required this.series,
+    required this.currentLevel,
+    required this.maxLevel,
+    this.isGuaranteed = false,
+  });
+
+  final String cardId;
+  final String nameKey;
+  final String descKey;
+  final String iconAssetId;
+  final String series;
+  final int currentLevel;
+  final int maxLevel;
+
+  /// 是否为本次的保证卡。
+  final bool isGuaranteed;
+
+  /// 选择后达到的等级。
+  int get nextLevel => currentLevel + 1;
+}
+
+/// 升级草案的显示数据。
+class DraftView {
+  const DraftView({required this.draftIndex, required this.cards});
+
+  final int draftIndex;
+  final List<DraftCardView> cards;
+}
+
 /// 一帧的完整只读快照。
 class RenderSnapshot {
   const RenderSnapshot({
@@ -155,6 +191,7 @@ class RenderSnapshot {
     required this.projectiles,
     required this.hazards,
     required this.hud,
+    this.upgradeDraft,
     required this.isPlayerInvulnerable,
     required this.activeEnemyCount,
     required this.isBossActive,
@@ -169,6 +206,7 @@ class RenderSnapshot {
     projectiles: <EntityView>[],
     hazards: <HazardView>[],
     hud: null,
+    upgradeDraft: null,
     isPlayerInvulnerable: false,
     activeEnemyCount: 0,
     isBossActive: false,
@@ -181,6 +219,10 @@ class RenderSnapshot {
   final List<EntityView> projectiles;
   final List<HazardView> hazards;
   final HudView? hud;
+
+  /// 当前的升级草案；null 表示不在选卡状态。
+  final DraftView? upgradeDraft;
+
   final bool isPlayerInvulnerable;
   final int activeEnemyCount;
   final bool isBossActive;
