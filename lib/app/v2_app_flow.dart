@@ -37,10 +37,25 @@ class V2AppFlow extends StatefulWidget {
     super.key,
     required this.catalog,
     required this.seed,
+    this.audioPort,
+    this.store,
   });
 
   final ContentCatalog catalog;
   final int seed;
+
+  /// 音频输出端口。
+  ///
+  /// 可注入是为了**可测试性**：默认的 `FlameAudioPort` 会走
+  /// `flame_audio` 的平台通道，在 `flutter_test` 里无法驱动。
+  /// 生产代码不传它，行为与之前完全一致。
+  final AudioPort? audioPort;
+
+  /// 本地存档。
+  ///
+  /// 同样可注入：默认走 `SharedPreferencesStore.openOrMemory()`，
+  /// 在测试里需要替身。生产代码不传它。
+  final KeyValueStore? store;
 
   @override
   State<V2AppFlow> createState() => _V2AppFlowState();
@@ -69,8 +84,8 @@ class _V2AppFlowState extends State<V2AppFlow> {
   void initState() {
     super.initState();
     // 音频与存档都在 flow 层建立：它们跨局存活，不随 RunSession 重建。
-    _audio = AudioService(port: FlameAudioPort());
-    _progress = ProgressStore(store: InMemoryKeyValueStore());
+    _audio = AudioService(port: widget.audioPort ?? FlameAudioPort());
+    _progress = ProgressStore(store: widget.store ?? InMemoryKeyValueStore());
     _loadProgress();
     // 初始相位是 Home（架构 §3.1）。这里**不**自动开局 ——
     // 由玩家点击「开始战斗」触发 Home → Loading → Briefing。
@@ -87,8 +102,8 @@ class _V2AppFlowState extends State<V2AppFlow> {
   ///
   /// 任何失败都退化为默认值，**绝不阻断开局**（架构 §7）。
   Future<void> _loadProgress() async {
-    // 存储打不开时退化为内存实现，界面照常可用。
-    final store = await SharedPreferencesStore.openOrMemory();
+    // 注入了替身就直接用，不走平台通道（测试路径）。
+    final store = widget.store ?? await SharedPreferencesStore.openOrMemory();
     final result = await ProgressStore(store: store).load();
     if (!mounted) {
       return;
