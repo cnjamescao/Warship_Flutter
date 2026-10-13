@@ -1,8 +1,14 @@
 {
   "id": "upgrades.v2",
   "contentVersion": "2.0.4-release",
-
-  "xpThresholds": [20, 55, 105, 170, 250, 345],
+  "xpThresholds": [
+    20,
+    55,
+    105,
+    170,
+    250,
+    345
+  ],
   "firstDraftEarliestSecond": 15.0,
   "maxDrafts": 6,
   "xpStillCountsAfterMaxDrafts": true,
@@ -13,14 +19,20 @@
     "weightedDrawWithoutReplacement",
     "freezeCandidateOrderIntoEvent"
   ],
-
   "guaranteed": {
-    "firstDraft": ["UP-PULSE-RATE"],
-    "secondDraftAnyOf": ["UP-PULSE-SPREAD", "UP-MISSILE-UNLOCK"],
-    "thirdAndLaterAtLeastOneFromSeries": ["owned", "survival"],
+    "firstDraft": [
+      "UP-PULSE-RATE"
+    ],
+    "secondDraftAnyOf": [
+      "UP-PULSE-SPREAD",
+      "UP-MISSILE-UNLOCK"
+    ],
+    "thirdAndLaterAtLeastOneFromSeries": [
+      "owned",
+      "survival"
+    ],
     "forceDamageCardAfterTwoDraftsWithoutDamage": true
   },
-
   "cards": [
     {
       "id": "UP-PULSE-RATE",
@@ -78,12 +90,20 @@
         {
           "kind": "setWeaponProjectileCount",
           "weaponId": "WPN-PULSE",
-          "countByLevel": [1, 2, 3]
+          "countByLevel": [
+            1,
+            2,
+            3
+          ]
         },
         {
           "kind": "setWeaponSpreadAngle",
           "weaponId": "WPN-PULSE",
-          "angleDegreesByLevel": [0, 6, 0]
+          "angleDegreesByLevel": [
+            0,
+            6,
+            0
+          ]
         }
       ]
     },
@@ -94,7 +114,9 @@
       "series": "damage",
       "maxLevel": 2,
       "weight": 7,
-      "prerequisites": ["anyPulseCard"],
+      "prerequisites": [
+        "anyPulseCard"
+      ],
       "excludes": [],
       "iconAssetId": "UI-UP-CRIT-ARC",
       "rarity": "rare",
@@ -124,7 +146,10 @@
       "iconAssetId": "UI-UP-MISSILE-UNLOCK",
       "rarity": "rare",
       "effects": [
-        { "kind": "unlockWeapon", "weaponId": "WPN-MISSILE" }
+        {
+          "kind": "unlockWeapon",
+          "weaponId": "WPN-MISSILE"
+        }
       ]
     },
     {
@@ -134,15 +159,25 @@
       "series": "missile",
       "maxLevel": 2,
       "weight": 6,
-      "prerequisites": ["UP-MISSILE-UNLOCK"],
+      "prerequisites": [
+        "UP-MISSILE-UNLOCK"
+      ],
       "excludes": [],
       "iconAssetId": "UI-UP-MISSILE-SALVO",
       "rarity": "rare",
       "effects": [
         {
           "kind": "setMissileSalvoLevel",
-          "countByLevel": [1, 2, 3],
-          "damageByLevel": [36, 32.4, 29]
+          "countByLevel": [
+            1,
+            2,
+            3
+          ],
+          "damageByLevel": [
+            36,
+            32.4,
+            29
+          ]
         }
       ]
     },
@@ -153,14 +188,20 @@
       "series": "missile",
       "maxLevel": 2,
       "weight": 5,
-      "prerequisites": ["UP-MISSILE-UNLOCK"],
+      "prerequisites": [
+        "UP-MISSILE-UNLOCK"
+      ],
       "excludes": [],
       "iconAssetId": "UI-UP-MISSILE-RADIUS",
       "rarity": "common",
       "effects": [
         {
           "kind": "setMissileExplosionRadius",
-          "radiusByLevel": [70, 90, 110],
+          "radiusByLevel": [
+            70,
+            90,
+            110
+          ],
           "maxRadius": 110
         }
       ]
@@ -173,11 +214,16 @@
       "maxLevel": 1,
       "weight": 7,
       "prerequisites": [],
-      "excludes": ["UP-DRONE-UNLOCK"],
+      "excludes": [
+        "UP-DRONE-UNLOCK"
+      ],
       "iconAssetId": "UI-UP-LASER-UNLOCK",
       "rarity": "epic",
       "effects": [
-        { "kind": "unlockWeapon", "weaponId": "WPN-LASER" }
+        {
+          "kind": "unlockWeapon",
+          "weaponId": "WPN-LASER"
+        }
       ]
     },
     {
@@ -187,7 +233,9 @@
       "series": "laser",
       "maxLevel": 2,
       "weight": 5,
-      "prerequisites": ["UP-LASER-UNLOCK"],
+      "prerequisites": [
+        "UP-LASER-UNLOCK"
+      ],
       "excludes": [],
       "iconAssetId": "UI-UP-LASER-PRISM",
       "rarity": "rare",
@@ -195,7 +243,10 @@
         {
           "kind": "setChainHops",
           "chainId": "WPN-LASER-PRISM",
-          "hopsByLevel": [1, 2],
+          "hopsByLevel": [
+            1,
+            2
+          ],
           "damageRatioPerHop": 0.6
         }
       ]
@@ -208,12 +259,22 @@
       "maxLevel": 1,
       "weight": 7,
       "prerequisites": [],
-      "excludes": ["UP-LASER-UNLOCK"],
+      "excludes": [
+        "UP-LASER-UNLOCK"
+      ],
       "iconAssetId": "UI-UP-DRONE-UNLOCK",
       "rarity": "epic",
       "effects": [
-        { "kind": "unlockWeapon", "weaponId": "WPN-DRONE" },
-        { "kind": "setDroneCount", "countByLevel": [1] }
+        {
+          "kind": "unlockWeapon",
+          "weaponId": "WPN-DRONE"
+        },
+        {
+          "kind": "setDroneCount",
+          "countByLevel": [
+            1
+          ]
+        }
       ]
     },
     {
@@ -223,14 +284,20 @@
       "series": "drone",
       "maxLevel": 2,
       "weight": 5,
-      "prerequisites": ["UP-DRONE-UNLOCK"],
+      "prerequisites": [
+        "UP-DRONE-UNLOCK"
+      ],
       "excludes": [],
       "iconAssetId": "UI-UP-DRONE-COUNT",
       "rarity": "rare",
       "effects": [
         {
           "kind": "setDroneCount",
-          "countByLevel": [1, 2, 3],
+          "countByLevel": [
+            1,
+            2,
+            3
+          ],
           "maxCount": 3
         }
       ]
@@ -330,7 +397,6 @@
       ]
     }
   ],
-
   "rarityPools": {
     "overloadRare": [
       "UP-CRIT-ARC",
@@ -339,5 +405,18 @@
       "UP-DRONE-COUNT",
       "UP-DASH-REPAIR"
     ]
-  }
+  },
+  "damageCardIds": [
+    "UP-PULSE-RATE",
+    "UP-PULSE-DAMAGE",
+    "UP-PULSE-SPREAD",
+    "UP-CRIT-ARC",
+    "UP-MISSILE-UNLOCK",
+    "UP-MISSILE-SALVO",
+    "UP-MISSILE-RADIUS",
+    "UP-LASER-UNLOCK",
+    "UP-LASER-PRISM",
+    "UP-DRONE-UNLOCK",
+    "UP-DRONE-COUNT"
+  ]
 }
