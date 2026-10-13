@@ -48,12 +48,23 @@ jobs:
 
       - name: 确认没有提交生成物
         run: |
-          offenders=$(git ls-files | grep -E '^(build/|\.dart_tool/)|/ephemeral/' || true)
+          offenders=$(git ls-files | grep -E '^(build/|\.dart_tool/)|/ephemeral/|^assets/(config|images|audio)/v2/' || true)
           if [ -n "$offenders" ]; then
             echo "::error::以下生成物不应被提交："
             echo "$offenders"
             exit 1
           fi
+
+      - name: 素材发布门禁（交付清单 §6）
+        run: |
+          python3 素材/元数据/validate_release_manifest.py
+          python3 素材/元数据/validate_visual_state_assets.py
+          python3 素材/元数据/validate_audio_mix.py
+          python3 素材/元数据/validate_web_load_budget.py
+
+      - name: 构建 v2.0 资源复制（素材/ → assets/）
+        # 这些副本是构建产物，不入库；测试与打包都依赖它。
+        run: dart run tool/build_v2_assets.dart
 
       - name: flutter analyze
         run: flutter analyze
@@ -95,6 +106,9 @@ jobs:
 
       - name: flutter pub get
         run: flutter pub get
+
+      - name: 构建 v2.0 资源复制（素材/ → assets/）
+        run: dart run tool/build_v2_assets.dart
 
       - name: flutter build macos --debug
         if: steps.xcode.outputs.ready == 'true'

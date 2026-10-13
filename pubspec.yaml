@@ -60,9 +60,17 @@ flutter:
   uses-material-design: true
 
   assets:
+    # ---- v1.x 基线资源（仅服务旧基线运行与迁移对照）----
     - assets/images/
     # 音效：由 `dart run tool/generate_audio.dart` 合成的原创素材
     - assets/audio/
+
+    # ---- v2.0 正式资源 ----
+    # 由 `dart run tool/build_v2_assets.dart` 从仓库根目录 素材/ 复制而来，
+    # 是 manifest 的唯一运行时来源；不要手工编辑生成结果。
+    - assets/config/v2/
+    - assets/images/v2/
+    - assets/audio/v2/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

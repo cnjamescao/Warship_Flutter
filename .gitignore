@@ -46,3 +46,11 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# v2.0 generated asset copies.
+# Produced by `dart run tool/build_v2_assets.dart` from the repository-root
+# 素材/ package (the single official resource index). Not committed to avoid
+# duplicating ~20 MiB of binaries that already live in 素材/.
+/assets/config/v2/
+/assets/images/v2/
+/assets/audio/v2/
