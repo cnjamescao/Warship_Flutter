@@ -19,6 +19,7 @@
 
 import 'dart:math' as math;
 
+import '../domain/boss_system.dart';
 import '../domain/collision.dart';
 import '../domain/damage.dart';
 import '../domain/director_system.dart';
@@ -148,6 +149,7 @@ class GameRuntime {
     this.breachNormalHpDamage = 8,
     this.breachEliteHpDamage = 15,
     this.upgradeSystem,
+    this.bossSystem,
   })  : player = PlayerState(
           tuning: tuning ?? PlayerTuning.fromConfig(catalogPlayer),
         );
@@ -170,6 +172,18 @@ class GameRuntime {
 
   /// 升级系统（可为 null 表示本局不启用，供纯战斗测试使用）。
   final UpgradeSystem? upgradeSystem;
+
+  /// Boss 系统（可为 null 表示本局不启用 Boss）。
+  final BossSystem? bossSystem;
+
+  /// 当前 Boss；null 表示尚未入场。
+  BossState? boss;
+
+  /// 是否已触发 Boss 入场流程。
+  bool bossEntryTriggered = false;
+
+  /// 是否胜利。
+  bool victory = false;
 
   /// 本局升级状态。
   late final UpgradeState upgradeState = UpgradeState(
@@ -319,6 +333,10 @@ class GameRuntime {
     _updateEnemies(dt);
     _updateHazards(dt);
 
+    // 5b. Boss 推进（入场 → 阶段 → 招式循环）。
+    _updateBoss(dt);
+    _updateBossLaser(dt);
+
     // 6. 目标选择与武器发射。
     _fireWeapons(dt);
     _updateProjectiles(dt);
@@ -349,6 +367,14 @@ class GameRuntime {
 
     for (final trigger in triggers) {
       if (trigger.isDeferred) {
+        continue;
+      }
+      // 150 秒行：清理普通敌弹与危险区 → 战前补给 → Boss 入场。
+      if (trigger.row.isBossEntry) {
+        _startBossFight();
+        continue;
+      }
+      if (trigger.spawns.isEmpty) {
         continue;
       }
       final centerX = trigger.centerX ?? 960;
@@ -551,6 +577,286 @@ class GameRuntime {
   }
 
   // ------------------------------------------------------------
+  // Boss（产品基线 §7.2）
+  // ------------------------------------------------------------
+
+  /// 触发 Boss 入场前的准备：清弹、战前补给、开始入场。
+  void _startBossFight() {
+    final system = bossSystem;
+    if (system == null || bossEntryTriggered) {
+      return;
+    }
+    bossEntryTriggered = true;
+
+    // 战前处理顺序（产品基线 §7.2）：
+    // 清理所有普通敌弹/危险区 → HP +15 → 护盾 +20 → 冲刺为 0 时归 1 → 入场。
+    projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
+    hazards.clear();
+
+    final supply = system.applyPreEntrySupply(
+      playerHealth: player.health,
+      playerShield: player.shield,
+      playerDash: player.dash,
+    );
+
+    bus.emit(
+      PlayerVitalStateChanged(
+        hp: player.health.current,
+        hpMax: player.health.max,
+        shield: player.shield.current,
+        shieldMax: player.shield.max,
+        cause: 'preBossSupply',
+      ),
+      runtime,
+    );
+    if (supply.hpRestored > 0) {
+      bus.emit(
+        PickupHeal(amount: supply.hpRestored),
+        runtime,
+      );
+    }
+    if (supply.shieldRestored > 0) {
+      bus.emit(PickupShield(amount: supply.shieldRestored), runtime);
+    }
+    if (supply.dashRestored > 0) {
+      bus.emit(DashReady(), runtime);
+    }
+
+    final state = BossState(tuning: system.tuning);
+    system.beginEntry(state);
+    boss = state;
+  }
+
+  void _updateBoss(double dt) {
+    final system = bossSystem;
+    final state = boss;
+    if (system == null || state == null || state.isDefeated) {
+      return;
+    }
+
+    final event = system.step(
+      state: state,
+      dt: dt,
+      combatSeconds: combatSeconds,
+      playerPosition: player.position,
+      summonCleared: !enemies.any((e) => e.tuning.id == 'EN-SHIELD'),
+    );
+
+    if (event.phaseChangedTo != null) {
+      // 转阶段：清理所有敌方投射物与危险区（产品基线 §7.2）。
+      projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
+      hazards.clear();
+      bus.emit(
+        BossPhaseChanged(phase: event.phaseChangedTo!.name),
+        runtime,
+      );
+    }
+
+    final telegraph = event.telegraphStarted;
+    if (telegraph != null) {
+      bus.emit(
+        BossAttackTelegraphed(
+          attackId: telegraph.attackId,
+          position: telegraph.origin,
+          telegraphSeconds: telegraph.telegraphSeconds,
+        ),
+        runtime,
+      );
+    }
+
+    final fired = event.attackFired;
+    if (fired != null) {
+      bus.emit(
+        BossAttackFired(
+          attackId: fired.attackId,
+          position: fired.origin,
+          telegraphSeconds: fired.telegraphSeconds,
+        ),
+        runtime,
+      );
+      _spawnBossAttack(fired);
+    }
+
+    if (event.weakpointOpened) {
+      bus.emit(BossCriticalReached(hpRatio: state.hpRatio), runtime);
+    }
+    if (event.attackEnded != null) {
+      bus.emit(BossAttackEnded(attackId: event.attackEnded!), runtime);
+    }
+
+    // 冲刺无敌期间不吃 Boss 的接触伤害。
+    if (state.bodyContactActive && !player.isInvulnerable) {
+      final contact = state.hitbox.intersects(player.hitbox);
+      if (contact) {
+        final result = damageSystem.applyToPlayer(
+          intent: DamageIntent(
+            sourceId: const EntityId(EntityKind.boss, 1),
+            targetId: const EntityId(EntityKind.player, 0),
+            damageType: DamageType.standard,
+            rawDamage: state.tuning.bodyContactDamage,
+            frameIndex: runtime.frameIndex,
+            hitKey: 'bossCharge|player',
+            attackId: BossAttackIds.charge,
+            sourceType: 'boss',
+          ),
+          health: player.health,
+          shield: player.shield,
+          invulnerable: false,
+          nowSeconds: combatSeconds,
+        );
+        if (result.dealtAnyDamage) {
+          player.shieldRegen.notifyDamaged();
+          if (result.hpDamage > 0) {
+            _onPlayerTookHpDamage(result.hpDamage);
+          }
+          _checkPlayerDeath();
+        }
+      }
+    }
+  }
+
+  void _spawnBossAttack(BossAttackEvent event) {
+    // 激光扫射：以 Boss 为原点的持续伤害，按 0.25 秒 tick 结算。
+    if (event.attackId == BossAttackIds.laser) {
+      _activeLaser = _LaserSweep(
+        remaining: event.sweepSeconds,
+        tickAccumulator: 0,
+      );
+      return;
+    }
+
+    // 召唤：在固定坐标生成护盾机。
+    if (event.summonPositions.isNotEmpty) {
+      final tuning = enemyTunings['EN-SHIELD'];
+      if (tuning != null) {
+        for (final position in event.summonPositions) {
+          final enemy = enemySystem.spawn(
+            id: ids.next(EntityKind.enemy),
+            tuning: tuning,
+            spawnX: position.x,
+            spawnY: position.y,
+          );
+          _pendingEnemies.add(enemy);
+          bus.emit(
+            EnemySpawned(
+              entityId: enemy.id,
+              enemyId: tuning.id,
+              position: enemy.position,
+              isElite: false,
+            ),
+            runtime,
+          );
+        }
+      }
+      return;
+    }
+
+    if (event.projectileCount <= 0 || event.speed <= 0) {
+      return;
+    }
+
+    final baseAngle = _angleOf(
+      (event.aimTarget - event.origin).normalized,
+    );
+    final offsets = event.angleOffsetsDegrees.isEmpty
+        ? <double>[
+            for (var i = 0; i < event.projectileCount; i++)
+              -180.0 + (360.0 / event.projectileCount) * i,
+          ]
+        : event.angleOffsetsDegrees;
+
+    for (final offset in offsets) {
+      final angle = baseAngle + offset * math.pi / 180;
+      _pendingProjectiles.add(
+        Projectile(
+          id: ids.next(EntityKind.enemyProjectile),
+          faction: ProjectileFaction.enemy,
+          position: event.origin,
+          direction: Vec2(math.cos(angle), math.sin(angle)),
+          speed: event.speed,
+          radius: event.radius,
+          damage: event.damage,
+          lifetimeSeconds: event.lifetimeSeconds,
+          weaponId: event.attackId,
+          attackId: event.attackId,
+          assetId: _bossProjectileAsset(event.attackId),
+        ),
+      );
+    }
+  }
+
+  String _bossProjectileAsset(String attackId) =>
+      attackId == BossAttackIds.ring
+      ? 'GFX-BOSS-RING-BULLET'
+      : 'GFX-BOSS-FAN-BULLET';
+
+  _LaserSweep? _activeLaser;
+
+  void _updateBossLaser(double dt) {
+    final sweep = _activeLaser;
+    final state = boss;
+    if (sweep == null || state == null) {
+      return;
+    }
+    sweep.remaining -= dt;
+    if (sweep.remaining <= 0) {
+      _activeLaser = null;
+      return;
+    }
+    // 激光自 Boss 中心沿扫射路径；命中的是玩家而非实体列表，
+    // 因此这里直接做线段到玩家的距离判定。
+    sweep.tickAccumulator += dt;
+    if (sweep.tickAccumulator < 0.25) {
+      return;
+    }
+    sweep.tickAccumulator -= 0.25;
+
+    // 扫射进度 → 当前方向。
+    final total = state.enraged ? 2.2 : 1.8;
+    final progress = (1 - sweep.remaining / total).clamp(0.0, 1.0);
+    final from = const Vec2(240, 1020);
+    final to = const Vec2(1680, 1020);
+    final aim = Vec2(
+      from.x + (to.x - from.x) * progress,
+      from.y + (to.y - from.y) * progress,
+    );
+    final direction = (aim - state.position).normalized;
+    final toPlayer = player.position - state.position;
+    final along = toPlayer.x * direction.x + toPlayer.y * direction.y;
+    if (along <= 0 || along > 1500) {
+      return;
+    }
+    final perpendicular = (toPlayer - direction * along).length;
+    if (perpendicular > 30 + player.tuning.bodyRadius) {
+      return;
+    }
+
+    final result = damageSystem.applyToPlayer(
+      intent: DamageIntent(
+        sourceId: const EntityId(EntityKind.boss, 1),
+        targetId: const EntityId(EntityKind.player, 0),
+        damageType: DamageType.standard,
+        rawDamage: 8,
+        frameIndex: runtime.frameIndex,
+        hitKey: 'bossLaser|${runtime.frameIndex ~/ 15}',
+        attackId: BossAttackIds.laser,
+        sourceType: 'boss',
+      ),
+      health: player.health,
+      shield: player.shield,
+      invulnerable: player.isInvulnerable,
+      nowSeconds: combatSeconds,
+    );
+    if (result.dealtAnyDamage) {
+      player.shieldRegen.notifyDamaged();
+      if (result.hpDamage > 0) {
+        _onPlayerTookHpDamage(result.hpDamage);
+      }
+      _checkPlayerDeath();
+    }
+  }
+
+  // ------------------------------------------------------------
   // 第 6 步：武器
   // ------------------------------------------------------------
 
@@ -612,16 +918,35 @@ class GameRuntime {
     }
   }
 
-  List<TargetView> _targetViews() => <TargetView>[
-    for (final enemy in enemies)
-      if (!enemy.isDead)
+  List<TargetView> _targetViews() {
+    final state = boss;
+    return <TargetView>[
+      // Boss 弱点优先级最高，但只在暴露期可选（产品基线 §4.1）。
+      if (state != null && !state.isDefeated)
         TargetView(
-          id: enemy.id,
-          position: enemy.position,
-          radius: enemy.tuning.radius,
-          isElite: enemy.isElite,
+          id: const EntityId(EntityKind.bossWeakpoint, 1),
+          position: state.position,
+          radius: state.tuning.weakpointRadius,
+          isWeakpoint: true,
+          weakpointActive: state.weakpointActive,
         ),
-  ];
+      if (state != null && !state.isDefeated && !state.invulnerable)
+        TargetView(
+          id: const EntityId(EntityKind.boss, 1),
+          position: state.position,
+          radius: state.tuning.bodyRadius,
+          isBoss: true,
+        ),
+      for (final enemy in enemies)
+        if (!enemy.isDead)
+          TargetView(
+            id: enemy.id,
+            position: enemy.position,
+            radius: enemy.tuning.radius,
+            isElite: enemy.isElite,
+          ),
+    ];
+  }
 
   // ------------------------------------------------------------
   // 第 7/8 步：碰撞与伤害
@@ -791,7 +1116,62 @@ class GameRuntime {
         }
         break; // 单体命中后销毁
       }
+
+      if (projectile.consumed) {
+        continue;
+      }
+      final state = boss;
+      if (state == null || state.isDefeated || state.invulnerable) {
+        continue;
+      }
+      // 弱点暴露时优先判定弱点，命中伤害 ×1.5（产品基线 §3.4）。
+      final weakpointHit = state.weakpointHitbox;
+      var damage = projectile.damage;
+      var hit = false;
+      if (weakpointHit != null && projectile.hitbox.intersects(weakpointHit)) {
+        damage = (projectile.damage * state.tuning.weakpointDamageMultiplier)
+            .round();
+        hit = true;
+      } else if (projectile.hitbox.intersects(state.hitbox)) {
+        hit = true;
+      }
+      if (!hit) {
+        continue;
+      }
+
+      final applied = state.health.applyDamage(damage);
+      projectile.consumed = true;
+      bus.emit(
+        WeaponHit(
+          weaponId: projectile.weaponId,
+          sourceId: const EntityId(EntityKind.player, 0),
+          targetId: const EntityId(EntityKind.boss, 1),
+          critical: projectile.isCritical,
+          damage: applied,
+          targetEnemyId: 'boss.aegis',
+        ),
+        runtime,
+      );
+      if (state.isDefeated) {
+        _onBossDefeated();
+      }
     }
+  }
+
+  void _onBossDefeated() {
+    victory = true;
+    bus.emit(BossDefeated(), runtime);
+    bus.emit(
+      RunEnded(
+        result: 'victory',
+        durationSeconds: combatSeconds,
+        score: score,
+        seed: runtime.seed,
+        bossHpRatio: 0,
+        resultTier: 'gold',
+      ),
+      runtime,
+    );
   }
 
   void _onEnemyKilled(EnemyState enemy) {
@@ -1105,10 +1485,12 @@ class GameRuntime {
         dashCharges: player.dash.charges,
         dashMaxCharges: player.dash.maxCharges,
         objectiveWarning: enemies.any((e) => e.warnedBreach),
+        bossHpRatio: (boss?.isDefeated ?? true) ? null : boss?.hpRatio,
+        bossPhase: boss?.phase.name,
       ),
       isPlayerInvulnerable: player.isInvulnerable,
       activeEnemyCount: enemies.length,
-      isBossActive: false,
+      isBossActive: boss != null && !(boss?.isDefeated ?? true),
     );
   }
 
@@ -1121,6 +1503,9 @@ class GameRuntime {
     _pendingProjectiles.clear();
     _pendingHazards.clear();
     _removals.clear();
+    boss = null;
+    bossEntryTriggered = false;
+    _activeLaser = null;
     damageSystem.reset();
     collisionSystem.reset();
     ids.reset();
@@ -1129,3 +1514,11 @@ class GameRuntime {
 }
 
 double _angleOf(Vec2 direction) => math.atan2(direction.y, direction.x);
+
+/// 激光扫射的运行时状态（产品基线 §7.2：1.8 秒，每 0.25 秒一次伤害）。
+class _LaserSweep {
+  _LaserSweep({required this.remaining, required this.tickAccumulator});
+
+  double remaining;
+  double tickAccumulator;
+}

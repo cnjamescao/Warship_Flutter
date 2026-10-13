@@ -344,3 +344,77 @@ class UpgradeSelected extends DomainEvent {
   @override
   String get eventType => 'UpgradeSelected';
 }
+
+/// 事件：Boss 阶段变化 / 招式 / 濒毁 / 击败 / 补给。
+class BossPhaseChanged extends DomainEvent {
+  const BossPhaseChanged({required this.phase});
+  final String phase;
+  @override
+  String get eventType => 'BossPhaseChanged';
+}
+
+class BossAttackTelegraphed extends DomainEvent {
+  const BossAttackTelegraphed({
+    required this.attackId,
+    required this.position,
+    required this.telegraphSeconds,
+  });
+  final String attackId;
+  final Vec2 position;
+  final double telegraphSeconds;
+  @override
+  String get eventType => 'BossAttackTelegraphed';
+}
+
+class BossAttackFired extends DomainEvent {
+  const BossAttackFired({
+    required this.attackId,
+    required this.position,
+    required this.telegraphSeconds,
+  });
+  final String attackId;
+  final Vec2 position;
+  final double telegraphSeconds;
+  @override
+  String get eventType => 'BossAttackFired';
+}
+
+class BossAttackEnded extends DomainEvent {
+  const BossAttackEnded({required this.attackId});
+  final String attackId;
+  @override
+  String get eventType => 'BossAttackEnded';
+}
+
+class BossCriticalReached extends DomainEvent {
+  const BossCriticalReached({required this.hpRatio});
+  final double hpRatio;
+  @override
+  String get eventType => 'BossCriticalReached';
+}
+
+class BossDefeated extends DomainEvent {
+  const BossDefeated();
+  @override
+  String get eventType => 'BossDefeated';
+}
+
+class PickupHeal extends DomainEvent {
+  const PickupHeal({required this.amount});
+  final int amount;
+  @override
+  String get eventType => 'PickupHeal';
+}
+
+class PickupShield extends DomainEvent {
+  const PickupShield({required this.amount});
+  final int amount;
+  @override
+  String get eventType => 'PickupShield';
+}
+
+class DashReady extends DomainEvent {
+  const DashReady();
+  @override
+  String get eventType => 'DashReady';
+}
