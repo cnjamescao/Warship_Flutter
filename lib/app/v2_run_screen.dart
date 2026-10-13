@@ -35,11 +35,19 @@ class V2RunScreen extends StatefulWidget {
     required this.runtime,
     required this.input,
     required this.manifest,
+    this.onFrame,
+    this.onQuitToHome,
   });
 
   final GameRuntime runtime;
   final KeyboardInputGateway input;
   final AssetManifest manifest;
+
+  /// 每个渲染帧之后回调，供上层判断对局是否结束。
+  final VoidCallback? onFrame;
+
+  /// 暂停菜单里的「返回首页」。
+  final VoidCallback? onQuitToHome;
 
   @override
   State<V2RunScreen> createState() => _V2RunScreenState();
@@ -60,6 +68,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
       input: widget.input,
       visualAssets: VisualAssetCache(manifest: widget.manifest),
       onSnapshot: _onSnapshot,
+      onFrame: widget.onFrame,
     );
   }
 
@@ -153,6 +162,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
                       widget.runtime.phases.requestResume();
                       setState(() {});
                     },
+                    onQuitToHome: widget.onQuitToHome,
                   ),
               ],
             );
@@ -171,6 +181,7 @@ class _HudOverlay extends StatelessWidget {
     required this.viewport,
     required this.onPause,
     required this.onResume,
+    this.onQuitToHome,
   });
 
   final HudView hud;
@@ -178,6 +189,7 @@ class _HudOverlay extends StatelessWidget {
   final ViewportMath viewport;
   final VoidCallback onPause;
   final VoidCallback onResume;
+  final VoidCallback? onQuitToHome;
 
   /// 逻辑坐标 → 屏幕坐标。
   Offset _toScreen(double x, double y) {
@@ -243,7 +255,12 @@ class _HudOverlay extends StatelessWidget {
           kHudSafeArea.bottom,
           _DashIndicator(hud: hud, scale: scale),
         ),
-        if (isPaused) _PauseOverlay(onResume: onResume, scale: scale),
+        if (isPaused)
+          _PauseOverlay(
+            onResume: onResume,
+            onQuitToHome: onQuitToHome,
+            scale: scale,
+          ),
       ],
     );
   }
@@ -554,10 +571,15 @@ class _IconButton extends StatelessWidget {
 }
 
 class _PauseOverlay extends StatelessWidget {
-  const _PauseOverlay({required this.onResume, required this.scale});
+  const _PauseOverlay({
+    required this.onResume,
+    required this.scale,
+    this.onQuitToHome,
+  });
 
   final VoidCallback onResume;
   final double scale;
+  final VoidCallback? onQuitToHome;
 
   @override
   Widget build(BuildContext context) {
@@ -581,6 +603,16 @@ class _PauseOverlay extends StatelessWidget {
                 onPressed: onResume,
                 child: Text('继续', style: TextStyle(fontSize: 20 * scale)),
               ),
+              if (onQuitToHome != null) ...<Widget>[
+                SizedBox(height: 12 * scale),
+                OutlinedButton(
+                  onPressed: onQuitToHome,
+                  child: Text(
+                    '返回首页',
+                    style: TextStyle(fontSize: 18 * scale),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

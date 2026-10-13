@@ -36,12 +36,16 @@ class BootResult {
     this.runtime,
     this.bindingTable,
     this.manifest,
+    this.catalog,
     this.error,
   });
 
   final GameRuntime? runtime;
   final AssetBindingTable? bindingTable;
   final AssetManifest? manifest;
+
+  /// 已校验通过的内容目录（供相位流程直接构建运行时）。
+  final ContentCatalog? catalog;
   final String? error;
 
   bool get isReady => runtime != null;
@@ -65,6 +69,7 @@ class V2Bootstrap {
         runtime: buildRuntime(catalog: catalog, seed: seed),
         bindingTable: const AssetLoader().build(catalog.manifest),
         manifest: catalog.manifest,
+        catalog: catalog,
       );
     } on ContentFailure catch (failure) {
       return BootResult(error: failure.message);

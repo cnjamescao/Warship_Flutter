@@ -15,7 +15,7 @@
 import 'package:flutter/material.dart';
 
 import 'app/v2_bootstrap.dart';
-import 'app/v2_run_screen.dart';
+import 'app/v2_app_flow.dart';
 import 'game/core/game_runtime.dart';
 import 'game/core/render_snapshot.dart';
 import 'game/infrastructure/asset_loader.dart';
@@ -94,10 +94,11 @@ class _V2BootGateState extends State<V2BootGate> {
             onRetry: _boot,
           );
         }
-        return V2RunScreen(
-          runtime: result.runtime!,
-          input: KeyboardInputGateway(),
-          manifest: result.manifest!,
+        // 内容已校验通过：进入完整相位流程
+        // Home → Loading → Briefing → Playing ↔ Paused → Result。
+        return V2AppFlow(
+          catalog: result.catalog!,
+          seed: widget.seed,
         );
       },
     );

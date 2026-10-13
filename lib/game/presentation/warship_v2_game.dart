@@ -40,6 +40,7 @@ class WarshipV2Game extends FlameGame {
     required this.input,
     required this.visualAssets,
     this.onSnapshot,
+    this.onFrame,
   });
 
   final GameRuntime runtime;
@@ -51,6 +52,9 @@ class WarshipV2Game extends FlameGame {
 
   /// 每帧回调（HUD 用它刷新，避免 Widget 直接读 Flame 组件）。
   final void Function(RenderSnapshot snapshot)? onSnapshot;
+
+  /// 每帧结束后的回调（上层用它判断对局是否结束）。
+  final VoidCallback? onFrame;
 
   late final BattlefieldComponent _battlefield;
 
@@ -92,6 +96,7 @@ class WarshipV2Game extends FlameGame {
 
     renderedFrames++;
     super.update(dt);
+    onFrame?.call();
   }
 }
 
