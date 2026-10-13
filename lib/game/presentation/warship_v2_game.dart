@@ -25,9 +25,11 @@ import 'package:flutter/material.dart' hide Image;
 
 import '../content/asset_manifest.dart';
 import '../core/game_runtime.dart';
+import '../domain/values.dart';
 import '../core/render_snapshot.dart';
 import '../infrastructure/performance_monitor.dart';
 import 'asset_cache.dart';
+import 'visual_effects.dart';
 import 'input_gateway.dart';
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
@@ -61,6 +63,9 @@ class WarshipV2Game extends FlameGame {
   /// 帧时间采样与降级决策。
   final PerformanceMonitor performance;
 
+  /// 事件驱动的纯表现特效（碎片、伤害数字）。
+  final VisualEffects effects = VisualEffects();
+
   late final BattlefieldComponent _battlefield;
 
   /// 最近一帧快照（供 HUD 读取）。
@@ -82,8 +87,11 @@ class WarshipV2Game extends FlameGame {
     // 预载 firstRun 分组（协议 §7）。单张失败不阻断，走矢量占位。
     await visualAssets.loadGroup(AssetLoadGroup.firstRun);
 
-    _battlefield = BattlefieldComponent(runtime: runtime, assets: visualAssets)
-      ..degradation = performance.level;
+    _battlefield = BattlefieldComponent(
+      runtime: runtime,
+      assets: visualAssets,
+      effects: effects,
+    )..degradation = performance.level;
     world.add(_battlefield);
   }
 
@@ -102,6 +110,14 @@ class WarshipV2Game extends FlameGame {
     // 3. 生成快照并交给表现层与 HUD。
     latestSnapshot = runtime.snapshot();
     _battlefield.snapshot = latestSnapshot;
+
+    // 事件驱动的纯表现特效；预算与降级都在特效池内部把关。
+    effects.consume(
+      runtime.lastFrameEvents,
+      level: performance.level,
+      positionOf: _battlefield.positionOf,
+    );
+    effects.step(dt);
     onSnapshot?.call(latestSnapshot);
 
     renderedFrames++;
@@ -112,10 +128,33 @@ class WarshipV2Game extends FlameGame {
 
 /// 战场绘制组件。
 class BattlefieldComponent extends Component {
-  BattlefieldComponent({required this.runtime, required this.assets});
+  BattlefieldComponent({
+    required this.runtime,
+    required this.assets,
+    required this.effects,
+  });
 
   final GameRuntime runtime;
   final VisualAssetCache assets;
+  final VisualEffects effects;
+
+  /// 把实体 ID 解析成当前坐标（供特效池定位）。
+  Vec2? positionOf(EntityId id) {
+    if (id.kind == EntityKind.player) {
+      return snapshot.player?.position;
+    }
+    for (final enemy in snapshot.enemies) {
+      if (enemy.id == id) {
+        return enemy.position;
+      }
+    }
+    for (final projectile in snapshot.projectiles) {
+      if (projectile.id == id) {
+        return projectile.position;
+      }
+    }
+    return null;
+  }
   RenderSnapshot snapshot = RenderSnapshot.empty;
 
   /// 当前允许的视觉档位（由 PerformanceMonitor 决定）。
@@ -184,6 +223,51 @@ class BattlefieldComponent extends Component {
     _drawEnemies(canvas);
     _drawProjectiles(canvas);
     _drawPlayer(canvas);
+    _drawEffects(canvas);
+  }
+
+  /// 命中碎片与伤害数字 —— 降级顺序里最外层，最后才被牺牲。
+  void _drawEffects(Canvas canvas) {
+    if (degradation.allows(DegradationLevel.hitDebris)) {
+      for (final piece in effects.debris) {
+        _fill.color = Color(piece.color).withValues(
+          alpha: (piece.remaining / piece.lifetime).clamp(0.0, 1.0),
+        );
+        canvas.drawRect(
+          Rect.fromCenter(
+            center: Offset(piece.position.x, piece.position.y),
+            width: 5,
+            height: 5,
+          ),
+          _fill,
+        );
+      }
+    }
+
+    if (!degradation.allows(DegradationLevel.damageNumbers)) {
+      return;
+    }
+    for (final number in effects.numbers) {
+      final alpha = (number.remaining / number.lifetime).clamp(0.0, 1.0);
+      final painter = TextPainter(
+        text: TextSpan(
+          text: '${number.amount}',
+          style: TextStyle(
+            color: Color(0xFFFFC24B).withValues(alpha: alpha),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      painter.paint(
+        canvas,
+        Offset(
+          number.position.x - painter.width / 2,
+          number.position.y - painter.height,
+        ),
+      );
+    }
   }
 
   void _drawBackground(Canvas canvas) {
@@ -195,7 +279,7 @@ class BattlefieldComponent extends Component {
     );
 
     // 参考网格属于"星云"层，是最先被牺牲的表现（降级顺序第 1 档）。
-    if (!degradation.allows(DegradationLevel.none)) {
+    if (!degradation.allows(DegradationLevel.nebula)) {
       return;
     }
     final grid = Paint()

@@ -78,22 +78,35 @@ void main() {
       ]);
     });
 
-    test('allows：档位越低允许的层越少', () {
-      // 全效果：全部允许
-      for (final level in DegradationLevel.values) {
-        expect(DegradationLevel.none.allows(level), isTrue);
+    test('allows：降到某档意味着该层已经关掉', () {
+      // 未降级：所有可降级层都画。
+      for (final layer in <DegradationLevel>[
+        DegradationLevel.nebula,
+        DegradationLevel.particles,
+        DegradationLevel.hitDebris,
+        DegradationLevel.damageNumbers,
+      ]) {
+        expect(DegradationLevel.none.allows(layer), isTrue);
       }
-      // 降到最狠时只允许最内层（伤害数字层自身）
-      expect(DegradationLevel.damageNumbers.allows(DegradationLevel.none), isFalse);
-      expect(DegradationLevel.damageNumbers.allows(DegradationLevel.damageNumbers), isTrue);
 
-      // 星云层在"关掉星云"之后不再被允许
-      expect(DegradationLevel.none.allows(DegradationLevel.nebula), isTrue);
-      expect(DegradationLevel.nebula.allows(DegradationLevel.nebula), isTrue);
+      // 降到星云档 = 星云已关，但更内层的粒子/碎片/数字仍画。
+      expect(DegradationLevel.nebula.allows(DegradationLevel.nebula), isFalse);
+      expect(DegradationLevel.nebula.allows(DegradationLevel.particles), isTrue);
+
+      // 降到最狠：数字层也关掉。
+      expect(
+        DegradationLevel.damageNumbers.allows(DegradationLevel.damageNumbers),
+        isFalse,
+      );
+      expect(
+        DegradationLevel.hitDebris.allows(DegradationLevel.damageNumbers),
+        isTrue,
+        reason: '命中碎片档时伤害数字是最后还留着的一层',
+      );
       expect(
         DegradationLevel.particles.allows(DegradationLevel.nebula),
         isFalse,
-        reason: '一旦降到粒子档，星云必须已经关掉',
+        reason: '星云最先被牺牲',
       );
     });
 
@@ -143,13 +156,39 @@ void main() {
       expect(monitor.level, DegradationLevel.damageNumbers);
     });
 
-    // TODO(未定位)：」恢复需要连续达标（滞回）「的用例当前不稳定 ——
-    // 实际档位取决于窗口长度、hold 帧数与冷却帧数的交互，
-    // 我试了多种参数组合仍无法写出既反映真实行为又稳定的断言。
-    // 实现本身的滞回逻辑（连续达标才升档、降档有冷却）是清楚的，
-    // 且被其余用例间接覆盖，但**这条恢复路径缺乏直接验证**。
-    // 下一轮单独处理：要么把升/降档判定抽成可独立驱动的纯函数，
-    // 要么改用"给定帧序列 → 期望档位序列"的表驱动断言。
+    test('恢复需要连续达标（滞回），且窗口决定滞回能否及时生效', () {
+      // 参数是按帧数**精确推导**出来的，每一步的窗口内容都可预期：
+      //   windowSize=3  → 慢帧最多 3 帧就能被冲干净
+      //   minSamples=3  → 第 3 帧起才开始判定
+      //   cooldown=5    → 慢帧阶段恰好只降一档（第 3..7 帧走到第 5 帧冷却）
+      //   hold=3        → 连续 3 帧达标才升一档
+      final monitor = PerformanceMonitor(
+        windowSize: 3,
+        minSamplesBeforeDegrading: 3,
+        upgradeHoldFrames: 3,
+        degradeCooldownFrames: 5,
+      );
+
+      // 7 个慢帧：第 3 帧起计数，第 7 帧达到冷却 → 恰好降一档。
+      for (var i = 0; i < 7; i++) {
+        monitor.recordFrame(0.05); // 50 ms
+      }
+      expect(monitor.level, DegradationLevel.nebula);
+
+      // 单帧达标不足以升档（hold 未满足）。
+      monitor.recordFrame(1 / 60);
+      expect(
+        monitor.level,
+        DegradationLevel.nebula,
+        reason: '连续达标帧数未达 hold 时不得升档',
+      );
+
+      // 窗口被冲干净后，攒够 hold 帧数才升档。
+      for (var i = 0; i < 4; i++) {
+        monitor.recordFrame(1 / 60);
+      }
+      expect(monitor.level, DegradationLevel.none);
+    });
 
     test('reset 清空全部统计', () {
       final monitor = PerformanceMonitor();

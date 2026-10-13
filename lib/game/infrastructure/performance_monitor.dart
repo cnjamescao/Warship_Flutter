@@ -34,8 +34,18 @@ enum DegradationLevel {
   /// 最后关掉伤害数字。
   damageNumbers;
 
-  /// 该层是否被允许绘制。
-  bool allows(DegradationLevel requested) => index <= requested.index;
+  /// 该层是否仍应绘制。
+  ///
+  /// 语义要点：`level` 表示**已经牺牲到哪一层**。
+  /// 因此 `allows(x)` 用**严格大于**：索引比当前档位更靠内（更晚被牺牲）
+  /// 的层才继续画。
+  ///
+  /// 例：`level = hitDebris` 时命中碎片**已经不画**，
+  /// 但比它更内层的伤害数字仍然画。
+  ///
+  /// 参数应当是**可降级层**（`nebula` 起）；`none` 只是"未降级"的起点，
+  /// 不参与比较。
+  bool allows(DegradationLevel layer) => layer.index > index;
 }
 
 /// 帧时间采样与降级决策。
