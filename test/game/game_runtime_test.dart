@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
 import 'package:warship_flutter/game/core/game_clock.dart';
 import 'package:warship_flutter/game/core/game_phase.dart';
@@ -275,13 +276,26 @@ void main() {
   });
 
   group('Boss 接入（产品基线 §7.2）', () {
-    // TODO(未定位)：以下两条 Boss 集成用例当前失败，已暂时移除 ——
-    //   * 「150 秒触发战前补给」：站立 150 秒玩家会先战死，
-    //     补给后的 HP 断言不成立（测试构造问题，而非实现问题）；
-    //   * 「Boss 被击毁即胜利」：注入的我方弹命中 Boss 后 victory 仍为 false，
-    //     **原因未定位**，需要下一轮单独排查（可能是命中判定顺序或
-    //     _resolvePlayerProjectileHits 的执行路径）。
-    // 在定位清楚之前不把未通过的用例留在仓库里。
+    test('150 秒触发战前补给并让 Boss 入场', () {
+      final rt = buildRuntime(bossSystem: BossSystem());
+
+      // 站立不动 150 秒玩家会先战死，因此每步把玩家拉回已知状态，
+      // 这样"补给生效"的断言才有确定含义（这是测试构造，不是实现行为）。
+      var guard = 0;
+      while (!rt.bossEntryTriggered && guard < 300000) {
+        rt.player.health.current = 40;
+        rt.player.shield.current = 5;
+        rt.player.dash.charges = 0;
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+
+      expect(rt.bossEntryTriggered, isTrue, reason: '150 秒行应触发 Boss');
+      expect(rt.boss, isNotNull);
+      expect(rt.player.health.current, 55, reason: '40 + 15');
+      expect(rt.player.shield.current, 25, reason: '5 + 20');
+      expect(rt.player.dash.charges, 1, reason: '冲刺为 0 时归 1');
+    });
 
     test('Boss 入场期间不可受击，入场完成后位置为 (960,210)', () {
       final rt = buildRuntime(bossSystem: BossSystem());
@@ -303,15 +317,67 @@ void main() {
       expect(state.invulnerable, isFalse);
     });
 
+    test('Boss 被击毁即胜利并发出 RunEnded(victory)', () {
+      final rt = buildRuntime(bossSystem: BossSystem());
+      rt.bus.drain();
+
+      final system = BossSystem();
+      final state = BossState(tuning: system.tuning)
+        ..hasEntered = true
+        // 关键：先把相位设到 P3 并清掉转场无敌。
+        // 若只把 HP 设低而不设相位，_advancePhaseIfNeeded 会立刻转入 P3
+        // 并给出 1.2 秒不可受击，注入的弹会被**正确地**跳过 ——
+        // 上一轮我正是栽在这里，误判成实现有 bug。
+        ..phase = BossPhase.p3;
+      state.position = const Vec2(960, 300);
+      state.health.current = 1;
+      state.transitionInvulnerableRemaining = 0;
+      rt.boss = state;
+      rt.bossEntryTriggered = true;
+
+      expect(state.invulnerable, isFalse, reason: '构造后必须可受击');
+
+      rt.projectiles.add(
+        Projectile(
+          id: const EntityId(EntityKind.playerProjectile, 900),
+          faction: ProjectileFaction.player,
+          position: state.position,
+          direction: const Vec2(0, -1),
+          speed: 0,
+          radius: 6,
+          damage: 9,
+          lifetimeSeconds: 1.0,
+          weaponId: 'WPN-PULSE',
+        ),
+      );
+
+      rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+
+      expect(state.isDefeated, isTrue);
+      expect(rt.victory, isTrue);
+      final ended = rt.bus.debugHistory
+          .map((e) => e.event)
+          .whereType<RunEnded>()
+          .toList();
+      expect(ended, isNotEmpty);
+      expect(ended.last.result, 'victory');
+    });
+
     test('弱点暴露时伤害 ×1.5', () {
       final rt = buildRuntime(bossSystem: BossSystem());
       final state = BossState(tuning: BossSystem().tuning)
         ..hasEntered = true
+        ..phase = BossPhase.p3
         ..weakpointActive = true;
+      // 血量必须落在 P3 区间，否则 _advancePhaseIfNeeded 会把相位纠正回
+      // P1 并给出 1.2 秒转场无敌，注入的弹会被正确跳过。
+      state.health.current = (state.tuning.maxHp * 0.20).round();
       state.position = const Vec2(960, 300);
+      state.transitionInvulnerableRemaining = 0;
       rt.boss = state;
       rt.bossEntryTriggered = true;
 
+      expect(state.invulnerable, isFalse);
       final before = state.health.current;
       rt.projectiles.add(
         Projectile(
