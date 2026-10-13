@@ -28,6 +28,7 @@ import '../game/domain/risk_gate_system.dart';
 import '../game/domain/upgrade_system.dart';
 import '../game/domain/weapon_system.dart';
 import '../game/infrastructure/asset_loader.dart';
+import '../game/infrastructure/audio_director.dart';
 
 /// 内容根目录（构建复制品）。
 const String kConfigRoot = 'assets/config/v2';
@@ -112,6 +113,7 @@ class V2Bootstrap {
   GameRuntime buildRuntime({
     required ContentCatalog catalog,
     required int seed,
+    AudioDirector? audioDirector,
   }) {
     final tunings = <String, EnemyTuning>{
       for (final raw in catalog.enemyList)
@@ -158,6 +160,7 @@ class V2Bootstrap {
       breachEliteHpDamage: (breach['eliteHpDamage'] as num?)?.toInt() ?? 15,
       upgradeSystem: buildUpgradeSystem(catalog),
       riskGateSystem: buildRiskGateSystem(catalog),
+      audioDirector: audioDirector,
     );
   }
 }

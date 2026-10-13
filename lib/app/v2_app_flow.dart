@@ -18,6 +18,11 @@ import '../game/content/content_catalog.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
 import '../game/core/game_runtime.dart';
+import '../game/infrastructure/asset_loader.dart';
+import '../game/infrastructure/audio_director.dart';
+import '../game/infrastructure/audio_port.dart';
+import '../game/infrastructure/progress_store.dart';
+import '../game/infrastructure/shared_preferences_store.dart';
 import '../game/presentation/input_gateway.dart';
 import 'v2_bootstrap.dart';
 import 'v2_run_screen.dart';
@@ -45,6 +50,16 @@ class _V2AppFlowState extends State<V2AppFlow> {
   GameRuntime? _runtime;
   KeyboardInputGateway? _input;
 
+  /// 音频（跨局复用：设置是全局的，不随重开重建）。
+  late final AudioService _audio;
+  AudioDirector? _audioDirector;
+
+  /// 本地设置与记录。
+  late final ProgressStore _progress;
+  GameSettings _settings = const GameSettings();
+  GameRecords _records = const GameRecords();
+  bool _progressReady = false;
+
   /// 本局结果（进入 Result 时写入）。
   String _resultOutcome = 'defeat';
   int _resultScore = 0;
@@ -53,6 +68,10 @@ class _V2AppFlowState extends State<V2AppFlow> {
   @override
   void initState() {
     super.initState();
+    // 音频与存档都在 flow 层建立：它们跨局存活，不随 RunSession 重建。
+    _audio = AudioService(port: FlameAudioPort());
+    _progress = ProgressStore(store: InMemoryKeyValueStore());
+    _loadProgress();
     // 初始相位是 Home（架构 §3.1）。这里**不**自动开局 ——
     // 由玩家点击「开始战斗」触发 Home → Loading → Briefing。
   }
@@ -60,7 +79,37 @@ class _V2AppFlowState extends State<V2AppFlow> {
   @override
   void dispose() {
     _runtime?.dispose();
+    _audio.stopAllLoops();
     super.dispose();
+  }
+
+  /// 读取本地设置与记录。
+  ///
+  /// 任何失败都退化为默认值，**绝不阻断开局**（架构 §7）。
+  Future<void> _loadProgress() async {
+    // 存储打不开时退化为内存实现，界面照常可用。
+    final store = await SharedPreferencesStore.openOrMemory();
+    final result = await ProgressStore(store: store).load();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _settings = result.settings;
+      _records = result.records;
+      _progressReady = true;
+    });
+    _applySettings();
+  }
+
+  /// 把设置作用到音频。
+  void _applySettings() {
+    _audio.setMuted(!_settings.sfxEnabled && !_settings.musicEnabled);
+  }
+
+  Future<void> _updateSettings(GameSettings next) async {
+    setState(() => _settings = next);
+    _applySettings();
+    await _progress.saveSettings(next);
   }
 
   /// 开始新一局：先释放上一局，再创建。
@@ -69,9 +118,17 @@ class _V2AppFlowState extends State<V2AppFlow> {
   /// 旧对象不得再向 HUD、音频或 Flame World 发事件。」
   void _startNewRun() {
     _runtime?.dispose();
-    final runtime = const V2Bootstrap().buildRuntime(
+    _audioDirector = AudioDirector(
+      table: const AssetLoader().build(widget.catalog.manifest),
+      service: _audio,
+    );
+    // 每局的音频限频窗口从头开始，避免上一局的节奏影响本局。
+    _audio.reset();
+
+    final runtime = V2Bootstrap().buildRuntime(
       catalog: widget.catalog,
       seed: widget.seed,
+      audioDirector: _audioDirector,
     );
     runtime.phases.resetToHome();
     runtime.phases.transitionTo(GamePhase.loading, reason: 'start');
@@ -106,11 +163,23 @@ class _V2AppFlowState extends State<V2AppFlow> {
       return;
     }
     runtime.phases.transitionTo(GamePhase.result, reason: 'runEnded');
+    final outcome = runtime.player.health.isDead ? 'defeat' : 'victory';
     setState(() {
-      _resultOutcome = runtime.player.health.isDead ? 'defeat' : 'victory';
+      _resultOutcome = outcome;
       _resultScore = runtime.score;
       _resultSeconds = runtime.combatSeconds;
     });
+
+    // 记录只增不减；存档失败不阻断结算界面。
+    var updated = _records.withScore(runtime.score);
+    if (outcome == 'victory') {
+      updated = updated.withClearTime(runtime.combatSeconds);
+    }
+    if (updated.highScore != _records.highScore ||
+        updated.bestClearSeconds != _records.bestClearSeconds) {
+      setState(() => _records = updated);
+      _progress.saveRecords(updated);
+    }
   }
 
   void _backToHome() {
@@ -150,12 +219,26 @@ class _V2AppFlowState extends State<V2AppFlow> {
 
     // 尚未开局：显示首页。
     if (runtime == null || input == null) {
-      return _HomeScreen(onStart: _startNewRun);
+      return _HomeScreen(
+        onStart: _startNewRun,
+        highScore: _records.highScore,
+        bestClearSeconds: _records.bestClearSeconds,
+        settings: _settings,
+        onSettingsChanged: _updateSettings,
+        progressReady: _progressReady,
+      );
     }
 
     switch (runtime.phases.phase) {
       case GamePhase.home:
-        return _HomeScreen(onStart: _startNewRun);
+        return _HomeScreen(
+          onStart: _startNewRun,
+          highScore: _records.highScore,
+          bestClearSeconds: _records.bestClearSeconds,
+          settings: _settings,
+          onSettingsChanged: _updateSettings,
+          progressReady: _progressReady,
+        );
 
       case GamePhase.loading:
         return const _LoadingSurface();
@@ -183,14 +266,14 @@ class _V2AppFlowState extends State<V2AppFlow> {
           outcome: _resultOutcome,
           score: _resultScore,
           seconds: _resultSeconds,
-          bestScore: _bestScore,
+          bestScore: _records.highScore,
+          bestClearSeconds: _records.bestClearSeconds,
           onRestart: _startNewRun,
           onHome: _backToHome,
         );
     }
   }
 
-  int get _bestScore => _resultScore;
 }
 
 // ----------------------------------------------------------------
@@ -213,13 +296,39 @@ class _LoadingSurface extends StatelessWidget {
 }
 
 /// 首页。
-class _HomeScreen extends StatelessWidget {
-  const _HomeScreen({required this.onStart});
+class _HomeScreen extends StatefulWidget {
+  const _HomeScreen({
+    required this.onStart,
+    required this.highScore,
+    required this.settings,
+    required this.onSettingsChanged,
+    required this.progressReady,
+    this.bestClearSeconds,
+  });
 
   final VoidCallback onStart;
+  final int highScore;
+  final double? bestClearSeconds;
+  final GameSettings settings;
+  final ValueChanged<GameSettings> onSettingsChanged;
+  final bool progressReady;
+
+  @override
+  State<_HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<_HomeScreen> {
+  bool _showSettings = false;
 
   @override
   Widget build(BuildContext context) {
+    if (_showSettings) {
+      return _SettingsScreen(
+        settings: widget.settings,
+        onChanged: widget.onSettingsChanged,
+        onBack: () => setState(() => _showSettings = false),
+      );
+    }
     return Scaffold(
       body: Center(
         child: Column(
@@ -245,7 +354,7 @@ class _HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 48),
             FilledButton(
-              onPressed: onStart,
+              onPressed: widget.onStart,
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 56,
@@ -258,12 +367,110 @@ class _HomeScreen extends StatelessWidget {
               ),
               child: const Text('开始战斗'),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
+            // 最高分只在读取完成后显示，避免闪一下 0。
+            if (widget.progressReady) ...<Widget>[
+              Text(
+                '最高分 ${widget.highScore}',
+                style: const TextStyle(
+                  color: Color(0xFFFFC24B),
+                  fontSize: 18,
+                  letterSpacing: 2,
+                ),
+              ),
+              if (widget.bestClearSeconds != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    '最快通关 ${widget.bestClearSeconds!.toStringAsFixed(1)} 秒',
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+            ],
+            const SizedBox(height: 28),
+            TextButton(
+              onPressed: () => setState(() => _showSettings = true),
+              child: const Text('设置'),
+            ),
+            const SizedBox(height: 12),
             const Text(
               'WASD / 方向键移动 · 空格或 Shift 冲刺 · Esc 暂停',
               style: TextStyle(color: Colors.white38, fontSize: 14),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 设置页。
+///
+/// 四个开关对应产品基线 §8 的固定键；**减少动效**是无障碍项，
+/// 只降低非关键动效，不削弱预警与状态可读性。
+class _SettingsScreen extends StatelessWidget {
+  const _SettingsScreen({
+    required this.settings,
+    required this.onChanged,
+    required this.onBack,
+  });
+
+  final GameSettings settings;
+  final ValueChanged<GameSettings> onChanged;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 440,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Text(
+                '设置',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF3FE0FF),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 8,
+                ),
+              ),
+              const SizedBox(height: 24),
+              SwitchListTile(
+                title: const Text('背景音乐'),
+                value: settings.musicEnabled,
+                onChanged: (v) =>
+                    onChanged(settings.copyWith(musicEnabled: v)),
+              ),
+              SwitchListTile(
+                title: const Text('音效'),
+                value: settings.sfxEnabled,
+                onChanged: (v) => onChanged(settings.copyWith(sfxEnabled: v)),
+              ),
+              SwitchListTile(
+                title: const Text('减少动效'),
+                subtitle: const Text('只降低非关键动效，预警仍然清晰'),
+                value: settings.reduceMotion,
+                onChanged: (v) =>
+                    onChanged(settings.copyWith(reduceMotion: v)),
+              ),
+              SwitchListTile(
+                title: const Text('触感反馈'),
+                value: settings.hapticsEnabled,
+                onChanged: (v) =>
+                    onChanged(settings.copyWith(hapticsEnabled: v)),
+              ),
+              const SizedBox(height: 20),
+              FilledButton(onPressed: onBack, child: const Text('返回')),
+            ],
+          ),
         ),
       ),
     );
@@ -354,12 +561,14 @@ class _ResultScreen extends StatelessWidget {
     required this.bestScore,
     required this.onRestart,
     required this.onHome,
+    this.bestClearSeconds,
   });
 
   final String outcome;
   final int score;
   final double seconds;
   final int bestScore;
+  final double? bestClearSeconds;
   final VoidCallback onRestart;
   final VoidCallback onHome;
 
