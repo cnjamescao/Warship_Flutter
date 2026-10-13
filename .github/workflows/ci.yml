@@ -55,6 +55,14 @@ jobs:
             exit 1
           fi
 
+      - name: 安装素材校验所需工具
+        # validate_visual_state_assets.py 与 validate_audio_mix.py 依赖 ffmpeg
+        # 解码 PNG / 分析响度；ubuntu runner 默认未安装。
+        # 这里显式安装，而不是跳过门禁 —— 门禁必须真实执行才有意义。
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
+
       - name: 素材发布门禁（交付清单 §6）
         run: |
           python3 素材/元数据/validate_release_manifest.py
