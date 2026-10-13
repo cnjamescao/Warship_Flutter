@@ -1,0 +1,365 @@
+// ================================================================
+// lib/game/infrastructure/audio_port.dart —— 音频端口与限频调度
+// ================================================================
+// 依据：Spec/02_技术/v2.0/02_运行时与数据协议.md §7
+//   「音频采用 Music/SFX/UI/Warning 四总线，**Warning 优先**；
+//     高频 `WeaponFired`、`WeaponHit` 按 **80 ms** 合并；
+//     同 cue 最大并发由素材元数据指定。
+//     暂停停止或挂起持续音，恢复不得重复叠层。」
+//
+// 架构 §2.1 的 `AudioPort` 契约：「合并、限频、静音、暂停/恢复正确」，
+// 且音频失败必须静默继续、不抛到战斗循环（架构 §7）。
+//
+// 本文件是**纯 Dart**：真正的播放由实现类完成，调度规则在这里，
+// 因此可以被完整单测覆盖。
+// ================================================================
+
+/// 音频总线。Warning 的优先级最高。
+enum AudioBus {
+  music,
+  sfx,
+  ui,
+  warning;
+
+  /// 总线优先级：数值越大越不容易被抢占。
+  int get priority => switch (this) {
+    AudioBus.warning => 3,
+    AudioBus.ui => 2,
+    AudioBus.sfx => 1,
+    AudioBus.music => 0,
+  };
+}
+
+/// 一条可播放的 cue（由 manifest 的音频记录映射而来）。
+class AudioCue {
+  const AudioCue({
+    required this.cueId,
+    required this.assetId,
+    required this.bus,
+    this.priority = 0,
+    this.maxVoices = 1,
+    this.minRetriggerMs = 0,
+    this.loop = false,
+  });
+
+  final String cueId;
+  final String assetId;
+  final AudioBus bus;
+
+  /// 总线内优先级（manifest 的 `priority`）。
+  final int priority;
+
+  /// 同 cue 最大并发。
+  final int maxVoices;
+
+  /// 同一 cue 的最小重触发间隔（毫秒）。
+  final int minRetriggerMs;
+
+  /// 是否为持续音（BGM、激光循环等）。
+  final bool loop;
+
+  /// 高频 cue 的合并窗口。仅 `WeaponFired` / `WeaponHit` 使用 80 ms。
+  static const int mergeWindowMs = 80;
+}
+
+/// 音频端口。
+abstract interface class AudioPort {
+  /// 播放一条 cue。实现必须吞掉一切异常（架构 §7：音频失败静默继续）。
+  void play(AudioCue cue);
+
+  /// 停止某个 cue 的全部发声。
+  void stop(String cueId);
+
+  /// 停止整条总线。
+  void stopBus(AudioBus bus);
+
+  /// 暂停：挂起持续音，不销毁句柄。
+  void pauseAll();
+
+  /// 恢复：**不得重复叠层** —— 已在播的持续音不再重新起播。
+  void resumeAll();
+
+  void setMuted(bool muted);
+
+  bool get isMuted;
+}
+
+/// 记录调用的假实现，供测试与无音频环境使用。
+class RecordingAudioPort implements AudioPort {
+  final List<String> playedCueIds = <String>[];
+  final List<String> stoppedCueIds = <String>[];
+  final List<AudioBus> stoppedBuses = <AudioBus>[];
+
+  int pauseCount = 0;
+  int resumeCount = 0;
+  bool _muted = false;
+
+  /// 当前正在发声的 cue（用于验证"恢复不叠层"）。
+  final Set<String> activeLoops = <String>{};
+
+  @override
+  void play(AudioCue cue) {
+    if (_muted) {
+      return;
+    }
+    playedCueIds.add(cue.cueId);
+    if (cue.loop) {
+      activeLoops.add(cue.cueId);
+    }
+  }
+
+  @override
+  void stop(String cueId) {
+    stoppedCueIds.add(cueId);
+    activeLoops.remove(cueId);
+  }
+
+  @override
+  void stopBus(AudioBus bus) {
+    stoppedBuses.add(bus);
+  }
+
+  @override
+  void pauseAll() => pauseCount++;
+
+  @override
+  void resumeAll() => resumeCount++;
+
+  @override
+  void setMuted(bool muted) => _muted = muted;
+
+  @override
+  bool get isMuted => _muted;
+
+  void clear() {
+    playedCueIds.clear();
+    stoppedCueIds.clear();
+    stoppedBuses.clear();
+    activeLoops.clear();
+    pauseCount = 0;
+    resumeCount = 0;
+  }
+}
+
+/// 永远不发声的端口（无声模式、测试默认）。
+class SilentAudioPort implements AudioPort {
+  const SilentAudioPort();
+
+  @override
+  void play(AudioCue cue) {}
+  @override
+  void stop(String cueId) {}
+  @override
+  void stopBus(AudioBus bus) {}
+  @override
+  void pauseAll() {}
+  @override
+  void resumeAll() {}
+  @override
+  void setMuted(bool muted) {}
+  @override
+  bool get isMuted => true;
+}
+
+/// 一次播放决策。
+enum AudioDecision {
+  /// 允许播放。
+  play,
+
+  /// 被同 cue 的合并窗口吸收（高频 cue 限频）。
+  mergedIntoPrevious,
+
+  /// 被 `minRetriggerMs` 挡住。
+  throttled,
+
+  /// 已达同 cue 最大并发。
+  voiceLimitReached,
+
+  /// 被总线上限或其他 cue 抢占。
+  preempted,
+}
+
+/// 限频与并发调度器。
+///
+/// 它只回答"这次请求该不该真的发声"，不关心底层播放器。
+class AudioScheduler {
+  AudioScheduler({this.mergeWindowMs = AudioCue.mergeWindowMs});
+
+  /// 高频 cue 的合并窗口（产品基线：80 ms）。
+  final int mergeWindowMs;
+
+  final Map<String, double> _lastPlayedAtMs = <String, double>{};
+  final Map<String, int> _activeVoices = <String, int>{};
+
+  /// 被合并掉的请求数（诊断用）。
+  int mergedCount = 0;
+
+  /// 被限频挡掉的请求数。
+  int throttledCount = 0;
+
+  /// 决策：是否播放 [cue]，以及原因。
+  AudioDecision decide(AudioCue cue, {required double nowMs}) {
+    final last = _lastPlayedAtMs[cue.cueId];
+
+    // 1. 高频 cue 合并：同 cue 在窗口内只播一次。
+    if (last != null && nowMs - last < mergeWindowMs) {
+      mergedCount++;
+      return AudioDecision.mergedIntoPrevious;
+    }
+
+    // 2. 最小重触发间隔（持续音如激光循环不受此限）。
+    if (!cue.loop &&
+        cue.minRetriggerMs > 0 &&
+        last != null &&
+        nowMs - last < cue.minRetriggerMs) {
+      throttledCount++;
+      return AudioDecision.throttled;
+    }
+
+    // 3. 同 cue 最大并发。Warning 总线永远不被并发上限挡掉 ——
+    //    它是玩家必须听到的安全信息。
+    final voices = _activeVoices[cue.cueId] ?? 0;
+    if (voices >= cue.maxVoices && cue.bus != AudioBus.warning) {
+      return AudioDecision.voiceLimitReached;
+    }
+
+    return AudioDecision.play;
+  }
+
+  /// 记录一次实际播放。
+  void recordPlayed(AudioCue cue, {required double nowMs}) {
+    _lastPlayedAtMs[cue.cueId] = nowMs;
+    _activeVoices[cue.cueId] = (_activeVoices[cue.cueId] ?? 0) + 1;
+  }
+
+  /// 记录一次结束（非持续音播完后调用）。
+  void recordFinished(String cueId) {
+    final voices = _activeVoices[cueId];
+    if (voices == null) {
+      return;
+    }
+    if (voices <= 1) {
+      _activeVoices.remove(cueId);
+    } else {
+      _activeVoices[cueId] = voices - 1;
+    }
+  }
+
+  int activeVoicesOf(String cueId) => _activeVoices[cueId] ?? 0;
+
+  /// 暂停/重开时清空并发计数，但**保留**限频时间戳，
+  /// 避免恢复瞬间爆发一串积压的音效。
+  void resetVoices() => _activeVoices.clear();
+
+  void reset() {
+    _lastPlayedAtMs.clear();
+    _activeVoices.clear();
+    mergedCount = 0;
+    throttledCount = 0;
+  }
+}
+
+/// 把调度器与端口组合起来的音频服务。
+///
+/// 战斗代码只依赖它；它保证任何底层异常都不会冒泡到逻辑循环。
+class AudioService {
+  AudioService({required this.port, AudioScheduler? scheduler})
+    : scheduler = scheduler ?? AudioScheduler();
+
+  final AudioPort port;
+  final AudioScheduler scheduler;
+
+  /// 逻辑时间（毫秒）。由 Runtime 每步推进，**不使用墙上时钟** ——
+  /// 否则暂停与回放都会让限频行为不可复现。
+  double _nowMs = 0;
+
+  bool _paused = false;
+
+  /// 当前正在循环的 cue（用于暂停/恢复与"不叠层"）。
+  final Set<String> _runningLoops = <String>{};
+
+  double get nowMs => _nowMs;
+  bool get isPaused => _paused;
+  Set<String> get runningLoops => Set<String>.unmodifiable(_runningLoops);
+
+  void advance(double dtSeconds) {
+    _nowMs += dtSeconds * 1000;
+  }
+
+  /// 请求播放。返回实际做出的决策。
+  AudioDecision request(AudioCue cue) {
+    if (_paused && !cue.loop) {
+      return AudioDecision.throttled; // 暂停期间不产生新的瞬时音
+    }
+    final decision = scheduler.decide(cue, nowMs: _nowMs);
+    if (decision != AudioDecision.play) {
+      return decision;
+    }
+    try {
+      port.play(cue);
+    } catch (_) {
+      // 架构 §7：音频失败静默继续，绝不抛到战斗循环。
+      return AudioDecision.throttled;
+    }
+    scheduler.recordPlayed(cue, nowMs: _nowMs);
+    if (cue.loop) {
+      _runningLoops.add(cue.cueId);
+    }
+    return AudioDecision.play;
+  }
+
+  /// 持续音结束（发射/结束成对事件里的"结束"）。
+  void endLoop(String cueId) {
+    if (!_runningLoops.remove(cueId)) {
+      return;
+    }
+    try {
+      port.stop(cueId);
+    } catch (_) {
+      // 静默
+    }
+    scheduler.recordFinished(cueId);
+  }
+
+  /// 暂停：挂起持续音。
+  void pause() {
+    if (_paused) {
+      return;
+    }
+    _paused = true;
+    port.pauseAll();
+  }
+
+  /// 恢复：**已经在播的持续音不重新起播**，避免叠层。
+  void resume() {
+    if (!_paused) {
+      return;
+    }
+    _paused = false;
+    port.resumeAll();
+  }
+
+  /// 一局结束/重开：停止所有循环音并清空并发。
+  void stopAllLoops() {
+    for (final cueId in _runningLoops.toList()) {
+      try {
+        port.stop(cueId);
+      } catch (_) {
+        // 静默
+      }
+    }
+    _runningLoops.clear();
+    scheduler.resetVoices();
+  }
+
+  void setMuted(bool muted) => port.setMuted(muted);
+
+  bool get isMuted => port.isMuted;
+
+  void reset() {
+    _nowMs = 0;
+    _paused = false;
+    _runningLoops.clear();
+    scheduler.reset();
+  }
+}
