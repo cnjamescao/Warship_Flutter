@@ -303,6 +303,127 @@ void main() {
     });
   });
 
+  group('一致性扫描：条件键必须真的会被产出（否则是死路由）', () {
+    // `audioParamsOf` 是 Domain 事件 → 条件参数的**唯一适配器**，
+    // 因此它是契约的事实来源。凡是 manifest 用到的条件键，
+    // 其**基名**必须出现在这个适配器为对应事件产出的键集合里；
+    // 否则那条绑定永远匹配不上 —— 是**死路由**。
+    //
+    // 下面这张表来自阅读 `lib/game/infrastructure/audio_director.dart`
+    // 的 `audioParamsOf`。它取代了上一轮那张**我凭印象手写**的表，
+    // 这正是上一轮误判"4 处路由缺口"的根因。
+    const emittedByEvent = <String, Set<String>>{
+      'EnemySpawned': <String>{'enemyId', 'isElite'},
+      'EnemyDestroyed': <String>{'enemyId', 'isElite'},
+      'EnemyBreached': <String>{'enemyId', 'isElite'},
+      'EnemyDamaged': <String>{'enemyId', 'hpRatio'},
+      'EnemyAttackTelegraphed': <String>{'enemyId', 'attackId'},
+      'EnemyAttackFired': <String>{'enemyId', 'attackId'},
+      'PlayerDamaged': <String>{'shieldDamage', 'hpDamage', 'direction'},
+      'PlayerVitalStateChanged': <String>{'hpRatio', 'shieldRatio'},
+      'WeaponFired': <String>{'weaponId'},
+      'WeaponHit': <String>{'weaponId', 'critical'},
+      'BossPhaseChanged': <String>{'phase'},
+      'BossAttackTelegraphed': <String>{'attackId'},
+      'BossAttackFired': <String>{'attackId'},
+      'BossAttackEnded': <String>{'attackId'},
+      'BossCriticalReached': <String>{'hpRatio'},
+      'RiskGateOpened': <String>{'gateId'},
+      'RiskSelected': <String>{'optionId'},
+      'UpgradeSelected': <String>{'cardId'},
+      'RunEnded': <String>{'result'},
+    };
+
+    /// **条件键没有任何适配器产出的绑定清单**（冻结当前状态）。
+    ///
+    /// `audioParamsOf` 只覆盖 36 个事件里的 19 个；凡它没有分支的事件，
+    /// 参数 map 为空，因此**带条件的绑定永远匹配不上**。
+    ///
+    /// 这份清单是一次扫描的**实际结果**，不是我推测的。它被冻结在这里
+    /// 有两个作用：一是防止继续扩大，二是把它显式登记下来等待定位 ——
+    /// 每一项要么说明"该事件本该有分支而漏了"，要么说明"该绑定写错了
+    /// 事件名或条件键"。
+    ///
+    /// 需要注意：本扫描只覆盖**音频适配器**。视觉资源可能经由另一条
+    /// 路径解析（`resolveVisuals`），因此清单里属于图形资源的条目
+    /// **未必**真的是死路由，需要下一轮逐一核对调用点后才能定论。
+    const knownUnemittedConditions = <String>{
+      // 适配器完全没有这些事件的分支：
+      'command:UiCommand',
+      'enemyId:EnemyDefenseStateChanged',
+      'enemyId:EnemyVitalStateChanged',
+      'hpRatioLte:EnemyVitalStateChanged',
+      'optionId:RiskOptionStateChanged',
+      'weaponId:WeaponSustainStarted',
+      'weaponId:WeaponSustainStopped',
+      // 有分支但产出的键名与绑定的基名不一致：
+      'hpRatioLte:PlayerDamaged', // 适配器产出 hpDamage，绑定要 hpRatio
+      'shieldRatioLte:PlayerDamaged', // 适配器产出 shieldDamage，绑定要 shieldRatio
+      'optionId:RiskGateOpened', // 适配器产出 gateId
+      // 适配器根本不产出的状态类键：
+      'availability:DashStateChanged',
+      'frontShieldActive:EnemyDefenseStateChanged',
+      'state:RiskOptionStateChanged',
+      'state:UiControlStateChanged',
+      'controlId:UiControlStateChanged',
+      // 正是文档冲突未裁决的那一项：
+      'resultTier:RunEnded',
+    };
+
+    test('条件键的基名必须由适配器产出，或已登记为已知死路由', () {
+      final dead = <String>{};
+      for (final record in manifest.records) {
+        for (final binding in record.eventBindings) {
+          for (final key in binding.when.keys) {
+            // 去掉比较后缀：hpRatioLte → hpRatio。
+            final base = key
+                .replaceAll(RegExp(r'(Lte|Gt)$'), '');
+            final emitted = emittedByEvent[binding.event];
+            if (emitted == null) {
+              // 适配器没有这个事件的分支 → 默认返回空 map → 一定是死路由。
+              dead.add('$key:${binding.event}');
+              continue;
+            }
+            if (!emitted.contains(base)) {
+              dead.add('$key:${binding.event}');
+            }
+          }
+        }
+      }
+
+      expect(
+        dead,
+        knownUnemittedConditions,
+        reason: '未产出条件集合发生变化。\n'
+            '实际：${dead.toList()..sort()}\n'
+            '登记：${knownUnemittedConditions.toList()..sort()}\n'
+            '若**减少**，请从 knownDeadKeys 删除；若**增加**，'
+            '说明有新的绑定永远匹配不上。',
+      );
+    });
+
+    test('已知死路由确实对应 manifest 里的真实绑定（不是空写）', () {
+      final allKeys = <String>{};
+      for (final record in manifest.records) {
+        for (final binding in record.eventBindings) {
+          for (final key in binding.when.keys) {
+            allKeys.add(key);
+            allKeys.add('$key:${binding.event}');
+          }
+        }
+      }
+      // 每个登记项至少要能对上 manifest 里的某个键或 键:事件 组合。
+      for (final entry in knownUnemittedConditions) {
+        expect(
+          allKeys.contains(entry) ||
+              allKeys.contains(entry.split(':').first),
+          isTrue,
+          reason: '登记的条目 $entry 在 manifest 里找不到对应绑定',
+        );
+      }
+    });
+  });
+
   group('§7.5 优先级规则与结束条件', () {
     test('伤害预警在 Warning 总线上，普通命中不在', () {
       final warning = table.resolveCues('EnemyAttackTelegraphed',
