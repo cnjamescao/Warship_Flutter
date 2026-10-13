@@ -12,6 +12,8 @@
 // 战斗事件随对应系统（WP-03 起）逐个加入。
 // ================================================================
 
+import '../domain/values.dart';
+
 /// 领域事件负载。
 ///
 /// 只包含业务字段；`runId` / `frameIndex` / `eventIndex` 由 [EventBus] 盖章，
@@ -93,4 +95,224 @@ class RunEnded extends DomainEvent {
 
   @override
   String get eventType => 'RunEnded';
+}
+
+// ================================================================
+// 战斗事件（WP-07 加入）
+// ================================================================
+// 工作包纪律（03_实施工作包与交付标准.md §3）：
+//   「任何新 DomainEvent 必须同时提交：事件定义、至少一个生产者、
+//     至少一个表现/测试消费者。」
+//
+// 消费者：`AssetBindingTable`（lib/game/infrastructure/asset_loader.dart）
+// 已为下列每个事件建立了精确的 `event + when` 路由，见 manifest.json。
+// 本文件的字段名必须与 manifest 的 `when` 条件键保持一致 ——
+// 这正是资源路由能工作的前提。
+// ================================================================
+
+/// 玩家受到伤害。
+class PlayerDamaged extends DomainEvent {
+  const PlayerDamaged({
+    required this.sourceType,
+    required this.shieldDamage,
+    required this.hpDamage,
+    required this.hpAfter,
+    required this.shieldAfter,
+    this.direction,
+  });
+
+  final String sourceType;
+  final int shieldDamage;
+  final int hpDamage;
+  final int hpAfter;
+  final int shieldAfter;
+
+  /// 8 向受击指示（`north`/`northEast`/…）。
+  final String? direction;
+
+  @override
+  String get eventType => 'PlayerDamaged';
+}
+
+/// 玩家数值或阈值状态实际变化。
+class PlayerVitalStateChanged extends DomainEvent {
+  const PlayerVitalStateChanged({
+    required this.hp,
+    required this.hpMax,
+    required this.shield,
+    required this.shieldMax,
+    required this.cause,
+  });
+
+  final int hp;
+  final int hpMax;
+  final int shield;
+  final int shieldMax;
+  final String cause;
+
+  double get hpRatio => hpMax == 0 ? 0 : hp / hpMax;
+  double get shieldRatio => shieldMax == 0 ? 0 : shield / shieldMax;
+
+  @override
+  String get eventType => 'PlayerVitalStateChanged';
+}
+
+/// 敌人生成。
+class EnemySpawned extends DomainEvent {
+  const EnemySpawned({
+    required this.entityId,
+    required this.enemyId,
+    required this.position,
+    required this.isElite,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final Vec2 position;
+  final bool isElite;
+
+  @override
+  String get eventType => 'EnemySpawned';
+}
+
+/// 敌人被击毁。
+class EnemyDestroyed extends DomainEvent {
+  const EnemyDestroyed({
+    required this.entityId,
+    required this.enemyId,
+    required this.position,
+    required this.isElite,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final Vec2 position;
+  final bool isElite;
+
+  @override
+  String get eventType => 'EnemyDestroyed';
+}
+
+/// 敌人受伤（用于 `hit` 临时状态与 `hpRatioLte` 的临界状态）。
+class EnemyDamaged extends DomainEvent {
+  const EnemyDamaged({
+    required this.entityId,
+    required this.enemyId,
+    required this.damage,
+    required this.hpAfter,
+    required this.hpMax,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final int damage;
+  final int hpAfter;
+  final int hpMax;
+
+  double get hpRatio => hpMax == 0 ? 0 : hpAfter / hpMax;
+
+  @override
+  String get eventType => 'EnemyDamaged';
+}
+
+/// 敌人越过 y=1140 发生突破（`isWarningOnly` 为 true 时是 y=920 的预警）。
+class EnemyBreached extends DomainEvent {
+  const EnemyBreached({
+    required this.entityId,
+    required this.enemyId,
+    required this.isElite,
+    required this.breachHpDamage,
+    required this.position,
+    this.isWarningOnly = false,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final bool isElite;
+  final int breachHpDamage;
+  final Vec2 position;
+  final bool isWarningOnly;
+
+  @override
+  String get eventType => 'EnemyBreached';
+}
+
+/// 敌方招式预警（必须先于伤害）。
+class EnemyAttackTelegraphed extends DomainEvent {
+  const EnemyAttackTelegraphed({
+    required this.entityId,
+    required this.enemyId,
+    required this.attackId,
+    required this.position,
+    required this.telegraphSeconds,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final String attackId;
+  final Vec2 position;
+  final double telegraphSeconds;
+
+  @override
+  String get eventType => 'EnemyAttackTelegraphed';
+}
+
+/// 敌方招式发射。
+class EnemyAttackFired extends DomainEvent {
+  const EnemyAttackFired({
+    required this.entityId,
+    required this.enemyId,
+    required this.attackId,
+    required this.position,
+    required this.telegraphSeconds,
+  });
+
+  final EntityId entityId;
+  final String enemyId;
+  final String attackId;
+  final Vec2 position;
+  final double telegraphSeconds;
+
+  @override
+  String get eventType => 'EnemyAttackFired';
+}
+
+/// 我方武器发射。
+class WeaponFired extends DomainEvent {
+  const WeaponFired({
+    required this.weaponId,
+    required this.sourceId,
+    required this.position,
+    required this.direction,
+  });
+
+  final String weaponId;
+  final EntityId sourceId;
+  final Vec2 position;
+  final Vec2 direction;
+
+  @override
+  String get eventType => 'WeaponFired';
+}
+
+/// 命中。
+class WeaponHit extends DomainEvent {
+  const WeaponHit({
+    required this.weaponId,
+    required this.sourceId,
+    required this.targetId,
+    required this.critical,
+    required this.damage,
+    this.targetEnemyId,
+  });
+
+  final String weaponId;
+  final EntityId sourceId;
+  final EntityId targetId;
+  final bool critical;
+  final int damage;
+  final String? targetEnemyId;
+
+  @override
+  String get eventType => 'WeaponHit';
 }

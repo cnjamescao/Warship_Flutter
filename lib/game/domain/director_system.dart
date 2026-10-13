@@ -186,7 +186,13 @@ class DirectorSystem {
   final int increaseHpAtOrAbove;
 
   int _nextRowIndex = 0;
-  double _nextEvaluationAt = 0;
+
+  /// 首次评估时刻。
+  ///
+  /// 刻意**不是 0**：在 t=0 时"过去 15 秒未受 HP 伤害"是平凡成立的，
+  /// 会让每一次开局都立刻把教程波次加成 +1，等于绕过了策划写死的难度曲线。
+  /// "每 10 秒评估一次"应当理解为 t=10/20/…，评估前必须真的流逝过时间。
+  late double _nextEvaluationAt = evaluateIntervalSeconds;
 
   /// 待应用的调整量（作用于接下来的两批）。
   int _pendingScoutDelta = 0;
@@ -206,7 +212,7 @@ class DirectorSystem {
 
   void reset() {
     _nextRowIndex = 0;
-    _nextEvaluationAt = 0;
+    _nextEvaluationAt = evaluateIntervalSeconds;
     _pendingScoutDelta = 0;
     _pendingWingDelta = 0;
     _pendingBatches = 0;

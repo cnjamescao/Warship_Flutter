@@ -223,9 +223,9 @@ void main() {
       final director = buildDirector(wavesConfig);
       const player = Vec2(960, 1050);
 
-      // 0 秒评估：HP 30 → 减少。
+      // 首次评估在 10 秒（t=0 时"过去 15 秒未受伤"平凡成立，不应评估）。
       director.step(
-        combatSeconds: 0,
+        combatSeconds: 10,
         playerPosition: player,
         playerHp: 30,
         hpDamageInLast15s: 0,
@@ -248,11 +248,11 @@ void main() {
       const player = Vec2(960, 1050);
 
       director.step(
-        combatSeconds: 0,
+        combatSeconds: 10,
         playerPosition: player,
         playerHp: 100,
         hpDamageInLast15s: 0,
-        upgradeCount: 0, // 0 秒的最低升级数为 0，达标
+        upgradeCount: 1, // 10 秒的最低升级数为 0，1 也达标
         activeEnemyCount: 0,
       );
 
@@ -282,7 +282,7 @@ void main() {
       const player = Vec2(960, 1050);
 
       director.step(
-        combatSeconds: 0,
+        combatSeconds: 10,
         playerPosition: player,
         playerHp: 90,
         hpDamageInLast15s: 30,
@@ -297,9 +297,9 @@ void main() {
       final director = buildDirector(wavesConfig);
       const player = Vec2(960, 1050);
 
-      // 先制造"减少"的待生效状态。
+      // 先制造"减少"的待生效状态（首次评估在 10 秒）。
       director.step(
-        combatSeconds: 0,
+        combatSeconds: 10,
         playerPosition: player,
         playerHp: 30,
         hpDamageInLast15s: 0,
