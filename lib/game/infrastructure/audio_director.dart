@@ -25,7 +25,15 @@ import 'audio_port.dart';
 /// 键名必须与 manifest 的 `when` 条件键**完全一致**
 /// （`enemyId` / `attackId` / `weaponId` / `command` / `result` /
 /// `optionId` / `direction` / `isElite` / `critical` / `hpRatio` …）。
-Map<String, Object?> audioParamsOf(DomainEvent event) {
+Map<String, Object?> audioParamsOf(DomainEvent event) =>
+    conditionalParamsOf(event);
+
+/// Domain 事件 → `when` 条件参数的**规范名称**。
+///
+/// 视觉与音频共用同一套条件键空间（manifest 的图形与音频记录都写
+/// `eventBindings` + `when`），因此这里只有一份实现。
+/// `audioParamsOf` 保留为历史名称的转发。
+Map<String, Object?> conditionalParamsOf(DomainEvent event) {
   switch (event) {
     case EnemySpawned(:final enemyId, :final isElite):
       return <String, Object?>{'enemyId': enemyId, 'isElite': isElite};
