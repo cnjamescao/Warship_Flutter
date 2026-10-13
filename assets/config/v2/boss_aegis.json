@@ -1,0 +1,190 @@
+{
+  "id": "boss.aegis",
+  "contentVersion": "2.0.4-release",
+  "nameKey": "boss.aegis.name",
+
+  "hp": 2600,
+  "bodyHitbox": { "shape": "circle", "radius": 150 },
+  "weakpointHitbox": { "shape": "circle", "radius": 52, "damageMultiplier": 1.5 },
+  "cannotBreach": true,
+
+  "entry": {
+    "from": [960, -160],
+    "to": [960, 210],
+    "durationSeconds": 0.8,
+    "invulnerableDuringEntry": true,
+    "dealsDamageDuringEntry": false,
+    "preEntrySupply": {
+      "clearEnemyProjectiles": true,
+      "clearHazards": true,
+      "hpRestore": 15,
+      "hpCap": 100,
+      "shieldRestore": 20,
+      "shieldCap": "currentShieldMax",
+      "dashRestoreIfZero": 1,
+      "randomness": false,
+      "onceOnly": true,
+      "feedbackEvents": ["PickupHeal", "PickupShield", "DashReady"]
+    }
+  },
+
+  "phaseThresholds": [0.70, 0.35],
+  "phaseTransitionInvulnerableSeconds": 1.2,
+  "phaseTransitionClearsProjectilesAndHazards": true,
+  "firstAttackDelayAfterEntryOrTransitionSeconds": 0.6,
+  "minDelayBetweenAttacksSeconds": 0.6,
+
+  "bodyContactDamage": {
+    "damage": 20,
+    "onlyDuringAttackIds": ["boss_charge"],
+    "otherwiseNoContactDamage": true
+  },
+
+  "attackOrder": ["boss_fan", "boss_charge", "boss_ring", "boss_summon", "boss_laser"],
+
+  "phases": [
+    {
+      "id": "P1",
+      "hpRange": [1.00, 0.70],
+      "loop": ["boss_fan", "boss_charge"]
+    },
+    {
+      "id": "P2",
+      "hpRange": [0.70, 0.35],
+      "loop": ["boss_ring", "boss_summon"]
+    },
+    {
+      "id": "P3",
+      "hpRange": [0.35, 0.00],
+      "loop": ["boss_laser", "boss_weakpoint"]
+    }
+  ],
+
+  "attacks": [
+    {
+      "attackId": "boss_fan",
+      "nameKey": "boss.fan.name",
+      "telegraphSeconds": 0.7,
+      "telegraphShape": "cone",
+      "telegraphAssetId": "GFX-WARN-CONE",
+      "aimLockAtTelegraphStart": "bossToPlayerCenter",
+      "projectileCount": 5,
+      "angleOffsetsDegrees": [-24, -12, 0, 12, 24],
+      "projectile": {
+        "damage": 12,
+        "speed": 1200,
+        "radius": 12,
+        "lifetimeSeconds": 2.0,
+        "assetId": "GFX-BOSS-FAN-BULLET"
+      },
+      "counterplayKey": "boss.fan.counter"
+    },
+    {
+      "attackId": "boss_charge",
+      "nameKey": "boss.charge.name",
+      "telegraphSeconds": 0.8,
+      "telegraphShape": "line",
+      "telegraphAssetId": "GFX-WARN-LINE",
+      "targetXLocksPlayerPositionAgoSeconds": 0.8,
+      "targetXClamp": [210, 1710],
+      "travelSeconds": 0.65,
+      "travelY": 210,
+      "bodyHitboxActiveDuringTravel": true,
+      "contactDamage": 20,
+      "postArrivalPauseSeconds": 0.4,
+      "counterplayKey": "boss.charge.counter"
+    },
+    {
+      "attackId": "boss_ring",
+      "nameKey": "boss.ring.name",
+      "telegraphSeconds": 0.9,
+      "telegraphShape": "circle",
+      "telegraphAssetId": "GFX-WARN-CIRCLE",
+      "gapCenterAngleAimsAtPlayerAtTelegraphStart": true,
+      "gapTotalDegrees": 70,
+      "projectileCount": 16,
+      "projectile": {
+        "damage": 10,
+        "speed": 520,
+        "radius": 12,
+        "lifetimeSeconds": 2.8,
+        "assetId": "GFX-BOSS-RING-BULLET"
+      },
+      "gapMarkerRotationDegreesPerSecond": 35,
+      "gapRotationDirection": "clockwise",
+      "gapRotatesUntilProjectilesGone": true,
+      "counterplayKey": "boss.ring.counter"
+    },
+    {
+      "attackId": "boss_summon",
+      "nameKey": "boss.summon.name",
+      "telegraphSeconds": 0.6,
+      "telegraphShape": "circle",
+      "telegraphAssetId": "GFX-WARN-CIRCLE",
+      "summonEnemyId": "EN-SHIELD",
+      "summonPositions": [[560, 250], [1360, 250]],
+      "summonFollowsFullShieldRules": true,
+      "doesNotTriggerWaveOrEliteEvents": true,
+      "blocksNextAttackUntilAllRemoved": true,
+      "removalByBreachAlsoUnblocks": true,
+      "counterplayKey": "boss.summon.counter"
+    },
+    {
+      "attackId": "boss_laser",
+      "nameKey": "boss.laser.name",
+      "telegraphSeconds": 0.9,
+      "telegraphShape": "line",
+      "telegraphAssetId": "GFX-WARN-LINE",
+      "sweepSeconds": 1.8,
+      "originIsBossCenter": true,
+      "sweepFromTargetPoint": [240, 1020],
+      "sweepToTargetPoint": [1680, 1020],
+      "laserWidth": 60,
+      "laserEffectiveLength": 1500,
+      "tickSeconds": 0.25,
+      "damagePerTick": 8,
+      "perTargetPerTickOnce": true,
+      "assetId": "GFX-BOSS-LASER",
+      "counterplayKey": "boss.laser.counter"
+    },
+    {
+      "attackId": "boss_weakpoint",
+      "nameKey": "boss.weakpoint.name",
+      "telegraphSeconds": 0.0,
+      "telegraphShape": null,
+      "telegraphAssetId": null,
+      "exposeSeconds": 3.0,
+      "position": "bossCenter",
+      "enablesWeakpoint": true,
+      "weakpointDamageMultiplier": 1.5,
+      "bodyStillTakesNormalDamage": true,
+      "assetId": "GFX-BOSS-AEGIS-WEAKPOINT",
+      "counterplayKey": "boss.weakpoint.counter"
+    }
+  ],
+
+  "enrage": {
+    "triggerAtSeconds": 180,
+    "alsoTriggersWhenPhaseIsP3AndCooldownReadyAndHpAtOrBelow": 0.10,
+    "changes": [
+      {
+        "attackId": "boss_laser",
+        "sweepSeconds": 2.2,
+        "sameStartAndEndPoints": true,
+        "otherParametersUnchanged": true
+      }
+    ],
+    "isOnlyEnrageChange": true
+  },
+
+  "assets": {
+    "bodyAssetId": "GFX-BOSS-AEGIS-BODY",
+    "criticalAssetId": "GFX-BOSS-AEGIS-CRITICAL",
+    "weakpointAssetId": "GFX-BOSS-AEGIS-WEAKPOINT",
+    "entryAssetId": "GFX-BOSS-ENTRY",
+    "phaseAssetId": "GFX-BOSS-PHASE",
+    "defeatAssetId": "GFX-BOSS-DEFEAT",
+    "nameplateAssetId": "UI-BOSS-NAMEPLATE",
+    "warningAssetId": "UI-BOSS-ATTACK-WARN"
+  }
+}

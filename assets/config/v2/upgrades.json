@@ -1,0 +1,343 @@
+{
+  "id": "upgrades.v2",
+  "contentVersion": "2.0.4-release",
+
+  "xpThresholds": [20, 55, 105, 170, 250, 345],
+  "firstDraftEarliestSecond": 15.0,
+  "maxDrafts": 6,
+  "xpStillCountsAfterMaxDrafts": true,
+  "draftSize": 3,
+  "draftProcedure": [
+    "filterUnavailable",
+    "insertGuaranteedCards",
+    "weightedDrawWithoutReplacement",
+    "freezeCandidateOrderIntoEvent"
+  ],
+
+  "guaranteed": {
+    "firstDraft": ["UP-PULSE-RATE"],
+    "secondDraftAnyOf": ["UP-PULSE-SPREAD", "UP-MISSILE-UNLOCK"],
+    "thirdAndLaterAtLeastOneFromSeries": ["owned", "survival"],
+    "forceDamageCardAfterTwoDraftsWithoutDamage": true
+  },
+
+  "cards": [
+    {
+      "id": "UP-PULSE-RATE",
+      "nameKey": "up.pulseRate.name",
+      "descKey": "up.pulseRate.desc",
+      "series": "pulse",
+      "maxLevel": 3,
+      "weight": 12,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-PULSE-RATE",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "multiplyWeaponStat",
+          "weaponId": "WPN-PULSE",
+          "stat": "cadence",
+          "factor": 0.85,
+          "stacking": "multiplicativePerLevel"
+        }
+      ]
+    },
+    {
+      "id": "UP-PULSE-DAMAGE",
+      "nameKey": "up.pulseDamage.name",
+      "descKey": "up.pulseDamage.desc",
+      "series": "pulse",
+      "maxLevel": 3,
+      "weight": 10,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-PULSE-DAMAGE",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "addWeaponStat",
+          "weaponId": "WPN-PULSE",
+          "stat": "damage",
+          "amountPerLevel": 3
+        }
+      ]
+    },
+    {
+      "id": "UP-PULSE-SPREAD",
+      "nameKey": "up.pulseSpread.name",
+      "descKey": "up.pulseSpread.desc",
+      "series": "pulse",
+      "maxLevel": 2,
+      "weight": 9,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-PULSE-SPREAD",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "setWeaponProjectileCount",
+          "weaponId": "WPN-PULSE",
+          "countByLevel": [1, 2, 3]
+        },
+        {
+          "kind": "setWeaponSpreadAngle",
+          "weaponId": "WPN-PULSE",
+          "angleDegreesByLevel": [0, 6, 0]
+        }
+      ]
+    },
+    {
+      "id": "UP-CRIT-ARC",
+      "nameKey": "up.critArc.name",
+      "descKey": "up.critArc.desc",
+      "series": "damage",
+      "maxLevel": 2,
+      "weight": 7,
+      "prerequisites": ["anyPulseCard"],
+      "excludes": [],
+      "iconAssetId": "UI-UP-CRIT-ARC",
+      "rarity": "rare",
+      "effects": [
+        {
+          "kind": "addWeaponStat",
+          "weaponId": "WPN-PULSE",
+          "stat": "criticalChance",
+          "amountPerLevel": 0.12
+        },
+        {
+          "kind": "enableChain",
+          "chainId": "WPN-ARC",
+          "damageRatioPerLevel": 0.5
+        }
+      ]
+    },
+    {
+      "id": "UP-MISSILE-UNLOCK",
+      "nameKey": "up.missileUnlock.name",
+      "descKey": "up.missileUnlock.desc",
+      "series": "missile",
+      "maxLevel": 1,
+      "weight": 8,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-MISSILE-UNLOCK",
+      "rarity": "rare",
+      "effects": [
+        { "kind": "unlockWeapon", "weaponId": "WPN-MISSILE" }
+      ]
+    },
+    {
+      "id": "UP-MISSILE-SALVO",
+      "nameKey": "up.missileSalvo.name",
+      "descKey": "up.missileSalvo.desc",
+      "series": "missile",
+      "maxLevel": 2,
+      "weight": 6,
+      "prerequisites": ["UP-MISSILE-UNLOCK"],
+      "excludes": [],
+      "iconAssetId": "UI-UP-MISSILE-SALVO",
+      "rarity": "rare",
+      "effects": [
+        {
+          "kind": "setMissileSalvoLevel",
+          "countByLevel": [1, 2, 3],
+          "damageByLevel": [36, 32.4, 29]
+        }
+      ]
+    },
+    {
+      "id": "UP-MISSILE-RADIUS",
+      "nameKey": "up.missileRadius.name",
+      "descKey": "up.missileRadius.desc",
+      "series": "missile",
+      "maxLevel": 2,
+      "weight": 5,
+      "prerequisites": ["UP-MISSILE-UNLOCK"],
+      "excludes": [],
+      "iconAssetId": "UI-UP-MISSILE-RADIUS",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "setMissileExplosionRadius",
+          "radiusByLevel": [70, 90, 110],
+          "maxRadius": 110
+        }
+      ]
+    },
+    {
+      "id": "UP-LASER-UNLOCK",
+      "nameKey": "up.laserUnlock.name",
+      "descKey": "up.laserUnlock.desc",
+      "series": "laser",
+      "maxLevel": 1,
+      "weight": 7,
+      "prerequisites": [],
+      "excludes": ["UP-DRONE-UNLOCK"],
+      "iconAssetId": "UI-UP-LASER-UNLOCK",
+      "rarity": "epic",
+      "effects": [
+        { "kind": "unlockWeapon", "weaponId": "WPN-LASER" }
+      ]
+    },
+    {
+      "id": "UP-LASER-PRISM",
+      "nameKey": "up.laserPrism.name",
+      "descKey": "up.laserPrism.desc",
+      "series": "laser",
+      "maxLevel": 2,
+      "weight": 5,
+      "prerequisites": ["UP-LASER-UNLOCK"],
+      "excludes": [],
+      "iconAssetId": "UI-UP-LASER-PRISM",
+      "rarity": "rare",
+      "effects": [
+        {
+          "kind": "setChainHops",
+          "chainId": "WPN-LASER-PRISM",
+          "hopsByLevel": [1, 2],
+          "damageRatioPerHop": 0.6
+        }
+      ]
+    },
+    {
+      "id": "UP-DRONE-UNLOCK",
+      "nameKey": "up.droneUnlock.name",
+      "descKey": "up.droneUnlock.desc",
+      "series": "drone",
+      "maxLevel": 1,
+      "weight": 7,
+      "prerequisites": [],
+      "excludes": ["UP-LASER-UNLOCK"],
+      "iconAssetId": "UI-UP-DRONE-UNLOCK",
+      "rarity": "epic",
+      "effects": [
+        { "kind": "unlockWeapon", "weaponId": "WPN-DRONE" },
+        { "kind": "setDroneCount", "countByLevel": [1] }
+      ]
+    },
+    {
+      "id": "UP-DRONE-COUNT",
+      "nameKey": "up.droneCount.name",
+      "descKey": "up.droneCount.desc",
+      "series": "drone",
+      "maxLevel": 2,
+      "weight": 5,
+      "prerequisites": ["UP-DRONE-UNLOCK"],
+      "excludes": [],
+      "iconAssetId": "UI-UP-DRONE-COUNT",
+      "rarity": "rare",
+      "effects": [
+        {
+          "kind": "setDroneCount",
+          "countByLevel": [1, 2, 3],
+          "maxCount": 3
+        }
+      ]
+    },
+    {
+      "id": "UP-SHIELD-MAX",
+      "nameKey": "up.shieldMax.name",
+      "descKey": "up.shieldMax.desc",
+      "series": "survival",
+      "maxLevel": 2,
+      "weight": 8,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-SHIELD-MAX",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "addShieldMax",
+          "amountPerLevel": 10,
+          "immediateRefillSameAmount": true
+        }
+      ]
+    },
+    {
+      "id": "UP-DASH-CHARGE",
+      "nameKey": "up.dashCharge.name",
+      "descKey": "up.dashCharge.desc",
+      "series": "survival",
+      "maxLevel": 1,
+      "weight": 5,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-DASH-CHARGE",
+      "rarity": "rare",
+      "effects": [
+        {
+          "kind": "addDashCharge",
+          "amount": 1,
+          "newRechargeSeconds": 7.0
+        }
+      ]
+    },
+    {
+      "id": "UP-DASH-REPAIR",
+      "nameKey": "up.dashRepair.name",
+      "descKey": "up.dashRepair.desc",
+      "series": "survival",
+      "maxLevel": 2,
+      "weight": 5,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-DASH-REPAIR",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "healOnDashEnd",
+          "amountPerLevel": 4,
+          "minIntervalSeconds": 3.0
+        }
+      ]
+    },
+    {
+      "id": "UP-ENERGY-GAIN",
+      "nameKey": "up.energyGain.name",
+      "descKey": "up.energyGain.desc",
+      "series": "survival",
+      "maxLevel": 2,
+      "weight": 5,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-ENERGY-GAIN",
+      "rarity": "common",
+      "effects": [
+        {
+          "kind": "multiplyXpGain",
+          "factor": 1.15,
+          "stacking": "multiplicativePerLevel"
+        }
+      ]
+    },
+    {
+      "id": "UP-COMBO-GUARD",
+      "nameKey": "up.comboGuard.name",
+      "descKey": "up.comboGuard.desc",
+      "series": "survival",
+      "maxLevel": 1,
+      "weight": 4,
+      "prerequisites": [],
+      "excludes": [],
+      "iconAssetId": "UI-UP-COMBO-GUARD",
+      "rarity": "epic",
+      "effects": [
+        {
+          "kind": "preventFirstComboLossOnHpDamage",
+          "cooldownSeconds": 25.0
+        }
+      ]
+    }
+  ],
+
+  "rarityPools": {
+    "overloadRare": [
+      "UP-CRIT-ARC",
+      "UP-MISSILE-SALVO",
+      "UP-LASER-PRISM",
+      "UP-DRONE-COUNT",
+      "UP-DASH-REPAIR"
+    ]
+  }
+}

@@ -51,6 +51,8 @@ app.*.map.json
 # Produced by `dart run tool/build_v2_assets.dart` from the repository-root
 # 素材/ package (the single official resource index). Not committed to avoid
 # duplicating ~20 MiB of binaries that already live in 素材/.
-/assets/config/v2/
+# 只有 manifest.json 是构建复制品；同一目录下的 player.json /
+# enemies.json 等是**手写内容配置**，必须入库。
+/assets/config/v2/manifest.json
 /assets/images/v2/
 /assets/audio/v2/

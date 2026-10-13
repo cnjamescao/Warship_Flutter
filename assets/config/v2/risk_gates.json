@@ -1,0 +1,103 @@
+{
+  "id": "risk_gates.v2",
+  "contentVersion": "2.0.4-release",
+
+  "common": {
+    "clearNormalEnemyBulletsBefore": true,
+    "stopNewEnemySpawns": true,
+    "lockPlayerPosition": false,
+    "selectionWindowSeconds": 5.0,
+    "timeoutFallbackId": "RG-SUPPLY",
+    "clickOutsideCountsAsTimeout": true,
+    "freezesAllLogicClocks": true
+  },
+
+  "gates": [
+    {
+      "id": "RG-55",
+      "startSecond": 55,
+      "timeoutFallback": "RG-SUPPLY",
+      "uiAssetId": "UI-RISK-PANEL",
+      "optionIds": ["RG-SUPPLY", "RG-BOUNTY", "RG-OVERLOAD"]
+    },
+    {
+      "id": "RG-115",
+      "startSecond": 115,
+      "timeoutFallback": "RG-SUPPLY",
+      "uiAssetId": "UI-RISK-PANEL",
+      "optionIds": ["RG-SUPPLY", "RG-BOUNTY", "RG-OVERLOAD"]
+    }
+  ],
+
+  "options": [
+    {
+      "id": "RG-SUPPLY",
+      "nameKey": "risk.supply.name",
+      "descKey": "risk.supply.desc",
+      "uiAssetId": "UI-RISK-SAFE",
+      "availableCondition": null,
+      "effect": {
+        "kind": "grantResources",
+        "shield": 20,
+        "hp": 8,
+        "clampToMax": true
+      },
+      "cost": null,
+      "timeoutFallback": true
+    },
+    {
+      "id": "RG-BOUNTY",
+      "nameKey": "risk.bounty.name",
+      "descKey": "risk.bounty.desc",
+      "uiAssetId": "UI-RISK-BOUNTY",
+      "availableCondition": null,
+      "effect": {
+        "kind": "nextFixedEliteExtraCore",
+        "extraCoreCount": 1
+      },
+      "cost": {
+        "kind": "eliteHpMultiplier",
+        "multiplier": 1.25,
+        "appliesTo": "nextFixedElite",
+        "duration": "untilThatEliteDies"
+      },
+      "timeoutFallback": false
+    },
+    {
+      "id": "RG-OVERLOAD",
+      "nameKey": "risk.overload.name",
+      "descKey": "risk.overload.desc",
+      "uiAssetId": "UI-RISK-OVERLOAD",
+      "availableCondition": {
+        "kind": "playerHpAbove",
+        "hpAbove": 35
+      },
+      "effect": {
+        "kind": "grantRareDraft",
+        "pool": [
+          "UP-CRIT-ARC",
+          "UP-MISSILE-SALVO",
+          "UP-LASER-PRISM",
+          "UP-DRONE-COUNT",
+          "UP-DASH-REPAIR"
+        ],
+        "filterUnavailable": true,
+        "drawCount": 3
+      },
+      "cost": {
+        "kind": "damageTakenMultiplier",
+        "multiplier": 1.15,
+        "durationSeconds": 20.0,
+        "appliesTo": "finalDamageTaken"
+      },
+      "timeoutFallback": false
+    }
+  ],
+
+  "fallbackRules": {
+    "whenOverloadUnavailable": "hideOptionAndLetBountyOccupySlot",
+    "reroll": false,
+    "extendWindow": false,
+    "lockedOptionSelectable": false
+  }
+}

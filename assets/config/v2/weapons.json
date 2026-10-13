@@ -1,0 +1,223 @@
+{
+  "id": "weapons.v2",
+  "contentVersion": "2.0.4-release",
+  "targetingPriorities": {
+    "playerDefault": [
+      "bossWeakpoint",
+      "nearestElite",
+      "nearestNormalEnemy",
+      "forward"
+    ],
+    "missile": ["bossWeakpoint", "nearestElite", "nearestNormalEnemy"],
+    "laser": ["bossWeakpoint", "nearestElite", "nearestNormalEnemy"]
+  },
+  "notes": {
+    "highTierDamageTargets": ["enemyBody", "bossWeakpoint"],
+    "highTierNeverDamages": ["player", "pickup"]
+  },
+
+  "weapons": [
+    {
+      "id": "WPN-PULSE",
+      "series": "pulse",
+      "targetingPriority": "playerDefault",
+      "range": 980,
+      "cadence": 0.24,
+      "projectile": {
+        "damage": 9,
+        "speed": 1250,
+        "radius": 6,
+        "lifetime": 1.2,
+        "pierces": false,
+        "hitsPerTarget": 1
+      },
+      "hitbox": { "shape": "circle", "radius": 6 },
+      "damage": 9,
+      "lifetime": 1.2,
+      "turnRate": null,
+      "area": null,
+      "chain": null,
+      "critical": {
+        "baseChance": 0.0,
+        "damageMultiplier": 1.8,
+        "enabledByUpgrade": true
+      },
+      "hitEffectMergeSeconds": 0.08,
+      "assetIds": {
+        "projectile": "GFX-WPN-PULSE",
+        "muzzle": "GFX-WPN-PULSE-MUZZLE",
+        "hit": "GFX-FX-PULSE-HIT",
+        "critical": "GFX-FX-PULSE-CRIT"
+      }
+    },
+
+    {
+      "id": "WPN-MISSILE",
+      "series": "missile",
+      "targetingPriority": "missile",
+      "range": 1100,
+      "cadence": 2.4,
+      "projectile": {
+        "damage": 36,
+        "speed": 820,
+        "radius": 16,
+        "lifetime": 2.0,
+        "pierces": false,
+        "hitsPerTarget": 1
+      },
+      "hitbox": { "shape": "circle", "radius": 16 },
+      "damage": 36,
+      "lifetime": 2.0,
+      "turnRate": 300,
+      "area": {
+        "kind": "explosionOnFirstContactOrLifetimeEnd",
+        "damage": 36,
+        "radius": 70,
+        "perTargetOnce": true,
+        "noDamageWhenLifetimeEndsWithNoTargetInRadius": true
+      },
+      "chain": null,
+      "unlockedBy": "UP-MISSILE-UNLOCK",
+      "assetIds": {
+        "projectile": "GFX-WPN-MISSILE",
+        "trail": "GFX-WPN-MISSILE-TRAIL",
+        "explosion": "GFX-FX-MISSILE-BLAST"
+      }
+    },
+
+    {
+      "id": "WPN-LASER",
+      "series": "laser",
+      "targetingPriority": "laser",
+      "range": 900,
+      "cadence": 5.0,
+      "projectile": null,
+      "hitbox": { "shape": "capsule", "width": 28 },
+      "damage": 6,
+      "lifetime": 1.2,
+      "turnRate": null,
+      "activeSeconds": 1.2,
+      "tickSeconds": 0.1,
+      "damagePerTick": 6,
+      "perTargetPerTickOnce": true,
+      "relockNextStepAfterTargetLost": true,
+      "noTargetNoDamageNoVisual": true,
+      "area": null,
+      "chain": null,
+      "unlockedBy": "UP-LASER-UNLOCK",
+      "assetIds": {
+        "head": "GFX-WPN-LASER-HEAD",
+        "beam": "GFX-WPN-LASER-BEAM",
+        "impact": "GFX-WPN-LASER-IMPACT"
+      }
+    },
+
+    {
+      "id": "WPN-LASER-PRISM",
+      "series": "laser",
+      "targetingPriority": "laser",
+      "range": 360,
+      "cadence": null,
+      "projectile": null,
+      "hitbox": null,
+      "damage": 0,
+      "lifetime": null,
+      "turnRate": null,
+      "area": null,
+      "chain": {
+        "trigger": "afterEachLaserDamageTick",
+        "maxHopsLevel1": 1,
+        "maxHopsLevel2": 2,
+        "candidateRadius": 360,
+        "damageRatioPerHop": 0.6,
+        "ordering": ["distance", "entityId"],
+        "perTargetOncePerActivation": true
+      },
+      "unlockedBy": "UP-LASER-PRISM",
+      "assetIds": { "impact": "GFX-WPN-LASER-IMPACT" }
+    },
+
+    {
+      "id": "WPN-DRONE",
+      "series": "drone",
+      "targetingPriority": "nearestEnemyWithinRange",
+      "range": 600,
+      "cadence": 0.8,
+      "projectile": {
+        "damage": 12,
+        "speed": 900,
+        "radius": 10,
+        "lifetime": 0.8,
+        "pierces": false,
+        "hitsPerTarget": 1
+      },
+      "hitbox": { "shape": "circle", "radius": 10 },
+      "damage": 12,
+      "lifetime": 0.8,
+      "turnRate": null,
+      "orbitRadius": 120,
+      "angularSpeedDegreesPerSecond": 120,
+      "evenlyDistributedWithExisting": true,
+      "doesNotFireWithoutTarget": true,
+      "blocksNothing": true,
+      "invulnerable": true,
+      "area": null,
+      "chain": null,
+      "unlockedBy": "UP-DRONE-UNLOCK",
+      "assetIds": {
+        "body": "GFX-WPN-DRONE",
+        "bolt": "GFX-WPN-DRONE-BOLT"
+      }
+    },
+
+    {
+      "id": "WPN-ARC",
+      "series": "pulse",
+      "targetingPriority": "nearestOtherValidEnemy",
+      "range": 360,
+      "cadence": null,
+      "projectile": null,
+      "hitbox": null,
+      "damage": 0,
+      "lifetime": null,
+      "turnRate": null,
+      "area": null,
+      "chain": {
+        "trigger": "pulseCriticalHit",
+        "maxHops": 1,
+        "candidateRadius": 360,
+        "damageRatioOfFinalPulseDamage": 0.5,
+        "ordering": ["distance", "entityId"],
+        "perTargetOncePerCritical": true,
+        "noCandidateKeepsCriticalOnly": true
+      },
+      "unlockedBy": "UP-CRIT-ARC",
+      "assetIds": { "effect": "GFX-WPN-ARC" }
+    }
+  ],
+
+  "missileSalvo": {
+    "countByLevel": [1, 2, 3],
+    "anglesDegreesByLevel": [
+      [0],
+      [-8, 8],
+      [-8, 0, 8]
+    ],
+    "angleSpreadBeyondThree": { "minDegrees": -16, "maxDegrees": 16, "evenlySpaced": true },
+    "damageFormula": "max(29, 36 * (1 - 0.10 * salvoLevel))",
+    "damageByLevel": [36, 32.4, 29],
+    "eachMissileIndependentTargeting": true,
+    "mayHitSameTarget": true
+  },
+
+  "missileRadius": {
+    "radiusByLevel": [70, 90, 110],
+    "perLevelBonus": 20,
+    "maxRadius": 110
+  },
+
+  "pulseSpread": {
+    "projectileCountByLevel": [1, 2, 3],
+    "angleDegreesByLevel": [0, 6, 0]
+  }
+}

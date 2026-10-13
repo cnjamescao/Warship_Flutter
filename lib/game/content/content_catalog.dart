@@ -1,0 +1,805 @@
+// ================================================================
+// lib/game/content/content_catalog.dart —— 内容目录与交叉引用校验
+// ================================================================
+// 依据：Spec/02_技术/v2.0/02_运行时与数据协议.md §1、§1.1、§8
+//   「加载器必须在进入 `Briefing` 前完成版本、hash 和 ID 交叉引用校验；
+//     三者任一不一致均应停留在 Loading 并显示可重试错误。」
+//   「配置校验必须拒绝：未知 ID、循环前置、互斥卡同时被强制加入、
+//     负数 HP/时间、波次重复秒、超过对象预算的单次生成、
+//     Boss 缺失安全预警、资产 ID 缺失。」
+//
+// 设计：本类只做**结构与引用**校验，不解释玩法语义
+// （例如"护盾上限 +10"的含义由 UpgradeSystem 决定）。
+// 它不知道 Flutter、Flame 或文件系统，因此可以在纯 Dart 测试中驱动。
+// ================================================================
+
+import 'asset_id.dart';
+import 'asset_manifest.dart';
+import 'content_error.dart';
+
+/// 内容文件名（协议 §1 的固定集合）。
+class ContentFiles {
+  static const String player = 'player.json';
+  static const String weapons = 'weapons.json';
+  static const String upgrades = 'upgrades.json';
+  static const String enemies = 'enemies.json';
+  static const String waves = 'waves_normal.json';
+  static const String riskGates = 'risk_gates.json';
+  static const String boss = 'boss_aegis.json';
+  static const String strings = 'strings_zh_CN.json';
+
+  /// 除 manifest 外必须存在的全部内容文件。
+  static const List<String> required = <String>[
+    player,
+    weapons,
+    upgrades,
+    enemies,
+    waves,
+    riskGates,
+    boss,
+    strings,
+  ];
+}
+
+/// 已加载并校验通过的内容目录（只读）。
+class ContentCatalog {
+  const ContentCatalog({
+    required this.contentVersion,
+    required this.manifest,
+    required this.player,
+    required this.weapons,
+    required this.upgrades,
+    required this.enemies,
+    required this.waves,
+    required this.riskGates,
+    required this.boss,
+    required this.strings,
+  });
+
+  final String contentVersion;
+  final AssetManifest manifest;
+
+  final Map<String, Object?> player;
+  final Map<String, Object?> weapons;
+  final Map<String, Object?> upgrades;
+  final Map<String, Object?> enemies;
+  final Map<String, Object?> waves;
+  final Map<String, Object?> riskGates;
+  final Map<String, Object?> boss;
+  final Map<String, String> strings;
+
+  // ---- 常用投影 ----
+
+  List<Map<String, Object?>> get enemyList =>
+      _objectList(enemies['enemies']);
+
+  List<Map<String, Object?>> get weaponList =>
+      _objectList(weapons['weapons']);
+
+  List<Map<String, Object?>> get upgradeCards =>
+      _objectList(upgrades['cards']);
+
+  List<Map<String, Object?>> get waveList => _objectList(waves['waves']);
+
+  List<Map<String, Object?>> get riskOptions =>
+      _objectList(riskGates['options']);
+
+  List<Map<String, Object?>> get bossAttacks => _objectList(boss['attacks']);
+
+  List<int> get xpThresholds =>
+      (upgrades['xpThresholds'] as List?)?.whereType<num>().map((n) => n.toInt()).toList() ??
+      const <int>[];
+
+  /// 按 ID 取敌人配置。
+  Map<String, Object?>? enemyById(String id) =>
+      _byId(enemyList, id);
+
+  /// 按 ID 取升级卡。
+  Map<String, Object?>? upgradeById(String id) =>
+      _byId(upgradeCards, id);
+
+  /// 按 ID 取武器。
+  Map<String, Object?>? weaponById(String id) =>
+      _byId(weaponList, id);
+
+  /// 本地化文案；缺失时返回 key 本身（便于发现未翻译项，但不崩溃）。
+  String text(String key) => strings[key] ?? key;
+
+  bool hasText(String key) => strings.containsKey(key);
+
+  static Map<String, Object?>? _byId(
+    List<Map<String, Object?>> list,
+    String id,
+  ) {
+    for (final item in list) {
+      if (item['id'] == id) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  static List<Map<String, Object?>> _objectList(Object? raw) {
+    if (raw is! List) {
+      return const <Map<String, Object?>>[];
+    }
+    return raw
+        .whereType<Map>()
+        .map((m) => m.cast<String, Object?>())
+        .toList(growable: false);
+  }
+
+  // ------------------------------------------------------------
+  // 加载 + 校验
+  // ------------------------------------------------------------
+
+  /// 从已解析的 JSON 映射构建目录。
+  ///
+  /// [files] 的键为 [ContentFiles] 中的文件名。
+  static ContentResult<ContentCatalog> load({
+    required Map<String, Map<String, Object?>> files,
+    required AssetManifest manifest,
+    String? expectedVersion,
+  }) {
+    final wantVersion =
+        expectedVersion ?? AssetManifest.requiredContentVersion;
+    final errors = <ContentError>[];
+
+    // ---- 0. 必需文件齐全 ----
+    for (final name in ContentFiles.required) {
+      if (!files.containsKey(name)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.fileMissing,
+            location: name,
+            message: '缺少必需的内容文件',
+          ),
+        );
+      }
+    }
+    if (errors.isNotEmpty) {
+      return ContentResult<ContentCatalog>.failure(errors);
+    }
+
+    // ---- 1. 版本一致 ----
+    for (final entry in files.entries) {
+      final version = entry.value['contentVersion'];
+      if (version != wantVersion) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.versionMismatch,
+            location: entry.key,
+            field: 'contentVersion',
+            message: '内容版本不符：期望 $wantVersion，实际 $version',
+          ),
+        );
+      }
+    }
+    if (errors.isNotEmpty) {
+      return ContentResult<ContentCatalog>.failure(errors);
+    }
+
+    final player = files[ContentFiles.player]!;
+    final weapons = files[ContentFiles.weapons]!;
+    final upgrades = files[ContentFiles.upgrades]!;
+    final enemies = files[ContentFiles.enemies]!;
+    final waves = files[ContentFiles.waves]!;
+    final riskGates = files[ContentFiles.riskGates]!;
+    final boss = files[ContentFiles.boss]!;
+    final stringsFile = files[ContentFiles.strings]!;
+
+    // ---- 2. 字符串表 ----
+    final strings = <String, String>{};
+    final rawStrings = stringsFile['strings'];
+    if (rawStrings is Map) {
+      for (final entry in rawStrings.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        if (key is! String || value is! String || value.trim().isEmpty) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.schemaViolation,
+              location: ContentFiles.strings,
+              field: '$key',
+              message: '文案必须是非空 UTF-8 文本',
+            ),
+          );
+          continue;
+        }
+        strings[key] = value;
+      }
+    }
+
+    // ---- 3. 资产 ID 交叉引用（通用扫描所有 *AssetId 字段）----
+    for (final entry in files.entries) {
+      _collectAssetReferences(
+        entry.value,
+        entry.key,
+        manifest,
+        errors,
+      );
+    }
+
+    // ---- 4. 数值合法性（负数 HP / 时间）----
+    for (final entry in files.entries) {
+      _rejectNegativeNumbers(entry.value, entry.key, errors);
+    }
+
+    // ---- 5. 升级卡：ID 唯一、前置存在、无循环、互斥有效、文案键存在 ----
+    final cards = ContentCatalog._objectList(upgrades['cards']);
+    final cardIds = <String>{};
+    for (final card in cards) {
+      final id = card['id'];
+      if (id is! String || id.isEmpty) {
+        errors.add(
+          const ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.upgrades,
+            field: 'cards[].id',
+            message: '升级卡缺少 id',
+          ),
+        );
+        continue;
+      }
+      if (!cardIds.add(id)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.invalidReference,
+            location: ContentFiles.upgrades,
+            field: id,
+            message: '升级卡 ID 重复',
+          ),
+        );
+      }
+      final maxLevel = card['maxLevel'];
+      if (maxLevel is! int || maxLevel < 1) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.upgrades,
+            assetId: id,
+            field: 'maxLevel',
+            message: 'maxLevel 必须是正整数',
+          ),
+        );
+      }
+      for (final keyField in <String>['nameKey', 'descKey']) {
+        final key = card[keyField];
+        if (key is! String || !strings.containsKey(key)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.upgrades,
+              assetId: id,
+              field: keyField,
+              message: '文案键不存在：$key',
+            ),
+          );
+        }
+      }
+    }
+
+    // 前置存在 + 排除存在
+    for (final card in cards) {
+      final id = card['id'];
+      if (id is! String) {
+        continue;
+      }
+      for (final prereq in _stringList(card['prerequisites'])) {
+        if (prereq == 'anyPulseCard') {
+          continue; // 语义前置，由 UpgradeSystem 解释
+        }
+        if (!cardIds.contains(prereq)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.upgrades,
+              assetId: id,
+              field: 'prerequisites',
+              message: '前置卡不存在：$prereq',
+            ),
+          );
+        }
+      }
+      for (final excluded in _stringList(card['excludes'])) {
+        if (!cardIds.contains(excluded)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.upgrades,
+              assetId: id,
+              field: 'excludes',
+              message: '互斥卡不存在：$excluded',
+            ),
+          );
+        }
+      }
+    }
+
+    // 循环前置检测（DFS）
+    final prereqMap = <String, List<String>>{
+      for (final card in cards)
+        if (card['id'] is String)
+          card['id'] as String: _stringList(card['prerequisites'])
+              .where(cardIds.contains)
+              .toList(),
+    };
+    for (final cycle in _findCycles(prereqMap)) {
+      errors.add(
+        ContentError(
+          kind: ContentErrorKind.invalidReference,
+          location: ContentFiles.upgrades,
+          field: 'prerequisites',
+          message: '存在循环前置：${cycle.join(' → ')}',
+        ),
+      );
+    }
+
+    // 保证卡集合本身不得互相排斥（协议：互斥卡同时被强制加入必须拒绝）
+    _checkForcedSetConflicts(
+      upgrades,
+      cardIds,
+      cards,
+      errors,
+    );
+
+    // ---- 6. 敌人：ID 唯一、越界伤害与得分字段非负 ----
+    final enemyIds = <String>{};
+    for (final enemy in ContentCatalog._objectList(enemies['enemies'])) {
+      final id = enemy['id'];
+      if (id is! String || id.isEmpty) {
+        errors.add(
+          const ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.enemies,
+            field: 'enemies[].id',
+            message: '敌人缺少 id',
+          ),
+        );
+        continue;
+      }
+      if (!enemyIds.add(id)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.invalidReference,
+            location: ContentFiles.enemies,
+            field: id,
+            message: '敌人 ID 重复',
+          ),
+        );
+      }
+    }
+
+    // 精英词缀 ID
+    final affixIds = <String>{
+      for (final affix in ContentCatalog._objectList(enemies['affixes']))
+        if (affix['id'] is String) affix['id'] as String,
+    };
+
+    // ---- 7. 波次：秒唯一、递增、敌人/词缀/风险门引用存在、单批不超预算 ----
+    final budget = waves['objectBudget'];
+    final enemyCap = budget is Map && budget['enemies'] is int
+        ? budget['enemies'] as int
+        : 45;
+
+    final gateIds = <String>{
+      for (final gate in ContentCatalog._objectList(riskGates['gates']))
+        if (gate['id'] is String) gate['id'] as String,
+    };
+
+    final waveRows = ContentCatalog._objectList(waves['waves']);
+    final seenSeconds = <int>{};
+    var previousSecond = -1;
+    for (final row in waveRows) {
+      final second = row['startSecond'];
+      if (second is! int) {
+        errors.add(
+          const ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.waves,
+            field: 'waves[].startSecond',
+            message: 'startSecond 必须是整数秒',
+          ),
+        );
+        continue;
+      }
+      if (!seenSeconds.add(second)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.invalidReference,
+            location: ContentFiles.waves,
+            field: 'startSecond',
+            message: '波次秒重复：$second',
+          ),
+        );
+      }
+      if (second < previousSecond) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.waves,
+            field: 'startSecond',
+            message: '波次必须按时间升序：$second 在 $previousSecond 之后',
+          ),
+        );
+      }
+      previousSecond = second;
+
+      var batchTotal = 0;
+      for (final spawn in ContentCatalog._objectList(row['spawns'])) {
+        final enemyId = spawn['enemyId'];
+        if (enemyId is! String || !enemyIds.contains(enemyId)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.waves,
+              field: 'spawns[].enemyId',
+              message: '未定义的敌人：$enemyId',
+            ),
+          );
+        }
+        final affixId = spawn['affixId'];
+        if (affixId != null && !affixIds.contains(affixId)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.waves,
+              field: 'spawns[].affixId',
+              message: '未定义的精英词缀：$affixId',
+            ),
+          );
+        }
+        final count = spawn['count'];
+        if (count is int) {
+          batchTotal += count;
+        }
+      }
+      final extraFromAdjustment = 2; // 动态校正最多 +1 × 两批
+      if (batchTotal + extraFromAdjustment > enemyCap) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.budgetExceeded,
+            location: ContentFiles.waves,
+            field: 'spawns',
+            message:
+                '第 $second 秒单批生成 $batchTotal（含动态校正上界后超过同屏上限 $enemyCap）',
+          ),
+        );
+      }
+
+      final gateId = row['riskGateId'];
+      if (gateId != null && !gateIds.contains(gateId)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.unknownReference,
+            location: ContentFiles.waves,
+            field: 'riskGateId',
+            message: '未定义的风险门：$gateId',
+          ),
+        );
+      }
+    }
+
+    // ---- 8. 风险门：超时保底必须存在且是选项之一 ----
+    final optionIds = <String>{
+      for (final option in ContentCatalog._objectList(riskGates['options']))
+        if (option['id'] is String) option['id'] as String,
+    };
+    for (final gate in ContentCatalog._objectList(riskGates['gates'])) {
+      final fallback = gate['timeoutFallback'];
+      if (fallback is! String || !optionIds.contains(fallback)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.unknownReference,
+            location: ContentFiles.riskGates,
+            assetId: gate['id'] is String ? gate['id'] as String : null,
+            field: 'timeoutFallback',
+            message: '保底选项不存在：$fallback',
+          ),
+        );
+      }
+      for (final optionId in _stringList(gate['optionIds'])) {
+        if (!optionIds.contains(optionId)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.riskGates,
+              assetId: gate['id'] is String ? gate['id'] as String : null,
+              field: 'optionIds',
+              message: '选项未定义：$optionId',
+            ),
+          );
+        }
+      }
+    }
+    // 过载卡的稀有池必须都是已定义的升级卡
+    for (final option in ContentCatalog._objectList(riskGates['options'])) {
+      final effect = option['effect'];
+      if (effect is Map) {
+        for (final poolId in _stringList(effect['pool'])) {
+          if (!cardIds.contains(poolId)) {
+            errors.add(
+              ContentError(
+                kind: ContentErrorKind.unknownReference,
+                location: ContentFiles.riskGates,
+                field: 'effect.pool',
+                message: '稀有池引用了未定义的升级卡：$poolId',
+              ),
+            );
+          }
+        }
+      }
+    }
+
+    // ---- 9. Boss：每个**造成伤害**的招式必须有预警；attackId 唯一 ----
+    final attackIds = <String>{};
+    for (final attack in ContentCatalog._objectList(boss['attacks'])) {
+      final attackId = attack['attackId'];
+      if (attackId is! String || attackId.isEmpty) {
+        errors.add(
+          const ContentError(
+            kind: ContentErrorKind.schemaViolation,
+            location: ContentFiles.boss,
+            field: 'attacks[].attackId',
+            message: 'Boss 招式缺少 attackId',
+          ),
+        );
+        continue;
+      }
+      if (!attackIds.add(attackId)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.invalidReference,
+            location: ContentFiles.boss,
+            field: attackId,
+            message: 'Boss 招式 attackId 重复',
+          ),
+        );
+      }
+
+      final dealsDamage = _attackDealsDamage(attack);
+      final telegraph = attack['telegraphSeconds'];
+      if (dealsDamage && (telegraph is! num || telegraph <= 0)) {
+        errors.add(
+          ContentError(
+            kind: ContentErrorKind.missingTelegraph,
+            location: ContentFiles.boss,
+            assetId: attackId,
+            field: 'telegraphSeconds',
+            message: '造成伤害的 Boss 招式必须有正数预警时长（产品基线 §3.3 公平性）',
+          ),
+        );
+      }
+    }
+
+    // 阶段循环引用的招式必须存在
+    for (final phase in ContentCatalog._objectList(boss['phases'])) {
+      for (final attackId in _stringList(phase['loop'])) {
+        if (!attackIds.contains(attackId)) {
+          errors.add(
+            ContentError(
+              kind: ContentErrorKind.unknownReference,
+              location: ContentFiles.boss,
+              assetId: phase['id'] is String ? phase['id'] as String : null,
+              field: 'loop',
+              message: '阶段引用了未定义的招式：$attackId',
+            ),
+          );
+        }
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      return ContentResult<ContentCatalog>.failure(errors);
+    }
+
+    return ContentResult<ContentCatalog>.success(
+      ContentCatalog(
+        contentVersion: wantVersion,
+        manifest: manifest,
+        player: player,
+        weapons: weapons,
+        upgrades: upgrades,
+        enemies: enemies,
+        waves: waves,
+        riskGates: riskGates,
+        boss: boss,
+        strings: Map<String, String>.unmodifiable(strings),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // 校验辅助
+  // ------------------------------------------------------------
+
+  /// 递归扫描所有以 `AssetId` 结尾的字段，确认其在 manifest 中存在。
+  static void _collectAssetReferences(
+    Object? node,
+    String location,
+    AssetManifest manifest,
+    List<ContentError> errors,
+  ) {
+    if (node is Map) {
+      for (final entry in node.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        if (key is String && key.endsWith('AssetId')) {
+          if (value is String) {
+            final id = AssetId.tryParse(value);
+            if (id == null || !manifest.contains(id)) {
+              errors.add(
+                ContentError(
+                  kind: ContentErrorKind.unknownReference,
+                  location: location,
+                  field: key,
+                  message: '引用了 manifest 中不存在的资源：$value',
+                ),
+              );
+            }
+          } else if (value != null) {
+            errors.add(
+              ContentError(
+                kind: ContentErrorKind.schemaViolation,
+                location: location,
+                field: key,
+                message: 'AssetId 字段必须是字符串或 null',
+              ),
+            );
+          }
+        }
+        _collectAssetReferences(value, location, manifest, errors);
+      }
+    } else if (node is List) {
+      for (final item in node) {
+        _collectAssetReferences(item, location, manifest, errors);
+      }
+    }
+  }
+
+  /// 递归拒绝负数的 HP / 时间类字段。
+  static void _rejectNegativeNumbers(
+    Object? node,
+    String location,
+    List<ContentError> errors,
+  ) {
+    if (node is Map) {
+      for (final entry in node.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        if (key is String && value is num && value < 0) {
+          final looksLikeHpOrTime = key.toLowerCase().contains('hp') ||
+              key.toLowerCase().contains('health') ||
+              key.toLowerCase().contains('second') ||
+              key.toLowerCase().contains('time') ||
+              key.toLowerCase().contains('duration') ||
+              key.toLowerCase().contains('damage');
+          if (looksLikeHpOrTime) {
+            errors.add(
+              ContentError(
+                kind: ContentErrorKind.schemaViolation,
+                location: location,
+                field: key,
+                message: 'HP / 时间类字段不得为负：$value',
+              ),
+            );
+          }
+        }
+        _rejectNegativeNumbers(value, location, errors);
+      }
+    } else if (node is List) {
+      for (final item in node) {
+        _rejectNegativeNumbers(item, location, errors);
+      }
+    }
+  }
+
+  /// 保证卡集合内部不得互相排斥。
+  ///
+  /// 协议 §1.1：「互斥卡同时被强制加入」必须被拒绝。
+  /// 例如把 `UP-LASER-UNLOCK` 与 `UP-DRONE-UNLOCK` 同时写进同一保证组
+  /// 会让候选生成无解，这类配置必须在加载期暴露。
+  static void _checkForcedSetConflicts(
+    Map<String, Object?> upgrades,
+    Set<String> cardIds,
+    List<Map<String, Object?>> cards,
+    List<ContentError> errors,
+  ) {
+    final excludesOf = <String, Set<String>>{
+      for (final card in cards)
+        if (card['id'] is String)
+          card['id'] as String: _stringList(card['excludes']).toSet(),
+    };
+
+    void checkGroup(List<String> group, String label) {
+      for (var i = 0; i < group.length; i++) {
+        for (var j = i + 1; j < group.length; j++) {
+          final a = group[i];
+          final b = group[j];
+          if (excludesOf[a]?.contains(b) == true ||
+              excludesOf[b]?.contains(a) == true) {
+            errors.add(
+              ContentError(
+                kind: ContentErrorKind.invalidReference,
+                location: ContentFiles.upgrades,
+                field: label,
+                message: '互斥卡被同时强制加入：$a 与 $b',
+              ),
+            );
+          }
+        }
+      }
+    }
+
+    final guaranteed = upgrades['guaranteed'];
+    if (guaranteed is Map) {
+      checkGroup(
+        _stringList(guaranteed['firstDraft']),
+        'guaranteed.firstDraft',
+      );
+      checkGroup(
+        _stringList(guaranteed['secondDraftAnyOf']),
+        'guaranteed.secondDraftAnyOf',
+      );
+    }
+  }
+
+  /// 找出前置图中的所有环。
+  static List<List<String>> _findCycles(Map<String, List<String>> graph) {
+    final cycles = <List<String>>[];
+    final state = <String, int>{}; // 0=未访问 1=访问中 2=完成
+    final stack = <String>[];
+
+    void visit(String node) {
+      final current = state[node] ?? 0;
+      if (current == 2) {
+        return;
+      }
+      if (current == 1) {
+        final start = stack.indexOf(node);
+        if (start >= 0) {
+          cycles.add(<String>[...stack.sublist(start), node]);
+        }
+        return;
+      }
+      state[node] = 1;
+      stack.add(node);
+      for (final next in graph[node] ?? const <String>[]) {
+        visit(next);
+      }
+      stack.removeLast();
+      state[node] = 2;
+    }
+
+    for (final node in graph.keys) {
+      visit(node);
+    }
+    return cycles;
+  }
+
+  /// 该 Boss 招式是否会造成伤害（决定它是否必须有预警）。
+  static bool _attackDealsDamage(Map<String, Object?> attack) {
+    final projectile = attack['projectile'];
+    if (projectile is Map && (projectile['damage'] as num?) != null) {
+      final damage = projectile['damage'] as num;
+      if (damage > 0) {
+        return true;
+      }
+    }
+    for (final key in <String>['damage', 'damagePerTick', 'contactDamage']) {
+      final value = attack[key];
+      if (value is num && value > 0) {
+        return true;
+      }
+    }
+    // 召唤类招式自身不造成伤害，它召唤的实体按各自规则处理。
+    return false;
+  }
+
+  static List<String> _stringList(Object? raw) {
+    if (raw is! List) {
+      return const <String>[];
+    }
+    return raw.whereType<String>().toList(growable: false);
+  }
+}

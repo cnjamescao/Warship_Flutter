@@ -1,0 +1,85 @@
+{
+  "id": "waves_normal",
+  "contentVersion": "2.0.4-release",
+  "difficulty": "normal",
+
+  "spawn": {
+    "y": -80,
+    "xPoints": [240, 480, 720, 960, 1200, 1440, 1680],
+    "minDistanceFromPlayerX": 360,
+    "deferMaxSeconds": 1.0,
+    "oneRowPerWindowAtStart": true
+  },
+
+  "dynamicAdjustment": {
+    "evaluateIntervalSeconds": 10.0,
+    "affectsNextBatchCount": 2,
+    "minimumUpgradeCountBySecond": [
+      { "fromSecond": 0, "toSecond": 19.99, "minimumUpgrades": 0 },
+      { "fromSecond": 20, "toSecond": 44.99, "minimumUpgrades": 1 },
+      { "fromSecond": 45, "toSecond": 74.99, "minimumUpgrades": 2 },
+      { "fromSecond": 75, "toSecond": 104.99, "minimumUpgrades": 3 },
+      { "fromSecond": 105, "toSecond": 134.99, "minimumUpgrades": 4 },
+      { "fromSecond": 135, "toSecond": 150, "minimumUpgrades": 5 }
+    ],
+    "reduceWhen": {
+      "hpAtOrBelow": 35,
+      "hpDamageInLast15sAtLeast": 30,
+      "scoutDelta": -1,
+      "fallbackToWing": true,
+      "wingDeltaIfNoScout": -1,
+      "appliesToFixedElitesOrBoss": false
+    },
+    "increaseWhen": {
+      "hpAtOrAbove": 80,
+      "hpDamageInLast15s": 0,
+      "requiresMinimumUpgradeCount": true,
+      "scoutDelta": 1,
+      "totalEnemyCap": 45
+    },
+    "mustNotChange": ["enemyType", "elite", "riskGate", "telegraphDuration", "boss"]
+  },
+
+  "objectBudget": {
+    "enemies": 45,
+    "enemyProjectiles": 90,
+    "playerProjectiles": 120,
+    "particles": 180,
+    "damageNumbers": 20,
+    "rejectLowestPriorityFirst": true
+  },
+
+  "waves": [
+    { "startSecond": 0, "spawns": [{ "enemyId": "EN-SCOUT", "count": 3, "formation": "line", "centerX": 960 }], "note": "教学", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 5, "spawns": [{ "enemyId": "EN-SCOUT", "count": 4, "formation": "mirroredDiagonal" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 10, "spawns": [{ "enemyId": "EN-SCOUT", "count": 5, "formation": "wideV" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 15, "spawns": [{ "enemyId": "EN-SCOUT", "count": 4, "formation": "alternating" }], "note": "第一次升级应已触发", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 20, "spawns": [{ "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 25, "spawns": [{ "enemyId": "EN-SCOUT", "count": 5, "formation": "crossDiagonal" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 30, "spawns": [{ "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }, { "enemyId": "EN-SCOUT", "count": 3, "formation": "line" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 35, "spawns": [{ "enemyId": "EN-SCOUT", "count": 6, "formation": "wideV" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 40, "spawns": [{ "enemyId": "EN-WING", "count": 3, "formation": "mirroredV" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 45, "spawns": [{ "enemyId": "EN-SNIPER", "count": 1, "formation": "center" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "note": "首次预警", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 50, "spawns": [{ "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }, { "enemyId": "EN-SCOUT", "count": 3, "formation": "horizontalWave" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 55, "spawns": [], "riskGateId": "RG-55", "note": "风险门 1，结束后继续", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": true },
+    { "startSecond": 60, "spawns": [{ "enemyId": "EN-SCOUT", "count": 6, "formation": "wideV" }, { "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }], "note": "双队形", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 65, "spawns": [{ "enemyId": "EN-WING", "count": 1, "isElite": true, "affixId": "AFFIX-ACCEL", "formation": "center" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "note": "精英居中，加速词缀", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": false },
+    { "startSecond": 70, "spawns": [{ "enemyId": "EN-BOMBER", "count": 1, "formation": "center" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 75, "spawns": [{ "enemyId": "EN-SNIPER", "count": 2, "formation": "mirroredSides" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 80, "spawns": [{ "enemyId": "EN-SHIELD", "count": 1, "formation": "center" }, { "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 85, "spawns": [{ "enemyId": "EN-BOMBER", "count": 1, "formation": "offsetSide" }, { "enemyId": "EN-SCOUT", "count": 5, "formation": "wideV" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 90, "spawns": [{ "enemyId": "EN-SNIPER", "count": 1, "formation": "center" }, { "enemyId": "EN-WING", "count": 3, "formation": "triangle" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 95, "spawns": [{ "enemyId": "EN-SHIELD", "count": 1, "formation": "offsetSide" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 100, "spawns": [{ "enemyId": "EN-BOMBER", "count": 1, "formation": "diagonal" }, { "enemyId": "EN-SNIPER", "count": 1, "formation": "diagonal" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 105, "spawns": [{ "enemyId": "EN-SNIPER", "count": 1, "isElite": true, "affixId": "AFFIX-SHIELD", "formation": "center" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "note": "精英居中，护体词缀", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": false },
+    { "startSecond": 110, "spawns": [{ "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }, { "enemyId": "EN-SHIELD", "count": 1, "formation": "center" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 115, "spawns": [], "riskGateId": "RG-115", "note": "风险门 2，结束后继续", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": true },
+    { "startSecond": 120, "spawns": [{ "enemyId": "EN-BOMBER", "count": 1, "formation": "center" }, { "enemyId": "EN-WING", "count": 3, "formation": "vFormation" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 125, "spawns": [{ "enemyId": "EN-SNIPER", "count": 2, "formation": "mirroredSides" }, { "enemyId": "EN-SCOUT", "count": 4, "formation": "line" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 130, "spawns": [{ "enemyId": "EN-SHIELD", "count": 1, "isElite": true, "affixId": "AFFIX-BARRAGE", "formation": "center" }, { "enemyId": "EN-SCOUT", "count": 5, "formation": "wideV" }], "note": "精英居中，弹幕词缀", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": false },
+    { "startSecond": 135, "spawns": [{ "enemyId": "EN-BOMBER", "count": 1, "formation": "layered" }, { "enemyId": "EN-SNIPER", "count": 1, "formation": "layered" }, { "enemyId": "EN-WING", "count": 3, "formation": "layered" }], "note": "分层进入", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 140, "spawns": [{ "enemyId": "EN-SHIELD", "count": 2, "formation": "splitSides" }], "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 145, "spawns": [{ "enemyId": "EN-SCOUT", "count": 8, "formation": "wideV" }], "note": "Boss 前最后一波", "dynamicAdjustmentAllowed": true, "clearEnemyBullets": false },
+    { "startSecond": 150, "spawns": [], "bossEntry": true, "note": "清理普通敌弹、战前补给、Boss 入场；不再生成普通敌人", "dynamicAdjustmentAllowed": false, "clearEnemyBullets": true }
+  ]
+}
