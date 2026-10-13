@@ -26,6 +26,7 @@ import 'package:flutter/material.dart' hide Image;
 import '../content/asset_manifest.dart';
 import '../core/game_runtime.dart';
 import '../core/render_snapshot.dart';
+import '../infrastructure/performance_monitor.dart';
 import 'asset_cache.dart';
 import 'input_gateway.dart';
 
@@ -41,7 +42,8 @@ class WarshipV2Game extends FlameGame {
     required this.visualAssets,
     this.onSnapshot,
     this.onFrame,
-  });
+    PerformanceMonitor? performance,
+  }) : performance = performance ?? PerformanceMonitor();
 
   final GameRuntime runtime;
   final KeyboardInputGateway input;
@@ -55,6 +57,9 @@ class WarshipV2Game extends FlameGame {
 
   /// 每帧结束后的回调（上层用它判断对局是否结束）。
   final VoidCallback? onFrame;
+
+  /// 帧时间采样与降级决策。
+  final PerformanceMonitor performance;
 
   late final BattlefieldComponent _battlefield;
 
@@ -77,12 +82,17 @@ class WarshipV2Game extends FlameGame {
     // 预载 firstRun 分组（协议 §7）。单张失败不阻断，走矢量占位。
     await visualAssets.loadGroup(AssetLoadGroup.firstRun);
 
-    _battlefield = BattlefieldComponent(runtime: runtime, assets: visualAssets);
+    _battlefield = BattlefieldComponent(runtime: runtime, assets: visualAssets)
+      ..degradation = performance.level;
     world.add(_battlefield);
   }
 
   @override
   void update(double dt) {
+    // 0. 帧时间采样 → 降级决策（产品基线 §2 的 95%/99% 预算）。
+    performance.recordFrame(dt);
+    _battlefield.degradation = performance.level;
+
     // 1. 取本帧输入（锁定后交给运行时）。
     final frame = input.consume();
 
@@ -107,6 +117,12 @@ class BattlefieldComponent extends Component {
   final GameRuntime runtime;
   final VisualAssetCache assets;
   RenderSnapshot snapshot = RenderSnapshot.empty;
+
+  /// 当前允许的视觉档位（由 PerformanceMonitor 决定）。
+  ///
+  /// 降级顺序：星云 → 非关键粒子 → 命中碎片 → 伤害数字。
+  /// **预警、HUD、碰撞与 Boss 弱点永不降级**（产品基线 §2）。
+  DegradationLevel degradation = DegradationLevel.none;
 
   /// 精灵绘制尺寸相对碰撞半径的放大系数。
   ///
@@ -171,11 +187,17 @@ class BattlefieldComponent extends Component {
   }
 
   void _drawBackground(Canvas canvas) {
-    // 深空底色 + 参考网格（纯表现，不参与碰撞）。
+    // 深空底色永远是第一层，**不参与降级** ——
+    // 没有它画面会失去对比度，直接影响可读性（等于削弱预警）。
     canvas.drawRect(
       const Rect.fromLTWH(0, 0, kLogicalWidth, kLogicalHeight),
       Paint()..color = const Color(0xFF05030F),
     );
+
+    // 参考网格属于"星云"层，是最先被牺牲的表现（降级顺序第 1 档）。
+    if (!degradation.allows(DegradationLevel.none)) {
+      return;
+    }
     final grid = Paint()
       ..color = const Color(0x14C64BFF)
       ..strokeWidth = 1;
@@ -281,8 +303,14 @@ class BattlefieldComponent extends Component {
   }
 
   /// 敌人血条（表现层：受性能上限控制，不参与规则）。
+  ///
+  /// 它属于"非关键粒子"档位之后才被牺牲的装饰 —— 但只要还有余量就画，
+  /// 因为它帮助玩家判断该打谁。
   void _drawEnemyHealthBar(Canvas canvas, EntityView enemy, Offset center) {
     if (enemy.hpRatio >= 1.0) {
+      return;
+    }
+    if (!degradation.allows(DegradationLevel.particles)) {
       return;
     }
     final barWidth = enemy.radius * 1.6;

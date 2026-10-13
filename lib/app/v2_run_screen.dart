@@ -98,8 +98,13 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // 技术架构 §3.1：inactive/paused/detached 与浏览器 hidden 提交同一个
     // PauseRequested 命令；恢复不自动继续。
+    //
+    // `hidden` 是 Flutter 对浏览器 `visibilitychange(hidden)` 的映射
+    // （切标签页、最小化、锁屏）。它与 inactive/paused 走**完全相同**的
+    // 分支，不区分平台 —— 这样就不会出现"某个平台忘了暂停"的漏洞。
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
         state == AppLifecycleState.detached) {
       _clearInputAndPause();
     }
