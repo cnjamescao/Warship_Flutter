@@ -181,6 +181,25 @@ class DraftView {
   final List<DraftCardView> cards;
 }
 
+/// 风险门的显示数据。
+class RiskGateView {
+  const RiskGateView({
+    required this.gateId,
+    required this.remainingSeconds,
+    required this.availableOptionIds,
+    required this.lockedOptionIds,
+  });
+
+  final String gateId;
+  final double remainingSeconds;
+
+  /// 可选项（顺序即 UI 顺序）。过载不可用时**不在此列表**。
+  final List<String> availableOptionIds;
+
+  /// 显示为锁定、不可选的项（HP ≤35 时的过载）。
+  final List<String> lockedOptionIds;
+}
+
 /// 一帧的完整只读快照。
 class RenderSnapshot {
   const RenderSnapshot({
@@ -192,6 +211,7 @@ class RenderSnapshot {
     required this.hazards,
     required this.hud,
     this.upgradeDraft,
+    this.riskGate,
     required this.isPlayerInvulnerable,
     required this.activeEnemyCount,
     required this.isBossActive,
@@ -207,6 +227,7 @@ class RenderSnapshot {
     hazards: <HazardView>[],
     hud: null,
     upgradeDraft: null,
+    riskGate: null,
     isPlayerInvulnerable: false,
     activeEnemyCount: 0,
     isBossActive: false,
@@ -222,6 +243,9 @@ class RenderSnapshot {
 
   /// 当前的升级草案；null 表示不在选卡状态。
   final DraftView? upgradeDraft;
+
+  /// 当前的风险门；null 表示不在风险门状态。
+  final RiskGateView? riskGate;
 
   final bool isPlayerInvulnerable;
   final int activeEnemyCount;

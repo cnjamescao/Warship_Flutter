@@ -418,3 +418,35 @@ class DashReady extends DomainEvent {
   @override
   String get eventType => 'DashReady';
 }
+
+/// 风险门开启（产品基线 §7.1）。
+class RiskGateOpened extends DomainEvent {
+  const RiskGateOpened({
+    required this.gateId,
+    required this.availableOptionIds,
+    required this.lockedOptionIds,
+  });
+
+  final String gateId;
+  final List<String> availableOptionIds;
+  final List<String> lockedOptionIds;
+
+  @override
+  String get eventType => 'RiskGateOpened';
+}
+
+/// 风险门选定（含超时保底，`wasTimeout` 为 true）。
+class RiskSelected extends DomainEvent {
+  const RiskSelected({
+    required this.gateId,
+    required this.optionId,
+    required this.wasTimeout,
+  });
+
+  final String gateId;
+  final String optionId;
+  final bool wasTimeout;
+
+  @override
+  String get eventType => 'RiskSelected';
+}

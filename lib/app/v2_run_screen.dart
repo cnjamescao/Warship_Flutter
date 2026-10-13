@@ -113,6 +113,14 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     }
   }
 
+  /// 选择风险门选项（产品基线 §7.1）。
+  void _selectRisk(String optionId) {
+    final runtime = widget.runtime;
+    if (runtime.selectRiskOption(optionId)) {
+      setState(() => _snapshot = runtime.snapshot());
+    }
+  }
+
   void _clearInputAndPause() {
     widget.input.clear();
     final event = widget.runtime.phases.requestPause(PauseSource.appLifecycle);
@@ -167,6 +175,8 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
                     viewport: viewport,
                     draft: _snapshot.upgradeDraft,
                     onSelectCard: _selectCard,
+                    riskGate: _snapshot.riskGate,
+                    onSelectRisk: _selectRisk,
                     onPause: _clearInputAndPause,
                     onResume: () {
                       widget.runtime.phases.requestResume();
@@ -194,6 +204,8 @@ class _HudOverlay extends StatelessWidget {
     this.onQuitToHome,
     this.draft,
     this.onSelectCard,
+    this.riskGate,
+    this.onSelectRisk,
   });
 
   final HudView hud;
@@ -204,6 +216,8 @@ class _HudOverlay extends StatelessWidget {
   final VoidCallback? onQuitToHome;
   final DraftView? draft;
   final void Function(int index)? onSelectCard;
+  final RiskGateView? riskGate;
+  final void Function(String optionId)? onSelectRisk;
 
   /// 逻辑坐标 → 屏幕坐标。
   Offset _toScreen(double x, double y) {
@@ -269,6 +283,12 @@ class _HudOverlay extends StatelessWidget {
           kHudSafeArea.bottom,
           _DashIndicator(hud: hud, scale: scale),
         ),
+        if (riskGate != null && onSelectRisk != null)
+          _RiskGateOverlay(
+            gate: riskGate!,
+            scale: scale,
+            onSelect: onSelectRisk!,
+          ),
         if (draft != null && onSelectCard != null)
           _DraftOverlay(
             draft: draft!,
@@ -584,6 +604,173 @@ class _IconButton extends StatelessWidget {
             border: Border.all(color: const Color(0x55FFFFFF)),
           ),
           child: Icon(icon, color: Colors.white, size: 26 * scale),
+        ),
+      ),
+    );
+  }
+}
+
+/// 风险门覆盖层。
+///
+/// 5 秒选择窗口；未选择或窗口外点击一律执行保底（`RG-SUPPLY`）。
+/// HP ≤35 时过载**可见但锁定**，且不进入可选项列表。
+class _RiskGateOverlay extends StatelessWidget {
+  const _RiskGateOverlay({
+    required this.gate,
+    required this.scale,
+    required this.onSelect,
+  });
+
+  final RiskGateView gate;
+  final double scale;
+  final void Function(String optionId) onSelect;
+
+  static const Map<String, String> _labels = <String, String>{
+    'RG-SUPPLY': '保底补给',
+    'RG-BOUNTY': '高额赏金',
+    'RG-OVERLOAD': '过载核心',
+  };
+
+  static const Map<String, String> _descriptions = <String, String>{
+    'RG-SUPPLY': '护盾 +20，生命 +8',
+    'RG-BOUNTY': '下一个精英额外掉落核心，代价是它更强',
+    'RG-OVERLOAD': '立即三选一稀有强化，20 秒内受伤加重',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: ColoredBox(
+        color: const Color(0xE605030F),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '风险门',
+              style: TextStyle(
+                color: const Color(0xFFFFC24B),
+                fontSize: 34 * scale,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 8,
+              ),
+            ),
+            SizedBox(height: 6 * scale),
+            Text(
+              '未选择将执行保底 · ${gate.remainingSeconds.toStringAsFixed(1)} 秒',
+              style: TextStyle(color: Colors.white54, fontSize: 15 * scale),
+            ),
+            SizedBox(height: 28 * scale),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                for (var i = 0; i < gate.availableOptionIds.length; i++)
+                  ...<Widget>[
+                    if (i > 0) SizedBox(width: 20 * scale),
+                    _RiskOptionCard(
+                      optionId: gate.availableOptionIds[i],
+                      label: _labels[gate.availableOptionIds[i]] ??
+                          gate.availableOptionIds[i],
+                      description:
+                          _descriptions[gate.availableOptionIds[i]] ?? '',
+                      scale: scale,
+                      onTap: () =>
+                          onSelect(gate.availableOptionIds[i]),
+                    ),
+                  ],
+                for (final locked in gate.lockedOptionIds) ...<Widget>[
+                  SizedBox(width: 20 * scale),
+                  _RiskOptionCard(
+                    optionId: locked,
+                    label: _labels[locked] ?? locked,
+                    description: '当前生命过低，不可选择',
+                    scale: scale,
+                    locked: true,
+                    onTap: null,
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RiskOptionCard extends StatelessWidget {
+  const _RiskOptionCard({
+    required this.optionId,
+    required this.label,
+    required this.description,
+    required this.scale,
+    this.locked = false,
+    this.onTap,
+  });
+
+  final String optionId;
+  final String label;
+  final String description;
+  final double scale;
+  final bool locked;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = locked
+        ? const Color(0xFF555555)
+        : optionId == 'RG-SUPPLY'
+        ? const Color(0xFF3FE0FF)
+        : optionId == 'RG-BOUNTY'
+        ? const Color(0xFFFFC24B)
+        : const Color(0xFFFF5C8A);
+
+    return Semantics(
+      button: !locked,
+      enabled: !locked,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 260 * scale,
+          height: 200 * scale,
+          padding: EdgeInsets.all(18 * scale),
+          decoration: BoxDecoration(
+            color: const Color(0xFF120A26),
+            borderRadius: BorderRadius.circular(14 * scale),
+            border: Border.all(color: color, width: 2 * scale),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 20 * scale,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10 * scale),
+              Expanded(
+                child: Text(
+                  description,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14 * scale,
+                  ),
+                ),
+              ),
+              if (locked)
+                Text(
+                  '锁定',
+                  style: TextStyle(
+                    color: const Color(0xFF888888),
+                    fontSize: 13 * scale,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

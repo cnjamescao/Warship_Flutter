@@ -25,6 +25,7 @@ import '../domain/damage.dart';
 import '../domain/director_system.dart';
 import '../domain/enemy_system.dart';
 import '../domain/player_system.dart';
+import '../domain/risk_gate_system.dart';
 import '../domain/upgrade_system.dart';
 import '../domain/values.dart';
 import '../domain/weapon_system.dart';
@@ -150,6 +151,7 @@ class GameRuntime {
     this.breachEliteHpDamage = 15,
     this.upgradeSystem,
     this.bossSystem,
+    this.riskGateSystem,
   })  : player = PlayerState(
           tuning: tuning ?? PlayerTuning.fromConfig(catalogPlayer),
         );
@@ -175,6 +177,24 @@ class GameRuntime {
 
   /// Boss 系统（可为 null 表示本局不启用 Boss）。
   final BossSystem? bossSystem;
+
+  /// 风险门系统（可为 null 表示本局不启用风险门）。
+  final RiskGateSystem? riskGateSystem;
+
+  /// 进行中的风险门；null 表示没有。
+  RiskGateSession? riskGate;
+
+  /// 已打开过的风险门 ID（每道只开一次）。
+  final Set<String> openedRiskGates = <String>{};
+
+  /// 过载代价（所受最终伤害 ×1.15，20 秒）。
+  final OverloadPenalty overloadPenalty = OverloadPenalty(
+    multiplier: 1.15,
+    durationSeconds: 20.0,
+  );
+
+  /// 赏金挂起效果（下一个固定精英额外 1 核心、HP ×1.25）。
+  final BountyPending bountyPending = BountyPending();
 
   /// 当前 Boss；null 表示尚未入场。
   BossState? boss;
@@ -244,6 +264,12 @@ class GameRuntime {
       throw StateError('GameRuntime.advance 不可重入');
     }
     _lockedInput = input;
+
+    // 风险门：窗口按表现时间推进，但战斗逻辑完全冻结。
+    if (phases.phase == GamePhase.riskGate) {
+      _updateRiskGate(renderDeltaSeconds, _lockedInput.riskSelection);
+      return 0;
+    }
 
     // 升级草案：只接受选卡，逻辑完全冻结。
     if (phases.phase == GamePhase.upgradeDraft) {
@@ -333,7 +359,10 @@ class GameRuntime {
     _updateEnemies(dt);
     _updateHazards(dt);
 
-    // 5b. Boss 推进（入场 → 阶段 → 招式循环）。
+    // 5b. 过载代价计时（20 秒内所受最终伤害 ×1.15）。
+    overloadPenalty.tick(dt);
+
+    // 5c. Boss 推进（入场 → 阶段 → 招式循环）。
     _updateBoss(dt);
     _updateBossLaser(dt);
 
@@ -373,6 +402,16 @@ class GameRuntime {
       if (trigger.row.isBossEntry) {
         _startBossFight();
         continue;
+      }
+      // 风险门行：清普通敌弹、停新敌生成，进入选择窗口。
+      if (trigger.row.isRiskGate) {
+        _openRiskGate(trigger.row.riskGateId!);
+        continue;
+      }
+      // 带 clearEnemyBullets 的行（两道风险门都是）：先清弹。
+      if (trigger.row.clearEnemyBullets) {
+        projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
+        hazards.clear();
       }
       if (trigger.spawns.isEmpty) {
         continue;
@@ -572,6 +611,167 @@ class GameRuntime {
           invulnerable: false,
           nowSeconds: combatSeconds,
         );
+      }
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 风险门（产品基线 §7.1）
+  // ------------------------------------------------------------
+
+  /// 打开一道风险门。
+  ///
+  /// 出现前清除所有普通敌弹、停止新敌生成；**玩家位置不锁定**。
+  void _openRiskGate(String gateId) {
+    final system = riskGateSystem;
+    if (system == null || !openedRiskGates.add(gateId)) {
+      return;
+    }
+
+    projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
+    hazards.clear();
+
+    // 过载的可选项＝稀有池 ∩ 当前可用卡（满级/互斥/前置不满足的要过滤）。
+    final rarePool = <String>[];
+    final upgrades = upgradeSystem;
+    if (upgrades != null) {
+      final available = upgrades.availableCards(upgradeState).toSet();
+      for (final id in system.overloadRarePool) {
+        if (available.contains(id)) {
+          rarePool.add(id);
+        }
+      }
+    }
+
+    final session = system.open(
+      gateId: gateId,
+      playerHp: player.health.current,
+      availableRareCards: rarePool,
+    );
+    riskGate = session;
+
+    final event = phases.transitionTo(GamePhase.riskGate, reason: 'riskGate');
+    if (event != null) {
+      bus.emit(event, runtime);
+    }
+    bus.emit(
+      RiskGateOpened(
+        gateId: gateId,
+        availableOptionIds: session.availableOptions,
+        lockedOptionIds: session.lockedOptions,
+      ),
+      runtime,
+    );
+  }
+
+  /// 推进风险门窗口（用**表现时间**，因为战斗逻辑已冻结）。
+  void _updateRiskGate(double dt, String? selection) {
+    final session = riskGate;
+    if (session == null || session.isResolved) {
+      return;
+    }
+    if (selection != null) {
+      final outcome = session.select(selection);
+      if (outcome != null) {
+        _applyRiskOutcome(outcome);
+      }
+      return;
+    }
+    final outcome = session.tick(dt);
+    if (outcome != null) {
+      _applyRiskOutcome(outcome);
+    }
+  }
+
+  /// 玩家选择一个选项（供界面直接调用）。
+  bool selectRiskOption(String optionId) {
+    final session = riskGate;
+    if (session == null || session.isResolved) {
+      return false;
+    }
+    final outcome = session.select(optionId);
+    if (outcome == null) {
+      return false;
+    }
+    _applyRiskOutcome(outcome);
+    return true;
+  }
+
+  void _applyRiskOutcome(RiskGateOutcome outcome) {
+    final effect = outcome.effect;
+
+    // RG-SUPPLY：护盾 +20、HP +8（均封顶）。
+    if (effect.shieldGrant > 0) {
+      player.shield.restore(effect.shieldGrant);
+    }
+    if (effect.hpGrant > 0) {
+      player.health.heal(effect.hpGrant);
+    }
+
+    // RG-BOUNTY：挂起到下一个固定精英。
+    if (effect.extraEliteCore > 0) {
+      bountyPending.arm(
+        extraCores: effect.extraEliteCore,
+        hpMultiplier: effect.nextEliteHpMultiplier,
+      );
+    }
+
+    // RG-OVERLOAD：立即三选一 + 20 秒受伤加重。
+    if (effect.damageTakenMultiplier > 1.0) {
+      overloadPenalty.activate();
+    }
+
+    bus.emit(
+      RiskSelected(
+        gateId: outcome.gateId,
+        optionId: outcome.optionId,
+        wasTimeout: outcome.wasTimeout,
+      ),
+      runtime,
+    );
+    bus.emit(
+      PlayerVitalStateChanged(
+        hp: player.health.current,
+        hpMax: player.health.max,
+        shield: player.shield.current,
+        shieldMax: player.shield.max,
+        cause: 'riskGate:${outcome.optionId}',
+      ),
+      runtime,
+    );
+
+    riskGate = null;
+    final event = phases.transitionTo(GamePhase.playing, reason: 'riskResolved');
+    if (event != null) {
+      bus.emit(event, runtime);
+    }
+
+    // 过载给的稀有卡走一次即时草案（若池为空则跳过）。
+    if (effect.rareDraftPool.isNotEmpty && upgradeSystem != null) {
+      final offer = upgradeSystem!.generateDraft(
+        state: upgradeState,
+        rng: random,
+        context: DraftContext(
+          combatSeconds: combatSeconds,
+          xp: xp,
+          damageCardIds: upgradeSystem!.damageCardIds,
+        ),
+      );
+      if (offer != null) {
+        currentOffer = DraftOffer(
+          candidates: List<String>.unmodifiable(
+            effect.rareDraftPool.take(upgradeSystem!.draftSize).toList(),
+          ),
+          guaranteed: const <String>[],
+          draftIndex: offer.draftIndex,
+        );
+        final draftEvent = phases.transitionTo(
+          GamePhase.upgradeDraft,
+          reason: 'overloadRareDraft',
+        );
+        if (draftEvent != null) {
+          bus.emit(draftEvent, runtime);
+        }
       }
     }
   }
@@ -1021,7 +1221,21 @@ class GameRuntime {
     }
 
     // 合并同帧伤害后逐条结算（伤害顺序由 DamageSystem 保证）。
-    for (final intent in DamageSystem.mergeSameFrame(intents)) {
+    // 过载代价在**最终伤害**上施加（产品基线 §7.1）。
+    for (final raw in DamageSystem.mergeSameFrame(intents)) {
+      final intent = overloadPenalty.isActive
+          ? DamageIntent(
+              sourceId: raw.sourceId,
+              targetId: raw.targetId,
+              damageType: raw.damageType,
+              rawDamage: overloadPenalty.apply(raw.rawDamage),
+              frameIndex: raw.frameIndex,
+              hitKey: raw.hitKey,
+              isCritical: raw.isCritical,
+              attackId: raw.attackId,
+              sourceType: raw.sourceType,
+            )
+          : raw;
       final result = damageSystem.applyToPlayer(
         intent: intent,
         health: player.health,
@@ -1452,6 +1666,14 @@ class GameRuntime {
       enemies: List<EntityView>.unmodifiable(enemyViews),
       projectiles: List<EntityView>.unmodifiable(projectileViews),
       hazards: List<HazardView>.unmodifiable(hazardViews),
+      riskGate: riskGate == null || riskGate!.isResolved
+          ? null
+          : RiskGateView(
+              gateId: riskGate!.gateId,
+              remainingSeconds: riskGate!.remainingSeconds,
+              availableOptionIds: riskGate!.availableOptions,
+              lockedOptionIds: riskGate!.lockedOptions,
+            ),
       upgradeDraft: currentOffer == null
           ? null
           : DraftView(
@@ -1505,6 +1727,10 @@ class GameRuntime {
     _removals.clear();
     boss = null;
     bossEntryTriggered = false;
+    riskGate = null;
+    openedRiskGates.clear();
+    overloadPenalty.reset();
+    bountyPending.reset();
     _activeLaser = null;
     damageSystem.reset();
     collisionSystem.reset();

@@ -24,6 +24,7 @@ import '../game/core/random_source.dart';
 import '../game/core/run_context.dart';
 import '../game/domain/director_system.dart';
 import '../game/domain/enemy_system.dart';
+import '../game/domain/risk_gate_system.dart';
 import '../game/domain/upgrade_system.dart';
 import '../game/domain/weapon_system.dart';
 import '../game/infrastructure/asset_loader.dart';
@@ -156,6 +157,7 @@ class V2Bootstrap {
       breachNormalHpDamage: (breach['normalHpDamage'] as num?)?.toInt() ?? 8,
       breachEliteHpDamage: (breach['eliteHpDamage'] as num?)?.toInt() ?? 15,
       upgradeSystem: buildUpgradeSystem(catalog),
+      riskGateSystem: buildRiskGateSystem(catalog),
     );
   }
 }
@@ -183,6 +185,30 @@ UpgradeSystem buildUpgradeSystem(ContentCatalog catalog) {
         ((guaranteed?['secondDraftAnyOf'] as List?) ?? const <Object?>[])
             .whereType<String>()
             .toList(),
+  );
+}
+
+/// 由已校验内容构建风险门系统。
+RiskGateSystem buildRiskGateSystem(ContentCatalog catalog) {
+  final common = catalog.riskGates['common'] as Map?;
+  final overload = catalog.riskOptions.firstWhere(
+    (o) => o['id'] == RiskOptionIds.overload,
+    orElse: () => const <String, Object?>{},
+  );
+  final pool = ((overload['effect'] as Map?)?['pool'] as List?)
+          ?.whereType<String>()
+          .toList() ??
+      const <String>[];
+  final condition = overload['availableCondition'] as Map?;
+
+  return RiskGateSystem(
+    overloadHpThreshold:
+        (condition?['hpAbove'] as num?)?.toInt() ?? 35,
+    selectionWindowSeconds:
+        (common?['selectionWindowSeconds'] as num?)?.toDouble() ?? 5.0,
+    timeoutFallbackId:
+        common?['timeoutFallbackId'] as String? ?? RiskOptionIds.supply,
+    overloadRarePool: pool,
   );
 }
 

@@ -21,6 +21,7 @@ import 'package:warship_flutter/game/core/run_context.dart';
 import 'package:warship_flutter/game/domain/director_system.dart';
 import 'package:warship_flutter/game/domain/boss_system.dart';
 import 'package:warship_flutter/game/domain/enemy_system.dart';
+import 'package:warship_flutter/game/domain/risk_gate_system.dart';
 import 'package:warship_flutter/game/domain/upgrade_system.dart';
 import 'package:warship_flutter/game/domain/values.dart';
 import 'package:warship_flutter/game/domain/weapon_system.dart';
@@ -49,7 +50,11 @@ UpgradeSystem buildUpgradeSystem() {
   );
 }
 
-GameRuntime buildRuntime({UpgradeSystem? upgrades, BossSystem? bossSystem}) {
+GameRuntime buildRuntime({
+  UpgradeSystem? upgrades,
+  BossSystem? bossSystem,
+  RiskGateSystem? riskGates,
+}) {
   final playerJson = readJson('player.json');
   final enemiesJson = readJson('enemies.json');
   final wavesJson = readJson('waves_normal.json');
@@ -96,6 +101,7 @@ GameRuntime buildRuntime({UpgradeSystem? upgrades, BossSystem? bossSystem}) {
     pulse: PulseWeapon(),
     upgradeSystem: upgrades,
     bossSystem: bossSystem,
+    riskGateSystem: riskGates,
   );
 }
 
@@ -272,6 +278,114 @@ void main() {
       runSeconds(rt, 150.0);
 
       expect(rt.enemies.length, lessThanOrEqualTo(45));
+    });
+  });
+
+  group('风险门接入（产品基线 §7.1）', () {
+    RiskGateSystem gates() => RiskGateSystem(
+      overloadHpThreshold: 35,
+      selectionWindowSeconds: 5.0,
+      timeoutFallbackId: RiskOptionIds.supply,
+      overloadRarePool: const <String>[
+        'UP-CRIT-ARC',
+        'UP-MISSILE-SALVO',
+        'UP-LASER-PRISM',
+      ],
+    );
+
+    test('55 秒打开风险门，逻辑冻结且清空普通敌弹', () {
+      final rt = buildRuntime(riskGates: gates());
+
+      // 推进到风险门打开（保持玩家存活）。
+      var guard = 0;
+      while (rt.riskGate == null && guard < 300000) {
+        rt.player.health.current = 100;
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+
+      expect(rt.riskGate, isNotNull, reason: '55 秒应打开风险门');
+      expect(rt.phases.phase, GamePhase.riskGate);
+      expect(
+        rt.projectiles.where((p) => p.faction == ProjectileFaction.enemy),
+        isEmpty,
+        reason: '出现前应清除所有普通敌弹',
+      );
+
+      // 逻辑冻结。
+      final stepsBefore = rt.logicSteps;
+      runSeconds(rt, 2.0);
+      expect(rt.logicSteps, stepsBefore, reason: '风险门期间逻辑必须冻结');
+      expect(rt.riskGate!.remainingSeconds, lessThan(5.0),
+          reason: '窗口按表现时间推进');
+    });
+
+    test('5 秒不操作只执行保底 RG-SUPPLY', () {
+      final rt = buildRuntime(riskGates: gates());
+      var guard = 0;
+      while (rt.riskGate == null && guard < 300000) {
+        rt.player.health.current = 100;
+        rt.player.shield.current = 0;
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+
+      final shieldBefore = rt.player.shield.current;
+      // 推进超过 5 秒窗口。
+      runSeconds(rt, 6.0);
+
+      expect(rt.riskGate, isNull);
+      expect(rt.phases.phase, GamePhase.playing);
+      expect(
+        rt.player.shield.current,
+        greaterThan(shieldBefore),
+        reason: '保底给护盾 +20',
+      );
+      final selected = rt.bus.debugHistory
+          .map((e) => e.event)
+          .whereType<RiskSelected>()
+          .toList();
+      expect(selected, isNotEmpty);
+      expect(selected.last.optionId, RiskOptionIds.supply);
+      expect(selected.last.wasTimeout, isTrue);
+    });
+
+    test('HP ≤35 时过载锁定；HP >35 时可选', () {
+      final system = gates();
+
+      final low = system.open(
+        gateId: 'RG-55',
+        playerHp: 35,
+        availableRareCards: const <String>['UP-CRIT-ARC'],
+      );
+      expect(low.lockedOptions, contains(RiskOptionIds.overload));
+      expect(low.availableOptions, isNot(contains(RiskOptionIds.overload)));
+
+      final high = system.open(
+        gateId: 'RG-55',
+        playerHp: 36,
+        availableRareCards: const <String>['UP-CRIT-ARC'],
+      );
+      expect(high.lockedOptions, isEmpty);
+      expect(high.availableOptions, contains(RiskOptionIds.overload));
+    });
+
+    test('过载代价：20 秒内所受伤害加重', () {
+      final rt = buildRuntime(riskGates: gates());
+      rt.overloadPenalty.activate();
+      expect(rt.overloadPenalty.apply(20), 23);
+    });
+
+    test('未启用风险门时 55 秒不打开', () {
+      final rt = buildRuntime();
+      var guard = 0;
+      while (rt.combatSeconds < 56 && guard < 300000) {
+        rt.player.health.current = 100;
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        guard++;
+      }
+      expect(rt.riskGate, isNull);
+      expect(rt.phases.phase, GamePhase.playing);
     });
   });
 
