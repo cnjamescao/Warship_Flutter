@@ -843,7 +843,10 @@ class GameRuntime {
   // ------------------------------------------------------------
 
   /// 生成当前帧的只读快照。可在任意相位调用。
-  RenderSnapshot snapshot({String? playerAssetId, String? playerState}) {
+  RenderSnapshot snapshot({
+    String? playerAssetId = 'GFX-PLAYER-BASE',
+    String? playerState,
+  }) {
     final enemyViews = <EntityView>[
       for (final enemy in enemies)
         EntityView(

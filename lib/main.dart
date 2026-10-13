@@ -97,6 +97,7 @@ class _V2BootGateState extends State<V2BootGate> {
         return V2RunScreen(
           runtime: result.runtime!,
           input: KeyboardInputGateway(),
+          manifest: result.manifest!,
         );
       },
     );

@@ -32,10 +32,16 @@ const String kConfigRoot = 'assets/config/v2';
 
 /// 启动结果。
 class BootResult {
-  const BootResult({this.runtime, this.bindingTable, this.error});
+  const BootResult({
+    this.runtime,
+    this.bindingTable,
+    this.manifest,
+    this.error,
+  });
 
   final GameRuntime? runtime;
   final AssetBindingTable? bindingTable;
+  final AssetManifest? manifest;
   final String? error;
 
   bool get isReady => runtime != null;
@@ -58,6 +64,7 @@ class V2Bootstrap {
       return BootResult(
         runtime: buildRuntime(catalog: catalog, seed: seed),
         bindingTable: const AssetLoader().build(catalog.manifest),
+        manifest: catalog.manifest,
       );
     } on ContentFailure catch (failure) {
       return BootResult(error: failure.message);

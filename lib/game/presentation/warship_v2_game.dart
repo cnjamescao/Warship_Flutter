@@ -23,8 +23,10 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Image;
 
+import '../content/asset_manifest.dart';
 import '../core/game_runtime.dart';
 import '../core/render_snapshot.dart';
+import 'asset_cache.dart';
 import 'input_gateway.dart';
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
@@ -36,11 +38,16 @@ class WarshipV2Game extends FlameGame {
   WarshipV2Game({
     required this.runtime,
     required this.input,
+    required this.visualAssets,
     this.onSnapshot,
   });
 
   final GameRuntime runtime;
   final KeyboardInputGateway input;
+
+  /// 图形资源缓存（键一律来自 manifest 的 runtimeFiles）。
+  /// 刻意不叫 assets —— Flame 的 Game 已有同名成员。
+  final VisualAssetCache visualAssets;
 
   /// 每帧回调（HUD 用它刷新，避免 Widget 直接读 Flame 组件）。
   final void Function(RenderSnapshot snapshot)? onSnapshot;
@@ -63,7 +70,10 @@ class WarshipV2Game extends FlameGame {
       height: kLogicalHeight,
       world: world,
     );
-    _battlefield = BattlefieldComponent(runtime: runtime);
+    // 预载 firstRun 分组（协议 §7）。单张失败不阻断，走矢量占位。
+    await visualAssets.loadGroup(AssetLoadGroup.firstRun);
+
+    _battlefield = BattlefieldComponent(runtime: runtime, assets: visualAssets);
     world.add(_battlefield);
   }
 
@@ -87,10 +97,58 @@ class WarshipV2Game extends FlameGame {
 
 /// 战场绘制组件。
 class BattlefieldComponent extends Component {
-  BattlefieldComponent({required this.runtime});
+  BattlefieldComponent({required this.runtime, required this.assets});
 
   final GameRuntime runtime;
+  final VisualAssetCache assets;
   RenderSnapshot snapshot = RenderSnapshot.empty;
+
+  /// 精灵绘制尺寸相对碰撞半径的放大系数。
+  ///
+  /// 正式素材在透明边缘留有发光/尾焰留白，直接按碰撞直径绘制会显得偏小。
+  /// 这个系数只影响**观感**，碰撞判定永远使用产品基线的半径数据
+  /// （素材规范 §2.1：透明边缘不得扩大真实判定）。
+  static const double kSpriteScale = 2.4;
+
+  final Paint _spritePaint = Paint()
+    ..filterQuality = FilterQuality.medium
+    ..isAntiAlias = true;
+
+  /// 有精灵就画精灵，否则回退矢量占位。
+  ///
+  /// 回退是**逐资源**的：一张贴图载入失败不影响其他实体，
+  /// 也完全不影响规则（架构 §7）。
+  bool _drawSpriteOrNull(
+    Canvas canvas,
+    String? assetId,
+    String? state,
+    Offset center,
+    double radius,
+  ) {
+    final image = assets.imageFor(assetId, state);
+    if (image == null) {
+      return false;
+    }
+    final anchor = assets.anchorFor(assetId, state);
+    final iw = image.width.toDouble();
+    final ih = image.height.toDouble();
+    final longest = iw > ih ? iw : ih;
+    if (longest <= 0) {
+      return false;
+    }
+    final scale = (radius * 2 * kSpriteScale) / longest;
+    final w = iw * scale;
+    final h = ih * scale;
+    final left = center.dx - w * anchor[0];
+    final top = center.dy - h * (anchor.length > 1 ? anchor[1] : 0.5);
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(0, 0, iw, ih),
+      Rect.fromLTWH(left, top, w, h),
+      _spritePaint,
+    );
+    return true;
+  }
 
   final Paint _fill = Paint()..style = PaintingStyle.fill;
   final Paint _stroke = Paint()
@@ -138,7 +196,22 @@ class BattlefieldComponent extends Component {
       canvas.drawCircle(center, player.radius + 10, _stroke);
     }
 
-    // 机体：青蓝、对称轮廓（素材规范的"玩家/可控"视觉语言）。
+    // 优先使用正式素材；缺失时回退矢量机体（青蓝、对称轮廓）。
+    final drewSprite = _drawSpriteOrNull(
+      canvas,
+      player.assetId,
+      player.visualState,
+      center,
+      player.radius,
+    );
+    if (drewSprite) {
+      // 冲刺无敌时叠一层高亮，保证无敌状态**可读**（T-UI-02）。
+      if (snapshot.isPlayerInvulnerable) {
+        _stroke.color = const Color(0xCCFFFFFF);
+        canvas.drawCircle(center, player.radius + 6, _stroke);
+      }
+      return;
+    }
     _fill.color = snapshot.isPlayerInvulnerable
         ? const Color(0x99FFFFFF)
         : const Color(0xFF3FE0FF);
@@ -172,7 +245,20 @@ class BattlefieldComponent extends Component {
         _stroke.strokeWidth = 3;
       }
 
-      // 普通敌人：深紫/洋红、尖锐剪影（与玩家的青蓝明确区分）。
+      // 优先使用正式素材（含 idle / critical 等语义状态）。
+      final drewSprite = _drawSpriteOrNull(
+        canvas,
+        enemy.assetId,
+        enemy.visualState,
+        center,
+        enemy.radius,
+      );
+      if (drewSprite) {
+        _drawEnemyHealthBar(canvas, enemy, center);
+        continue;
+      }
+
+      // 回退：深紫/洋红、尖锐剪影（与玩家的青蓝明确区分）。
       _fill.color = enemy.hpRatio <= 0.25
           ? const Color(0xFFFF5C8A) // 临界
           : const Color(0xFF9B4BFF);
@@ -185,34 +271,39 @@ class BattlefieldComponent extends Component {
         ..close();
       canvas.drawPath(path, _fill);
 
-      // 血条（表现层：受性能上限控制，不参与规则）。
-      if (enemy.hpRatio < 1.0) {
-        final barWidth = enemy.radius * 1.6;
-        canvas.drawRect(
-          Rect.fromLTWH(
-            center.dx - barWidth / 2,
-            center.dy - enemy.radius - 14,
-            barWidth,
-            4,
-          ),
-          Paint()..color = const Color(0x55000000),
-        );
-        canvas.drawRect(
-          Rect.fromLTWH(
-            center.dx - barWidth / 2,
-            center.dy - enemy.radius - 14,
-            barWidth * enemy.hpRatio,
-            4,
-          ),
-          Paint()..color = const Color(0xFFFF5C8A),
-        );
-      }
+      _drawEnemyHealthBar(canvas, enemy, center);
     }
+  }
+
+  /// 敌人血条（表现层：受性能上限控制，不参与规则）。
+  void _drawEnemyHealthBar(Canvas canvas, EntityView enemy, Offset center) {
+    if (enemy.hpRatio >= 1.0) {
+      return;
+    }
+    final barWidth = enemy.radius * 1.6;
+    final top = center.dy - enemy.radius - 14;
+    canvas.drawRect(
+      Rect.fromLTWH(center.dx - barWidth / 2, top, barWidth, 4),
+      Paint()..color = const Color(0x55000000),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(center.dx - barWidth / 2, top, barWidth * enemy.hpRatio, 4),
+      Paint()..color = const Color(0xFFFF5C8A),
+    );
   }
 
   void _drawProjectiles(Canvas canvas) {
     for (final projectile in snapshot.projectiles) {
       final center = Offset(projectile.position.x, projectile.position.y);
+      if (_drawSpriteOrNull(
+        canvas,
+        projectile.assetId,
+        null,
+        center,
+        projectile.radius,
+      )) {
+        continue;
+      }
       _fill.color = projectile.isPlayerProjectile
           ? const Color(0xFF7CF9FF) // 我方：青白
           : const Color(0xFFFF4BD8); // 敌方：洋红

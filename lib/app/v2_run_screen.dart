@@ -13,12 +13,15 @@
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// Flutter 也导出一个 AssetManifest，这里用我们自己的内容模型。
+import 'package:flutter/services.dart' hide AssetManifest;
 
 import '../game/core/game_phase.dart';
 import '../game/core/game_runtime.dart';
 import '../game/core/phase_controller.dart';
+import '../game/content/asset_manifest.dart';
 import '../game/core/render_snapshot.dart';
+import '../game/presentation/asset_cache.dart';
 import '../game/presentation/input_gateway.dart';
 import '../game/presentation/warship_v2_game.dart';
 
@@ -27,10 +30,16 @@ const Rect kHudSafeArea = Rect.fromLTRB(48, 36, 1872, 1044);
 
 /// v2.0 对局屏幕。
 class V2RunScreen extends StatefulWidget {
-  const V2RunScreen({super.key, required this.runtime, required this.input});
+  const V2RunScreen({
+    super.key,
+    required this.runtime,
+    required this.input,
+    required this.manifest,
+  });
 
   final GameRuntime runtime;
   final KeyboardInputGateway input;
+  final AssetManifest manifest;
 
   @override
   State<V2RunScreen> createState() => _V2RunScreenState();
@@ -49,6 +58,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     _game = WarshipV2Game(
       runtime: widget.runtime,
       input: widget.input,
+      visualAssets: VisualAssetCache(manifest: widget.manifest),
       onSnapshot: _onSnapshot,
     );
   }
