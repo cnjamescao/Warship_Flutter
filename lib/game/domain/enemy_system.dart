@@ -486,9 +486,16 @@ class EnemySystem {
     // ---- 2. 完全进入后才开始攻击冷却 ----
     if (!enemy.hasEntered && enemy.position.y >= 0) {
       enemy.hasEntered = true;
-      if (enemy.isRanged) {
-        enemy.attackCooldown = enemy.tuning.attack!.intervalSeconds;
-      }
+    }
+    // 冷却的初始化**不能**只挂在上面那个分支上：`hasEntered` 是公开可变
+    // 状态，任何其它路径把它置为 true（例如测试夹具、将来的对象池复用）
+    // 都会让 attackCooldown 永远停在 null，敌人从此不再攻击。
+    // 因此这里补齐不变量：已进入世界、是远程、且尚未开始计时 → 在这里开始。
+    if (enemy.hasEntered &&
+        enemy.isRanged &&
+        enemy.attackCooldown == null &&
+        enemy.position.y >= 0) {
+      enemy.attackCooldown = enemy.tuning.attack!.intervalSeconds;
     }
 
     // ---- 3. 越界预警（y=920，只发一次）----
