@@ -28,8 +28,10 @@ import '../core/game_runtime.dart';
 import '../domain/values.dart';
 import '../core/render_snapshot.dart';
 import '../infrastructure/performance_monitor.dart';
+import '../infrastructure/asset_loader.dart';
 import 'asset_cache.dart';
 import 'visual_effects.dart';
+import 'visual_router.dart';
 import 'input_gateway.dart';
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
@@ -66,6 +68,11 @@ class WarshipV2Game extends FlameGame {
   /// 事件驱动的纯表现特效（碎片、伤害数字）。
   final VisualEffects effects = VisualEffects();
 
+  /// 视觉路由：把 DomainEvent 经 `eventBindings` 解析成
+  /// assetId/renderState（协议明文要求，禁止直接猜资源）。
+  late final VisualRouter visualRouter =
+      VisualRouter(table: const AssetLoader().build(visualAssets.manifest));
+
   late final BattlefieldComponent _battlefield;
 
   /// 最近一帧快照（供 HUD 读取）。
@@ -91,6 +98,7 @@ class WarshipV2Game extends FlameGame {
       runtime: runtime,
       assets: visualAssets,
       effects: effects,
+      router: visualRouter,
     )..degradation = performance.level;
     world.add(_battlefield);
   }
@@ -110,6 +118,9 @@ class WarshipV2Game extends FlameGame {
     // 3. 生成快照并交给表现层与 HUD。
     latestSnapshot = runtime.snapshot();
     _battlefield.snapshot = latestSnapshot;
+
+    // 视觉路由：必须在绘制前刷新，否则本帧的事件不生效。
+    visualRouter.consume(runtime.lastFrameEvents);
 
     // 事件驱动的纯表现特效；预算与降级都在特效池内部把关。
     effects.consume(
@@ -132,11 +143,15 @@ class BattlefieldComponent extends Component {
     required this.runtime,
     required this.assets,
     required this.effects,
+    required this.router,
   });
 
   final GameRuntime runtime;
   final VisualAssetCache assets;
   final VisualEffects effects;
+
+  /// 视觉路由（协议要求：资源必须经 `eventBindings` 解析）。
+  final VisualRouter router;
 
   /// 把实体 ID 解析成当前坐标（供特效池定位）。
   Vec2? positionOf(EntityId id) {
@@ -308,10 +323,13 @@ class BattlefieldComponent extends Component {
     }
 
     // 优先使用正式素材；缺失时回退矢量机体（青蓝、对称轮廓）。
+    // 协议要求：优先用 `eventBindings` 解析出的资源；
+    // 解析不出时才回退快照里的 assetId/visualState。
+    final playerRoute = router.playerRoute;
     final drewSprite = _drawSpriteOrNull(
       canvas,
-      player.assetId,
-      player.visualState,
+      playerRoute?.assetId ?? player.assetId,
+      playerRoute?.renderState ?? player.visualState,
       center,
       player.radius,
     );
@@ -357,10 +375,11 @@ class BattlefieldComponent extends Component {
       }
 
       // 优先使用正式素材（含 idle / critical 等语义状态）。
+      final route = router.routeFor(enemy.id.toString());
       final drewSprite = _drawSpriteOrNull(
         canvas,
-        enemy.assetId,
-        enemy.visualState,
+        route?.assetId ?? enemy.assetId,
+        route?.renderState ?? enemy.visualState,
         center,
         enemy.radius,
       );

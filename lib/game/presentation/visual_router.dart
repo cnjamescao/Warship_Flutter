@@ -131,19 +131,17 @@ class VisualRouter {
   /// 那正是死路由扫描发现的一类问题，这里不假装能路由。
   String? _routeKeyFor(DomainEvent event) {
     switch (event) {
-      // 敌人类事件带 EntityId 的用它；只带 enemyId 字符串的用字符串。
+      // 所有敌人事件都携带 `entityId`，因此**统一用它**做键。
+      // 早先我让 EnemySpawned/Destroyed 用 enemyId 字符串，
+      // 而 EnemyDamaged 用 entityId —— 结果同一敌人在两条路由下
+      // 有两个键，先写的路由永远查不到。这是测试抓出来的真实缺陷。
+      case EnemySpawned(:final entityId):
+      case EnemyDestroyed(:final entityId):
       case EnemyDamaged(:final entityId):
+      case EnemyBreached(:final entityId):
+      case EnemyAttackTelegraphed(:final entityId):
+      case EnemyAttackFired(:final entityId):
         return entityId.toString();
-      case EnemySpawned(:final enemyId):
-        return enemyId;
-      case EnemyDestroyed(:final enemyId):
-        return enemyId;
-      case EnemyBreached(:final enemyId):
-        return enemyId;
-      case EnemyAttackTelegraphed(:final enemyId):
-        return enemyId;
-      case EnemyAttackFired(:final enemyId):
-        return enemyId;
       // 玩家类事件不携带玩家 ID，用固定键。
       case PlayerDamaged():
       case PlayerVitalStateChanged():

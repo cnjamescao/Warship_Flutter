@@ -6,7 +6,7 @@
   "logicStepMs": {
     "p50": 0.008,
     "p95": 0.023,
-    "p99": 0.079
+    "p99": 0.054
   },
   "objectPeaks": {
     "enemies": 13,
