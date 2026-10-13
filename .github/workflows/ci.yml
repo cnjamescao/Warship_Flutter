@@ -48,7 +48,12 @@ jobs:
 
       - name: 确认没有提交生成物
         run: |
-          offenders=$(git ls-files | grep -E '^(build/|\.dart_tool/)|/ephemeral/|^assets/(config|images|audio)/v2/' || true)
+          # 只拦截**构建产物**：
+          #   * assets/config/v2/manifest.json 是构建复制品；
+          #   * assets/images/v2/ 与 assets/audio/v2/ 是复制出来的运行时文件。
+          # 注意 assets/config/v2/ 下的 player.json / enemies.json 等是
+          # **手写内容配置**，必须入库 —— 不能整目录拦截。
+          offenders=$(git ls-files | grep -E '^(build/|\.dart_tool/)|/ephemeral/|^assets/config/v2/manifest\.json$|^assets/(images|audio)/v2/' || true)
           if [ -n "$offenders" ]; then
             echo "::error::以下生成物不应被提交："
             echo "$offenders"
