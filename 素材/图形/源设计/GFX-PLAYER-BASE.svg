@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Editable composition source.  Keep the raster body on its own named layer. -->
+  <g id="body"><image href="../角色与敌机/GFX-PLAYER-BASE.png" width="512" height="512" preserveAspectRatio="xMidYMid meet"/></g>
+  <g id="engineCritical" display="none"><ellipse cx="256" cy="428" rx="68" ry="36" fill="#FFB703" opacity=".48"/></g>
+  <g id="hitFlash" display="none"><path d="M256 42 L438 458 L74 458 Z" fill="#FFFFFF" opacity=".22"/></g>
+  <g id="dashTrail" display="none"><path d="M256 410 L190 506 H322 Z" fill="#11D9FF" opacity=".42"/></g>
+</svg>

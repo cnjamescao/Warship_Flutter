@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Editable composition source.  Base armour and phase overlays remain isolated. -->
+  <g id="baseArmour"><image href="../角色与敌机/GFX-BOSS-AEGIS-BODY.png" width="1024" height="1024" preserveAspectRatio="xMidYMid meet"/></g>
+  <g id="phase2Overlay" display="none"><circle cx="512" cy="512" r="250" fill="none" stroke="#11D9FF" stroke-width="20" opacity=".35"/></g>
+  <g id="phase3CriticalOverlay" display="none"><circle cx="512" cy="512" r="230" fill="#FF3CAC" opacity=".22"/></g>
+  <g id="weakpointMask" display="none"><circle cx="512" cy="512" r="88" fill="#FFF2B2" opacity=".75"/></g>
+</svg>

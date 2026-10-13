@@ -1,0 +1,2993 @@
+{
+  "schemaVersion": "1.0.0-release",
+  "generatedAt": "2026-10-13T00:00:00+08:00",
+  "assets": [
+    {
+      "assetId": "SFX-UI-TAP",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-TAP.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-TAP.mp3"
+      ],
+      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
+      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.tap",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UiCommand"
+      ],
+      "eventBindings": [
+        {
+          "event": "UiCommand",
+          "when": {
+            "command": "confirm"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-BACK",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-BACK.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-BACK.mp3"
+      ],
+      "sha256": "a20c2b7f8d7da303db5e8b882cb7db1b63a4ed49e6481da65684b5805ca7d5bd",
+      "runtimeSha256": "d08032461991af2e95361bfafcb0d06a6e6225bff63ffa5a0ef47c261f4498f7",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.back",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UiCommand"
+      ],
+      "eventBindings": [
+        {
+          "event": "UiCommand",
+          "when": {
+            "command": "back"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-ERROR",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-ERROR.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-ERROR.mp3"
+      ],
+      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
+      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.error",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UiCommand"
+      ],
+      "eventBindings": [
+        {
+          "event": "UiCommand",
+          "when": {
+            "command": "locked"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-COUNTDOWN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-COUNTDOWN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-COUNTDOWN.mp3"
+      ],
+      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
+      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.countdown",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RunStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunStarted",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-DRAFT-OPEN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-DRAFT-OPEN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-DRAFT-OPEN.mp3"
+      ],
+      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
+      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.draft.open",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UpgradeDraftOpened"
+      ],
+      "eventBindings": [
+        {
+          "event": "UpgradeDraftOpened",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-DRAFT-CHOOSE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-DRAFT-CHOOSE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-DRAFT-CHOOSE.mp3"
+      ],
+      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
+      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.draft.choose",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UpgradeSelected"
+      ],
+      "eventBindings": [
+        {
+          "event": "UpgradeSelected",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-RISK-OPEN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-RISK-OPEN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-RISK-OPEN.mp3"
+      ],
+      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
+      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.risk.open",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RiskGateOpened"
+      ],
+      "eventBindings": [
+        {
+          "event": "RiskGateOpened",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-RISK-CHOOSE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-RISK-CHOOSE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-RISK-CHOOSE.mp3"
+      ],
+      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
+      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.risk.choose",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RiskSelected"
+      ],
+      "eventBindings": [
+        {
+          "event": "RiskSelected",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-UI-PAUSE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-UI-PAUSE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-UI-PAUSE.mp3"
+      ],
+      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
+      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.ui.pause",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UiCommand"
+      ],
+      "eventBindings": [
+        {
+          "event": "UiCommand",
+          "when": {
+            "command": "pause"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-PULSE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-PULSE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-PULSE.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.pulse",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponFired",
+          "when": {
+            "weaponId": "pulse"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-PULSE-CRIT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-PULSE-CRIT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-PULSE-CRIT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.pulse.crit",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponId": "pulse",
+            "critical": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-PULSE-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-PULSE-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-PULSE-HIT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.pulse.hit",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponId": "pulse",
+            "critical": false
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-MISSILE-LAUNCH",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-MISSILE-LAUNCH.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-MISSILE-LAUNCH.mp3"
+      ],
+      "sha256": "324a372901690cf7a18355ed1ca21b1dba08ec7d9cf8d9ddc0a92e7c13837232",
+      "runtimeSha256": "5a067a06956a3089ed8b26a695ba95f9dfa7ff9e10aa74573b693c484ada892c",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.missile.launch",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponFired",
+          "when": {
+            "weaponId": "missile"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-MISSILE-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-MISSILE-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-MISSILE-IMPACT.mp3"
+      ],
+      "sha256": "ca148618c3bfff07194067a2c63ed56690cd392593923e0f4e0f69eb9e978ad1",
+      "runtimeSha256": "0584a6d948abd442c11e7c397f5ea1c4279c220208205def043e1b780ed9d2bf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.missile.impact",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponId": "missile"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-LASER-START",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-LASER-START.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-LASER-START.mp3"
+      ],
+      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
+      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.laser.start",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponSustainStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponSustainStarted",
+          "when": {
+            "weaponId": "laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-LASER-LOOP",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-LASER-LOOP.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-LASER-LOOP.mp3"
+      ],
+      "sha256": "85596660f79d7b36438333002bab4fae36d5816049cfe8a64daf8e881309e85a",
+      "runtimeSha256": "5a0da89dc7f3d07881c00dbd8d450fe2e3d799135955d0871dfb1c46c1cbc959",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.laser.loop",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponSustainStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponSustainStarted",
+          "when": {
+            "weaponId": "laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 617368,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 96000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-LASER-END",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-LASER-END.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-LASER-END.mp3"
+      ],
+      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
+      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.laser.end",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponSustainStopped"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponSustainStopped",
+          "when": {
+            "weaponId": "laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-DRONE-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-DRONE-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-DRONE-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.drone.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponFired",
+          "when": {
+            "weaponId": "drone"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-ARC",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-ARC.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-ARC.mp3"
+      ],
+      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
+      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.arc",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponId": "pulse",
+            "critical": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-DASH",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-DASH.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-DASH.mp3"
+      ],
+      "sha256": "db8ae026cd0d323f63b8b51fe7a711ca742ec7326f7c546d2135175b89e3ed3b",
+      "runtimeSha256": "7864a94866884b00f531e44261b17c84aaa80900fdbef441334735d353efd2e0",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.dash",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "DashStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "DashStarted",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-SHIELD-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-SHIELD-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-SHIELD-HIT.mp3"
+      ],
+      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
+      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.shield.hit",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "shieldDamageGt": 0
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-HP-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-HP-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-HP-HIT.mp3"
+      ],
+      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
+      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.hp.hit",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "hpDamageGt": 0
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-LOW-SHIELD",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-LOW-SHIELD.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-LOW-SHIELD.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.low.shield",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "shieldRatioLte": 0.25
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "lazy",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-LOW-HP",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-LOW-HP.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-LOW-HP.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.low.hp",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "hpRatioLte": 0.3
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "lazy",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-SHIELD-REGEN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-SHIELD-REGEN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-SHIELD-REGEN.mp3"
+      ],
+      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
+      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.shield.regen",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PickupShield"
+      ],
+      "eventBindings": [
+        {
+          "event": "PickupShield",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-HEAL",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-HEAL.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-HEAL.mp3"
+      ],
+      "sha256": "a20c2b7f8d7da303db5e8b882cb7db1b63a4ed49e6481da65684b5805ca7d5bd",
+      "runtimeSha256": "d08032461991af2e95361bfafcb0d06a6e6225bff63ffa5a0ef47c261f4498f7",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.heal",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "PickupHeal"
+      ],
+      "eventBindings": [
+        {
+          "event": "PickupHeal",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-PLAYER-DASH-READY",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-PLAYER-DASH-READY.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-PLAYER-DASH-READY.mp3"
+      ],
+      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
+      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.player.dash.ready",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "DashReady"
+      ],
+      "eventBindings": [
+        {
+          "event": "DashReady",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-SCOUT-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-SCOUT-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-SCOUT-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.scout.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackFired",
+          "when": {
+            "enemyId": "EN-SCOUT",
+            "attackId": "scout_shot"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-WING-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-WING-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-WING-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.wing.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackFired",
+          "when": {
+            "enemyId": "EN-WING",
+            "attackId": "wing_shot"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-SNIPER-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-SNIPER-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-SNIPER-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.sniper.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackFired",
+          "when": {
+            "enemyId": "EN-SNIPER",
+            "attackId": "sniper_line"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-SHIELD-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-SHIELD-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-SHIELD-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.shield.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackFired",
+          "when": {
+            "enemyId": "EN-SHIELD",
+            "attackId": "shield_shot"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-SNIPER-WARN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-SNIPER-WARN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-SNIPER-WARN.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.sniper.warn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackTelegraphed",
+          "when": {
+            "enemyId": "EN-SNIPER",
+            "attackId": "sniper_line"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "lazy",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-BOMBER-DROP",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-BOMBER-DROP.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-BOMBER-DROP.mp3"
+      ],
+      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
+      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.bomber.drop",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackFired",
+          "when": {
+            "enemyId": "EN-BOMBER",
+            "attackId": "bomber_drop"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-BOMBER-HAZARD",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-BOMBER-HAZARD.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-BOMBER-HAZARD.mp3"
+      ],
+      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
+      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.bomber.hazard",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyAttackTelegraphed",
+          "when": {
+            "enemyId": "EN-BOMBER",
+            "attackId": "bomber_drop"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-HIT.mp3"
+      ],
+      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
+      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.hit",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 4,
+      "minRetriggerMs": 80,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-CRITICAL",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-CRITICAL.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-CRITICAL.mp3"
+      ],
+      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
+      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.critical",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-DESTROY-S",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-DESTROY-S.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-DESTROY-S.mp3"
+      ],
+      "sha256": "ed70472e61f50901f4039aba4be629ff9d122228ac523d96bd5618cce320a009",
+      "runtimeSha256": "ef320b89f2592c3f8b81d2618b2ee1e9e1e9f248c34a926c3dc8800763fe1577",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.destroy.s",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyDestroyed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyDestroyed",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "firstRun",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-DESTROY-M",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-DESTROY-M.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-DESTROY-M.mp3"
+      ],
+      "sha256": "48178365493aa9c2732b05bda6c40a5c59ecd5776a5ba6ba0e3795bfc957e1ef",
+      "runtimeSha256": "1229ef36943f316d2774b7086b32e5568e4ec30341425fd0aaff4cabed083698",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.destroy.m",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyDestroyed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyDestroyed",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-DESTROY-L",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-DESTROY-L.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-DESTROY-L.mp3"
+      ],
+      "sha256": "d4987110f4caab9dcafd6938df2fb2d4c5d22ce3501736625c8b2158d9c41d4c",
+      "runtimeSha256": "f642b0e8627cc805b8e79b4e8ee7210954844884683936048747fd44e4f34819",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.destroy.l",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyDestroyed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyDestroyed",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-EN-BREACH",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-EN-BREACH.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-EN-BREACH.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.en.breach",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyBreached"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyBreached",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "firstRun",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-ELITE-SPAWN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-ELITE-SPAWN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-ELITE-SPAWN.mp3"
+      ],
+      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
+      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.elite.spawn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-ELITE-AURA",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-ELITE-AURA.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-ELITE-AURA.mp3"
+      ],
+      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
+      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.elite.aura",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-ELITE-DEFEAT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-ELITE-DEFEAT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-ELITE-DEFEAT.mp3"
+      ],
+      "sha256": "3f3860f85e6dcd0b56c8552922a3179c1af89ff38d4d3b1e0bf61220721e099c",
+      "runtimeSha256": "9d673ea2d401dcaeb550a5aded937b7b330f5e2912058fee970a2f6c9418eb8b",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.elite.defeat",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemyDestroyed"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemyDestroyed",
+          "when": {
+            "isElite": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-ELITE-CORE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-ELITE-CORE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-ELITE-CORE.mp3"
+      ],
+      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
+      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.elite.core",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "SFX",
+      "priority": 30,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-ENTRY",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-ENTRY.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-ENTRY.mp3"
+      ],
+      "sha256": "effb757206713c83b2f1c9834433550d7bb7cc240047bca73831dbbb1e509c0b",
+      "runtimeSha256": "cb886814889251fb1db4a11b4df9ccf5851831d7140e2448698ab51f2adc4155",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.entry",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossPhaseChanged"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossPhaseChanged",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-PHASE",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-PHASE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-PHASE.mp3"
+      ],
+      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
+      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.phase",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossPhaseChanged"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossPhaseChanged",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-CRITICAL",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-CRITICAL.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-CRITICAL.mp3"
+      ],
+      "sha256": "324a372901690cf7a18355ed1ca21b1dba08ec7d9cf8d9ddc0a92e7c13837232",
+      "runtimeSha256": "5a067a06956a3089ed8b26a695ba95f9dfa7ff9e10aa74573b693c484ada892c",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.critical",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossCriticalReached"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossCriticalReached",
+          "when": {
+            "hpRatioLte": 0.1
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-DEFEAT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-DEFEAT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-DEFEAT.mp3"
+      ],
+      "sha256": "976a7cb2688b673f7e65748d1fe99ae1f51be2937d33e6f7bd91da18885bc39f",
+      "runtimeSha256": "506e0b98b7b28075e9b0c47814a3edc3ce82cad69e5760b73f78048c1e32db0d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.defeat",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossDefeated"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossDefeated",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-FAN-WARN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-FAN-WARN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-FAN-WARN.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.fan.warn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_fan"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 100,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-FAN-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-FAN-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-FAN-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.fan.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_fan"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-CHARGE-WARN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-CHARGE-WARN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-CHARGE-WARN.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.charge.warn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_charge"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 100,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-CHARGE-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-CHARGE-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-CHARGE-IMPACT.mp3"
+      ],
+      "sha256": "a2f08ffc71dfda33a6380e691146665da3975d6434f5d45314427d0a6ec31fd0",
+      "runtimeSha256": "ebc84c57ab72c749f84a209217a6b9d1585174375a260f83e6c1377ba214787b",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.charge.impact",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_charge"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-RING-WARN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-RING-WARN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-RING-WARN.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.ring.warn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_ring"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 100,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-RING-SHOT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-RING-SHOT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-RING-SHOT.mp3"
+      ],
+      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
+      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.ring.shot",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_ring"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 56728,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-SUMMON",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-SUMMON.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-SUMMON.mp3"
+      ],
+      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
+      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.summon",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_summon"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-LASER-WARN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-LASER-WARN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-LASER-WARN.mp3"
+      ],
+      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
+      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.laser.warn",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 201688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 100,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-LASER-LOOP",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-LASER-LOOP.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-LASER-LOOP.mp3"
+      ],
+      "sha256": "85596660f79d7b36438333002bab4fae36d5816049cfe8a64daf8e881309e85a",
+      "runtimeSha256": "5a0da89dc7f3d07881c00dbd8d450fe2e3d799135955d0871dfb1c46c1cbc959",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.laser.loop",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 617368,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 96000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-LASER-END",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-LASER-END.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-LASER-END.mp3"
+      ],
+      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
+      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.laser.end",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackEnded",
+          "when": {
+            "attackId": "boss_laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-BOSS-WEAKPOINT-OPEN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-BOSS-WEAKPOINT-OPEN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-BOSS-WEAKPOINT-OPEN.mp3"
+      ],
+      "sha256": "47040e270ff962e723a1c3c9a9c377f3a9737f0a8faccb4876a7c72fad98cfe3",
+      "runtimeSha256": "78409214ec67c9d7fa8743930e7b508b5b188c28d88f20330677ff6ec6b4cdda",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.boss.weakpoint.open",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossAttackFired"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossAttackFired",
+          "when": {
+            "attackId": "boss_laser"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "boss",
+      "bus": "Warning",
+      "priority": 80,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -18,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-RUN-VICTORY",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-RUN-VICTORY.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-RUN-VICTORY.mp3"
+      ],
+      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
+      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.run.victory",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "result": "victory"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-RUN-DEFEAT",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-RUN-DEFEAT.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-RUN-DEFEAT.mp3"
+      ],
+      "sha256": "1736e94978fadcfaadbb7fb1b2e5f17f99a6e88009ec86a27b8053a494ed50f4",
+      "runtimeSha256": "55ba1a2a5ef48104599a3a49e2e93d7ca3611036d87afafac6126fea7f69470e",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.run.defeat",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "result": "defeat"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 155128,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "SFX-RUN-RESULT-OPEN",
+      "category": "sfx",
+      "sourceFile": "音频/母带WAV/SFX-RUN-RESULT-OPEN.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/SFX-RUN-RESULT-OPEN.mp3"
+      ],
+      "sha256": "d728e1966d249d0cc202e3f7cba3cb3c88bc754c52c01aab80c509cdabfaf7f0",
+      "runtimeSha256": "fb97721702a7254a16317678f9abf121263bd3e150346d6eca43d28900494e73",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.sfx.run.result.open",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "result": "any"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 93688,
+      "loadGroup": "lazy",
+      "bus": "UI",
+      "priority": 50,
+      "maxVoices": 2,
+      "minRetriggerMs": 0,
+      "loop": false,
+      "loopStartSample": null,
+      "loopEndSample": null,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -17,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "BGM-HOME",
+      "category": "bgm",
+      "sourceFile": "音频/母带WAV/BGM-HOME.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/BGM-HOME.mp3"
+      ],
+      "sha256": "58f568272ab7bae4f65a6c05daf53c6b87f4b7926123214bc5190aba200576d5",
+      "runtimeSha256": "5e8a0cac296ad9846e7624c81c7e98c191a64203daddb80aead349a1e2be1804",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.bgm.home",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "UiCommand"
+      ],
+      "eventBindings": [
+        {
+          "event": "UiCommand",
+          "when": {
+            "command": "homeOpened"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 14785048,
+      "loadGroup": "lazy",
+      "bus": "Music",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 2304000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -16,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "BGM-RUN-BASE",
+      "category": "bgm",
+      "sourceFile": "音频/母带WAV/BGM-RUN-BASE.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/BGM-RUN-BASE.mp3"
+      ],
+      "sha256": "9e17b634774670e933d1892efe06e4a4a6811d87cb88c8bc595d750f9079a39f",
+      "runtimeSha256": "063277c518b3981f579e671a1ac60940dbed4e070878dce05683bc4c5918e3fd",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.bgm.run.base",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "RunStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunStarted",
+          "when": {}
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 14785048,
+      "loadGroup": "firstRun",
+      "bus": "Music",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 2304000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -16,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "BGM-RUN-TENSION",
+      "category": "bgm",
+      "sourceFile": "音频/母带WAV/BGM-RUN-TENSION.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/BGM-RUN-TENSION.mp3"
+      ],
+      "sha256": "079aef888845fb43b687ce5149866e4d8da193d21364e9f79d67ec651dcf1a5f",
+      "runtimeSha256": "d082798c29792ebced789678fa67893d5e53c6e7ac8d6e8c2e2b7f51da7576ee",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.bgm.run.tension",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 14785048,
+      "loadGroup": "lazy",
+      "bus": "Music",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 2304000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -16,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "BGM-BOSS",
+      "category": "bgm",
+      "sourceFile": "音频/母带WAV/BGM-BOSS.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/BGM-BOSS.mp3"
+      ],
+      "sha256": "4a568031061d77d115e3dbccd9f5fc9a1fffff6f177011ea67cd166eac77d6b0",
+      "runtimeSha256": "20a67d2b1759a64c7d00dcb811a41079b78fd08f8b5c0b570f098802d0ff504d",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.bgm.boss",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossPhaseChanged"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossPhaseChanged",
+          "when": {
+            "phase": "p1"
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 14785048,
+      "loadGroup": "boss",
+      "bus": "Music",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 2304000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -16,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    },
+    {
+      "assetId": "BGM-BOSS-CRITICAL",
+      "category": "bgm",
+      "sourceFile": "音频/母带WAV/BGM-BOSS-CRITICAL.wav",
+      "runtimeFiles": [
+        "音频/运行时MP3/BGM-BOSS-CRITICAL.mp3"
+      ],
+      "sha256": "45477b3b9510d1d8d99fae80a79168d7b9cac9fdb2768d654d33c2b3ba75ff3d",
+      "runtimeSha256": "56b0813337cda7dd2ab826d5b65d65f9078c35f554ab6c41d5e19c6ab10db189",
+      "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-13T00:00:00+08:00",
+      "contentVersion": "2.0.4-release",
+      "cueId": "cue.bgm.boss.critical",
+      "states": [
+        "ready"
+      ],
+      "triggerEvents": [
+        "BossCriticalReached"
+      ],
+      "eventBindings": [
+        {
+          "event": "BossCriticalReached",
+          "when": {
+            "hpRatioLte": 0.1
+          }
+        }
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 14785048,
+      "loadGroup": "boss",
+      "bus": "Music",
+      "priority": 30,
+      "maxVoices": 1,
+      "minRetriggerMs": 0,
+      "loop": true,
+      "loopStartSample": 0,
+      "loopEndSample": 2304000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "masterBitDepth": 24,
+      "loudnessTargetLufs": -16,
+      "truePeakCeilingDbtp": -1.0,
+      "status": "release_ready"
+    }
+  ]
+}
