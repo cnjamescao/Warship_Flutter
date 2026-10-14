@@ -4,9 +4,9 @@
   "scenarioSeconds": 10.0,
   "simulatedFrames": 600,
   "logicStepMs": {
-    "p50": 0.102,
-    "p95": 0.513,
-    "p99": 1.253
+    "p50": 0.101,
+    "p95": 0.504,
+    "p99": 1.137
   },
   "objectPeaks": {
     "enemies": 45,
@@ -16,7 +16,7 @@
   },
   "degradationLevel": "none",
   "frameBudgetMs": 16.67,
-  "logicBudgetUsageP95": 0.0308,
+  "logicBudgetUsageP95": 0.0302,
   "logicMeetsBudget": true,
   "scope": "logic-step cost only; AC-07 frame-time sampling still requires profile/release builds on real devices",
   "note": "对象上限压力场景（AC-07 的逻辑侧证据）。**不含帧时间** —— 须在 profile/release 构建的真机上采样。"

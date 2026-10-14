@@ -204,6 +204,12 @@ class GameRuntime {
   /// 进行中的风险门；null 表示没有。
   RiskGateSession? riskGate;
 
+  /// Boss 击败后需要清理在飞的敌方投射物与危险区。
+  ///
+  /// 用标记而不是立刻清理，是因为清理点必须在碰撞解析**之后** ——
+  /// 见 `_onBossDefeated` 的注释。
+  bool _pendingVictoryClear = false;
+
   /// 已打开过的风险门 ID（每道只开一次）。
   final Set<String> openedRiskGates = <String>{};
 
@@ -417,6 +423,14 @@ class GameRuntime {
 
     // 9. 提交实体增删。
     _commitPending();
+
+    // 9.1 胜利后在飞的敌方投射物与危险区 —— 在此统一清理，
+    //     避开碰撞解析期间对 `projectiles` 的遍历（§7.5「停止伤害」）。
+    if (_pendingVictoryClear) {
+      _pendingVictoryClear = false;
+      projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
+      hazards.clear();
+    }
 
     // 10. 经验阈值 → 打开升级草案（相位迁移，下一步起逻辑冻结）。
     _checkDraftDue();
@@ -1420,6 +1434,21 @@ class GameRuntime {
 
   void _onBossDefeated() {
     victory = true;
+
+    // 产品设计 §7.5 的 Boss 击败结束条件是
+    // 「**停止伤害和生成**后再进入结算」。
+    //
+    // 此前这里只置了 victory，**没清在飞的敌方投射物与危险区** ——
+    // 于是胜利之后玩家还会继续挨打（实测抓出：胜利后仍有 5 次
+    // PlayerDamaged）。胜利瞬间被打死与结算语义自相矛盾。
+    //
+    // ⚠️ **不能在这里直接 clear**：`_onBossDefeated` 是在
+    // `_resolveCollisions()` 遍历 `projectiles` 的过程中被调用的，
+    // 直接改列表会抛 `Concurrent modification during iteration`
+    // （我第一版就是这么写的，被测试立刻抓出）。
+    // 因此只置标记，在本步末尾（碰撞解析之后）统一清理。
+    _pendingVictoryClear = true;
+
     bus.emit(BossDefeated(), runtime);
     bus.emit(
       RunEnded(
