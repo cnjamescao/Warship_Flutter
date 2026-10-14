@@ -174,32 +174,31 @@ runSeed(int seed) {
 void main() {
   group('AC-01 100 个固定 seed 回放完全一致', () {
     test('每个 seed 重放两次：事件摘要、得分、升级候选、风险门选项一致', () {
-      // 只用 100 个中的前若干个做双跑（双跑才是"确定性"的直接证据），
-      // 其余 seed 只跑一次用于覆盖——否则测试时间会翻倍到不可接受。
-      const doubleRunSeeds = 12;
+      // **全部 100 个 seed 都双跑。**
+      //
+      // 此前只对前 12 个做双跑、其余 88 个跑一次，理由是"时间会翻倍到
+      // 不可接受"—— 实测该顾虑不成立（整个文件约 1–2 秒），
+      // 而 AC-01 的原文是「**100 个**固定 seed 回放：…完全一致」，
+      // 只测 12 个等于把要求缩水。现已补齐。
       final seeds = <int>[
         for (var i = 0; i < 100; i++) 0x4E454F4E0001 + i * 7919,
       ];
 
-      for (var i = 0; i < seeds.length; i++) {
-        final seed = seeds[i];
+      for (final seed in seeds) {
         final first = runSeed(seed);
-
-        if (i < doubleRunSeeds) {
-          final second = runSeed(seed);
-          expect(
-            second.digest,
-            first.digest,
-            reason: 'seed=$seed 的事件摘要不一致',
-          );
-          expect(second.score, first.score, reason: 'seed=$seed 的得分不一致');
-          expect(
-            second.draftCandidates,
-            first.draftCandidates,
-            reason: 'seed=$seed 的升级候选不一致',
-          );
-          expect(second.risks, first.risks, reason: 'seed=$seed 的风险门选项不一致');
-        }
+        final second = runSeed(seed);
+        expect(
+          second.digest,
+          first.digest,
+          reason: 'seed=$seed 的事件摘要不一致',
+        );
+        expect(second.score, first.score, reason: 'seed=$seed 的得分不一致');
+        expect(
+          second.draftCandidates,
+          first.draftCandidates,
+          reason: 'seed=$seed 的升级候选不一致',
+        );
+        expect(second.risks, first.risks, reason: 'seed=$seed 的风险门选项不一致');
       }
 
       // 至少要有 seed 打开过升级草案，否则这条用例是空转。
