@@ -95,7 +95,7 @@ void main() {
         const RunStarted(
           seed: 0x4E454F4E0001,
           prngAlgorithm: 'pcg32-xsh-rr',
-          contentVersion: '2.0.4-release',
+          contentVersion: '2.0.5-release',
         ),
       ),
     ]);

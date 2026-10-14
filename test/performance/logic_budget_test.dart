@@ -36,7 +36,7 @@ import 'package:warship_flutter/game/infrastructure/performance_monitor.dart';
 import 'package:warship_flutter/game/infrastructure/performance_report.dart';
 
 const int kSeed = 0x4E454F4E0001;
-const String kContentVersion = '2.0.4-release';
+const String kContentVersion = '2.0.5-release';
 const String kReportPath = 'test/fixtures/performance/logic_budget_v1.json';
 
 /// 产品基线 §2：最密集段为 130–150 秒。

@@ -140,7 +140,7 @@ const List<StateCheck> kStates = <StateCheck>[
 
 /// 每个事件类型实际携带的字段（用于扫描 `when` 键是否合法）。
 const Map<String, Set<String>> kWhenKeysByEvent = <String, Set<String>>{
-  'EnemySpawned': <String>{'enemyId', 'isElite'},
+  'EnemySpawned': <String>{'enemyId', 'isElite', 'affixId'},
   'EnemyDamaged': <String>{'enemyId', 'critical', 'hpRatioLte', 'hpRatioGt'},
   'EnemyVitalStateChanged': <String>{'enemyId', 'hpRatioLte', 'hpRatioGt'},
   'EnemyDestroyed': <String>{'enemyId', 'isElite'},
@@ -313,7 +313,7 @@ void main() {
     // 的 `audioParamsOf`。它取代了上一轮那张**我凭印象手写**的表，
     // 这正是上一轮误判"4 处路由缺口"的根因。
     const emittedByEvent = <String, Set<String>>{
-      'EnemySpawned': <String>{'enemyId', 'isElite'},
+      'EnemySpawned': <String>{'enemyId', 'isElite', 'affixId'},
       'EnemyDestroyed': <String>{'enemyId', 'isElite'},
       'EnemyBreached': <String>{'enemyId', 'isElite'},
       'EnemyDamaged': <String>{'enemyId', 'hpRatio'},

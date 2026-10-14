@@ -66,7 +66,7 @@ GameRuntime _build() {
         runId: 'idle',
         seed: kSeed,
         prngAlgorithm: 'pcg32-xsh-rr',
-        contentVersion: '2.0.4-release',
+        contentVersion: '2.0.5-release',
         contentManifestSha256: '',
       ),
       random: Pcg32(kSeed),

@@ -10,7 +10,7 @@
 //   * `AssetLoader` 必须在首次播放/渲染前把 `eventBindings` 解析为
 //     不可变表，且只按 `event + when` 条件匹配 ——
 //     禁止仅凭 `triggerEvents`、文件名或显示文本选资源；
-//   * `contentVersion` 当前唯一允许值为 `2.0.4-release`。
+//   * `contentVersion` 当前唯一允许值为 `2.0.5-release`。
 // ================================================================
 
 import 'asset_id.dart';
@@ -194,7 +194,7 @@ class AssetManifest {
   });
 
   /// 当前唯一允许的内容版本（协议 §1）。
-  static const String requiredContentVersion = '2.0.4-release';
+  static const String requiredContentVersion = '2.0.5-release';
 
   /// 预期 schema 版本（素材规范 §8 的 v2.0.2 补充）。
   static const String expectedSchemaVersion = '1.1.0';

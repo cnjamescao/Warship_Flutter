@@ -49,7 +49,7 @@ GameRuntime _build({required int seed, required String runId}) {
         runId: runId,
         seed: seed,
         prngAlgorithm: 'pcg32-xsh-rr',
-        contentVersion: '2.0.4-release',
+        contentVersion: '2.0.5-release',
         contentManifestSha256: '',
       ),
       random: Pcg32(seed),

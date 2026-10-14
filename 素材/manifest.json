@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "contentVersion": "2.0.4-release",
+  "contentVersion": "2.0.5-release",
   "assets": [
     {
       "assetId": "GFX-PLAYER-BASE",
@@ -15,8 +15,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -72,8 +72,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "idle",
         "hit",
@@ -214,8 +214,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "idle",
         "hit",
@@ -358,8 +358,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "idle",
         "charge",
@@ -528,8 +528,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "idle",
         "drop",
@@ -700,8 +700,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "body",
         "frontShield",
@@ -872,8 +872,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "active",
         "end"
@@ -956,8 +956,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "active",
         "end"
@@ -1033,8 +1033,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "active",
         "end"
@@ -1114,8 +1114,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "active",
         "end"
@@ -1195,8 +1195,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1214,7 +1214,8 @@
         {
           "event": "EnemySpawned",
           "when": {
-            "isElite": true
+            "isElite": true,
+            "affixId": "AFFIX-ACCEL"
           },
           "renderState": "default"
         }
@@ -1253,8 +1254,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1272,7 +1273,8 @@
         {
           "event": "EnemySpawned",
           "when": {
-            "isElite": true
+            "isElite": true,
+            "affixId": "AFFIX-SHIELD"
           },
           "renderState": "default"
         }
@@ -1311,8 +1313,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1330,7 +1332,8 @@
         {
           "event": "EnemySpawned",
           "when": {
-            "isElite": true
+            "isElite": true,
+            "affixId": "AFFIX-BARRAGE"
           },
           "renderState": "default"
         }
@@ -1373,8 +1376,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "p1",
         "p2",
@@ -1472,8 +1475,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "hidden",
         "shown",
@@ -1564,8 +1567,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1622,8 +1625,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1678,8 +1681,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1734,8 +1737,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1790,8 +1793,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1848,8 +1851,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1906,8 +1909,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -1965,8 +1968,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2024,8 +2027,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2083,8 +2086,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2141,8 +2144,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2199,8 +2202,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2257,8 +2260,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2315,8 +2318,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2373,8 +2376,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2431,8 +2434,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2489,8 +2492,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2547,8 +2550,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2606,8 +2609,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2665,8 +2668,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2724,8 +2727,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2783,8 +2786,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2842,8 +2845,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2901,8 +2904,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -2959,8 +2962,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3017,8 +3020,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3075,8 +3078,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3133,8 +3136,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3191,8 +3194,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3247,8 +3250,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3303,8 +3306,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3359,8 +3362,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3415,8 +3418,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -3477,8 +3480,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -3590,8 +3593,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -3703,8 +3706,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -3816,8 +3819,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -3929,8 +3932,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4042,8 +4045,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4155,8 +4158,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4268,8 +4271,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4381,8 +4384,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4494,8 +4497,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4607,8 +4610,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4720,8 +4723,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4833,8 +4836,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -4946,8 +4949,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -5059,8 +5062,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -5172,8 +5175,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -5285,8 +5288,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -5443,8 +5446,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -5601,8 +5604,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -5759,8 +5762,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -5917,8 +5920,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -6040,8 +6043,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "hit",
@@ -6163,8 +6166,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6268,8 +6271,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6373,8 +6376,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6478,8 +6481,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6601,8 +6604,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6724,8 +6727,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -6831,8 +6834,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "ready",
         "cooldown",
@@ -6996,8 +6999,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "ready",
         "cooldown",
@@ -7159,8 +7162,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -7272,8 +7275,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "north",
         "northEast",
@@ -7510,8 +7513,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "low",
@@ -7608,8 +7611,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -7713,8 +7716,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -7826,8 +7829,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -7939,8 +7942,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8034,6 +8037,241 @@
       "status": "release_ready"
     },
     {
+      "assetId": "UI-ELITE-NAMEPLATE",
+      "category": "ui",
+      "sourceFile": "图形/源SVG/UI界面/UI-ELITE-NAMEPLATE.svg",
+      "runtimeFiles": [
+        "图形/运行时PNG/UI界面/UI-ELITE-NAMEPLATE__normal.png"
+      ],
+      "sha256": "3361942640b867606ee3bd96d320f26aeb1283bbd57ff920b2c9a5cc337ae5c6",
+      "runtimeSha256": [
+        "3361942640b867606ee3bd96d320f26aeb1283bbd57ff920b2c9a5cc337ae5c6"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
+      "states": [
+        "normal"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "fallbackAssetId": "UI-FALLBACK-ICON",
+      "memoryEstimateBytes": 10809,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true
+          },
+          "renderState": "normal"
+        }
+      ],
+      "renderStates": {
+        "normal": {
+          "runtimeFiles": [
+            "图形/运行时PNG/UI界面/UI-ELITE-NAMEPLATE__normal.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
+      "assetId": "UI-ELITE-AFFIX-ACCEL",
+      "category": "ui",
+      "sourceFile": "图形/源SVG/UI界面/UI-ELITE-AFFIX-ACCEL.svg",
+      "runtimeFiles": [
+        "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-ACCEL__normal.png"
+      ],
+      "sha256": "f207fc4df6518f2df245b826d448212a943583af903a3a07f86983988eb30630",
+      "runtimeSha256": [
+        "f207fc4df6518f2df245b826d448212a943583af903a3a07f86983988eb30630"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
+      "states": [
+        "normal"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "fallbackAssetId": "UI-FALLBACK-ICON",
+      "memoryEstimateBytes": 50203,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true,
+            "affixId": "AFFIX-ACCEL"
+          },
+          "renderState": "normal"
+        }
+      ],
+      "renderStates": {
+        "normal": {
+          "runtimeFiles": [
+            "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-ACCEL__normal.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
+      "assetId": "UI-ELITE-AFFIX-SHIELD",
+      "category": "ui",
+      "sourceFile": "图形/源SVG/UI界面/UI-ELITE-AFFIX-SHIELD.svg",
+      "runtimeFiles": [
+        "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-SHIELD__normal.png"
+      ],
+      "sha256": "838d8cd9b2b2745e1e1fd38f06dff9de971003b6286f8db9221359c137b54740",
+      "runtimeSha256": [
+        "838d8cd9b2b2745e1e1fd38f06dff9de971003b6286f8db9221359c137b54740"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
+      "states": [
+        "normal"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "fallbackAssetId": "UI-FALLBACK-ICON",
+      "memoryEstimateBytes": 45698,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true,
+            "affixId": "AFFIX-SHIELD"
+          },
+          "renderState": "normal"
+        }
+      ],
+      "renderStates": {
+        "normal": {
+          "runtimeFiles": [
+            "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-SHIELD__normal.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
+      "assetId": "UI-ELITE-AFFIX-BARRAGE",
+      "category": "ui",
+      "sourceFile": "图形/源SVG/UI界面/UI-ELITE-AFFIX-BARRAGE.svg",
+      "runtimeFiles": [
+        "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-BARRAGE__normal.png"
+      ],
+      "sha256": "c2c2d60c5679c63d384fe705627bc43f732e50e14b74f17c9f1c565876acb55a",
+      "runtimeSha256": [
+        "c2c2d60c5679c63d384fe705627bc43f732e50e14b74f17c9f1c565876acb55a"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
+      "states": [
+        "normal"
+      ],
+      "triggerEvents": [
+        "EnemySpawned"
+      ],
+      "fallbackAssetId": "UI-FALLBACK-ICON",
+      "memoryEstimateBytes": 40183,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "EnemySpawned",
+          "when": {
+            "isElite": true,
+            "affixId": "AFFIX-BARRAGE"
+          },
+          "renderState": "normal"
+        }
+      ],
+      "renderStates": {
+        "normal": {
+          "runtimeFiles": [
+            "图形/运行时PNG/UI界面/UI-ELITE-AFFIX-BARRAGE__normal.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
       "assetId": "UI-HOME-LOGO",
       "category": "ui",
       "sourceFile": "图形/源SVG/UI界面/UI-HOME-LOGO.svg",
@@ -8052,8 +8290,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8157,8 +8395,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8280,8 +8518,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8397,8 +8635,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8514,8 +8752,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8619,8 +8857,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8724,8 +8962,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8829,8 +9067,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -8934,8 +9172,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9051,8 +9289,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9156,8 +9394,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9273,8 +9511,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9378,8 +9616,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9483,8 +9721,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9588,8 +9826,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9713,8 +9951,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9838,8 +10076,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -9943,8 +10181,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -10048,8 +10286,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -10153,8 +10391,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "safe",
         "risk",
@@ -10303,8 +10541,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "safe",
         "risk",
@@ -10441,8 +10679,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "safe",
         "risk",
@@ -10579,8 +10817,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "safe",
         "risk",
@@ -10717,8 +10955,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -10834,8 +11072,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -10951,8 +11189,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "on",
         "off",
@@ -11052,8 +11290,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "victory",
         "defeat"
@@ -11152,8 +11390,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "bronze",
         "silver",
@@ -11288,8 +11526,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -11384,17 +11622,17 @@
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-DANGER__disabled.png",
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-DANGER__focus.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "a3aa7c1b4699a5eaa2c5df8344df87d57c31a05d8fd7f2cf38499a28296eb612",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
-        "8b2085ec03565ae6af4bc7305c27d8e87f59929de3846326782927dc83538f71",
-        "4088e100837dc2ee8b0b59b5f2182580e87e8374df613d4e69d1c12f3374a32c",
-        "25d5dd741c4c4f0c8475d2847b8327ae6fb11fc3aafea4de84edbb6e01545b26"
+        "a3aa7c1b4699a5eaa2c5df8344df87d57c31a05d8fd7f2cf38499a28296eb612",
+        "6709980cd4275b98fc61ca2fd413c18efd1cc28bd3bd3fa7a9271e330e7af985",
+        "fdf85b280f50f19b5f29fdf65fc26e7bb548426027d735ce3947d89e85c09d1f",
+        "11b763dcfb899635635690d5542557af644fb4795fee473f3801f3e160d29e57"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -11403,7 +11641,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 137273,
+      "memoryEstimateBytes": 261486,
       "anchor": [
         0.5,
         0.5
@@ -11489,17 +11727,17 @@
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-REWARD__disabled.png",
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-REWARD__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "0d2a851c14e721a52bb706fe11818a2e68380715827300216a38bc1949c8c5e0",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "0d2a851c14e721a52bb706fe11818a2e68380715827300216a38bc1949c8c5e0",
+        "f5732968df044a61508f4f1f3867a9518a1af57e598b88c5d39d970bd75e8280",
+        "e215d233531a87a5c47ddfea03193f499afe9d781d4925f3d634a896a757f50b",
+        "ad95565048cb1b182f8577c78fe3faee797e2bcb7db6acbf846b51886d11b250"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -11508,7 +11746,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 236793,
       "anchor": [
         0.5,
         0.5
@@ -11594,17 +11832,17 @@
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-RARITY__disabled.png",
         "图形/运行时PNG/UI界面/UI-COLORBLIND-PATTERN-RARITY__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "9e6591e8dac7924dd7de071c8be827d8dfc331b4700fca9da85ad62bb291d079",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "9e6591e8dac7924dd7de071c8be827d8dfc331b4700fca9da85ad62bb291d079",
+        "99f7356d070424d258b9a1a05b92f6aa999f2448c3482f21e0e1446171413a2f",
+        "a0a0c1a29811717e5e0a7b322a694e560ebe18b3b25f158c4cad3c6ac51ec56f",
+        "7f5fef1d27ac66f37007a520e911a12da98c7f174db2b585c9fdd2b883be7a70"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -11613,7 +11851,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 321133,
       "anchor": [
         0.5,
         0.5
@@ -11702,8 +11940,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -11756,8 +11994,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "normal",
         "pressed",
@@ -11857,8 +12095,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -11910,8 +12148,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -11963,8 +12201,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -12016,8 +12254,8 @@
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "default"
       ],
@@ -12066,7 +12304,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.tap",
       "states": [
         "ready"
@@ -12111,7 +12349,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.back",
       "states": [
         "ready"
@@ -12156,7 +12394,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.error",
       "states": [
         "ready"
@@ -12201,7 +12439,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.countdown",
       "states": [
         "ready"
@@ -12244,7 +12482,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.draft.open",
       "states": [
         "ready"
@@ -12287,7 +12525,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.draft.choose",
       "states": [
         "ready"
@@ -12330,7 +12568,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.risk.open",
       "states": [
         "ready"
@@ -12373,7 +12611,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.risk.choose",
       "states": [
         "ready"
@@ -12416,7 +12654,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.ui.pause",
       "states": [
         "ready"
@@ -12461,7 +12699,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.pulse",
       "states": [
         "ready"
@@ -12506,7 +12744,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.pulse.crit",
       "states": [
         "ready"
@@ -12552,7 +12790,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.pulse.hit",
       "states": [
         "ready"
@@ -12598,7 +12836,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.missile.launch",
       "states": [
         "ready"
@@ -12643,7 +12881,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.missile.impact",
       "states": [
         "ready"
@@ -12688,7 +12926,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.laser.start",
       "states": [
         "ready"
@@ -12733,7 +12971,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.laser.loop",
       "states": [
         "ready"
@@ -12778,7 +13016,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.laser.end",
       "states": [
         "ready"
@@ -12823,7 +13061,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.drone.shot",
       "states": [
         "ready"
@@ -12868,7 +13106,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.arc",
       "states": [
         "ready"
@@ -12914,7 +13152,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.dash",
       "states": [
         "ready"
@@ -12957,7 +13195,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.shield.hit",
       "states": [
         "ready"
@@ -13002,7 +13240,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.hp.hit",
       "states": [
         "ready"
@@ -13047,7 +13285,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.low.shield",
       "states": [
         "ready"
@@ -13069,7 +13307,7 @@
       "bus": "Warning",
       "priority": 80,
       "maxVoices": 2,
-      "minRetriggerMs": 0,
+      "minRetriggerMs": 8000,
       "loop": false,
       "loopStartSample": null,
       "loopEndSample": null,
@@ -13092,7 +13330,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.low.hp",
       "states": [
         "ready"
@@ -13114,7 +13352,7 @@
       "bus": "Warning",
       "priority": 80,
       "maxVoices": 2,
-      "minRetriggerMs": 0,
+      "minRetriggerMs": 8000,
       "loop": false,
       "loopStartSample": null,
       "loopEndSample": null,
@@ -13137,7 +13375,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.shield.regen",
       "states": [
         "ready"
@@ -13180,7 +13418,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.heal",
       "states": [
         "ready"
@@ -13223,7 +13461,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.player.dash.ready",
       "states": [
         "ready"
@@ -13266,7 +13504,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.scout.shot",
       "states": [
         "ready"
@@ -13312,7 +13550,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.wing.shot",
       "states": [
         "ready"
@@ -13358,7 +13596,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.sniper.shot",
       "states": [
         "ready"
@@ -13404,7 +13642,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.shield.shot",
       "states": [
         "ready"
@@ -13450,7 +13688,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.sniper.warn",
       "states": [
         "ready"
@@ -13496,7 +13734,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.bomber.drop",
       "states": [
         "ready"
@@ -13542,7 +13780,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.bomber.hazard",
       "states": [
         "ready"
@@ -13588,7 +13826,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.hit",
       "states": [
         "ready"
@@ -13631,7 +13869,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.critical",
       "states": [
         "ready"
@@ -13674,7 +13912,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.destroy.s",
       "states": [
         "ready"
@@ -13717,7 +13955,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.destroy.m",
       "states": [
         "ready"
@@ -13760,7 +13998,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.destroy.l",
       "states": [
         "ready"
@@ -13803,7 +14041,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.en.breach",
       "states": [
         "ready"
@@ -13846,7 +14084,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.elite.spawn",
       "states": [
         "ready"
@@ -13891,7 +14129,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.elite.aura",
       "states": [
         "ready"
@@ -13936,7 +14174,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.elite.defeat",
       "states": [
         "ready"
@@ -13981,7 +14219,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.elite.core",
       "states": [
         "ready"
@@ -14026,7 +14264,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.entry",
       "states": [
         "ready"
@@ -14069,7 +14307,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.phase",
       "states": [
         "ready"
@@ -14112,7 +14350,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.critical",
       "states": [
         "ready"
@@ -14157,7 +14395,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.defeat",
       "states": [
         "ready"
@@ -14200,7 +14438,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.fan.warn",
       "states": [
         "ready"
@@ -14245,7 +14483,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.fan.shot",
       "states": [
         "ready"
@@ -14290,7 +14528,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.charge.warn",
       "states": [
         "ready"
@@ -14335,7 +14573,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.charge.impact",
       "states": [
         "ready"
@@ -14380,7 +14618,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.ring.warn",
       "states": [
         "ready"
@@ -14425,7 +14663,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.ring.shot",
       "states": [
         "ready"
@@ -14470,7 +14708,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.summon",
       "states": [
         "ready"
@@ -14515,7 +14753,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.laser.warn",
       "states": [
         "ready"
@@ -14560,7 +14798,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.laser.loop",
       "states": [
         "ready"
@@ -14605,7 +14843,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.laser.end",
       "states": [
         "ready"
@@ -14650,7 +14888,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.boss.weakpoint.open",
       "states": [
         "ready"
@@ -14695,7 +14933,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.run.victory",
       "states": [
         "ready"
@@ -14740,7 +14978,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.run.defeat",
       "states": [
         "ready"
@@ -14785,7 +15023,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.sfx.run.result.open",
       "states": [
         "ready"
@@ -14830,7 +15068,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.bgm.home",
       "states": [
         "ready"
@@ -14875,7 +15113,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.bgm.run.base",
       "states": [
         "ready"
@@ -14918,7 +15156,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.bgm.run.tension",
       "states": [
         "ready"
@@ -14963,7 +15201,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.bgm.boss",
       "states": [
         "ready"
@@ -15008,7 +15246,7 @@
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "contentVersion": "2.0.5-release",
       "cueId": "cue.bgm.boss.critical",
       "states": [
         "ready"
@@ -15050,8 +15288,8 @@
       "sha256": null,
       "license": "Logical no-op fallback; no audio file is shipped.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "states": [
         "ready"
       ],
@@ -15087,8 +15325,8 @@
         "sans-serif"
       ],
       "license": "Use only installed system font licenses.",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "status": "release_ready"
     },
     {
@@ -15100,8 +15338,8 @@
         "sans-serif"
       ],
       "license": "Use only installed system font licenses.",
-      "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.4-release",
+      "createdAt": "2026-10-14T00:00:00+08:00",
+      "contentVersion": "2.0.5-release",
       "status": "release_ready"
     }
   ]

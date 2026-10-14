@@ -77,36 +77,67 @@ void main() {
     }
   });
 
-  test('⚠️ 素材缺口 F-21：§7.5 要求的"名称条 / 词缀图标"在素材包中不存在', () {
-    // §7.5 精英出现的视觉必须项是**三样**：「名称条、词缀图标、洋红外环」。
-    // 素材包里只有外环（GFX-ELITE-AURA-*）与文本名（affix.*）。
-    //
-    // 本用例**把这个缺口固定下来**：一旦素材侧补齐，
-    // 下面的断言会失败并提示删除本用例。
-    final eliteNameplates = manifest.records
-        .where((r) => r.assetId.value.contains('ELITE') &&
-            r.assetId.value.contains('NAMEPLATE'))
-        .length;
-    final affixIcons = manifest.records
-        .where((r) => r.assetId.value.contains('AFFIX') &&
-            r.category == AssetCategory.graphic)
-        .length;
+  test('§7.5「名称条」：UI-ELITE-NAMEPLATE 已入正式 manifest 并按 isElite 路由', () {
+    // 2.0.5-release 已补齐。原先这里是「缺口冻结」断言（断言不存在）；
+    // 素材交付后按约定改为**正向接入断言**。
+    final r = manifest.lookup('UI-ELITE-NAMEPLATE');
+    expect(r, isNotNull, reason: '精英名称条应存在');
 
-    expect(
-      eliteNameplates,
-      0,
-      reason: '精英名称条素材已出现（当前为 0）—— 请更新本用例并关闭 F-21',
+    final binding = r!.eventBindings.firstWhere(
+      (b) => b.event == 'EnemySpawned',
+      orElse: () => throw StateError('名称条未绑定在 EnemySpawned 上'),
     );
     expect(
-      affixIcons,
-      0,
-      reason: '词缀图标素材已出现（当前为 0）—— 请更新本用例并关闭 F-21',
+      binding.when['isElite'],
+      isTrue,
+      reason: '名称条只应出现在精英上（绑定条件 isElite=true）',
     );
-    // 对照：Boss 是有名称条的，说明这条不是"命名习惯不同"。
+  });
+
+  test('§7.5「词缀图标」：三个词缀各有独立图标，且按 isElite + affixId 精确路由', () {
+    const expected = <String, String>{
+      'AFFIX-ACCEL': 'UI-ELITE-AFFIX-ACCEL',
+      'AFFIX-SHIELD': 'UI-ELITE-AFFIX-SHIELD',
+      'AFFIX-BARRAGE': 'UI-ELITE-AFFIX-BARRAGE',
+    };
+
+    for (final entry in expected.entries) {
+      final r = manifest.lookup(entry.value);
+      expect(r, isNotNull, reason: '${entry.key} 的图标 ${entry.value} 应存在');
+
+      final binding = r!.eventBindings.firstWhere(
+        (b) => b.event == 'EnemySpawned',
+        orElse: () => throw StateError('${entry.value} 未绑定在 EnemySpawned 上'),
+      );
+      expect(binding.when['isElite'], isTrue, reason: '词缀图标只应出现在精英上');
+      expect(
+        binding.when['affixId'],
+        entry.key,
+        reason: '${entry.value} 必须按 affixId 精确路由，'
+            '否则三个词缀在视觉上无法区分 —— 而颜色正是色弱场景下不可靠的那一维',
+      );
+    }
+  });
+
+  test('三种词缀的图标互不相同（不是同一张图重复登记）', () {
+    final ids = <String>{
+      'UI-ELITE-AFFIX-ACCEL',
+      'UI-ELITE-AFFIX-SHIELD',
+      'UI-ELITE-AFFIX-BARRAGE',
+    };
+    final files = <String>{};
+    for (final id in ids) {
+      final r = manifest.lookup(id);
+      expect(r, isNotNull, reason: '$id 应存在');
+      // 每个状态的运行时文件应各不相同。
+      for (final f in r!.runtimeFiles) {
+        files.add(f);
+      }
+    }
     expect(
-      manifest.lookup('UI-BOSS-NAMEPLATE'),
-      isNotNull,
-      reason: 'Boss 有名称条 → 精英缺名称条不是命名约定问题',
+      files.length,
+      ids.length,
+      reason: '三个词缀图标应指向三张不同的图（当前 ${files.length} 张）',
     );
   });
 }

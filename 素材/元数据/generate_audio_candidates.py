@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1] / "音频" / "母带WAV"
 METADATA = Path(__file__).resolve().parent
 RATE = 48_000
 RELEASE_DATE = "2026-10-13T00:00:00+08:00"
-RELEASE_VERSION = "2.0.4-release"
+RELEASE_VERSION = "2.0.5-release"
 
 SFX = """
 SFX-UI-TAP SFX-UI-BACK SFX-UI-ERROR SFX-UI-COUNTDOWN SFX-UI-DRAFT-OPEN SFX-UI-DRAFT-CHOOSE SFX-UI-RISK-OPEN SFX-UI-RISK-CHOOSE SFX-UI-PAUSE
@@ -149,7 +149,7 @@ def audio_meta(name: str) -> dict[str, object]:
         "bus": bus,
         "priority": priority,
         "maxVoices": 1 if is_loop or is_bgm else (4 if "PULSE" in name or "HIT" in name else 2),
-        "minRetriggerMs": 80 if "PULSE" in name or "HIT" in name else 0,
+        "minRetriggerMs": 8000 if name in {"SFX-PLAYER-LOW-SHIELD", "SFX-PLAYER-LOW-HP"} else (80 if "PULSE" in name or "HIT" in name else 0),
         "loop": is_loop,
         "loopStartSample": 0 if is_loop else None,
         "loopEndSample": frames if is_loop else None,

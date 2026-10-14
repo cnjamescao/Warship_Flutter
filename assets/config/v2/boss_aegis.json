@@ -1,6 +1,6 @@
 {
   "id": "boss.aegis",
-  "contentVersion": "2.0.4-release",
+  "contentVersion": "2.0.5-release",
   "nameKey": "boss.aegis.name",
 
   "hp": 2600,

@@ -43,6 +43,10 @@ STATE_SPECS: dict[str, dict[str, int]] = {
     "UI-RESULT-PANEL": {"victory": 1, "defeat": 1},
     "UI-RESULT-MEDAL": {"bronze": 1, "silver": 1, "gold": 1, "none": 1},
     "UI-TOGGLE": {"on": 1, "off": 1, "focus": 1, "disabled": 1},
+    "UI-ELITE-NAMEPLATE": {"normal": 1},
+    "UI-ELITE-AFFIX-ACCEL": {"normal": 1},
+    "UI-ELITE-AFFIX-SHIELD": {"normal": 1},
+    "UI-ELITE-AFFIX-BARRAGE": {"normal": 1},
 }
 
 

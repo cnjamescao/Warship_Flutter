@@ -32,7 +32,7 @@ class RunIdentity {
   /// PRNG 算法名，写入 `RunStarted`。
   final String prngAlgorithm;
 
-  /// 内容版本，当前唯一允许值为 `2.0.4-release`。
+  /// 内容版本，当前唯一允许值为 `2.0.5-release`。
   final String contentVersion;
 
   /// 正式 `素材/manifest.json` 的 SHA-256；回放与验收依赖它。

@@ -1,6 +1,6 @@
 {
   "id": "enemies.v2",
-  "contentVersion": "2.0.4-release",
+  "contentVersion": "2.0.5-release",
   "spawnY": -80,
   "spawnXPoints": [240, 480, 720, 960, 1200, 1440, 1680],
   "minSpawnDistanceFromPlayer": 360,

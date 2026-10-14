@@ -168,12 +168,21 @@ class EnemySpawned extends DomainEvent {
     required this.enemyId,
     required this.position,
     required this.isElite,
+    this.affixId,
   });
 
   final EntityId entityId;
   final String enemyId;
   final Vec2 position;
   final bool isElite;
+
+  /// 精英词缀 ID（普通敌人为 null）。
+  ///
+  /// 素材侧把词缀图标按 `isElite + affixId` **精确路由**
+  /// （`UI-ELITE-AFFIX-ACCEL/SHIELD/BARRAGE` 的绑定条件即为此二字段）。
+  /// 没有它，三个词缀图标**无法区分**，只能都靠外环 —— 而外环的颜色
+  /// 正是色弱场景下不可靠的那一维。因此这个字段是 F-21 的必需传输项。
+  final String? affixId;
 
   @override
   String get eventType => 'EnemySpawned';

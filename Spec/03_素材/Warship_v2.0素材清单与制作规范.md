@@ -2,8 +2,8 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 版本 | v2.0.4，唯一生效素材规范 |
-| 更新日期 | 2026-10-12 |
+| 版本 | v2.0.5，唯一生效素材规范 |
+| 更新日期 | 2026-10-14 |
 | 适用对象 | UI/游戏美术、TA、音频设计、客户端、QA、构建工程师 |
 | 上游规则 | [v2.0 研发交付基线](../01_产品/Warship_v2.0研发交付基线.md)、[运行时与数据协议](../02_技术/v2.0/02_运行时与数据协议.md) |
 | 覆盖范围 | 横屏 1920×1080、离线 Web 优先版本的全部运行时图形、音频、字体和元数据 |
@@ -12,7 +12,7 @@
 
 ## 1. 交付状态与目录
 
-`Spec/03_素材/` 中仅保留 v2.0 正式素材规范；概念样张、旧原型 WAV 和旧清单均在 `Spec/99_历史归档/`，不可作为实现依据。正式 v2.0 发布包位于仓库根目录的 [`素材/`](../../素材/README.md)：其根 `manifest.json` 含 193 条记录（123 图形/UI、67 个物理音频、1 个静默逻辑回退、2 字体声明），运行时仅可读取 manifest 显式引用的 `图形/运行时PNG/` 和 `音频/运行时MP3/` 文件。发布前必须通过 `validate_release_manifest.py`、`validate_audio_mix.py`、`validate_visual_state_assets.py` 三项门禁；`图形/*ATLAS.png`、`图形/源SVG/` 和原型文件只用于美术迭代，不可在运行时直接引用。
+`Spec/03_素材/` 中仅保留 v2.0 正式素材规范；概念样张、旧原型 WAV 和旧清单均在 `Spec/99_历史归档/`，不可作为实现依据。正式 v2.0 发布包位于仓库根目录的 [`素材/`](../../素材/README.md)：其根 `manifest.json` 含 197 条记录（127 图形/UI、67 个物理音频、1 个静默逻辑回退、2 字体声明），运行时仅可读取 manifest 显式引用的 `图形/运行时PNG/` 和 `音频/运行时MP3/` 文件。发布前必须通过 `validate_release_manifest.py`、`validate_audio_mix.py`、`validate_visual_state_assets.py` 三项门禁；`图形/*ATLAS.png`、`图形/源SVG/` 和原型文件只用于美术迭代，不可在运行时直接引用。
 
 ~~~text
 Spec/素材/
@@ -96,6 +96,8 @@ Spec/素材/
 | GFX-EN-BOMBER | idle、drop、hit、critical、destroy | 288×288 @2x | 危险区素材独立 |
 | GFX-EN-SHIELD | body、front-shield、hit、critical、destroy | 288×288 @2x | front-shield 独立，120°正面减伤清晰 |
 | GFX-ELITE-AURA-ACCEL/SHIELD/BARRAGE | 3 个可叠加外环/词缀标识 | 256×256 @2x | 65/105/130 秒固定精英使用 |
+| UI-ELITE-NAMEPLATE | 精英头顶名称条底板 | 512×512 @2x；运行时缩放至 220×44 logical px | 文本由 `enemy.*` / `affix.*` key 绘制，禁止烘焙文字 |
+| UI-ELITE-AFFIX-ACCEL/SHIELD/BARRAGE | 加速双箭头 / 护体盾牌 / 弹幕三点图标 | 512×512 @2x；运行时 32×32 logical px | 必须按 `affixId` 与外环一对一匹配 |
 | GFX-BOSS-AEGIS-BODY | 基础装甲、P1/P2/P3 装甲层 | 1024×1024 @2x | Body r=150；阶段切换不改锚点 |
 | GFX-BOSS-AEGIS-WEAKPOINT | hidden、shown、hit | 256×256 @2x | P3 核心暴露 3 s；r=52 |
 | GFX-BOSS-AEGIS-CRITICAL | 裂纹、核心警报层 | 1024×1024 @2x | HP ≤10%，不遮挡预警 |
@@ -248,3 +250,5 @@ Spec/素材/
 **v2.0.3 研发反馈闭环（2026-10-13）**：补齐了 Sniper `charge`、Bomber `drop`、Shield `frontShield`、Dash Trail 三帧、HUD `hit/low/critical`、Dash `ready/cooldown`、八方向受击指示、风险门、结算奖牌和开关等语义状态。所有图形/音频记录新增精确 `eventBindings`，删除了“按前缀批量猜触发事件”的错误元数据；新增 `DashStarted`、敌方/Boss 招式预警与发射、Boss 濒毁等表现事件。音频按 `firstRun`/`boss`/`lazy` 分组，首局资源集合可独立计算。背景正式采用 WebP 首选、PNG 回退的双格式合同。玩家和 Boss 已补交可编辑 SVG 组合源及原始 PNG 母版引用。发布门禁额外校验语义状态覆盖、绑定状态存在性和音频加载分组。
 
 **v2.0.4 发布接入闭环（2026-10-13）**：将先前“素材状态齐全但事件无法唯一驱动”的风险改为可执行合同。新增生命/护盾、冲刺、敌机受击/临界/前盾、Boss 招式结束、风险选项和 UI 控件状态事件；明确五类敌方攻击与五种 Boss 招式的稳定 `attackId`。所有 Sniper、Bomber、Shield、Dash、HUD、八方向受击、风险门、结算勋章状态均已得到可枚举的路由；`resultTier` 也已定义。发布校验新增多状态资产路由覆盖和攻击 binding 精确性门禁，拒绝空条件的敌方/Boss 攻击路由。
+
+**v2.0.5 阶段一裁决闭环（2026-10-14）**：内容版本升级为 `2.0.5-release`。`SFX-PLAYER-LOW-SHIELD` 与 `SFX-PLAYER-LOW-HP` 的 `minRetriggerMs` 均固定为 `8000`；新增 `UI-ELITE-NAMEPLATE` 与三种 `UI-ELITE-AFFIX-*` 正式图形，且三种外环/图标均以 `EnemySpawned.isElite=true + affixId` 精确路由，禁止全部叠加。`UI-COLORBLIND-PATTERN-DANGER/REWARD/RARITY` 重新导出为三角斜线、菱形加号、同心圆十字，作为默认而非可选的第二识别维度。客户端不得修改、重绘或用文字替换以上资源；只按 manifest 接入。

@@ -66,7 +66,7 @@
 | 经验 | 击杀结算时自动进入玩家；能量晶体仅做视觉表现，不可漏拾取 |
 | 分数 | 普通/精英/Boss 基础分分别 100/800/5000，乘以当前连击倍率并向下取整 |
 | 连击 | 4.0 秒内再次击杀 +1；每 10 连击倍率 +0.1，最高 x2.0；受 HP 伤害倍率 -0.2（最低 x1.0），不清空层数 |
-| 胜利 | Boss HP = 0；失败为 HP = 0 或 190 秒超时 |
+| 胜利 | Boss HP = 0；确认 Boss 击杀奖励后，同一逻辑步拒绝所有后续伤害、清除敌人/敌弹/危险区并停用碰撞与伤害 tick，之后才进入胜利表现；失败为 HP = 0 或 190 秒超时 |
 
 **冲刺方向与碰撞**：冲刺取按下瞬间的移动向量；若无当前移动向量，使用最近 0.5 秒内最后一个非零移动方向；仍没有时向上。冲刺路径被世界边界截断，不可穿出战场。冲刺期间忽略 EnemyBody、EnemyProjectile、Hazard 对玩家的伤害和碰撞阻挡，但**不对敌人造成伤害**；残影/电弧仅为表现。冲刺结束后立即恢复所有常规碰撞规则。
 
@@ -233,9 +233,9 @@ Boss P3 开始、技能冷却结束、且 HP ≤10% 时，下一次激光扫射�
 
 ## 8. 文案、UI 以及本地数据的完成边界
 
-- v2.0 首发语言仅简体中文；所有文案以 key 管理。英语/RTL 不是本版本验收项。
+- v2.0 首发语言仅简体中文；所有面向玩家的展示文案（含可访问语义标签）必须以 key 管理并经 `catalog.text(key, params)` 读取，唯一正文来源为 `strings_zh_CN.json`。运行时代码不得保留玩家可见硬编码文字，也不得以显示 key 或硬编码文本作为缺 key 回退；英语/RTL 不是本版本验收项。
 - HUD 固定位置：左上 HP/护盾；顶部中间 Boss/倒计时；右上暂停和连击；底部中间经验/LV；右下冲刺。详细 Asset ID 见素材清单。
-- 本地持久化键固定为：`settings.musicEnabled`、`settings.sfxEnabled`、`settings.reduceMotion`、`settings.hapticsEnabled`、`record.highScore`、`record.bestClearSeconds`、`schemaVersion`。无任何账号和网络请求。
+- 本地持久化键固定为：`settings.musicEnabled`、`settings.sfxEnabled`、`settings.reduceMotion`、`settings.hapticsEnabled`、`record.highScore`、`record.bestClearSeconds`、`schemaVersion`。触感在支持的原生移动端首次默认开，在 Web/macOS 默认关；只在实际 HP 受伤、确认风险门、Boss 击败时触发，平台不支持时静默 no-op。无任何账号和网络请求。
 - 结算评价：胜利为 Gold；Boss HP ≥35% 的失败为 Silver；其余为 Bronze。只显示成绩，不提供局外战力或抽奖。
 
 ## 9. 最终验收用例
@@ -245,7 +245,7 @@ Boss P3 开始、技能冷却结束、且 HP ≤10% 时，下一次激光扫射�
 | AC-01 | 100 个固定 seed 回放 | 同输入下升级候选、风险门、精英词缀、得分和胜负完全一致 |
 | AC-02 | 横向分辨率 | 16:9、4:3、21:9 和带安全区设备均不拉伸逻辑世界，HUD 不越界 |
 | AC-03 | 5 分钟生命周期循环 | 开始、暂停、失焦、升级、风险门、死亡、重开 20 次后无残留实体、持续音或重复输入 |
-| AC-04 | 公平性 | 每种攻击在命中前有对应预警；生成点满足 360 px 安全距离；无不可躲避 Boss 循环 |
+| AC-04 | 公平性 | **产品攻击表明确规定预警的攻击**在命中前有对应预警（`sniper_line`、`bomber_drop`、`boss_fan`、`boss_charge`、`boss_ring`、`boss_laser`）；生成点满足 360 px 安全距离；无不可躲避 Boss 循环。`wing_shot`、`shield_shot` 不新增蓄力预警。 |
 | AC-05 | 状态视觉 | 产品设计文档 7.5 的全部 13 个状态均有正确视觉、音频和结束条件 |
 | AC-06 | 数值 | 用无伤基准输入可在 180 秒前击败 Boss；新手基准输入能稳定达到 60 秒；站桩输入不能通关 |
 | AC-07 | 性能 | 达到 §2 对象上限时仍满足帧时间目标；降级不影响预警、HUD、碰撞与输入 |

@@ -1,6 +1,6 @@
 {
   "id": "player.default",
-  "contentVersion": "2.0.4-release",
+  "contentVersion": "2.0.5-release",
   "spawnPosition": [960, 900],
   "moveSpeed": 340,
   "bodyHitbox": { "shape": "circle", "radius": 30 },

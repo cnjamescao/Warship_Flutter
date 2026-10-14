@@ -507,6 +507,7 @@ class GameRuntime {
               enemyId: tuning.id,
               position: enemy.position,
               isElite: spawn.isElite,
+              affixId: enemy.affix?.id,
             ),
             runtime,
           );
@@ -1003,6 +1004,7 @@ class GameRuntime {
               enemyId: tuning.id,
               position: enemy.position,
               isElite: false,
+              affixId: enemy.affix?.id,
             ),
             runtime,
           );

@@ -64,8 +64,8 @@ void main() {
       catalog = result.requireValue;
     });
 
-    test('内容版本为 2.0.4-release', () {
-      expect(catalog.contentVersion, '2.0.4-release');
+    test('内容版本为 2.0.5-release', () {
+      expect(catalog.contentVersion, '2.0.5-release');
     });
 
     test('五类敌人、十六张升级卡、六个武器系统均被加载', () {

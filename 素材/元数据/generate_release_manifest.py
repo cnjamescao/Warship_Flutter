@@ -24,8 +24,8 @@ web_backgrounds = importlib.util.module_from_spec(web_spec)
 assert web_spec and web_spec.loader
 web_spec.loader.exec_module(web_backgrounds)
 
-RELEASE_DATE = "2026-10-13T00:00:00+08:00"
-RELEASE_VERSION = "2.0.4-release"
+RELEASE_DATE = "2026-10-14T00:00:00+08:00"
+RELEASE_VERSION = "2.0.5-release"
 
 ALL_GRAPHICS = [
     "GFX-PLAYER-BASE", *graphics.SHIPS, *graphics.PLAYER, *graphics.ELITE,
@@ -98,8 +98,14 @@ def bindings_for(asset_id: str) -> list[dict[str, object]]:
         return [{"event": "PlayerVitalStateChanged", "when": {"hpRatioLte": 0.30}, "renderState": "active"}, {"event": "PlayerVitalStateChanged", "when": {"hpRatioGt": 0.35}, "renderState": "end"}]
     if asset_id == "GFX-PLAYER-DASH-TRAIL":
         return [{"event": "DashStarted", "when": {}, "renderState": "active"}, {"event": "DashEnded", "when": {}, "renderState": "end"}]
-    if asset_id.startswith("GFX-ELITE"):
-        return [{"event": "EnemySpawned", "when": {"isElite": True}, "renderState": "default"}]
+    if asset_id.startswith("GFX-ELITE-AURA-"):
+        affix_id = "AFFIX-" + asset_id.removeprefix("GFX-ELITE-AURA-")
+        return [{"event": "EnemySpawned", "when": {"isElite": True, "affixId": affix_id}, "renderState": "default"}]
+    if asset_id == "UI-ELITE-NAMEPLATE":
+        return [{"event": "EnemySpawned", "when": {"isElite": True}, "renderState": "normal"}]
+    if asset_id.startswith("UI-ELITE-AFFIX-"):
+        affix_id = "AFFIX-" + asset_id.removeprefix("UI-ELITE-AFFIX-")
+        return [{"event": "EnemySpawned", "when": {"isElite": True, "affixId": affix_id}, "renderState": "normal"}]
     if asset_id == "GFX-BOSS-AEGIS-BODY":
         return [{"event": "BossPhaseChanged", "when": {"phase": "p1"}, "renderState": "p1"}]
     if asset_id == "GFX-BOSS-AEGIS-WEAKPOINT":

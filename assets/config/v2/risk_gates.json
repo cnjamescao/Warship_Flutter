@@ -1,6 +1,6 @@
 {
   "id": "risk_gates.v2",
-  "contentVersion": "2.0.4-release",
+  "contentVersion": "2.0.5-release",
 
   "common": {
     "clearNormalEnemyBulletsBefore": true,

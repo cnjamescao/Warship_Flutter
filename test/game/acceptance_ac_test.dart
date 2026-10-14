@@ -33,7 +33,7 @@ import 'package:warship_flutter/game/domain/upgrade_system.dart';
 import 'package:warship_flutter/game/domain/values.dart';
 import 'package:warship_flutter/game/domain/weapon_system.dart';
 
-const String kContentVersion = '2.0.4-release';
+const String kContentVersion = '2.0.5-release';
 const int kFramesPerRun = 1200; // 20 秒有效战斗：覆盖首个升级草案（15 秒）
 
 Map<String, Object?> readJson(String name) =>
@@ -326,8 +326,8 @@ void main() {
       }
     });
 
-    test('Assets 规模与素材包一致（193 条）', () {
-      expect(manifest.length, 193);
+    test('Assets 规模与素材包一致（197 条）', () {
+      expect(manifest.length, 197);
     });
   });
 

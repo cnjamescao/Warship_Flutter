@@ -138,7 +138,7 @@ def main() -> int:
                 with wave.open(str(master), "rb") as handle:
                     if (handle.getframerate(), handle.getsampwidth() * 8, handle.getnchannels()) != (48000, 24, 2):
                         errors.append(f"invalid WAV master format: {asset_id}")
-    if graphic_count != 123 or physical_audio_count != 67:
+    if graphic_count != 127 or physical_audio_count != 67:
         errors.append(f"unexpected asset counts: graphics={graphic_count}, physical_audio={physical_audio_count}")
     fallback_ids = {"GFX-FALLBACK-SILHOUETTE", "UI-FALLBACK-ICON", "SFX-FALLBACK-SILENT"}
     if not fallback_ids.issubset(ids):

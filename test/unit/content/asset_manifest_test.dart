@@ -32,9 +32,9 @@ Map<String, Object?> loadBuiltManifest() {
 
 void main() {
   group('构建复制链路', () {
-    test('构建复制品存在且内容版本为 2.0.4-release', () {
+    test('构建复制品存在且内容版本为 2.0.5-release', () {
       final json = loadBuiltManifest();
-      expect(json['contentVersion'], '2.0.4-release');
+      expect(json['contentVersion'], '2.0.5-release');
       expect(json['schemaVersion'], AssetManifest.expectedSchemaVersion);
     });
 
@@ -63,7 +63,7 @@ void main() {
         }
       }
 
-      expect(visual, 368, reason: '图形/UI 状态文件数量应与素材包一致');
+      expect(visual, 372, reason: '图形/UI 状态文件数量应与素材包一致');
       expect(audio, 67, reason: '物理音频数量应与素材包一致');
     });
 
@@ -112,13 +112,13 @@ void main() {
       manifest = result.requireValue;
     });
 
-    test('共 193 条记录，分五大类', () {
-      expect(manifest.length, 193);
+    test('共 197 条记录，分五大类', () {
+      expect(manifest.length, 197);
 
       int countOf(AssetCategory category) =>
           manifest.records.where((r) => r.category == category).length;
 
-      expect(countOf(AssetCategory.ui), 70);
+      expect(countOf(AssetCategory.ui), 74);
       expect(countOf(AssetCategory.graphic), 53);
       expect(countOf(AssetCategory.sfx), 63);
       expect(countOf(AssetCategory.bgm), 5);

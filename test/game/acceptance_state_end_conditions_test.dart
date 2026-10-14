@@ -85,37 +85,37 @@ void main() {
     });
   });
 
-  group('§7.5 玩家低护盾 / 濒危：「最短间隔 8 秒」（已知缺口 F-04）', () {
-    // **这两个值当前是 0，与 §7.5 不符。** 属于素材侧内容（manifest），
-    // 研发不擅自改。这里把现状**冻结为已知缺口**：
-    // 若素材侧修好，本用例会失败并提示把缺口标记删掉 ——
-    // 这样缺口既不会静默扩大，也不会被遗忘。
-    const knownGap = <String, int>{
-      'SFX-PLAYER-LOW-SHIELD': 0,
-      'SFX-PLAYER-LOW-HP': 0,
-    };
-
-    test('现状与 §7.5 的 8 秒要求不符，已登记为 F-04；值变化时必须更新登记', () {
-      for (final entry in knownGap.entries) {
-        final r = rec(entry.key);
-        expect(r, isNotNull, reason: '${entry.key} 应存在');
+  group('§7.5 玩家低护盾 / 濒危：「最短间隔 8 秒」—— 2.0.5 已接入', () {
+    // 素材侧已在 2.0.5-release 修正：两个提示的 minRetriggerMs 均为 8000。
+    // 原先这里是「缺口冻结」断言（断言等于 0）；缺口修好后按约定
+    // 改为**正向接入断言** —— 若再退回 0，本用例会失败。
+    test('低护盾 / 低血提示的最短重触发间隔为 8000 ms（§7.5 的 8 秒）', () {
+      for (final id in <String>[
+        'SFX-PLAYER-LOW-SHIELD',
+        'SFX-PLAYER-LOW-HP',
+      ]) {
+        final r = rec(id);
+        expect(r, isNotNull, reason: '$id 应存在');
         expect(
           r!.minRetriggerMs,
-          entry.value,
-          reason: '${entry.key} 的 minRetriggerMs 已变（现为 ${r.minRetriggerMs}）。'
-              '§7.5 要求 8000；若素材侧已修好，请把本用例里的 knownGap '
-              '改为断言 8000 并关闭 F-04。',
+          8000,
+          reason: '$id 的 minRetriggerMs 必须为 8000（§7.5：最短间隔 8 秒）',
         );
       }
     });
 
-    test('requirement（登记在案）：§7.5 要求这两个提示最短间隔 8 秒', () {
-      // 这条不读 manifest，只把规范原文固定下来，避免缺口被遗忘。
-      const requiredMs = 8000;
+    test('两个提示仍由 PlayerDamaged 的阈值条件触发（未改成无条件播放）', () {
+      final shield = rec('SFX-PLAYER-LOW-SHIELD')!;
+      final hp = rec('SFX-PLAYER-LOW-HP')!;
       expect(
-        requiredMs,
-        8000,
-        reason: '§7.5：「每 8 秒最多一次低护盾提示」「最短间隔 8 秒」',
+        shield.eventBindings.any((b) => b.event == 'PlayerDamaged'),
+        isTrue,
+        reason: '低护盾提示应由 PlayerDamaged 的阈值条件触发',
+      );
+      expect(
+        hp.eventBindings.any((b) => b.event == 'PlayerDamaged'),
+        isTrue,
+        reason: '低血提示应由 PlayerDamaged 的阈值条件触发',
       );
     });
   });
