@@ -18,6 +18,7 @@ import '../game/content/content_catalog.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
 import '../game/core/game_runtime.dart';
+import '../game/domain/result_tier.dart';
 import '../game/infrastructure/asset_loader.dart';
 import '../game/infrastructure/audio_director.dart';
 import '../game/infrastructure/audio_port.dart';
@@ -79,6 +80,11 @@ class _V2AppFlowState extends State<V2AppFlow> {
   String _resultOutcome = 'defeat';
   int _resultScore = 0;
   double _resultSeconds = 0;
+
+  /// 本局结算奖牌（`gold` / `silver` / `bronze`）。
+  ///
+  /// 算法见 `lib/game/domain/result_tier.dart`（含文档冲突的裁决记录）。
+  String _resultTier = ResultTier.bronze.id;
 
   @override
   void initState() {
@@ -179,10 +185,18 @@ class _V2AppFlowState extends State<V2AppFlow> {
     }
     runtime.phases.transitionTo(GamePhase.result, reason: 'runEnded');
     final outcome = runtime.player.health.isDead ? 'defeat' : 'victory';
+    // 奖牌在这里算：bossHpRatio 取**该局结束时的真实值**。
+    // 胜利时 Boss 已被击毁，`boss` 可能为 null —— 但 victory=true
+    // 会直接返回 gold，不依赖该值。
+    final tier = resultTierFor(
+      victory: outcome == 'victory',
+      bossHpRatio: runtime.boss?.hpRatio,
+    );
     setState(() {
       _resultOutcome = outcome;
       _resultScore = runtime.score;
       _resultSeconds = runtime.combatSeconds;
+      _resultTier = tier.id;
     });
 
     // 记录只增不减；存档失败不阻断结算界面。
@@ -235,6 +249,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
     // 尚未开局：显示首页。
     if (runtime == null || input == null) {
       return _HomeScreen(
+        catalog: widget.catalog,
         onStart: _startNewRun,
         highScore: _records.highScore,
         bestClearSeconds: _records.bestClearSeconds,
@@ -247,6 +262,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
     switch (runtime.phases.phase) {
       case GamePhase.home:
         return _HomeScreen(
+          catalog: widget.catalog,
           onStart: _startNewRun,
           highScore: _records.highScore,
           bestClearSeconds: _records.bestClearSeconds,
@@ -278,7 +294,9 @@ class _V2AppFlowState extends State<V2AppFlow> {
 
       case GamePhase.result:
         return _ResultScreen(
+          catalog: widget.catalog,
           outcome: _resultOutcome,
+          tier: _resultTier,
           score: _resultScore,
           seconds: _resultSeconds,
           bestScore: _records.highScore,
@@ -313,6 +331,7 @@ class _LoadingSurface extends StatelessWidget {
 /// 首页。
 class _HomeScreen extends StatefulWidget {
   const _HomeScreen({
+    required this.catalog,
     required this.onStart,
     required this.highScore,
     required this.settings,
@@ -321,6 +340,7 @@ class _HomeScreen extends StatefulWidget {
     this.bestClearSeconds,
   });
 
+  final ContentCatalog catalog;
   final VoidCallback onStart;
   final int highScore;
   final double? bestClearSeconds;
@@ -330,6 +350,23 @@ class _HomeScreen extends StatefulWidget {
 
   @override
   State<_HomeScreen> createState() => _HomeScreenState();
+}
+
+/// 把本地化标题拆成「主标题 / 副标题」。
+///
+/// 约定：标题里的全角或半角冒号是主副标题的分隔符。
+/// 没有冒号时整串作为主标题。这样版式不依赖硬编码文案。
+(String, String) _titleParts(String title) {
+  for (final sep in <String>['：', ':']) {
+    final index = title.indexOf(sep);
+    if (index > 0) {
+      return (
+        title.substring(0, index).trim().toUpperCase(),
+        title.substring(index + sep.length).trim(),
+      );
+    }
+  }
+  return (title.toUpperCase(), '');
 }
 
 class _HomeScreenState extends State<_HomeScreen> {
@@ -349,9 +386,14 @@ class _HomeScreenState extends State<_HomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const Text(
-              'WARSHIP',
-              style: TextStyle(
+            // 标题来自 `app.title`（产品设计 §8 要求所有展示文本走
+            // 本地化 key，不硬编码）。该键形如「Warship：霓虹最后防线」，
+            // 这里按全角冒号拆成「主标题 + 副标题」两行以保持原有版式；
+            // 若无冒号则整串作为主标题，副标题留空（对其他语言安全）。
+            Text(
+              _titleParts(widget.catalog.text('app.title')).$1,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 color: Color(0xFF3FE0FF),
                 fontSize: 64,
                 fontWeight: FontWeight.bold,
@@ -359,9 +401,10 @@ class _HomeScreenState extends State<_HomeScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              '霓虹最后防线',
-              style: TextStyle(
+            if (_titleParts(widget.catalog.text('app.title')).$2.isNotEmpty)
+              Text(
+              _titleParts(widget.catalog.text('app.title')).$2,
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 20,
                 letterSpacing: 6,
@@ -380,7 +423,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              child: const Text('开始战斗'),
+              child: Text(widget.catalog.text('home.start')),
             ),
             const SizedBox(height: 28),
             // 最高分只在读取完成后显示，避免闪一下 0。
@@ -408,7 +451,7 @@ class _HomeScreenState extends State<_HomeScreen> {
             const SizedBox(height: 28),
             TextButton(
               onPressed: () => setState(() => _showSettings = true),
-              child: const Text('设置'),
+              child: Text(widget.catalog.text('home.settings')),
             ),
             const SizedBox(height: 12),
             const Text(
@@ -568,9 +611,50 @@ class _BriefingScreenState extends State<_BriefingScreen> {
 }
 
 /// 结算界面。
+/// 结算奖牌：图形（`UI-RESULT-MEDAL` 的对应状态）+ 本地化档位名。
+///
+/// 资源路径从 manifest 取，**不硬编码文件名**（素材规范 §1.1）。
+/// 该档位没有图形时只显示文字，不影响结算可用性。
+class _ResultMedal extends StatelessWidget {
+  const _ResultMedal({required this.catalog, required this.tier});
+
+  final ContentCatalog catalog;
+  final String tier;
+
+  @override
+  Widget build(BuildContext context) {
+    final record = catalog.manifest.lookup('UI-RESULT-MEDAL');
+    final spec = record?.renderStates[tier];
+    final files = spec != null && spec.runtimeFiles.isNotEmpty
+        ? spec.runtimeFiles
+        : (record?.runtimeFiles ?? const <String>[]);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        if (files.isNotEmpty)
+          Image.asset(
+            files.first,
+            width: 96,
+            height: 96,
+            filterQuality: FilterQuality.medium,
+            errorBuilder: (_, _, _) => const SizedBox(width: 96, height: 96),
+          ),
+        const SizedBox(height: 6),
+        Text(
+          catalog.text('result.tier.$tier'),
+          style: const TextStyle(color: Color(0xFFFFC24B), fontSize: 20),
+        ),
+      ],
+    );
+  }
+}
+
 class _ResultScreen extends StatelessWidget {
   const _ResultScreen({
+    required this.catalog,
     required this.outcome,
+    required this.tier,
     required this.score,
     required this.seconds,
     required this.bestScore,
@@ -579,7 +663,12 @@ class _ResultScreen extends StatelessWidget {
     this.bestClearSeconds,
   });
 
+  final ContentCatalog catalog;
   final String outcome;
+
+  /// 结算奖牌档位 id（`gold` / `silver` / `bronze`）。
+  final String tier;
+
   final int score;
   final double seconds;
   final int bestScore;
@@ -596,7 +685,7 @@ class _ResultScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              victory ? '防线守住了' : '防线失守',
+              catalog.text(victory ? 'result.victory' : 'result.defeat'),
               style: TextStyle(
                 color: victory
                     ? const Color(0xFFFFC24B)
@@ -606,19 +695,27 @@ class _ResultScreen extends StatelessWidget {
                 letterSpacing: 6,
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 20),
+            _ResultMedal(catalog: catalog, tier: tier),
+            const SizedBox(height: 20),
             Text(
-              '得分 $score',
+              catalog
+                  .text('result.score')
+                  .replaceAll('{score}', '$score'),
               style: const TextStyle(color: Colors.white, fontSize: 26),
             ),
             const SizedBox(height: 8),
             Text(
-              '用时 ${seconds.toStringAsFixed(1)} 秒',
-              style: const TextStyle(color: Colors.white70, fontSize: 18),
+              catalog
+                  .text('result.time')
+                  .replaceAll('{seconds}', seconds.toStringAsFixed(1)),
+              style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
             const SizedBox(height: 8),
             Text(
-              '最佳成绩 $bestScore',
+              catalog
+                  .text('result.best')
+                  .replaceAll('{score}', '$bestScore'),
               style: const TextStyle(color: Colors.white38, fontSize: 16),
             ),
             const SizedBox(height: 40),
