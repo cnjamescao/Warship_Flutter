@@ -5,8 +5,8 @@
   "simulatedFrames": 1320,
   "logicStepMs": {
     "p50": 0.008,
-    "p95": 0.022,
-    "p99": 0.06
+    "p95": 0.023,
+    "p99": 0.057
   },
   "objectPeaks": {
     "enemies": 13,
@@ -16,7 +16,7 @@
   },
   "degradationLevel": "none",
   "frameBudgetMs": 16.67,
-  "logicBudgetUsageP95": 0.0013,
+  "logicBudgetUsageP95": 0.0014,
   "logicMeetsBudget": true,
   "scope": "logic-step cost only; AC-07 frame-time sampling still requires profile/release builds on real devices",
   "note": "逻辑步成本报告（AC-07 的逻辑侧证据）。**不含帧时间** —— 无头测试无法测量 GPU 绘制与合成，AC-07 要求的帧时间仍须在 profile/release 构建的真机上采样。"

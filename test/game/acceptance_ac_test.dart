@@ -138,7 +138,13 @@ InputFrame inputFor(int frame) {
 }
 
 /// 一次运行的完整观测。
-({String digest, int score, List<String> draftCandidates, List<String> risks})
+({
+  String digest,
+  int score,
+  List<String> draftCandidates,
+  List<String> risks,
+  String outcome,
+})
 runSeed(int seed) {
   final rt = buildRuntime(seed);
   final hasher = EventHasher();
@@ -168,6 +174,8 @@ runSeed(int seed) {
     score: rt.score,
     draftCandidates: drafts,
     risks: risks,
+    // AC-01 原文明确要求「得分和**胜负**完全一致」。
+    outcome: rt.player.health.isDead ? 'defeat' : 'running',
   );
 }
 
@@ -199,6 +207,8 @@ void main() {
           reason: 'seed=$seed 的升级候选不一致',
         );
         expect(second.risks, first.risks, reason: 'seed=$seed 的风险门选项不一致');
+        // AC-01 原文点名要求「胜负」一致 —— 此前漏了这条。
+        expect(second.outcome, first.outcome, reason: 'seed=$seed 的胜负不一致');
       }
 
       // 至少要有 seed 打开过升级草案，否则这条用例是空转。

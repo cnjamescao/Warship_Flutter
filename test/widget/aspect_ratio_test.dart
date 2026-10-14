@@ -115,4 +115,31 @@ void main() {
       await unmountV2App(tester);
     });
   }
+
+  // AC-02 原文是「16:9、4:3、21:9 **和带安全区设备**均不拉伸逻辑世界，
+  // HUD 不越界」—— 此前只测了三种比例，**漏了"带安全区设备"**。
+  // 这里模拟刘海/圆角设备：给视口加顶部与底部的安全区内边距。
+  testWidgets('带安全区设备（刘海 + 底部横条）：HUD 不越界', (tester) async {
+    const size = Size(1920, 1080);
+    useSurface(tester, size);
+    // 典型 iPhone 横屏：顶部刘海 0（横屏在侧边）、底部 Home 指示条约 21dp。
+    tester.view.padding = const FakeViewPadding(top: 0, bottom: 21);
+    tester.view.viewPadding = const FakeViewPadding(top: 0, bottom: 21);
+    addTearDown(tester.view.resetPadding);
+
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    expect(find.byType(V2RunScreen), findsOneWidget);
+
+    expectWithinScreen(tester, find.textContaining('HP'), '安全区 HUD 生命面板', size);
+    expectWithinScreen(
+      tester,
+      find.textContaining('SHIELD'),
+      '安全区 HUD 护盾面板',
+      size,
+    );
+    await unmountV2App(tester);
+  });
 }
+

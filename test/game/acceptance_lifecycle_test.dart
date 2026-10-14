@@ -142,7 +142,14 @@ class Harness {
 
 /// 走完一局里各种会让状态残留的路径。
 void exerciseRun(GameRuntime rt) {
-  // 1) 正常推进 3 秒（生成敌人、开火、产生事件）。
+  // AC-03 原文要求走完「开始、暂停、失焦、**升级**、**风险门**、死亡、重开」。
+  // 此前这一段只做了 暂停/失焦/死亡 —— **升级与风险门没有走到**，
+  // 属于把要求缩水。现在按游戏内时间推进到足够久，把两者都触发。
+
+  final picked = <String>[];
+  var sawRiskGate = false;
+
+  // 1) 推进到 3 秒（生成敌人、开火、产生事件）。
   for (var i = 0; i < 180; i++) {
     rt.advance(GameClock.fixedStepSeconds, inputFor(i));
   }
@@ -158,10 +165,31 @@ void exerciseRun(GameRuntime rt) {
   rt.phases.requestPause(PauseSource.windowBlur);
   rt.phases.requestResume();
 
-  // 4) 再推进，制造投射物与危险区。
-  for (var i = 180; i < 600; i++) {
-    rt.advance(GameClock.fixedStepSeconds, inputFor(i));
+  // 4) 推进到 60 游戏秒：**走过升级草案与 55 秒的风险门**。
+  //    保持玩家存活（否则 ~28 秒就阵亡，走不到风险门）；
+  //    草案出现时立刻选卡，否则逻辑时钟会一直冻结。
+  var frame = 180;
+  while (rt.combatSeconds < 60 && frame < 200 * 60) {
+    rt.player.health.current = rt.player.health.max;
+
+    final offer = rt.currentOffer;
+    if (offer != null) {
+      picked.add(offer.candidates.join(','));
+      rt.selectDraftCard(0);
+    }
+    final gate = rt.riskGate;
+    if (gate != null && !gate.isResolved) {
+      sawRiskGate = true;
+      rt.selectRiskOption(RiskOptionIds.supply);
+    }
+
+    rt.advance(GameClock.fixedStepSeconds, inputFor(frame));
+    frame++;
   }
+
+  // 这两条是"确实走到了那些相位"的证据；不满足说明本夹具没覆盖到位。
+  expect(picked, isNotEmpty, reason: 'AC-03 要求循环里包含"升级"');
+  expect(sawRiskGate, isTrue, reason: 'AC-03 要求循环里包含"风险门"');
 
   // 5) 直接打死玩家，走死亡路径。
   rt.player.health.current = 0;
