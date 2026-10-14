@@ -84,6 +84,33 @@ Future<void> mountV2App(
 Future<void> advanceGameSeconds(WidgetTester tester, double seconds) =>
     pumpV2(tester, frames: (seconds * 60).round());
 
+/// 推进游戏时间，**遇到升级草案就自动选第一张**。
+///
+/// 必要性：草案 / 风险门 / 暂停会**冻结全部逻辑时钟**，不处理就永远
+/// 走不到后面的时间点（例如 55 秒的风险门）。返回自动选卡次数。
+///
+/// 卡片在树里是 `InkWell` 的下标 1..3（下标 0 是 HUD 的暂停按钮）。
+Future<int> advanceAutoPicking(WidgetTester tester, double seconds) async {
+  var picks = 0;
+  for (var i = 0; i < seconds.round(); i++) {
+    await pumpV2(tester, frames: 60);
+    // 有界重试：最多处理 8 次，避免任何情况下死循环。
+    for (var attempt = 0; attempt < 8; attempt++) {
+      if (find.text('选择强化').evaluate().isEmpty) {
+        break;
+      }
+      final cards = find.byType(InkWell);
+      if (cards.evaluate().length <= 1) {
+        break;
+      }
+      await tester.tap(cards.at(1));
+      await pumpV2(tester, frames: 5);
+      picks++;
+    }
+  }
+  return picks;
+}
+
 /// 卸载 v2 应用。
 ///
 /// **凡进入过简报/对局的用例都应调用** —— 那些界面用 `Timer`
