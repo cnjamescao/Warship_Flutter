@@ -85,7 +85,16 @@ void main() {
       }
     });
 
-    test('敌方攻击全部有预警（除明确无预警的三连点射与直射）', () {
+    // ⚠️ 产品基线**内部**对这条的要求不一致（已记入 docs/研发反馈意见.md F-19）：
+    //   * §9 AC-04：「**每种攻击**在命中前有对应预警」；
+    //   * §5 敌人表只为 EN-SNIPER 规定了「0.75 秒线形预警」，
+    //     EN-BOMBER 有「延迟 0.4 s 生效」，
+    //     而 EN-WING（每 1.8 秒 1 弹）与 EN-SHIELD（每 2.5 秒三连点射）
+    //     **没有规定任何预警**。
+    // 因此这里断言的是**可由 §5 推出**的规则：
+    // 凡 §5 规定了预警的，实现必须有正的预警时长与预警资源。
+    // 「WING/SHIELD 是否也该有预警」属于内容决策，不在此断言。
+    test('§5 规定了预警的敌方攻击，实现都必须有正预警时长与预警资源', () {
       final enemies = readJson('enemies.json');
       for (final enemy in (enemies['enemies'] as List).cast<Map>()) {
         final attack = enemy['attackProfile'] as Map?;
@@ -94,8 +103,21 @@ void main() {
         }
         final telegraph = (attack['telegraphSeconds'] as num?)?.toDouble() ?? 0;
         final hasTelegraphAsset = attack['telegraphAssetId'] != null;
-        // Scout/Wing/Shield 是"无预警直射"，但它们有攻击前摇可读性；
-        // 这里只要求：**若声明了预警资源，预警时长必须为正**。
+        // 规则：**声明了预警资源的，预警时长必须为正**；
+        // 且 §5 明确点名的那几个必须有。
+        const requiredBySection5 = <String>{'EN-SNIPER'};
+        if (requiredBySection5.contains(enemy['id'])) {
+          expect(
+            telegraph,
+            greaterThan(0),
+            reason: '${enemy['id']} 在 §5 明确规定了预警，实现必须有正预警时长',
+          );
+          expect(
+            hasTelegraphAsset,
+            isTrue,
+            reason: '${enemy['id']} 在 §5 明确规定了预警，实现必须有预警资源',
+          );
+        }
         if (hasTelegraphAsset) {
           expect(
             telegraph,
