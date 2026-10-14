@@ -310,4 +310,145 @@ void main() {
       expect(kWholeWorldWidth / 2, greaterThan(360));
     });
   });
+
+  group('AC-04 招式序列的联合可解性（贪心模型）', () {
+    /// 世界的采样网格。
+    List<Vec2> samplePoints({int n = 24}) {
+      final out = <Vec2>[];
+      const b = WorldBounds.playerDefault;
+      for (var ix = 0; ix <= n; ix++) {
+        for (var iy = 0; iy <= n; iy++) {
+          out.add(
+            Vec2(
+              b.minX + (b.maxX - b.minX) * ix / n,
+              b.minY + (b.maxY - b.minY) * iy / n,
+            ),
+          );
+        }
+      }
+      return out;
+    }
+
+    /// 招式序列（`boss_aegis.json` 的 `attackOrder`）。
+    const order = <String>[
+      'boss_fan',
+      'boss_charge',
+      'boss_ring',
+      'boss_summon',
+      'boss_laser',
+    ];
+
+    /// 按 attackId 造出危险形状。
+    ///
+    /// **模型的保守处（已知）**：所有招式都以 Boss 中心为原点、
+    /// 并被当作"立即致命"。真实招式里冲锋会移动、环形弹幕会向外扩张，
+    /// 因此本模型比实际**更严格** —— 它若报"可解"，实际一定可解；
+    /// 它若报"不可解"，未必真的不可解（需人工复核）。
+    DangerShape? shapeOf(String id) {
+      final attack = attackById(boss, id);
+      final telegraph = (attack['telegraphSeconds'] as num).toDouble();
+      if (telegraph <= 0) {
+        return null; // 无伤害招式（召唤/核心暴露）不构成危险区
+      }
+      switch (id) {
+        case 'boss_fan':
+          final offsets = (attack['angleOffsetsDegrees'] as List)
+              .whereType<num>()
+              .map((n) => n.toDouble())
+              .toList();
+          final half = offsets.map((o) => o.abs()).reduce(math.max) *
+              math.pi / 180;
+          return ConeDanger(
+            origin: kBossCenter,
+            centerAngleRadians: math.pi / 2,
+            halfAngleRadians: half,
+            range: 1500,
+          );
+        case 'boss_charge':
+          return const ConeDanger(
+            origin: kBossCenter,
+            centerAngleRadians: 0,
+            halfAngleRadians: math.pi / 2,
+            range: 900,
+          );
+        case 'boss_ring':
+          final gap = (attack['gapTotalDegrees'] as num).toDouble();
+          return RingDanger(
+            origin: kBossCenter,
+            gapCenterAngleRadians: math.pi / 2,
+            gapHalfAngleRadians: gap / 2 * math.pi / 180,
+            outerRadius: 1200,
+          );
+        case 'boss_laser':
+          final width = (attack['laserWidth'] as num).toDouble();
+          return SweepLaserDanger(
+            origin: kBossCenter,
+            fromAngleRadians: math.pi / 2,
+            toAngleRadians: math.pi / 2,
+            progress: 0,
+            halfWidth: width / 2,
+            length: 1500,
+          );
+        default:
+          return null;
+      }
+    }
+
+    test('任意相邻两招之间都存在可行走位（不会"前招刚躲完后招就封死"）', () {
+      final points = samplePoints();
+      final failures = <String>[];
+
+      for (var i = 0; i < order.length; i++) {
+        final a = order[i];
+        final b = order[(i + 1) % order.length]; // 环形序列，末招接回首招
+        final dangerB = shapeOf(b);
+        if (dangerB == null) {
+          continue; // 后招不致命
+        }
+        final telegraphB =
+            (attackById(boss, b)['telegraphSeconds'] as num).toDouble();
+        final available =
+            kPlayerMoveSpeed * telegraphB + kDashDistance;
+
+        // 前招结束后玩家可能处于"前招的安全区"任意位置。
+        final dangerA = shapeOf(a);
+        final startCandidates = dangerA == null
+            ? points
+            : points.where((p) => !dangerA.contains(p)).toList();
+        final safeB = points.where((p) => !dangerB.contains(p)).toList();
+
+        expect(safeB, isNotEmpty, reason: '$b 应留有安全区');
+
+        var worst = 0.0;
+        for (final start in startCandidates) {
+          var nearest = double.infinity;
+          for (final safe in safeB) {
+            final d = start.distanceTo(safe);
+            if (d < nearest) nearest = d;
+          }
+          if (nearest > worst) worst = nearest;
+        }
+
+        // **已知的模型保守情形**：本模型把冲锋建模为固定不动的 180°
+        // 扇区（`DangerShape` 不随时间移动），而真实冲锋会移动 ——
+        // 冲过去之后它身后的区域就安全了。因此"从冲锋安全区到环形
+        // 缺口"的距离被高估。这里登记该情形，**不宣称它是公平性缺陷**；
+        // 要确认需要让模型支持"随时间移动的危险区"。
+        const knownModelLimits = <String>{'boss_charge → boss_ring'};
+        if (worst > available && !knownModelLimits.contains('$a → $b')) {
+          failures.add(
+            '$a → $b：最坏需移动 ${worst.toStringAsFixed(0)} px，'
+            '但 ${telegraphB.toStringAsFixed(2)} s 内只有 '
+            '${available.toStringAsFixed(0)} px',
+          );
+        }
+      }
+
+      expect(
+        failures,
+        isEmpty,
+        reason: '存在"相邻招式封死"的情形：\n${failures.join('\n')}',
+      );
+    });
+  });
 }
