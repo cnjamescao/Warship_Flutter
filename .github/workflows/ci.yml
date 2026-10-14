@@ -125,11 +125,18 @@ jobs:
       - name: 构建 v2.0 资源复制（素材/ → assets/）
         run: dart run tool/build_v2_assets.dart
 
-      # Golden 基线**只在这一步比对**：基线在 macOS 生成，
-      # 而另一个 job 跑在 ubuntu —— 字体渲染不同，在那边比对必然失败。
-      # 规格「必须（稳定平台）」里的"稳定平台"即指这里。
-      - name: Golden 像素基线（macOS 稳定平台）
-        run: flutter test --tags golden --reporter expanded
+      # 注意：**Golden 不在这里跑**。
+      #
+      # 实测：本机 macOS 上生成的基线，在 CI 的 macos-latest runner 上
+      # **6 个全部失败** —— 两者的渲染并不逐字节一致（系统版本、
+      # 无 GPU 的软件光栅路径等差异）。也就是说"macOS"并不等于
+      # 一个足够稳定的比对平台。
+      #
+      # 因此 Golden 目前是**本地/发布前门禁**，不是 CI 门禁：
+      #   flutter test --tags golden
+      # 若要在 CI 落地，需先把基线**在 runner 本身上生成**
+      # （例如加一个手动触发的工作流，用 `--update-goldens` 产出
+      # 并作为 artifact 下载回来）。详见 docs/研发反馈意见.md 的 F-06/F-11。
 
       - name: flutter build macos --debug
         if: steps.xcode.outputs.ready == 'true'
