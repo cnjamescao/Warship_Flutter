@@ -37,6 +37,9 @@ dependencies:
   flame: ^1.38.1
   flame_audio: ^2.12.2
   shared_preferences: ^2.5.6
+  # 64 位精确整数：PCG32 需要无符号 64 位运算，
+  # 而 Web 上 Dart 的 int 是 double（仅 53 位安全）。
+  fixnum: ^1.1.1
 
 dev_dependencies:
   flutter_test:

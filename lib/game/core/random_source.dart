@@ -1,3 +1,5 @@
+import 'package:fixnum/fixnum.dart';
+
 // ================================================================
 // lib/game/core/random_source.dart —— 确定性随机源
 // ================================================================
@@ -53,28 +55,56 @@ extension RandomSourceSampling on RandomSource {
 
 /// PCG32（XSH-RR 变体）确定性伪随机数生成器。
 ///
-/// 选择理由：
-///   * 状态只有 64 位 + 固定增量，序列完全由种子决定，跨平台/跨版本稳定；
-///   * 统计质量足以支撑抽卡与掉落，且实现极小、无外部依赖；
-///   * 便于在测试中直接构造相同序列。
+/// ### 为什么用 `Int64` 而不是 Dart 的 `int`
+///
+/// PCG32 是**无符号 64 位**算法。Dart 的 `int` 在 VM 上是**有符号** 64 位，
+/// 在 Web 上是 double（**只有 53 位安全**）。两个后果：
+///
+/// 1. **Web 编译直接失败** —— `0xDA3E39CB94B95BDB`、`6364136223846793005`
+///    这类字面量 JS 无法精确表示，`dart2js` 编译期就报错；
+/// 2. **算法名不副实** —— XSH-RR 要求**逻辑右移**，而 Dart 对负数的 `>>`
+///    是**算术右移**（符号扩展），状态高位为 1 时输出偏离标准。
+///
+/// 因此这里全程使用 `package:fixnum` 的 `Int64`：
+/// * 它是精确的 64 位值，VM 与 Web 行为一致；
+/// * `shiftRightUnsigned` 提供逻辑右移；
+/// * 与 Python 参照实现逐值对照过（见 `test/unit/core/pcg32_reference_test.dart`）。
+///
+/// ### 常量为何写成两个 32 位半字
+///
+/// 即便是 `static const`，字面量本身也会让 JS 编译失败。所以所有 64 位常量
+/// 都由两个小于 2^32 的半字拼出 —— 全程不出现超过 2^53 的整数字面量。
 ///
 /// 注意：本实现刻意不使用 `dart:math` 的 `Random`，因为其序列不保证跨版本一致。
 class Pcg32 implements RandomSource {
   /// 以 [seed] 与可选的流标识 [sequence] 初始化。
-  Pcg32(int seed, {int sequence = 0xDA3E39CB94B95BDB})
-    : _state = 0,
-      _inc = ((sequence << 1) | 1) & _mask64,
-      _seed = seed & _mask64 {
+  ///
+  /// [sequence] 只用于区分同一 seed 下的不同流；不传时使用默认流。
+  Pcg32(int seed, {int? sequence})
+    : _seed = seed,
+      _inc = _buildIncrement(sequence) {
     nextUint32();
-    _state = (_state + _seed) & _mask64;
+    _state = _state + Int64(seed);
     nextUint32();
   }
 
-  static const int _mask64 = 0xFFFFFFFFFFFFFFFF;
-  static const int _multiplier = 6364136223846793005;
+  // 6364136223846793005 = 0x5851F42D4C957F2D
+  static final Int64 _multiplier =
+      (Int64(0x5851F42D) << 32) | Int64(0x4C957F2D);
 
-  int _state;
-  final int _inc;
+  // 0xDA3E39CB94B95BDB（默认流标识）
+  static final Int64 _defaultSequence =
+      (Int64(0xDA3E39CB) << 32) | Int64(0x94B95BDB);
+
+  static final Int64 _mask32 = Int64(0xFFFFFFFF);
+
+  static Int64 _buildIncrement(int? sequence) {
+    final base = sequence == null ? _defaultSequence : Int64(sequence);
+    return (base << 1) | Int64(1);
+  }
+
+  Int64 _state = Int64.ZERO;
+  final Int64 _inc;
   final int _seed;
 
   @override
@@ -86,12 +116,18 @@ class Pcg32 implements RandomSource {
   @override
   int nextUint32() {
     final oldState = _state;
-    _state = (oldState * _multiplier + _inc) & _mask64;
-    final xorShifted = ((oldState >> 18) ^ oldState) >> 27;
-    final rot = (oldState >> 59) & 31;
-    final result =
-        ((xorShifted >> rot) | (xorShifted << ((-rot) & 31))) & 0xFFFFFFFF;
-    return result;
+    // 无符号 64 位回绕由 Int64 保证。
+    _state = oldState * _multiplier + _inc;
+
+    // XSH：先异或再取无符号右移；R R：按高位决定的位数做循环右移。
+    final shifted =
+        (oldState.shiftRightUnsigned(18) ^ oldState).shiftRightUnsigned(27);
+    final xorshifted = shifted & _mask32;
+    final rot = (oldState.shiftRightUnsigned(59) & Int64(31)).toInt();
+
+    final rotated = xorshifted.shiftRightUnsigned(rot) |
+        (xorshifted << ((32 - rot) & 31));
+    return (rotated & _mask32).toInt();
   }
 }
 
