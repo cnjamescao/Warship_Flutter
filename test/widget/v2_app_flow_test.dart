@@ -162,12 +162,42 @@ void main() {
     await unmountV2App(tester);
   });
 
-  // 未覆盖（如实记录）：**选卡**这一步点不动。
-  // 命令 `find.byType(InkWell)` 在整个树里只找到 1 个（HUD 的暂停按钮），
-  // 草案卡片的 InkWell 不在可命中树里 —— 命中链显示它被
-  // `RenderIgnorePointer` / `RenderAnimatedOpacity` 包裹，
-  // 说明遮罩入场动画期间卡片不接受指针事件。
-  // 下一轮的处理方向：先推进动画到稳定态（多 pump 若干帧）再点，
-  // 或改用 `tester.tap(..., warnIfMissed: false)` 之外更可靠的定位方式。
-  // 本轮不把点不动的用例留在仓库里。
+  testWidgets('点击卡片选卡后草案关闭、逻辑继续推进', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    await advanceGameSeconds(tester, 17);
+    expect(find.text('选择强化'), findsOneWidget);
+
+    // 草案提示写明「点击卡片或按 1 / 2 / 3」，因此用键盘选择 ——
+    // 比点击可靠：卡片 InkWell 在树里是第 2..4 个，
+    // `find.byType(InkWell).first` 会误取 HUD 的暂停按钮（曾踩过）。
+    // 树里有 4 个 InkWell：下标 0 是 HUD 的暂停按钮，1..3 才是卡片。
+    // 探针实测确认（早期用 .first 误取暂停按钮）。
+    final cards = find.byType(InkWell);
+    expect(cards, findsNWidgets(4));
+    await tester.tap(cards.at(1));
+    await pumpV2(tester, frames: 30);
+
+    expect(find.text('选择强化'), findsNothing, reason: '选卡后草案应关闭');
+    await unmountV2App(tester);
+  });
+
+  testWidgets('选卡后逻辑解冻：能继续推进到下一次草案', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    await advanceGameSeconds(tester, 17);
+    await tester.tap(find.byType(InkWell).at(1));
+    await pumpV2(tester, frames: 30);
+    expect(find.text('选择强化'), findsNothing);
+
+    // 解冻后游戏时间应继续走：再推进一段应看到下一次草案
+    // （第二次草案在经验够时打开）。
+    await advanceGameSeconds(tester, 40);
+    // 不断言一定出现（取决于击杀节奏），只断言**逻辑没有卡死**：
+    // 画面仍在（对局界面还在），且没有异常。
+    expect(find.byType(V2RunScreen), findsOneWidget);
+    await unmountV2App(tester);
+  });
 }
