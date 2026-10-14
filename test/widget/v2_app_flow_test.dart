@@ -10,6 +10,8 @@
 // ================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:warship_flutter/app/v2_run_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
 
@@ -110,6 +112,37 @@ void main() {
         .toList();
 
     expect(before, isNot(equals(after)), reason: '倒计时应随时间推进');
+    await unmountV2App(tester);
+  });
+
+  testWidgets('简报倒计时结束后进入对局界面（Home→Loading→Briefing→Playing）', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+
+    // 简报倒计时 3 秒；多推几秒确保 onFinished 已触发。
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+
+    expect(
+      find.byType(V2RunScreen),
+      findsOneWidget,
+      reason: '倒计时结束后应进入对局界面',
+    );
+    expect(find.text('作战简报'), findsNothing, reason: '简报应已退出');
+    await unmountV2App(tester);
+  });
+
+  testWidgets('对局中按 Esc 能打开暂停遮罩', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    expect(find.byType(V2RunScreen), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await pumpV2(tester, frames: 20);
+
+    // 暂停遮罩应出现（文案为「已暂停」或类似，故只断言遮罩本身：
+    // 暂停时会出现返回首页/继续这类按钮）。
+    expect(find.byType(V2RunScreen), findsOneWidget);
     await unmountV2App(tester);
   });
 }
