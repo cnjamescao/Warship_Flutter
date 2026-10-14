@@ -4,9 +4,9 @@
   "scenarioSeconds": 20.0,
   "simulatedFrames": 1320,
   "logicStepMs": {
-    "p50": 0.009,
+    "p50": 0.008,
     "p95": 0.034,
-    "p99": 0.114
+    "p99": 0.078
   },
   "objectPeaks": {
     "enemies": 13,

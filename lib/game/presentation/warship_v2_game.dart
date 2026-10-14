@@ -46,6 +46,7 @@ class WarshipV2Game extends FlameGame {
     required this.visualAssets,
     this.onSnapshot,
     this.onFrame,
+    this.preloadAssets = true,
     PerformanceMonitor? performance,
   }) : performance = performance ?? PerformanceMonitor();
 
@@ -64,6 +65,15 @@ class WarshipV2Game extends FlameGame {
 
   /// 帧时间采样与降级决策。
   final PerformanceMonitor performance;
+
+  /// 是否在创建时预载 `firstRun` 分组。
+  ///
+  /// 默认 `true`（生产行为）。测试里置 `false`：预载走
+  /// `Flame.images.load` → `rootBundle`，那是**真实 I/O**，
+  /// 在 `testWidgets` 的假异步区里不会完成。
+  /// 关掉后表现层走矢量占位，**规则完全不受影响**（架构 §7），
+  /// 因此结构性 UI 断言仍然有效。
+  final bool preloadAssets;
 
   /// 事件驱动的纯表现特效（碎片、伤害数字）。
   final VisualEffects effects = VisualEffects();
@@ -92,7 +102,9 @@ class WarshipV2Game extends FlameGame {
       world: world,
     );
     // 预载 firstRun 分组（协议 §7）。单张失败不阻断，走矢量占位。
-    await visualAssets.loadGroup(AssetLoadGroup.firstRun);
+    if (preloadAssets) {
+      await visualAssets.loadGroup(AssetLoadGroup.firstRun);
+    }
 
     _battlefield = BattlefieldComponent(
       runtime: runtime,

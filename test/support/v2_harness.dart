@@ -65,11 +65,26 @@ Future<void> mountV2App(
         seed: seed,
         audioPort: SilentAudioPort(),
         store: InMemoryKeyValueStore(),
+        // 关键：关掉资源预载。预载走 Flame.images.load → rootBundle，
+        // 是真实 I/O，在 testWidgets 的假异步区里永不完成。
+        // 关掉后表现层走矢量占位，规则不受影响（架构 §7）。
+        preloadAssets: false,
       ),
       debugShowCheckedModeBanner: false,
     ),
   );
   await pumpV2(tester, frames: 30);
+}
+
+/// 卸载 v2 应用。
+///
+/// **凡进入过简报/对局的用例都应调用** —— 那些界面用 `Timer`
+/// 驱动倒计时，测试结束时若仍有未取消的定时器，
+/// `flutter_test` 会以 "Pending timers" 报失败。
+/// 换成空树会触发 `dispose`，从而取消这些定时器。
+Future<void> unmountV2App(WidgetTester tester) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  await tester.pump();
 }
 
 /// 点击某个文案的控件（文案取自 strings_zh_CN.json 的真实值）。

@@ -37,11 +37,15 @@ class V2RunScreen extends StatefulWidget {
     required this.manifest,
     this.onFrame,
     this.onQuitToHome,
+    this.preloadAssets = true,
   });
 
   final GameRuntime runtime;
   final KeyboardInputGateway input;
   final AssetManifest manifest;
+
+  /// 见 `WarshipV2Game.preloadAssets`。生产恒为 `true`。
+  final bool preloadAssets;
 
   /// 每个渲染帧之后回调，供上层判断对局是否结束。
   final VoidCallback? onFrame;
@@ -64,6 +68,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _game = WarshipV2Game(
+      preloadAssets: widget.preloadAssets,
       runtime: widget.runtime,
       input: widget.input,
       visualAssets: VisualAssetCache(manifest: widget.manifest),

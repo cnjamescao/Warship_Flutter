@@ -40,6 +40,7 @@ class V2AppFlow extends StatefulWidget {
     required this.seed,
     this.audioPort,
     this.store,
+    this.preloadAssets = true,
   });
 
   final ContentCatalog catalog;
@@ -57,6 +58,14 @@ class V2AppFlow extends StatefulWidget {
   /// 同样可注入：默认走 `SharedPreferencesStore.openOrMemory()`，
   /// 在测试里需要替身。生产代码不传它。
   final KeyValueStore? store;
+
+  /// 是否在进入对局时预载 `firstRun` 资源分组。
+  ///
+  /// 默认 `true`（生产行为）。测试里置 `false` ——
+  /// 预载走 `Flame.images.load` → `rootBundle`，是**真实 I/O**，
+  /// 在 `testWidgets` 的假异步区里不会完成。
+  /// 关掉后表现层走矢量占位，**规则不受影响**（架构 §7）。
+  final bool preloadAssets;
 
   @override
   State<V2AppFlow> createState() => _V2AppFlowState();
@@ -288,6 +297,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
           runtime: runtime,
           input: input,
           manifest: widget.catalog.manifest,
+          preloadAssets: widget.preloadAssets,
           onFrame: () => _checkRunOver(runtime),
           onQuitToHome: _backToHome,
         );

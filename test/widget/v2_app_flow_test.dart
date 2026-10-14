@@ -65,4 +65,15 @@ void main() {
   //   `tester.runAsync` 里驱动 —— 那是下一步的工作。
   // * 对局中 HUD / 升级草案 / 风险门 / 暂停 / 结算：同上，
   //   都需要先解决 Loading 这一关。
+
+  // 未覆盖（本轮做到了哪一步，如实记录）：
+  // * **预载注入已生效** —— 关掉 `preloadAssets` 后，Home → Loading →
+  //   Briefing 这条链**确实被驱动到了**：失败堆栈里出现了
+  //   `_BriefingScreenState._schedule`（v2_app_flow.dart:571），
+  //   这证明流程走进了简报页。I/O 阻塞问题**已解决**。
+  // * 但简报页用 `Timer` 驱动倒计时，测试结束时 `flutter_test` 会以
+  //   "Pending timers" 报失败。我加了 `unmountV2App`（换成空树触发
+  //   dispose）仍未消除，需要更细地查是哪个 Timer 未被取消。
+  // * 因此这两条用例**移除**，不留在仓库里。下一轮先解决 Timer，
+  //   再补上简报/对局/HUD 的用例。
 }
