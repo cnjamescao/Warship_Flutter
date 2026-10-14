@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/app/v2_run_screen.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
+import 'package:warship_flutter/game/infrastructure/progress_store.dart';
 
 import '../support/v2_harness.dart';
 
@@ -87,6 +88,23 @@ void main() {
     await expectLater(
       find.byType(MaterialApp),
       matchesGoldenFile('baselines/result.png'),
+    );
+    await unmountV2App(tester);
+  });
+
+  testWidgets('Golden：低动效（「降低动效」开启时的对局 HUD）', (tester) async {
+    // 产品设计 §8 第 280 行要求「提供降低动效」。
+    // 本基线固化开启后的画面，并与默认 HUD 基线比对，
+    // 确认这个开关**确实改变了渲染**（否则它就是个空开关）。
+    final store = InMemoryKeyValueStore();
+    await store.write(ProgressKeys.reduceMotion, 'true');
+
+    await mountV2App(tester, catalog, store: store);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    await expectLater(
+      find.byType(MaterialApp),
+      matchesGoldenFile('baselines/low_motion_hud.png'),
     );
     await unmountV2App(tester);
   });

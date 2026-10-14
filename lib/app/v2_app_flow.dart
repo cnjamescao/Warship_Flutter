@@ -301,6 +301,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
           input: input,
           manifest: widget.catalog.manifest,
           preloadAssets: widget.preloadAssets,
+          reduceMotion: _settings.reduceMotion,
           onFrame: () => _checkRunOver(runtime),
           onQuitToHome: _backToHome,
         );

@@ -47,6 +47,7 @@ class WarshipV2Game extends FlameGame {
     this.onSnapshot,
     this.onFrame,
     this.preloadAssets = true,
+    this.reduceMotion = false,
     PerformanceMonitor? performance,
   }) : performance = performance ?? PerformanceMonitor();
 
@@ -65,6 +66,14 @@ class WarshipV2Game extends FlameGame {
 
   /// 帧时间采样与降级决策。
   final PerformanceMonitor performance;
+
+  /// 是否开启「降低动效」（产品设计 §8 第 280 行要求提供的无障碍开关）。
+  ///
+  /// 实现方式：把它当成一个**降级地板** —— 非关键表现
+  /// （星云、非关键粒子、命中碎片）一律关闭，
+  /// 但**预警、HUD、碰撞与伤害数字保持**（设置页文案承诺
+  /// 「只降低非关键动效，预警仍然清晰」）。
+  bool reduceMotion;
 
   /// 是否在创建时预载 `firstRun` 分组。
   ///
@@ -111,15 +120,32 @@ class WarshipV2Game extends FlameGame {
       assets: visualAssets,
       effects: effects,
       router: visualRouter,
-    )..degradation = performance.level;
+    )..degradation = _effectiveDegradation;
     world.add(_battlefield);
+  }
+
+  /// 实际生效的视觉档位。
+  ///
+  /// 取「性能降级」与「降低动效地板」中**更严格**的那个。
+  static const DegradationLevel _reduceMotionFloor =
+      DegradationLevel.hitDebris;
+
+  /// 实际生效的视觉档位（对外可读，便于测试断言"降低动效确实生效"）。
+  DegradationLevel get effectiveDegradation => _effectiveDegradation;
+
+  DegradationLevel get _effectiveDegradation {
+    final perf = performance.level;
+    if (!reduceMotion) {
+      return perf;
+    }
+    return perf.index >= _reduceMotionFloor.index ? perf : _reduceMotionFloor;
   }
 
   @override
   void update(double dt) {
     // 0. 帧时间采样 → 降级决策（产品基线 §2 的 95%/99% 预算）。
     performance.recordFrame(dt);
-    _battlefield.degradation = performance.level;
+    _battlefield.degradation = _effectiveDegradation;
 
     // 1. 取本帧输入（锁定后交给运行时）。
     final frame = input.consume();

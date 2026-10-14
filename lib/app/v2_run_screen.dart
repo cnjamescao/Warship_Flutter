@@ -38,6 +38,7 @@ class V2RunScreen extends StatefulWidget {
     this.onFrame,
     this.onQuitToHome,
     this.preloadAssets = true,
+    this.reduceMotion = false,
   });
 
   final GameRuntime runtime;
@@ -46,6 +47,9 @@ class V2RunScreen extends StatefulWidget {
 
   /// 见 `WarshipV2Game.preloadAssets`。生产恒为 `true`。
   final bool preloadAssets;
+
+  /// 见 `WarshipV2Game.reduceMotion`。来自本地设置。
+  final bool reduceMotion;
 
   /// 每个渲染帧之后回调，供上层判断对局是否结束。
   final VoidCallback? onFrame;
@@ -69,6 +73,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _game = WarshipV2Game(
       preloadAssets: widget.preloadAssets,
+      reduceMotion: widget.reduceMotion,
       runtime: widget.runtime,
       input: widget.input,
       visualAssets: VisualAssetCache(manifest: widget.manifest),
@@ -139,6 +144,17 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     }
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  @override
+  void didUpdateWidget(V2RunScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 设置是**异步加载**的：`_game` 在 initState 里创建时
+    // `reduceMotion` 往往还是默认值 false。若不在 widget 更新时同步，
+    // 这个开关就永远到不了游戏（实测过：开关打开后画面像素级不变）。
+    if (widget.reduceMotion != oldWidget.reduceMotion) {
+      _game.reduceMotion = widget.reduceMotion;
     }
   }
 

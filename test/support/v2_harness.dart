@@ -54,6 +54,7 @@ Future<void> mountV2App(
   WidgetTester tester,
   ContentCatalog catalog, {
   int seed = 0x4E454F4E0001,
+  KeyValueStore? store,
 }) async {
   // SharedPreferences 也必须 mock，否则 initState 里的存档读取会等平台通道。
   SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -64,7 +65,7 @@ Future<void> mountV2App(
         catalog: catalog,
         seed: seed,
         audioPort: SilentAudioPort(),
-        store: InMemoryKeyValueStore(),
+        store: store ?? InMemoryKeyValueStore(),
         // 关键：关掉资源预载。预载走 Flame.images.load → rootBundle，
         // 是真实 I/O，在 testWidgets 的假异步区里永不完成。
         // 关掉后表现层走矢量占位，规则不受影响（架构 §7）。
