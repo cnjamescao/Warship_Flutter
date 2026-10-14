@@ -76,6 +76,14 @@ Future<void> mountV2App(
   await pumpV2(tester, frames: 30);
 }
 
+/// 按**游戏内时间**推进。
+///
+/// 逻辑步长是 1/60 秒，因此 N 帧 = N/60 游戏秒。
+/// 注意：升级草案 / 风险门 / 暂停会**冻结全部逻辑时钟**，
+/// 冻结期间推进不会让游戏时间前进 —— 必须先把这些相位处理掉。
+Future<void> advanceGameSeconds(WidgetTester tester, double seconds) =>
+    pumpV2(tester, frames: (seconds * 60).round());
+
 /// 卸载 v2 应用。
 ///
 /// **凡进入过简报/对局的用例都应调用** —— 那些界面用 `Timer`

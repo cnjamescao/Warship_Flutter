@@ -145,4 +145,29 @@ void main() {
     expect(find.byType(V2RunScreen), findsOneWidget);
     await unmountV2App(tester);
   });
+
+  testWidgets('开局 15 秒后打开升级草案（三选一）', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    expect(find.byType(V2RunScreen), findsOneWidget);
+
+    await advanceGameSeconds(tester, 17);
+
+    expect(
+      find.text('选择强化'),
+      findsOneWidget,
+      reason: '首个升级草案在 15.0 秒打开（产品基线 §4.2）',
+    );
+    await unmountV2App(tester);
+  });
+
+  // 未覆盖（如实记录）：**选卡**这一步点不动。
+  // 命令 `find.byType(InkWell)` 在整个树里只找到 1 个（HUD 的暂停按钮），
+  // 草案卡片的 InkWell 不在可命中树里 —— 命中链显示它被
+  // `RenderIgnorePointer` / `RenderAnimatedOpacity` 包裹，
+  // 说明遮罩入场动画期间卡片不接受指针事件。
+  // 下一轮的处理方向：先推进动画到稳定态（多 pump 若干帧）再点，
+  // 或改用 `tester.tap(..., warnIfMissed: false)` 之外更可靠的定位方式。
+  // 本轮不把点不动的用例留在仓库里。
 }
