@@ -94,6 +94,40 @@ jobs:
   # 因此这里可以直接构建。如果换到自建 runner，
   # 需要先在该机器上执行 `sudo xcodebuild -license accept`。
   # ------------------------------------------------------------
+  # ------------------------------------------------------------
+  # Web 构建
+  # ------------------------------------------------------------
+  # 意义：目标要求「架构需为后续 Web 阶段预留扩展性、**避免二次重写**」。
+  # 这条**曾经是空话** —— 项目连 web 平台都没配置，从未验证过能编译。
+  # 补上验证后发现了两个真实缺陷（PCG32 的 64 位字面量让 JS 编译失败、
+  # 且实现并非自报的 pcg32-xsh-rr），均已修复。
+  #
+  # 因此这个 job 是**护栏**：防止以后有人再用 Web 不支持的 64 位整数
+  # 或平台专属 API，把"可扩展性"重新破坏掉。
+  build-web:
+    name: Web 构建
+    runs-on: ubuntu-latest
+    needs: analyze-and-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 安装 Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: 构建 v2.0 资源复制（素材/ → assets/）
+        run: dart run tool/build_v2_assets.dart
+
+      - name: flutter build web --release
+        run: flutter build web --release
+
   build-macos:
     name: macOS 构建
     runs-on: macos-latest
