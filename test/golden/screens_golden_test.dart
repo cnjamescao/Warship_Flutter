@@ -14,6 +14,9 @@
 //   flutter test test/golden --update-goldens
 // ================================================================
 
+@Tags(<String>['golden'])
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/app/v2_run_screen.dart';

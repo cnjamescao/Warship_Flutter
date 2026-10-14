@@ -1,0 +1,8 @@
+# 测试标签。
+#
+# `golden` 标签用于**平台相关**的像素基线：基线在 macOS 生成，
+# 必须在 macOS 比对。CI 的 ubuntu job 用 `--exclude-tags golden` 排除它，
+# macOS job 用 `--tags golden` 单独跑。
+tags:
+  golden:
+    description: 像素基线，仅在稳定平台（macOS）比对

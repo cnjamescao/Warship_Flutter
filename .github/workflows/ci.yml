@@ -82,8 +82,10 @@ jobs:
       - name: flutter analyze
         run: flutter analyze
 
+      # 排除 golden：本 job 在 ubuntu，字体渲染与 macOS 不同，
+      # 像素基线必须在 macOS 比对（见 dart_test.yaml 的 tag 说明）。
       - name: flutter test
-        run: flutter test --reporter expanded
+        run: flutter test --exclude-tags golden --reporter expanded
 
   # ------------------------------------------------------------
   # macOS 原生构建
@@ -127,7 +129,7 @@ jobs:
       # 而另一个 job 跑在 ubuntu —— 字体渲染不同，在那边比对必然失败。
       # 规格「必须（稳定平台）」里的"稳定平台"即指这里。
       - name: Golden 像素基线（macOS 稳定平台）
-        run: flutter test test/golden --reporter expanded
+        run: flutter test --tags golden --reporter expanded
 
       - name: flutter build macos --debug
         if: steps.xcode.outputs.ready == 'true'
