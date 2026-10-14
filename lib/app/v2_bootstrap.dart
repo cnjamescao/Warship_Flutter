@@ -120,6 +120,16 @@ class V2Bootstrap {
         (raw['id'] as String): EnemyTuning.fromConfig(raw),
     };
 
+    // 精英词缀表。**此前这里完全缺失** —— `EliteAffix.fromConfig`
+    // 定义了却从未被调用，波次表的 `affixId` 也就无处解析，
+    // 于是精英有 6 倍血量但没有任何词缀行为。
+    final affixes = <String, EliteAffix>{
+      for (final raw in (catalog.enemies['affixes'] as List? ?? const [])
+          .cast<Map>())
+        (raw['id'] as String):
+            EliteAffix.fromConfig(raw.cast<String, Object?>()),
+    };
+
     final windows = ((catalog.waves['dynamicAdjustment'] as Map)
             ['minimumUpgradeCountBySecond'] as List)
         .cast<Map>()
@@ -134,6 +144,7 @@ class V2Bootstrap {
     return GameRuntime(
       catalogPlayer: catalog.player,
       enemyTunings: tunings,
+      eliteAffixes: affixes,
       runtime: RunContext(
         identity: RunIdentity(
           runId: 'run-$seed-${DateTime.now().microsecondsSinceEpoch}',

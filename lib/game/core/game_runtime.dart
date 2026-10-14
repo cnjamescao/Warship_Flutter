@@ -140,6 +140,7 @@ class GameRuntime {
   GameRuntime({
     required this.catalogPlayer,
     required this.enemyTunings,
+    this.eliteAffixes = const <String, EliteAffix>{},
     required this.runtime,
     required this.random,
     required this.bus,
@@ -161,6 +162,13 @@ class GameRuntime {
 
   final Map<String, Object?> catalogPlayer;
   final Map<String, EnemyTuning> enemyTunings;
+
+  /// 精英词缀表（`enemies.json` 的 `affixes`）。
+  ///
+  /// **此前这条链完全没接线**：`EliteAffix.fromConfig` 定义了却从未被调用，
+  /// 波次表里的 `affixId` 也没被传给 `EnemySystem.spawn` ——
+  /// 结果是精英有 6 倍血量却**没有任何词缀行为**。
+  final Map<String, EliteAffix> eliteAffixes;
   final RunContext runtime;
   final RandomSource random;
   final EventBus bus;
@@ -473,6 +481,10 @@ class GameRuntime {
             spawnX: centerX + (i ~/ offsets.length) * 120,
             formationOffset: offset,
             isElite: spawn.isElite,
+            // 波次表的 affixId → 真实词缀。缺配置时为 null（不静默编造）。
+            affix: spawn.affixId == null
+                ? null
+                : eliteAffixes[spawn.affixId],
           );
           _pendingEnemies.add(enemy);
           bus.emit(

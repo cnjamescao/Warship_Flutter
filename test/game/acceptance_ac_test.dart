@@ -65,6 +65,13 @@ GameRuntime buildRuntime(int seed) {
   return GameRuntime(
     catalogPlayer: playerJson,
     enemyTunings: tunings,
+    // 精英词缀表（此前运行时与测试都没接，见 GameRuntime.eliteAffixes 注释）。
+    eliteAffixes: <String, EliteAffix>{
+      for (final raw in (enemiesJson['affixes'] as List? ?? const [])
+          .cast<Map>())
+        (raw['id'] as String):
+            EliteAffix.fromConfig(raw.cast<String, Object?>()),
+    },
     runtime: RunContext(
       identity: RunIdentity(
         runId: 'ac01-$seed',
@@ -312,6 +319,61 @@ void main() {
 
     test('Assets 规模与素材包一致（193 条）', () {
       expect(manifest.length, 193);
+    });
+  });
+
+  group('AC-01 精英词缀（65 秒起）', () {
+    /// 推进到指定秒数，**保持玩家存活**（把血量拉满）并自动选卡，
+    /// 否则玩家会在 ~30 秒阵亡、走不到 65 秒。
+    ///
+    /// 这是**运行时级**用例，不是 UI 用例 —— 目的是验证
+    /// "精英词缀在同种子下可复现"，不需要玩家真的会走位。
+    ({List<String> affixes, int elites}) runToElite(int seed) {
+      final rt = buildRuntime(seed);
+      final affixes = <String>[];
+      final seen = <String>{};
+
+      // **按游戏内时间循环，而不是固定帧数** —— 草案/风险门会冻结
+      // 逻辑时钟，固定 4200 帧走不到 70 游戏秒（实测因此漏掉 65 秒的精英）。
+      var frame = 0;
+      const frameBudget = 200 * 60; // 上限，防止意外死循环
+      while (rt.combatSeconds < 70 && frame < frameBudget) {
+        rt.player.health.current = rt.player.health.max;
+        final offer = rt.currentOffer;
+        if (offer != null) {
+          rt.selectDraftCard(0);
+        }
+        rt.advance(GameClock.fixedStepSeconds, inputFor(frame));
+
+        for (final e in rt.enemies.where((e) => e.isElite)) {
+          final affixId = e.affix?.id;
+          if (affixId == null) continue;
+          final key = '${e.tuning.id}:$affixId';
+          if (seen.add(key)) {
+            affixes.add(affixId);
+          }
+        }
+        frame++;
+      }
+      return (affixes: affixes, elites: seen.length);
+    }
+
+    test('65 秒的固定精英带 AFFIX-ACCEL 词缀', () {
+      final result = runToElite(0x4E454F4E0001);
+      // 70 秒窗口内只有 65 秒那一个固定精英（下一个在 105 秒）。
+      expect(result.elites, greaterThanOrEqualTo(1), reason: '70 秒内应出现 65 秒的固定精英');
+      expect(
+        result.affixes,
+        contains('AFFIX-ACCEL'),
+        reason: 'wave 表 65 秒的固定精英词缀是 AFFIX-ACCEL',
+      );
+    });
+
+    test('同种子两次运行的精英词缀序列一致（AC-01 要求）', () {
+      final a = runToElite(0x4E454F4E0001);
+      final b = runToElite(0x4E454F4E0001);
+      expect(b.affixes, a.affixes, reason: '精英词缀必须可复现');
+      expect(b.elites, a.elites);
     });
   });
 }
