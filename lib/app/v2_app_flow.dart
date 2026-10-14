@@ -12,6 +12,8 @@
 // （架构 §2 的 app 模块职责）。
 // ================================================================
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
@@ -285,6 +287,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
 
       case GamePhase.briefing:
         return _BriefingScreen(
+          catalog: widget.catalog,
           countdown: kBriefingCountdown,
           onFinished: _onBriefingFinished,
         );
@@ -547,8 +550,13 @@ class _SettingsScreen extends StatelessWidget {
 
 /// 开局简报：只有表现时钟，战斗逻辑完全冻结。
 class _BriefingScreen extends StatefulWidget {
-  const _BriefingScreen({required this.countdown, required this.onFinished});
+  const _BriefingScreen({
+    required this.catalog,
+    required this.countdown,
+    required this.onFinished,
+  });
 
+  final ContentCatalog catalog;
   final int countdown;
   final VoidCallback onFinished;
 
@@ -560,6 +568,14 @@ class _BriefingScreenState extends State<_BriefingScreen> {
   int _remaining = 0;
   bool _done = false;
 
+  /// 倒计时定时器。
+  ///
+  /// 原先用 `Future.delayed` —— 它**无法取消**：dispose 之后 `mounted`
+  /// 会让回调空转，但**定时器本身仍然挂在那里**。这既是真实的资源泄漏，
+  /// 也让 widget 测试在结束时报 "Pending timers"。
+  /// 改用可取消的 `Timer` 并在 `dispose` 里取消。
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
@@ -567,8 +583,16 @@ class _BriefingScreenState extends State<_BriefingScreen> {
     _schedule();
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
+    super.dispose();
+  }
+
   void _schedule() {
-    Future<void>.delayed(const Duration(seconds: 1), () {
+    _timer?.cancel();
+    _timer = Timer(const Duration(seconds: 1), () {
       if (!mounted || _done) {
         return;
       }
@@ -590,8 +614,8 @@ class _BriefingScreenState extends State<_BriefingScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const Text(
-              '作战简报',
+            Text(
+              widget.catalog.text('briefing.title'),
               style: TextStyle(
                 color: Color(0xFF3FE0FF),
                 fontSize: 32,
@@ -600,11 +624,29 @@ class _BriefingScreenState extends State<_BriefingScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              '坚持 150 秒，击败守门者 Aegis',
-              style: TextStyle(color: Colors.white70, fontSize: 18),
+            Text(
+              widget.catalog
+                  .text('briefing.objective')
+                  .replaceAll('{seconds}', '$kBriefingCountdown'),
+              style: const TextStyle(color: Colors.white70, fontSize: 18),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 28),
+            // 三条操作提示。产品设计 §8 要求展示文本走本地化 key，
+            // 且这三个键在 strings_zh_CN.json 中**早已提供** ——
+            // 此前界面没有渲染它们，属于内容缺失，这里补上。
+            for (final key in <String>[
+              'briefing.tip.move',
+              'briefing.tip.dash',
+              'briefing.tip.autofire',
+            ])
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  widget.catalog.text(key),
+                  style: const TextStyle(color: Colors.white60, fontSize: 15),
+                ),
+              ),
+            const SizedBox(height: 28),
             Text(
               '$_remaining',
               style: const TextStyle(
@@ -612,6 +654,11 @@ class _BriefingScreenState extends State<_BriefingScreen> {
                 fontSize: 96,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              widget.catalog.text('briefing.skipHint'),
+              style: const TextStyle(color: Colors.white38, fontSize: 14),
             ),
           ],
         ),

@@ -9,6 +9,7 @@
 // 不在 `testWidgets` 体内 await 真实 I/O（那会永久挂起）。
 // ================================================================
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
 
@@ -66,14 +67,49 @@ void main() {
   // * 对局中 HUD / 升级草案 / 风险门 / 暂停 / 结算：同上，
   //   都需要先解决 Loading 这一关。
 
-  // 未覆盖（本轮做到了哪一步，如实记录）：
-  // * **预载注入已生效** —— 关掉 `preloadAssets` 后，Home → Loading →
-  //   Briefing 这条链**确实被驱动到了**：失败堆栈里出现了
-  //   `_BriefingScreenState._schedule`（v2_app_flow.dart:571），
-  //   这证明流程走进了简报页。I/O 阻塞问题**已解决**。
-  // * 但简报页用 `Timer` 驱动倒计时，测试结束时 `flutter_test` 会以
-  //   "Pending timers" 报失败。我加了 `unmountV2App`（换成空树触发
-  //   dispose）仍未消除，需要更细地查是哪个 Timer 未被取消。
-  // * 因此这两条用例**移除**，不留在仓库里。下一轮先解决 Timer，
-  //   再补上简报/对局/HUD 的用例。
+  testWidgets('点开始战斗后进入作战简报（预载注入生效）', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+
+    expect(
+      find.text('作战简报'),
+      findsOneWidget,
+      reason: '关掉 preloadAssets 后 Home → Loading → Briefing 应当可驱动',
+    );
+    // 简报页有 1 秒倒计时定时器；换成空树触发 dispose 取消它，
+    // 否则 flutter_test 会以 "Pending timers" 报失败。
+    await unmountV2App(tester);
+  });
+
+  testWidgets('简报显示目标与三条操作提示', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+
+    expect(find.textContaining('坚持'), findsWidgets);
+    expect(find.textContaining('移动'), findsWidgets);
+    expect(find.textContaining('冲刺'), findsWidgets);
+    await unmountV2App(tester);
+  });
+
+  testWidgets('简报倒计时会推进（表现时钟在走，但战斗逻辑冻结）', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+
+    // 倒计时的数字文本会随秒数变化；只断言它确实在变，
+    // 不写死具体秒数（开局秒数由内容配置决定）。
+    final before = tester
+        .widgetList<Text>(find.byType(Text))
+        .map((t) => t.data)
+        .whereType<String>()
+        .toList();
+    await pumpV2(tester, frames: 70, step: const Duration(seconds: 1));
+    final after = tester
+        .widgetList<Text>(find.byType(Text))
+        .map((t) => t.data)
+        .whereType<String>()
+        .toList();
+
+    expect(before, isNot(equals(after)), reason: '倒计时应随时间推进');
+    await unmountV2App(tester);
+  });
 }
