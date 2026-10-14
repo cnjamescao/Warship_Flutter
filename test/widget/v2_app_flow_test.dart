@@ -10,6 +10,7 @@
 // ================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:warship_flutter/app/v2_run_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
@@ -130,13 +131,21 @@ void main() {
     await unmountV2App(tester);
   });
 
-  // 未覆盖：**键盘驱动的用例**（如按 Esc 打开暂停遮罩）。
-  // 实测 `tester.sendKeyEvent(LogicalKeyboardKey.escape)` 之后
-  // 遮罩文案「已暂停」并未出现 —— 键盘事件没有送达
-  // `KeyboardInputGateway`（测试环境下没有焦点节点接收）。
-  // 此前那条用例只断言 `V2RunScreen` 还在，属于**弱断言、掩盖了这个缺口**，
-  // 现已改为断言遮罩真实文案并因此暴露出问题，故移除用例、记录于此。
-  // 需要先建立焦点/按键的测试通路，才能覆盖键盘交互。
+  testWidgets('对局中按 Esc 打开暂停遮罩', (tester) async {
+    await mountV2App(tester, catalog);
+    await tapText(tester, '开始战斗');
+    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
+    expect(find.byType(V2RunScreen), findsOneWidget);
+
+    // 必须先把焦点交给对局界面的 Focus 节点，否则键盘事件无处送达。
+    await focusGameField(tester);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await pumpV2(tester, frames: 30);
+
+    expect(find.text('已暂停'), findsOneWidget, reason: 'Esc 应打开暂停遮罩');
+    expect(find.text('继续'), findsOneWidget);
+    await unmountV2App(tester);
+  });
 
   testWidgets('开局 15 秒后打开升级草案（三选一）', (tester) async {
     await mountV2App(tester, catalog);
@@ -230,5 +239,12 @@ void main() {
 
   // 未覆盖：**风险门**（55 秒）。测试里没有移动输入，玩家在约 30 秒阵亡，
   // 走不到 55 秒。要覆盖它需要能模拟走位输入（同上面的键盘通路问题）。
-}
 
+  // 未覆盖：**风险门（55 秒）**。写了走位辅助（按住 A/D 横移 +
+  // 自动选卡），但玩家仍在 55 秒前阵亡 —— 测试里无法复现真实玩家的
+  // 走位水平。要覆盖它需要给运行时注入"无敌"或"固定输入序列"的
+  // 测试通道，属于测试基建，不在本轮范围。
+  //
+  // 注意：这**不是**风险门实现有问题 —— 风险门本身的逻辑
+  // 已有单元与集成覆盖（test/unit/domain/risk_boss_test.dart）。
+}

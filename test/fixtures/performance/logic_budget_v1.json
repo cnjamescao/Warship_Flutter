@@ -5,8 +5,8 @@
   "simulatedFrames": 1320,
   "logicStepMs": {
     "p50": 0.008,
-    "p95": 0.034,
-    "p99": 0.111
+    "p95": 0.033,
+    "p99": 0.101
   },
   "objectPeaks": {
     "enemies": 13,
