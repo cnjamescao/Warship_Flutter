@@ -1,45 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Warship：霓虹最后防线 —— 横屏弹幕生存游戏。坚持 150 秒，击败守门者 Aegis。">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="warship_flutter">
+  <meta name="apple-mobile-web-app-title" content="Warship">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>warship_flutter</title>
+  <title>Warship：霓虹最后防线</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    首次加载体验（产品设计 §8）：
+    「Web 版本…首次加载显示进度和失败重试」。
+
+    Flutter 的 loader 会在第一帧就绪时派发 `flutter-first-frame`；
+    引擎或资源初始化失败时派发 `flutter-loader-error`。
+    这里据此切换三个状态：加载中（进度）/ 就绪 / 失败（可重试）。
+
+    进度是**不确定式的**（Flutter 的 loader 不暴露字节级进度），
+    因此用动画条而不是虚假的百分比 —— 不编造精度。
+  -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #05030F;
+      height: 100%;
+      overflow: hidden;
+    }
+    #warship-loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: #05030F;
+      color: #3FE0FF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      z-index: 9999;
+      transition: opacity 240ms ease-out;
+    }
+    #warship-loading.hidden { opacity: 0; pointer-events: none; }
+    .ws-title { font-size: 30px; letter-spacing: 10px; font-weight: 700; }
+    .ws-sub { color: rgba(255,255,255,0.55); font-size: 13px; letter-spacing: 4px; }
+    .ws-track {
+      width: 220px; height: 3px; border-radius: 2px;
+      background: rgba(63,224,255,0.18); overflow: hidden;
+    }
+    .ws-bar {
+      width: 40%; height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, #3FE0FF, #7C6BFF);
+      animation: ws-slide 1.1s ease-in-out infinite;
+    }
+    @keyframes ws-slide {
+      0%   { transform: translateX(-110%); }
+      100% { transform: translateX(260%); }
+    }
+    .ws-status { color: rgba(255,255,255,0.45); font-size: 13px; }
+    #warship-error { display: none; flex-direction: column; gap: 14px; align-items: center; }
+    #warship-error.show { display: flex; }
+    #warship-retry {
+      background: transparent; color: #3FE0FF; font-size: 15px;
+      border: 1px solid rgba(63,224,255,0.6); border-radius: 6px;
+      padding: 10px 26px; cursor: pointer;
+      font-family: inherit; letter-spacing: 2px;
+    }
+    #warship-retry:hover { background: rgba(63,224,255,0.12); }
+    /* 用户开了「减少动效」时不做位移动画（与产品设计 §8 一致）。 */
+    @media (prefers-reduced-motion: reduce) {
+      .ws-bar { animation: none; width: 100%; opacity: 0.5; }
+      #warship-loading { transition: none; }
+    }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  <div id="warship-loading">
+    <div class="ws-title">WARSHIP</div>
+    <div class="ws-sub">霓虹最后防线</div>
+    <div class="ws-track"><div class="ws-bar"></div></div>
+    <div class="ws-status" id="warship-status">正在加载资源…</div>
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
+    <div id="warship-error">
+      <div class="ws-status" id="warship-error-text">
+        资源加载失败。请检查网络后重试。
+      </div>
+      <button id="warship-retry" type="button">重试</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var overlay = document.getElementById('warship-loading');
+      var errorBox = document.getElementById('warship-error');
+      var errorText = document.getElementById('warship-error-text');
+      var status = document.getElementById('warship-status');
+      var settled = false;
+
+      function hide() {
+        if (settled) return;
+        settled = true;
+        overlay.classList.add('hidden');
+        // 过渡结束后彻底移出可访问性与命中测试。
+        setTimeout(function () { overlay.style.display = 'none'; }, 300);
+      }
+
+      function fail(message) {
+        if (settled) return;
+        errorBox.classList.add('show');
+        status.style.display = 'none';
+        if (message) {
+          errorText.textContent = message + ' 请检查网络后重试。';
+        }
+      }
+
+      // 第一帧画出来就算加载完成。
+      window.addEventListener('flutter-first-frame', hide, { once: true });
+
+      // Flutter 的 loader 失败时派发这个事件（引擎/资源初始化失败）。
+      window.addEventListener('flutter-loader-error', function (event) {
+        var reason = event && event.detail && event.detail.error;
+        fail(reason ? '资源加载失败：' + reason : '资源加载失败。');
+      });
+
+      // 兜底：若 20 秒内既没有首帧也没有报错，给出可重试的失败态，
+      // 而不是让玩家对着一个永远转的进度条。
+      setTimeout(function () {
+        if (!settled) {
+          fail('加载超时。');
+        }
+      }, 20000);
+
+      document.getElementById('warship-retry')
+        .addEventListener('click', function () { location.reload(); });
+    })();
+  </script>
+
+  <!--
+    使用 Flutter 默认的 bootstrap（已知可用）。
+    上面只叠加"加载中 / 失败可重试"的状态切换，不替换加载器本身 ——
+    这样不会影响构建，也不需要维护自定义的 loader 配置。
   -->
   <script src="flutter_bootstrap.js" async></script>
 </body>

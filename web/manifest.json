@@ -1,12 +1,12 @@
 {
-    "name": "warship_flutter",
-    "short_name": "warship_flutter",
+    "name": "Warship：霓虹最后防线",
+    "short_name": "Warship",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#05030F",
+    "theme_color": "#05030F",
+    "description": "横屏弹幕生存游戏：坚持 150 秒，击败守门者 Aegis。",
+    "orientation": "landscape",
     "prefer_related_applications": false,
     "icons": [
         {
