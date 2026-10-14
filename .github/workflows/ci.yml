@@ -123,6 +123,12 @@ jobs:
       - name: 构建 v2.0 资源复制（素材/ → assets/）
         run: dart run tool/build_v2_assets.dart
 
+      # Golden 基线**只在这一步比对**：基线在 macOS 生成，
+      # 而另一个 job 跑在 ubuntu —— 字体渲染不同，在那边比对必然失败。
+      # 规格「必须（稳定平台）」里的"稳定平台"即指这里。
+      - name: Golden 像素基线（macOS 稳定平台）
+        run: flutter test test/golden --reporter expanded
+
       - name: flutter build macos --debug
         if: steps.xcode.outputs.ready == 'true'
         run: flutter build macos --debug
