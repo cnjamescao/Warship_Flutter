@@ -89,8 +89,12 @@ class RunEnded extends DomainEvent {
 
   /// 结算奖牌：`gold` / `silver` / `bronze` / `none`。
   ///
-  /// 算法由协议 §3.1 固定：胜利 gold；失败但曾进入 Boss P3（bossHpRatio < 0.35）
-  /// silver；失败且存活 ≥120 s bronze；其余 none。优先级 gold > silver > bronze > none。
+  /// 算法见 `lib/game/domain/result_tier.dart`：胜利 gold；
+  /// 失败且曾把 Boss 打进 P3（bossHpRatio < 0.35）silver；其余失败 bronze。
+  ///
+  /// **注意**：产品基线 §8 与技术协议 §3.1 对算法有冲突，
+  /// 已按交付清单 §8 的优先级（产品基线优先）裁决，
+  /// 因此**不产生 `none`**。完整裁决记录见该文件头。
   final String resultTier;
 
   @override

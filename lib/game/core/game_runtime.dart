@@ -27,6 +27,7 @@ import '../domain/enemy_system.dart';
 import '../domain/player_system.dart';
 import '../domain/risk_gate_system.dart';
 import '../domain/upgrade_system.dart';
+import '../domain/result_tier.dart';
 import '../domain/values.dart';
 import '../infrastructure/audio_director.dart';
 import '../domain/weapon_system.dart';
@@ -1415,7 +1416,7 @@ class GameRuntime {
         score: score,
         seed: runtime.seed,
         bossHpRatio: 0,
-        resultTier: 'gold',
+        resultTier: resultTierFor(victory: true, bossHpRatio: null).id,
       ),
       runtime,
     );
@@ -1454,19 +1455,30 @@ class GameRuntime {
   }
 
   void _checkPlayerDeath() {
-    if (player.health.isDead) {
-      bus.emit(
-        RunEnded(
-          result: 'defeat',
-          durationSeconds: combatSeconds,
-          score: score,
-          seed: runtime.seed,
-          bossHpRatio: 0,
-          resultTier: 'none',
-        ),
-        runtime,
-      );
+    if (!player.health.isDead) {
+      return;
     }
+    // 关键：`bossHpRatio` 必须是**真实值**，不能硬编码。
+    // 此前这里写死 0，而协议里 silver 的判定正是 `bossHpRatio < 0.35`
+    // —— 若照协议算，写死 0 会让**每一次失败都判成 silver**。
+    // Boss 尚未出现时为 null，按"未进 P3"处理。
+    final bossHpRatio = boss?.hpRatio;
+    bus.emit(
+      RunEnded(
+        result: 'defeat',
+        durationSeconds: combatSeconds,
+        score: score,
+        seed: runtime.seed,
+        // 字段非空：Boss 尚未出现时记 1.0（= 未被削弱），
+        // 语义上与 resultTierFor 里 null 的处理一致。
+        bossHpRatio: bossHpRatio ?? 1.0,
+        resultTier: resultTierFor(
+          victory: false,
+          bossHpRatio: bossHpRatio,
+        ).id,
+      ),
+      runtime,
+    );
   }
 
   // ------------------------------------------------------------
