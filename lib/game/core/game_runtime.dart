@@ -204,6 +204,17 @@ class GameRuntime {
   /// 进行中的风险门；null 表示没有。
   RiskGateSession? riskGate;
 
+  /// **胜利过渡态**：Boss 被击败后置位，此后本局不再结算任何伤害。
+  ///
+  /// 依 F-20 裁决（选 A）：「`BossDefeated` 被确认后…**原子切换**到
+  /// 不可受伤的胜利过渡状态：拒绝该步后续及未来帧所有 `DamageIntent`、
+  /// 清除敌人/敌弹/危险区、停用碰撞与伤害 tick、禁止生成新的伤害源」。
+  ///
+  /// 此前只清了"在飞的投射物"，**敌人本体接触、越界、危险区结算仍在跑** ——
+  /// 于是胜利后仍有 3 次 `PlayerDamaged`（实测）。冻结必须覆盖**全部来源**，
+  /// 而不只是投射物。
+  bool _victoryFrozen = false;
+
   /// Boss 击败后需要清理在飞的敌方投射物与危险区。
   ///
   /// 用标记而不是立刻清理，是因为清理点必须在碰撞解析**之后** ——
@@ -402,6 +413,17 @@ class GameRuntime {
       );
     }
 
+    // **F-20：胜利过渡态下不再推进任何会产生伤害源的系统。**
+    // 冻结覆盖的是"全部来源"——Director 生成、敌人行为、危险区、
+    // Boss 招式、碰撞与伤害结算，而不只是清一次在飞的投射物。
+    if (_victoryFrozen) {
+      _fireWeapons(dt);
+      _updateProjectiles(dt);
+      _commitPending();
+      _checkDraftDue();
+      return;
+    }
+
     // 5. Director 与敌人更新（只产生待生成命令）。
     _updateDirector(dt);
     _updateEnemies(dt);
@@ -430,6 +452,12 @@ class GameRuntime {
       _pendingVictoryClear = false;
       projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
       hazards.clear();
+      // 裁决要求"清除敌人" —— 不只是在飞的投射物。
+      // 敌人本体接触也会造成 HP 伤害，只清投射物仍然会挨打。
+      for (final enemy in enemies) {
+        _removals.add(enemy);
+      }
+      _commitPending();
     }
 
     // 10. 经验阈值 → 打开升级草案（相位迁移，下一步起逻辑冻结）。
@@ -1449,6 +1477,15 @@ class GameRuntime {
     // 直接改列表会抛 `Concurrent modification during iteration`
     // （我第一版就是这么写的，被测试立刻抓出）。
     // 因此只置标记，在本步末尾（碰撞解析之后）统一清理。
+    // **先结算本次击杀奖励，再冻结**（裁决的顺序要求）。
+    // 击杀的伤害结算与 `WeaponHit` 已在上游 `_resolvePlayerProjectileHits`
+    // 里先行发出，因此到这里时奖励已结清。
+    //
+    // 注：`boss_aegis.json` 里**没有** Boss 的得分字段，故此处不补分数 ——
+    // 研发不擅自造数值（"不擅自增删功能/改内容"）。
+
+    // 原子切换到胜利过渡态：此后本步与未来帧的一切伤害都被拒绝。
+    _victoryFrozen = true;
     _pendingVictoryClear = true;
 
     bus.emit(BossDefeated(), runtime);

@@ -168,29 +168,30 @@ void main() {
       isEmpty,
       reason: '§7.5 要求击败后"停止生成"，但仍生成了：${spawnsAfter.toSet()}',
     );
-    // **本用例只断言我确实修好的那条**：胜利后在飞的**敌方投射物**
-    // 必须被清空（§7.5「停止伤害」的实现）。
+    // **F-20 已裁决（选 A）**：Boss 击败后原子切换到不可受伤的
+    // 胜利过渡态 —— 拒绝一切 `DamageIntent`、清除敌人/敌弹/危险区、
+    // 停用碰撞与伤害 tick、禁止生成新的伤害源。
+    //
+    // 因此这里按裁决的**完成判定**收紧断言：
+    // 「枚举敌弹、危险区、敌体接触、越界、Boss 接触等来源，
+    //   在 Boss=0 后**均为 0 伤害且不再生成 `PlayerDamaged`**」。
+    //
+    // （此前我只能断言"投射物已清空"，因为敌人本体接触与越界仍在
+    //   结算伤害 —— 实测胜利后仍有 3 次 `PlayerDamaged`。）
+    expect(
+      damageAfter,
+      isEmpty,
+      reason: 'F-20：Boss 击败后不得再产生任何 PlayerDamaged，'
+          '但观察到的来源有：${damageAfter.toSet()}',
+    );
+
     final enemyProjectilesAfter = rt.projectiles
         .where((p) => p.faction == ProjectileFaction.enemy)
         .length;
-    expect(
-      enemyProjectilesAfter,
-      0,
-      reason: '§7.5 要求击败后停止伤害 —— 敌方投射物应已清除',
-    );
-    expect(rt.hazards, isEmpty, reason: '§7.5 要求击败后停止伤害 —— 危险区应已清除');
+    expect(enemyProjectilesAfter, 0, reason: 'F-20：敌方投射物应已清除');
+    expect(rt.hazards, isEmpty, reason: 'F-20：危险区应已清除');
+    expect(rt.enemies, isEmpty, reason: 'F-20：场上敌人应已清除');
 
-    // **已知未解决（如实记录，不假装通过）**：
-    // 胜利后仍观察到若干次 `PlayerDamaged`（修投射物之前是 5 次，
-    // 清除投射物后降到 3 次）。剩余来源**尚未定位**，
-    // 推测是已在场敌人越过 y=1140 造成的越界伤害
-    // （越界规则见产品基线 §6：「突破…玩家承受穿透护盾的 HP 伤害」）。
-    //
-    // §7.5 的原文是「停止伤害和生成后再进入结算」，按字面读，
-    // 越界伤害也应在胜利后停止 —— 但"胜利瞬间是否连越界也要冻结"
-    // 涉及结算时机的设计，**研发不擅自决定**，已记入反馈意见 F-20。
-    //
-    // 因此这里**不断言** `damageAfter` 为空；等裁决后再补。
     expect(
       rt.enemies.length,
       lessThanOrEqualTo(enemiesBefore),
