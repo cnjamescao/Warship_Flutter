@@ -172,6 +172,9 @@ enum AudioDecision {
   /// 被 `minRetriggerMs` 挡住。
   throttled,
 
+  /// 该 cue 所属总线被设置关闭（音效 / 音乐独立开关）。
+  busDisabled,
+
   /// 已达同 cue 最大并发。
   voiceLimitReached,
 
@@ -278,6 +281,30 @@ class AudioService {
   /// 当前正在循环的 cue（用于暂停/恢复与"不叠层"）。
   final Set<String> _runningLoops = <String>{};
 
+  /// 各总线是否启用。
+  ///
+  /// 产品设计 §8 第 280 行要求「音效/音乐**独立**音量」——
+  /// 此前只有一个合并的 `setMuted(!sfx && !music)`：
+  /// 关掉音乐但留着音效时，因为 `!sfx && !music` 为 false，
+  /// **两者都会出声**，两个开关等于只有一个在起作用。
+  /// 现在按总线分别判定。
+  final Map<AudioBus, bool> _busEnabled = <AudioBus, bool>{};
+
+  /// 设置某条总线是否启用。
+  void setBusEnabled(AudioBus bus, bool enabled) {
+    _busEnabled[bus] = enabled;
+    if (!enabled) {
+      // 关闭总线时立刻停掉它正在循环的声音，否则会一直响。
+      port.stopBus(bus);
+      _runningLoops.removeWhere((cueId) => _cueBus[cueId] == bus);
+    }
+  }
+
+  bool isBusEnabled(AudioBus bus) => _busEnabled[bus] ?? true;
+
+  /// cueId → 所属总线（用于关闭总线时清理循环音）。
+  final Map<String, AudioBus> _cueBus = <String, AudioBus>{};
+
   double get nowMs => _nowMs;
   bool get isPaused => _paused;
   Set<String> get runningLoops => Set<String>.unmodifiable(_runningLoops);
@@ -288,6 +315,14 @@ class AudioService {
 
   /// 请求播放。返回实际做出的决策。
   AudioDecision request(AudioCue cue) {
+    _cueBus[cue.cueId] = cue.bus;
+    if (!isBusEnabled(cue.bus)) {
+      // 总线被设置关闭：循环音必须停掉，瞬时音直接丢弃。
+      if (_runningLoops.remove(cue.cueId)) {
+        port.stop(cue.cueId);
+      }
+      return AudioDecision.busDisabled;
+    }
     if (_paused && !cue.loop) {
       return AudioDecision.throttled; // 暂停期间不产生新的瞬时音
     }

@@ -134,8 +134,23 @@ class _V2AppFlowState extends State<V2AppFlow> {
   }
 
   /// 把设置作用到音频。
+  ///
+  /// 产品设计 §8 要求「音效/音乐**独立**音量」。此前这里写的是
+  /// `setMuted(!sfxEnabled && !musicEnabled)` —— 只有两个开关**都**关
+  /// 才会静音，于是"关音乐留音效"时两者都还在响，等于只有一个开关生效。
+  /// 现改为按总线分别判定：音乐总线看 `musicEnabled`，
+  /// 音效/UI/预警三条总线看 `sfxEnabled`。
   void _applySettings() {
-    _audio.setMuted(!_settings.sfxEnabled && !_settings.musicEnabled);
+    _audio.setBusEnabled(AudioBus.music, _settings.musicEnabled);
+    for (final bus in <AudioBus>[
+      AudioBus.sfx,
+      AudioBus.ui,
+      AudioBus.warning,
+    ]) {
+      _audio.setBusEnabled(bus, _settings.sfxEnabled);
+    }
+    // 全局静音保持关闭：真正的开关交给上面的总线判定。
+    _audio.setMuted(false);
   }
 
   Future<void> _updateSettings(GameSettings next) async {
