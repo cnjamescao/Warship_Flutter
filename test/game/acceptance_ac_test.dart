@@ -376,4 +376,50 @@ void main() {
       expect(b.elites, a.elites);
     });
   });
+
+  group('风险门（55 秒）在完整一局中确实打开', () {
+    /// 推进到指定游戏秒数，**保持玩家存活**并自动选卡。
+    ///
+    /// 用**运行时级**验证而不是 UI 用例：UI 里玩家活不到 55 秒
+    /// （测试无法复现真实走位水平），但"风险门是否在 55 秒打开"
+    /// 这个集成点是必须覆盖的 —— 此前**没有任何用例**验证它。
+    (String? gateId, List<String> options) runToRiskGate(int seed) {
+      final rt = buildRuntime(seed);
+      String? gateId;
+      var options = const <String>[];
+      var frame = 0;
+      while (rt.combatSeconds < 56 && frame < 200 * 60) {
+        rt.player.health.current = rt.player.health.max;
+        final offer = rt.currentOffer;
+        if (offer != null) {
+          rt.selectDraftCard(0);
+        }
+        rt.advance(GameClock.fixedStepSeconds, inputFor(frame));
+        final gate = rt.riskGate;
+        if (gate != null && gateId == null) {
+          gateId = gate.gateId;
+          options = List<String>.from(gate.availableOptions);
+        }
+        frame++;
+      }
+      return (gateId, options);
+    }
+
+    test('55 秒打开 RG-55，且给出可选项', () {
+      final result = runToRiskGate(0x4E454F4E0001);
+      expect(
+        result.$1,
+        'RG-55',
+        reason: 'risk_gates.json 里 55 秒的门是 RG-55',
+      );
+      expect(result.$2, isNotEmpty, reason: '风险门应给出可选项');
+    });
+
+    test('同种子两次运行的风险门一致（可复现）', () {
+      final a = runToRiskGate(0x4E454F4E0001);
+      final b = runToRiskGate(0x4E454F4E0001);
+      expect(b.$1, a.$1);
+      expect(b.$2, a.$2);
+    });
+  });
 }
