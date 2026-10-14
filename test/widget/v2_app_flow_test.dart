@@ -247,4 +247,41 @@ void main() {
   //
   // 注意：这**不是**风险门实现有问题 —— 风险门本身的逻辑
   // 已有单元与集成覆盖（test/unit/domain/risk_boss_test.dart）。
+
+  testWidgets('键盘可遍历菜单，且焦点状态可见（§8 无障碍要求）', (tester) async {
+    await mountV2App(tester, catalog);
+
+    // 未使用键盘时是 touch 模式（不绘制焦点指示）。
+    expect(
+      FocusManager.instance.highlightMode,
+      FocusHighlightMode.touch,
+      reason: '初始应为触摸模式',
+    );
+
+    // 按 Tab 遍历：焦点应移动到**不同的**节点（说明真的在遍历，
+    // 而不是卡在一个节点上）。
+    final visited = <Object>{};
+    for (var i = 0; i < 3; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final focus = FocusManager.instance.primaryFocus;
+      expect(focus, isNotNull, reason: '第 $i 次 Tab 后应有焦点');
+      visited.add(focus!);
+    }
+    expect(
+      visited.length,
+      greaterThan(1),
+      reason: 'Tab 应在多个控件间移动，而不是停在同一个节点',
+    );
+
+    // §8「焦点状态必须可见」：键盘导航时 Flutter 切到 traditional 模式，
+    // Material 才会绘制焦点指示。这是**框架默认行为**，
+    // 本用例的作用是守住它没被某个自定义主题/Widget 关掉。
+    expect(
+      FocusManager.instance.highlightMode,
+      FocusHighlightMode.traditional,
+      reason: '键盘导航后应切换为可见焦点模式',
+    );
+    await unmountV2App(tester);
+  });
 }
