@@ -85,15 +85,86 @@ void main() {
       }
     });
 
-    // ⚠️ 产品基线**内部**对这条的要求不一致（已记入 docs/研发反馈意见.md F-19）：
-    //   * §9 AC-04：「**每种攻击**在命中前有对应预警」；
-    //   * §5 敌人表只为 EN-SNIPER 规定了「0.75 秒线形预警」，
-    //     EN-BOMBER 有「延迟 0.4 s 生效」，
-    //     而 EN-WING（每 1.8 秒 1 弹）与 EN-SHIELD（每 2.5 秒三连点射）
-    //     **没有规定任何预警**。
-    // 因此这里断言的是**可由 §5 推出**的规则：
-    // 凡 §5 规定了预警的，实现必须有正的预警时长与预警资源。
-    // 「WING/SHIELD 是否也该有预警」属于内容决策，不在此断言。
+    // F-19 已裁决：产品基线 AC-04 改为「产品攻击表**明确规定预警**的
+    // 每种攻击」，其精确集合与 F-07 一致。因此按**精确集合**断言，
+    // 不再用"凡声明了预警资源的"这种可推导但含糊的口径。
+    //
+    // 集合内 6 招：sniper_line / bomber_drop / boss_fan / boss_charge /
+    //              boss_ring / boss_laser
+    // 集合外（依子弹轨迹可见性实现，**不新增**蓄力或素材）：
+    //              wing_shot / shield_shot
+    test('F-07/F-19 强制预警集合内每一招都有正预警时长与预警资源', () {
+      const mandatory = <String>{
+        'sniper_line',
+        'bomber_drop',
+        'boss_fan',
+        'boss_charge',
+        'boss_ring',
+        'boss_laser',
+      };
+      final found = <String>{};
+
+      final enemies = readJson('enemies.json');
+      for (final enemy in (enemies['enemies'] as List).cast<Map>()) {
+        final attack = enemy['attackProfile'] as Map?;
+        if (attack == null) continue;
+        final id = attack['attackId'] as String?;
+        if (id == null || !mandatory.contains(id)) continue;
+        found.add(id);
+        expect(
+          (attack['telegraphSeconds'] as num?)?.toDouble() ?? 0,
+          greaterThan(0),
+          reason: '$id 在强制集合内，必须有正预警时长',
+        );
+        expect(
+          attack['telegraphAssetId'],
+          isNotNull,
+          reason: '$id 在强制集合内，必须有预警资源',
+        );
+      }
+
+      final boss = readJson('boss_aegis.json');
+      for (final attack in (boss['attacks'] as List).cast<Map>()) {
+        final id = attack['attackId'] as String?;
+        if (id == null || !mandatory.contains(id)) continue;
+        found.add(id);
+        expect(
+          (attack['telegraphSeconds'] as num?)?.toDouble() ?? 0,
+          greaterThan(0),
+          reason: '$id 在强制集合内，必须有正预警时长',
+        );
+        expect(
+          attack['telegraphAssetId'] ?? attack['warningAssetId'],
+          isNotNull,
+          reason: '$id 在强制集合内，必须有预警资源',
+        );
+      }
+
+      expect(
+        found,
+        mandatory,
+        reason: '强制集合应全部找到；缺失 ${mandatory.difference(found)}',
+      );
+    });
+
+    test('F-19 集合外的 wing_shot / shield_shot 未被新增预警', () {
+      // 裁决明确：这两招「依其子弹轨迹可见性/速度参数实现，
+      // **不新增蓄力或素材**」。因此预警时长必须保持为 0。
+      final enemies = readJson('enemies.json');
+      for (final id in <String>['wing_shot', 'shield_shot']) {
+        final enemy = (enemies['enemies'] as List).cast<Map>().firstWhere(
+          (e) => (e['attackProfile'] as Map?)?['attackId'] == id,
+          orElse: () => throw StateError('未找到 $id'),
+        );
+        final attack = enemy['attackProfile'] as Map;
+        expect(
+          (attack['telegraphSeconds'] as num?)?.toDouble() ?? 0,
+          0,
+          reason: '$id 不在强制集合内，不得因 F-19 新增预警时长',
+        );
+      }
+    });
+
     test('§5 规定了预警的敌方攻击，实现都必须有正预警时长与预警资源', () {
       final enemies = readJson('enemies.json');
       for (final enemy in (enemies['enemies'] as List).cast<Map>()) {
