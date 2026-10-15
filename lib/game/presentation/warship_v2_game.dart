@@ -17,10 +17,12 @@
 // 表现层只读快照，绝不回写 Domain。
 // ================================================================
 
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart' hide Image;
 
 import '../content/asset_manifest.dart';
@@ -40,6 +42,27 @@ import 'input_gateway.dart';
 
 /// 玩家机体的正式素材 ID（F-26-02 的首屏关键资源）。
 const String kPlayerBaseAssetId = 'GFX-PLAYER-BASE';
+
+/// 把资源诊断写到**固定文件**（`/tmp/warship_assets.log`）。
+///
+/// 存在理由：F-26-02 的现场是"玩家看到图形不对"，而研发既看不到画面、
+/// 也无法自动化玩家输入。把诊断落盘后，玩家只要玩一次，研发就能拿到
+/// "加载成功几张、哪几条失败、玩家素材到底能不能取到"的真实数据，
+/// 不必靠猜。
+void writeAssetDiagnostics(String text) {
+  // Web 上没有 dart:io 的文件系统；直接跳过（诊断是辅助手段，
+  // 绝不能因为它在某个平台上失败而影响游戏）。
+  if (kIsWeb) {
+    return;
+  }
+  try {
+    File('/tmp/warship_assets.log').writeAsStringSync(
+      '${DateTime.now().toIso8601String()}\n$text\n',
+    );
+  } catch (_) {
+    // 诊断失败绝不影响游戏。
+  }
+}
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
 const double kLogicalWidth = 1920;
@@ -131,13 +154,17 @@ class WarshipV2Game extends FlameGame {
       // 此前预载失败是完全静默的 —— 玩家看到的是"两个圆点"，
       // 而没有任何一处告诉他/我们为什么。裁决要求检查 firstRun
       // 预载结果与每个 `AssetLoadFailure`，因此这里必须留下可诊断记录。
-      debugPrint(
-        '[assets] firstRun 预载完成：成功 ${visualAssets.loadedCount}，'
-        '失败 ${visualAssets.failures.length}',
-      );
-      for (final failure in visualAssets.failures) {
-        debugPrint('[assets] 载入失败 $failure');
+      // 除控制台外，**同时写入诊断文件** —— 这样即使拿不到界面截图，
+      // 也能在事后拿到"到底加载了什么、失败在哪一条"的真实数据。
+      final report = StringBuffer()
+        ..writeln('firstRun 预载：成功 ${visualAssets.loadedCount}，'
+            '失败 ${visualAssets.failures.length}')
+        ..writeln('玩家素材可取=${visualAssets.imageFor(kPlayerBaseAssetId, 'default') != null}');
+      for (final failure in visualAssets.failures.take(20)) {
+        report.writeln('  失败 $failure');
       }
+      debugPrint('[assets] ${report.toString().trim()}');
+      writeAssetDiagnostics(report.toString());
 
       // 首屏关键资源就绪断言（裁决第 2 条）：玩家机体是
       // **release_ready 且首屏关键**的资源，它没就绪就不该进入可玩状态 ——
