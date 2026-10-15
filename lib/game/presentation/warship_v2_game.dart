@@ -440,6 +440,20 @@ class BattlefieldComponent extends Component {
             Offset(center.dx, center.dy - enemy.radius - 26),
             10,
           );
+
+          // 名称条底板（`UI-ELITE-NAMEPLATE`）。
+          //
+          // 素材规范：512×512 @2x，**运行时缩放至 220×44 logical px**；
+          // 文字由 `enemy.*` / `affix.*` 的 catalog key 绘制，
+          // **禁止把文字烘焙进图**（协议 §2 第 99 行）。
+          // 因此这里只贴底板；文字由 HUD 层按 key 画。
+          _drawSpriteOrNull(
+            canvas,
+            kEliteNameplateAssetId,
+            'normal',
+            Offset(center.dx, center.dy - enemy.radius - 52),
+            kEliteNameplateWidth / 2,
+          );
         } else {
           // 未登记词缀：退回几何圆环，不猜。
           _stroke.color = const Color(0x88FFC24B);
@@ -522,10 +536,6 @@ class BattlefieldComponent extends Component {
     }
   }
 
-  /// 三角斜线叠层的画笔（F-12）。
-  final Paint _hatch = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2.0;
 
   void _drawHazards(Canvas canvas) {
     for (final hazard in snapshot.hazards) {
@@ -539,38 +549,47 @@ class BattlefieldComponent extends Component {
       }
 
       // F-12：**颜色之外的第二识别维度**。
-      // 危险区一律叠加三角斜线 —— 与 `ColorblindPattern.danger`
-      // （`UI-COLORBLIND-PATTERN-DANGER`）语义一致。
+      //
+      // 裁决明确：「**必须实际合成正式 PNG 素材，禁止用 Canvas 或
+      // 程序化几何等价替代**」。因此这里贴的是
+      // `UI-COLORBLIND-PATTERN-DANGER` 本身，而不是我先前画的几何斜线。
+      //
       // **始终绘制，不受任何设置门控**（没有"色弱开关"这回事）。
       if (hazardNeedsDangerPattern(
         isWarning: hazard.isWarning,
         dealsDamage: !hazard.isWarning,
       )) {
-        _drawDangerHatch(canvas, center, hazard.radius);
+        _drawColorblindPattern(
+          canvas,
+          ColorblindPattern.danger,
+          center,
+          hazard.radius,
+        );
       }
     }
   }
 
-  /// 三角斜线叠层：把"这是危险"从**颜色**搬到**形状**上。
+  /// 合成色弱叠层素材（F-12 裁决：**必须用正式 PNG，不得几何替代**）。
   ///
-  /// 灰度下颜色会趋同，但斜线纹理不会 —— 这就是第二维度的意义。
-  void _drawDangerHatch(Canvas canvas, Offset center, double radius) {
-    // clipPath 保证图案不溢出危险区边界（越界会误导玩家判断范围）。
-    canvas.save();
-    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
-
-    _hatch.color = const Color(0x66FFFFFF);
-    const spacing = 12.0;
-    // 45° 斜线：从左上到右下铺满外接正方形。
-    final span = radius * 2;
-    for (var offset = -span; offset <= span; offset += spacing) {
-      canvas.drawLine(
-        Offset(center.dx + offset, center.dy - radius),
-        Offset(center.dx + offset + span, center.dy + radius),
-        _hatch,
-      );
-    }
-    canvas.restore();
+  /// 素材状态取 `normal`（三套叠层都有 normal/pressed/disabled/focus
+  /// 四个状态，正常显示用 `normal`）。
+  ///
+  /// 返回是否真的贴上了图 —— **贴不上不能静默**：
+  /// 发布构建里色弱叠层缺失属于资源验收失败，因此这里回传结果供
+  /// 上层/测试核对，而不是悄悄画个圆了事。
+  bool _drawColorblindPattern(
+    Canvas canvas,
+    ColorblindPattern pattern,
+    Offset center,
+    double radius,
+  ) {
+    return _drawSpriteOrNull(
+      canvas,
+      pattern.assetId,
+      'normal',
+      center,
+      radius,
+    );
   }
 }
 

@@ -35,6 +35,13 @@ class EliteAffixVisual {
 /// 精英名称条资源（按 `isElite` 路由）。
 const String kEliteNameplateAssetId = 'UI-ELITE-NAMEPLATE';
 
+/// 名称条运行时尺寸（素材规范：512×512 @2x → **220×44 logical px**）。
+///
+/// 规范明确「客户端不得修改、重绘或用文字替换以上资源；只按 manifest 接入」，
+/// 因此尺寸取自规范而非自行估算。
+const double kEliteNameplateWidth = 220;
+const double kEliteNameplateHeight = 44;
+
 /// 三个固定词缀（§6：词缀按固定顺序轮换，不抽样）。
 ///
 /// 这张表与 `assets/config/v2/enemies.json` 的 `affixes` 一一对应；

@@ -16,6 +16,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/presentation/colorblind_patterns.dart';
+import 'package:warship_flutter/game/presentation/elite_affix_visuals.dart';
 
 late AssetManifest manifest;
 
@@ -119,5 +120,42 @@ void main() {
     expect(pickupNeedsRewardPattern(isPickup: false), isFalse);
     expect(draftCardNeedsRarityPattern(hasRarity: true), isTrue);
     expect(draftCardNeedsRarityPattern(hasRarity: false), isFalse);
+  });
+
+  test('F-12 裁决：三套叠层的**运行时文件真实存在**（合成才是可能的）', () {
+    // 裁决：「**必须实际合成正式 PNG 素材，禁止用 Canvas 或程序化
+    // 几何等价替代**」。合成的前提是文件真的在资源目录里 ——
+    // 只断言"manifest 里有登记"是不够的（登记了但没有文件，
+    // 渲染时 `imageFor` 会返回 null，于是叠层静默消失）。
+    for (final pattern in ColorblindPattern.values) {
+      final record = manifest.lookup(pattern.assetId)!;
+      expect(record.runtimeFiles, isNotEmpty);
+      for (final rel in record.runtimeFiles) {
+        final f = File(rel);
+        expect(
+          f.existsSync(),
+          isTrue,
+          reason: '${pattern.assetId} 的运行时文件缺失： —— '
+              '叠层会静默消失',
+        );
+        expect(f.lengthSync(), greaterThan(0), reason: ' 是空文件');
+      }
+    }
+  });
+
+  test('F-12 精英名称条尺寸取自素材规范（220×44 logical px）', () {
+    expect(kEliteNameplateWidth, 220);
+    expect(kEliteNameplateHeight, 44);
+    // 名称条底板资源必须存在且可解析。
+    final record = manifest.lookup(kEliteNameplateAssetId);
+    expect(record, isNotNull);
+    expect(record!.runtimeFiles, isNotEmpty);
+    for (final rel in record.runtimeFiles) {
+      expect(
+        File(rel).existsSync(),
+        isTrue,
+        reason: '名称条底板缺失：',
+      );
+    }
   });
 }
