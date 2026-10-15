@@ -17,8 +17,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
+import 'baseline_recording.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
+import '../game/core/baseline_recorder.dart';
 import '../game/core/game_runtime.dart';
 import '../game/domain/result_tier.dart';
 import '../game/infrastructure/asset_loader.dart';
@@ -83,6 +85,10 @@ class _V2AppFlowState extends State<V2AppFlow> {
   /// 音频（跨局复用：设置是全局的，不随重开重建）。
   late final AudioService _audio;
   AudioDirector? _audioDirector;
+
+  /// AC-06 基准录制器（协议 §5.1）。**默认 null —— 不录制**；
+  /// 仅当以 `--dart-define=WARSHIP_RECORD_BASELINE=<path>` 构建时创建。
+  BaselineRecording? _baselineRecorder;
 
   /// 触感（F-10）。同样跨局复用。
   ///
@@ -193,6 +199,25 @@ class _V2AppFlowState extends State<V2AppFlow> {
       service: _audio,
     );
     _hapticsDirector = HapticsDirector(service: _haptics);
+
+    // AC-06 基准录制：**默认关闭**。
+    //
+    // ⚠️ 指纹必须在开启时**才算** —— 首版我把它当实参无条件求值，
+    // 结果日常构建每次开局都会执行这段（并因类型问题崩掉）。
+    // 关闭状态下应当是彻底的 no-op。
+    if (isBaselineRecordingEnabled) {
+      // 运行时只能得到"构建复制品"的指纹（应用里没有 素材/ 原文件）。
+      // 提交前由 `dart run tool/finalize_baseline.dart` 盖上
+      // 正式 `素材/manifest.json` 的真实 SHA-256（§5.1 要求）。
+      _baselineRecorder = createBaselineRecorder(
+        seed: widget.seed,
+        contentVersion: widget.catalog.contentVersion,
+        manifestSha256: manifestFingerprint(
+          recordCount: widget.catalog.manifest.records.length,
+          contentVersion: widget.catalog.contentVersion,
+        ),
+      );
+    }
     // 每局的音频限频窗口从头开始，避免上一局的节奏影响本局。
     _audio.reset();
 
@@ -235,6 +260,9 @@ class _V2AppFlowState extends State<V2AppFlow> {
       return;
     }
     runtime.phases.transitionTo(GamePhase.result, reason: 'runEnded');
+
+    // AC-06 基准：**只有满足 §5.1 成功条件才写出**（在下面判定完
+    // outcome 之后调用；不合格的局什么都不写）。
     final outcome = runtime.player.health.isDead ? 'defeat' : 'victory';
     // 奖牌在这里算：bossHpRatio 取**该局结束时的真实值**。
     // 胜利时 Boss 已被击毁，`boss` 可能为 null —— 但 victory=true
@@ -249,6 +277,9 @@ class _V2AppFlowState extends State<V2AppFlow> {
       _resultSeconds = runtime.combatSeconds;
       _resultTier = tier.id;
     });
+
+    // AC-06 基准写出（未开启时是 no-op；不合格时不写）。
+    writeBaselineIfEligible(_baselineRecorder);
 
     // 记录只增不减；存档失败不阻断结算界面。
     var updated = _records.withScore(runtime.score);
@@ -338,6 +369,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
       case GamePhase.riskGate:
         return V2RunScreen(
           catalog: widget.catalog,
+          baselineRecorder: _baselineRecorder,
           runtime: runtime,
           input: input,
           manifest: widget.catalog.manifest,

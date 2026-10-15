@@ -112,3 +112,17 @@ class BaselineRecording {
 
   String encode() => const JsonEncoder.withIndent('  ').convert(toJson());
 }
+
+/// 运行时可得的内容指纹：`records=<条数>;version=<内容版本>`。
+///
+/// **这不是 §5.1 要的 SHA-256** —— 应用里只有构建复制品
+/// （`assets/config/v2/manifest.json`），拿不到仓库里的
+/// `素材/manifest.json` 原文件。因此录制端写指纹，
+/// 提交前用 `dart run tool/finalize_baseline.dart` 盖上真实 SHA-256。
+///
+/// 与 `ReplayRecord.matches` 的既有口径一致（同一个字符串既做指纹、
+/// 也做版本校验），避免出现两套互不相认的"版本标识"。
+String manifestFingerprint({
+  required int recordCount,
+  required String contentVersion,
+}) => 'records=$recordCount;version=$contentVersion';

@@ -21,6 +21,7 @@ import '../game/core/game_runtime.dart';
 import '../game/core/phase_controller.dart';
 import '../game/content/asset_manifest.dart';
 import '../game/content/content_catalog.dart';
+import '../game/core/baseline_recorder.dart';
 import '../game/core/render_snapshot.dart';
 import '../game/presentation/asset_cache.dart';
 import '../game/presentation/input_gateway.dart';
@@ -37,6 +38,7 @@ class V2RunScreen extends StatefulWidget {
     required this.input,
     required this.manifest,
     required this.catalog,
+    this.baselineRecorder,
     this.onFrame,
     this.onQuitToHome,
     this.preloadAssets = true,
@@ -46,6 +48,10 @@ class V2RunScreen extends StatefulWidget {
   final GameRuntime runtime;
   final KeyboardInputGateway input;
   final AssetManifest manifest;
+
+  /// AC-06 基准录制器（协议 §5.1）。**默认 null —— 不录制**。
+  /// 只有基准操作员那一次真实通关才由 `--dart-define` 开启。
+  final BaselineRecording? baselineRecorder;
 
   /// 内容目录 —— **玩家可见文本的唯一来源**（F-01）。
   /// HUD/风险门/草案/暂停的每一句文案都从它按 key 取。
@@ -78,6 +84,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _game = WarshipV2Game(
+      baselineRecorder: widget.baselineRecorder,
       preloadAssets: widget.preloadAssets,
       reduceMotion: widget.reduceMotion,
       runtime: widget.runtime,

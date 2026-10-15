@@ -24,6 +24,9 @@ const List<String> kScannedDirs = <String>['lib/app', 'lib/game/presentation'];
 final List<RegExp> kWhitelist = <RegExp>[
   RegExp(r'\bdebugPrint\s*\('),
   RegExp(r'\bprint\s*\('),
+  // 标准输出/错误流也属日志（规范：「日志…不受本条限制」）。
+  RegExp(r'\bstdout\.writeln\s*\('),
+  RegExp(r'\bstderr\.writeln\s*\('),
   RegExp(r'\bassert\s*\('),
   RegExp(r'\bStateError\s*\('),
   RegExp(r'^\s*//'), // 注释行
@@ -45,11 +48,36 @@ void main() {
       for (final entity in directory.listSync(recursive: true)) {
         if (entity is! File || !entity.path.endsWith('.dart')) continue;
         final lines = entity.readAsLinesSync();
+        // 日志/断言常常**跨多行**（`writeln(` 后若干续行）。
+        // 只看单行会把这些续行误判成"玩家可见文本" —— 这是我第一版
+        // 守卫的真实缺陷。因此按**括号深度**跳过整段调用。
+        var skipUntilDepthZero = false;
+        var depth = 0;
+
         for (var i = 0; i < lines.length; i++) {
           final line = lines[i];
+
+          if (skipUntilDepthZero) {
+            depth += _delta(line);
+            if (depth <= 0) {
+              skipUntilDepthZero = false;
+              depth = 0;
+            }
+            continue;
+          }
+
+          // ⚠️ **先查白名单、再查中文** —— 顺序不能反：
+          // `stderr.writeln(` 这一行**本身没有中文**，若先按"无中文"跳过，
+          // 就永远不会进入跨行跳过模式，它的中文续行仍会被误报。
+          if (kWhitelist.any((re) => re.hasMatch(line))) {
+            final d = _delta(line);
+            if (d > 0) {
+              skipUntilDepthZero = true;
+              depth = d;
+            }
+            continue;
+          }
           if (!kCjkLiteral.hasMatch(line)) continue;
-          // 整行命中白名单则跳过（日志/断言/注释）。
-          if (kWhitelist.any((re) => re.hasMatch(line))) continue;
           offenders.add('${entity.path}:${i + 1}  ${line.trim()}');
         }
       }
@@ -116,6 +144,16 @@ void main() {
 
     expect(problems, isEmpty, reason: problems.join('\n'));
   });
+}
+
+/// 本行的净括号增量（用于跨行日志调用的跳过）。
+int _delta(String line) {
+  var d = 0;
+  for (final ch in line.split('')) {
+    if (ch == '(') d++;
+    if (ch == ')') d--;
+  }
+  return d;
 }
 
 bool _sameSet(Set<String> a, Set<String> b) =>
