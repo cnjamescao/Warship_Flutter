@@ -64,12 +64,28 @@ class VisualAssetCache {
     }
   }
 
+  /// Flame 的图片加载会**自动加上**这个前缀。
+  ///
+  /// ⚠️ F-26-02 的根因就在这里：manifest 的 `runtimeFiles` 存的是
+  /// **完整**的 Flutter 资源路径（`assets/images/v2/xxx.png`），
+  /// 而 `Flame.images.load()` 会再拼一次 `assets/images/`，
+  /// 于是实际请求变成 `assets/images/assets/images/v2/xxx.png` ——
+  /// **全部 84 个资源加载失败、0 成功**，战场上一切都退回程序化占位
+  /// 图形（玩家看到的"两个圆点 + 紫色三角形"）。
+  ///
+  /// 因此调用 Flame 前必须**剥掉**这个前缀。
+  static const String kFlameImagesPrefix = 'assets/images/';
+
   Future<void> _loadFile(String assetId, String path) async {
     if (_images.containsKey(path) || _failures.containsKey(path)) {
       return; // 已加载或已失败：不重试
     }
     try {
-      final image = await Flame.images.load(path);
+      // 记录用**完整路径**（与 manifest 一致），加载用去前缀路径。
+      final loadPath = path.startsWith(kFlameImagesPrefix)
+          ? path.substring(kFlameImagesPrefix.length)
+          : path;
+      final image = await Flame.images.load(loadPath);
       _images[path] = image;
     } catch (error) {
       _failures[path] = AssetLoadFailure(assetId, path, '$error');

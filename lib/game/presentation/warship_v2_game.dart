@@ -32,10 +32,14 @@ import '../infrastructure/performance_monitor.dart';
 import '../infrastructure/asset_loader.dart';
 import 'asset_cache.dart';
 import 'colorblind_patterns.dart';
+
 import 'elite_affix_visuals.dart';
 import 'visual_effects.dart';
 import 'visual_router.dart';
 import 'input_gateway.dart';
+
+/// 玩家机体的正式素材 ID（F-26-02 的首屏关键资源）。
+const String kPlayerBaseAssetId = 'GFX-PLAYER-BASE';
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
 const double kLogicalWidth = 1920;
@@ -118,9 +122,32 @@ class WarshipV2Game extends FlameGame {
       height: kLogicalHeight,
       world: world,
     );
-    // 预载 firstRun 分组（协议 §7）。单张失败不阻断，走矢量占位。
+    // 预载 firstRun 分组（协议 §7）。
     if (preloadAssets) {
       await visualAssets.loadGroup(AssetLoadGroup.firstRun);
+
+      // F-26-02：**把预载结果记录下来**。
+      //
+      // 此前预载失败是完全静默的 —— 玩家看到的是"两个圆点"，
+      // 而没有任何一处告诉他/我们为什么。裁决要求检查 firstRun
+      // 预载结果与每个 `AssetLoadFailure`，因此这里必须留下可诊断记录。
+      debugPrint(
+        '[assets] firstRun 预载完成：成功 ${visualAssets.loadedCount}，'
+        '失败 ${visualAssets.failures.length}',
+      );
+      for (final failure in visualAssets.failures) {
+        debugPrint('[assets] 载入失败 $failure');
+      }
+
+      // 首屏关键资源就绪断言（裁决第 2 条）：玩家机体是
+      // **release_ready 且首屏关键**的资源，它没就绪就不该进入可玩状态 ——
+      // 否则玩家面对的是无法辨认的占位图形。
+      if (visualAssets.imageFor(kPlayerBaseAssetId, 'default') == null) {
+        debugPrint(
+          '[assets] ❌ 首屏关键资源未就绪：$kPlayerBaseAssetId —— '
+          '玩家机体将退化为占位图形。这是**资源接入故障**，不是设计。',
+        );
+      }
     }
 
     _battlefield = BattlefieldComponent(
