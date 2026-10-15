@@ -607,11 +607,19 @@ class BattlefieldComponent extends Component {
       }
 
       // 优先使用正式素材（含 idle / critical 等语义状态）。
-      final route = router.routeFor(enemy.id.toString());
+      // ⚠️ **机体贴图必须来自配置（`bodyAssetId`），不能用事件路由。**
+      //
+      // `router.routeFor(entityId)` 映射的是**事件视觉**（预警线、受击闪光
+      // 等），把它当作机体贴图来源是语义错误：一旦该敌人身上刚发生过
+      // 某个事件，路由就会返回那个事件的资源；该资源在当前状态下解析不出
+      // 图时，`_drawSpriteOrNull` 返回 false → **退回程序化图形**。
+      // 这正是玩家看到的"三角形 / 五边形"（F-28）。
+      //
+      // 事件路由继续用于**叠层表现**（预警、命中特效），不参与机体选择。
       final drewSprite = _drawSpriteOrNull(
         canvas,
-        route?.assetId ?? enemy.assetId,
-        route?.renderState ?? enemy.visualState,
+        enemy.assetId,
+        enemy.visualState,
         center,
         enemy.radius,
       );

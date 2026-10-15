@@ -88,8 +88,7 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SCOUT",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      },
-      "bodyAssetId": "GFX-EN-SCOUT"
+      }
     },
     {
       "id": "EN-WING",
@@ -140,8 +139,7 @@
       "assets": {
         "bodyAssetId": "GFX-EN-WING",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      },
-      "bodyAssetId": "GFX-EN-WING"
+      }
     },
     {
       "id": "EN-SNIPER",
@@ -181,8 +179,7 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SNIPER",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      },
-      "bodyAssetId": "GFX-EN-SNIPER"
+      }
     },
     {
       "id": "EN-BOMBER",
@@ -221,8 +218,7 @@
       "assets": {
         "bodyAssetId": "GFX-EN-BOMBER",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      },
-      "bodyAssetId": "GFX-EN-BOMBER"
+      }
     },
     {
       "id": "EN-SHIELD",
@@ -274,8 +270,7 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SHIELD",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      },
-      "bodyAssetId": "GFX-EN-SHIELD"
+      }
     }
   ]
 }

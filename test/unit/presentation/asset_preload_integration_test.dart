@@ -18,17 +18,23 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
+import 'package:warship_flutter/game/content/content_catalog.dart';
 import 'package:warship_flutter/game/presentation/asset_cache.dart';
 
 import '../../support/v2_harness.dart';
 
 late AssetManifest manifest;
+late ContentCatalog catalog;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  // ⚠️ 目录必须在 `setUpAll` 加载：`testWidgets` 体内处于**假异步区**，
+  // 其中的 `rootBundle` I/O 永不完成 —— 我因此在测试体内调用它，
+  // 跑满 10 分钟挂死。这是同一个教训的第二次。
   setUpAll(() async {
-    manifest = (await loadV2CatalogForTests()).manifest;
+    catalog = await loadV2CatalogForTests();
+    manifest = catalog.manifest;
   });
 
   testWidgets('F-26-02 真实预载 firstRun 后，玩家机体图片在首帧即可取', (tester) async {
@@ -87,5 +93,68 @@ void main() {
       reason: 'firstRun 分组里这些资源取不到图，玩家会看到占位图形：'
           '$unresolved',
     );
+  });
+
+  testWidgets('F-28 lazy 分组（敌机/敌弹）也必须能真的加载出来', (tester) async {
+    final cache = VisualAssetCache(manifest: manifest);
+    await tester.runAsync(() async {
+      await cache.loadGroup(AssetLoadGroup.firstRun);
+      await cache.loadGroup(AssetLoadGroup.lazy);
+    });
+
+    if (cache.failures.isNotEmpty) {
+      // ignore: avoid_print
+      print('lazy 载入失败 ${cache.failures.length} 条：');
+      for (final f in cache.failures.take(8)) {
+        // ignore: avoid_print
+        print('  $f');
+      }
+    }
+    // ignore: avoid_print
+    print('合计成功 ${cache.loadedCount} 张');
+
+    // 敌机贴图必须可取 —— 取不到就会退回程序化图形
+    // （玩家看到的"三角形/五边形"）。
+    for (final id in <String>[
+      'GFX-EN-SCOUT',
+      'GFX-EN-WING',
+      'GFX-EN-SNIPER',
+      'GFX-EN-BOMBER',
+      'GFX-EN-SHIELD',
+    ]) {
+      expect(
+        cache.imageFor(id, 'idle'),
+        isNotNull,
+        reason: '$id 取不到图 —— 敌机会退化成程序化图形（F-28）',
+      );
+    }
+  });
+
+  testWidgets('F-28 每个敌机的 bodyAssetId 都来自配置且能解析出图', (tester) async {
+    final cache = VisualAssetCache(manifest: manifest);
+    await tester.runAsync(() async {
+      await cache.loadGroup(AssetLoadGroup.firstRun);
+      await cache.loadGroup(AssetLoadGroup.lazy);
+    });
+
+    for (final raw in catalog.enemyList) {
+      final id = raw['id'] as String;
+      final assets = (raw['assets'] as Map?) ?? const <String, Object?>{};
+      final bodyId = assets['bodyAssetId'] as String?;
+      expect(
+        bodyId,
+        isNotNull,
+        reason: '$id 未在 assets.bodyAssetId 绑定机体贴图',
+      );
+      // 渲染器用的是 `enemy.visualState`（idle / critical）。
+      for (final state in <String>['idle', 'critical']) {
+        expect(
+          cache.imageFor(bodyId, state),
+          isNotNull,
+          reason: '$id 的机体贴图 $bodyId（state=$state）取不到图 —— '
+              '敌机会退化成程序化图形（F-28）',
+        );
+      }
+    }
   });
 }
