@@ -26,6 +26,7 @@ import 'package:flutter/material.dart' hide Image;
 import '../content/asset_manifest.dart';
 import '../core/game_runtime.dart';
 import '../domain/values.dart';
+import '../core/baseline_recorder.dart';
 import '../core/render_snapshot.dart';
 import '../infrastructure/performance_monitor.dart';
 import '../infrastructure/asset_loader.dart';
@@ -48,6 +49,7 @@ class WarshipV2Game extends FlameGame {
     required this.visualAssets,
     this.onSnapshot,
     this.onFrame,
+    this.baselineRecorder,
     this.preloadAssets = true,
     this.reduceMotion = false,
     PerformanceMonitor? performance,
@@ -65,6 +67,10 @@ class WarshipV2Game extends FlameGame {
 
   /// 每帧结束后的回调（上层用它判断对局是否结束）。
   final VoidCallback? onFrame;
+
+  /// AC-06 基准录制器（协议 §5.1）。**默认为 null —— 不录制**。
+  /// 只有指定基准操作员的那一次真实通关才开启它。
+  final BaselineRecording? baselineRecorder;
 
   /// 帧时间采样与降级决策。
   final PerformanceMonitor performance;
@@ -153,7 +159,15 @@ class WarshipV2Game extends FlameGame {
     final frame = input.consume();
 
     // 2. 推进逻辑。非 Playing 状态内部会自动冻结。
+    //
+    // AC-06 基准录制（协议 §5.1）：在**唯一的推进点**逐帧记录真实输入，
+    // 保证录下来的就是实际发生的，不存在"另一条路径"。
+    baselineRecorder?.recordFrame(frame);
     runtime.advance(dt, frame);
+    // 记录本帧真实事件（选卡 / 风险门选择 / HP 伤害 / 胜负）。
+    for (final stamped in runtime.lastFrameEvents) {
+      baselineRecorder?.consume(stamped.event);
+    }
 
     // 3. 生成快照并交给表现层与 HUD。
     latestSnapshot = runtime.snapshot();
