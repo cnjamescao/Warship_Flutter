@@ -40,6 +40,18 @@ import 'visual_effects.dart';
 import 'visual_router.dart';
 import 'input_gateway.dart';
 
+/// 取景器应瞄准的世界坐标 —— **逻辑世界的中心**（F-27）。
+///
+/// Flame 的 `Viewfinder.position` 语义是「被放到**屏幕中心**的那个世界
+/// 坐标」。默认值是 `Vector2.zero()`，那会让世界原点落在屏幕中心，
+/// 玩家只看到世界右下 1/4（开局看不到飞船、最左只能移动到屏幕中线）。
+/// 取世界中心即可让视口正好覆盖 `(0,0)..(1920,1080)`。
+///
+/// 抽成纯函数是为了能**直接测**，不必驱动整个游戏循环
+/// （`onLoad` 需要完整挂载，测试里会挂住）。
+Vector2 viewfinderCenterForWorld() =>
+    Vector2(kLogicalWidth / 2, kLogicalHeight / 2);
+
 /// 玩家机体的正式素材 ID（F-26-02 的首屏关键资源）。
 const String kPlayerBaseAssetId = 'GFX-PLAYER-BASE';
 
@@ -145,6 +157,18 @@ class WarshipV2Game extends FlameGame {
       height: kLogicalHeight,
       world: world,
     );
+
+    // F-27（P0）：**把取景器对准逻辑世界的中心**。
+    //
+    // `withFixedResolution` 用的是默认 `Viewfinder()`，而 Flame 的
+    // `Viewfinder.position` 语义是「**被放到屏幕中心**的那个世界坐标」，
+    // 其默认值是 `Vector2.zero()` —— 于是**世界原点落在屏幕中心**：
+    //   * 玩家在世界 (960, 900)，直接跑到屏幕右下之外 → 开局看不到飞船；
+    //   * 世界左边界 x≈30 映射到屏幕中心附近 → "最多只能移动到中线"；
+    //   * 只能看到世界右下 1/4，HUD 与战场自然都错位。
+    //
+    // 修正后：世界 (0,0)..(1920,1080) 正好铺满视口。
+    camera.viewfinder.position = viewfinderCenterForWorld();
     // 预载 firstRun 分组（协议 §7）。
     if (preloadAssets) {
       await visualAssets.loadGroup(AssetLoadGroup.firstRun);
