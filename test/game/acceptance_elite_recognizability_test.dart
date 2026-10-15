@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
+import 'package:warship_flutter/game/presentation/elite_affix_visuals.dart';
 
 late AssetManifest manifest;
 late Map<String, Object?> enemiesJson;
@@ -139,5 +140,89 @@ void main() {
       ids.length,
       reason: '三个词缀图标应指向三张不同的图（当前 ${files.length} 张）',
     );
+  });
+
+  group('F-21 渲染接线：词缀外观表与配置一致', () {
+    test('每个词缀的 aura / 图标 / 名称 key 与 enemies.json 完全一致', () {
+      final affixes = (enemiesJson['affixes'] as List).cast<Map>();
+      expect(
+        affixes.length,
+        kEliteAffixVisuals.length,
+        reason: '外观表与配置的词缀数量应一致',
+      );
+
+      for (final affix in affixes) {
+        final id = affix['id'] as String;
+        final visual = kEliteAffixVisuals[id];
+        expect(visual, isNotNull, reason: '外观表缺少词缀 $id');
+        expect(
+          visual!.auraAssetId,
+          affix['auraAssetId'],
+          reason: '$id 的 auraAssetId 与配置不一致（表与配置漂移）',
+        );
+        expect(
+          visual.nameKey,
+          affix['nameKey'],
+          reason: '$id 的 nameKey 与配置不一致',
+        );
+      }
+    });
+
+    test('三个词缀的**外环**互不相同（不再共用同一个金色圆）', () {
+      final auras = kEliteAffixVisuals.values
+          .map((v) => v.auraAssetId)
+          .toSet();
+      expect(
+        auras.length,
+        kEliteAffixVisuals.length,
+        reason: '外环必须按词缀区分 —— 此前三个词缀画的是同一个金色圆，'
+            '而颜色是色弱场景下不可靠的那一维',
+      );
+    });
+
+    test('三个词缀的**图标**互不相同', () {
+      final icons = kEliteAffixVisuals.values
+          .map((v) => v.iconAssetId)
+          .toSet();
+      expect(icons.length, kEliteAffixVisuals.length);
+    });
+
+    test('全部 aura / 图标资源在 manifest 中可解析', () {
+      for (final v in kEliteAffixVisuals.values) {
+        expect(
+          manifest.lookup(v.auraAssetId),
+          isNotNull,
+          reason: '${v.auraAssetId} 不存在',
+        );
+        expect(
+          manifest.lookup(v.iconAssetId),
+          isNotNull,
+          reason: '${v.iconAssetId} 不存在',
+        );
+      }
+      expect(manifest.lookup(kEliteNameplateAssetId), isNotNull);
+    });
+
+    test('名称 key 都能在字符串表里解析（文本不得硬编码）', () {
+      final strings =
+          jsonDecode(
+                File('assets/config/v2/strings_zh_CN.json').readAsStringSync(),
+              )
+              as Map<String, Object?>;
+      final table = (strings['strings'] as Map).cast<String, Object?>();
+      for (final v in kEliteAffixVisuals.values) {
+        expect(
+          table.containsKey(v.nameKey),
+          isTrue,
+          reason: '词缀名 ${v.nameKey} 缺失 —— 文本必须来自字符串表',
+        );
+      }
+    });
+
+    test('未知词缀返回 null（默认不画，不猜）', () {
+      expect(eliteAffixVisualFor(null), isNull);
+      expect(eliteAffixVisualFor('AFFIX-NOPE'), isNull);
+      expect(eliteAffixVisualFor('AFFIX-ACCEL'), isNotNull);
+    });
   });
 }

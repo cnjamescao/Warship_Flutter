@@ -1754,6 +1754,7 @@ class GameRuntime {
           enemyId: enemy.tuning.id,
           hpRatio: enemy.health.ratio,
           isElite: enemy.isElite,
+          affixId: enemy.affix?.id,
           assetId: enemy.tuning.bodyAssetId,
           visualState: enemy.health.ratio <= 0.25 ? 'critical' : 'idle',
         ),

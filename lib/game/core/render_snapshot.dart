@@ -22,6 +22,7 @@ class EntityView {
     this.enemyId,
     this.hpRatio = 1.0,
     this.isElite = false,
+    this.affixId,
     this.isBoss = false,
     this.isWeakpoint = false,
     this.isPlayerProjectile = false,
@@ -39,6 +40,14 @@ class EntityView {
 
   final double hpRatio;
   final bool isElite;
+
+  /// 精英词缀 ID（普通敌人为 null）。
+  ///
+  /// F-21 的渲染必需项：素材侧把词缀图标与词缀特有外环按
+  /// `isElite + affixId` 路由。此前表现层只能拿到 `isElite`，
+  /// 于是**三个词缀画成同一个金色圆** —— 颜色正是色弱场景下
+  /// 不可靠的那一维，而词缀的差异恰恰是玩法信息。
+  final String? affixId;
   final bool isBoss;
   final bool isWeakpoint;
   final bool isPlayerProjectile;

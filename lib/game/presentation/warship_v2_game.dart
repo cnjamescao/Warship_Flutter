@@ -31,6 +31,7 @@ import '../infrastructure/performance_monitor.dart';
 import '../infrastructure/asset_loader.dart';
 import 'asset_cache.dart';
 import 'colorblind_patterns.dart';
+import 'elite_affix_visuals.dart';
 import 'visual_effects.dart';
 import 'visual_router.dart';
 import 'input_gateway.dart';
@@ -405,12 +406,47 @@ class BattlefieldComponent extends Component {
     for (final enemy in snapshot.enemies) {
       final center = Offset(enemy.position.x, enemy.position.y);
 
-      // 精英光环（素材规范的"精英词缀可读性"要求）。
+      // 精英表现（F-21）：**按词缀精确路由**外环与图标。
+      //
+      // 此前这里对三个词缀画的是**同一个金色圆** —— 颜色在色弱场景下
+      // 不可靠，而"这只精英是什么词缀"是玩法信息（加速/护体/弹幕），
+      // 不能只靠颜色传达。
       if (enemy.isElite) {
-        _stroke.color = const Color(0x88FFC24B);
-        _stroke.strokeWidth = 4;
-        canvas.drawCircle(center, enemy.radius + 12, _stroke);
-        _stroke.strokeWidth = 3;
+        final affixVisual = eliteAffixVisualFor(enemy.affixId);
+        if (affixVisual != null) {
+          // 词缀特有外环：优先用正式素材，缺失时退回几何圆环，
+          // 保证"词缀可区分"这一条不因素材加载失败而消失。
+          // 外环素材的状态是 `default`（静态态，出生即可见）。
+          final drewAura = _drawSpriteOrNull(
+            canvas,
+            affixVisual.auraAssetId,
+            'default',
+            center,
+            enemy.radius + 18,
+          );
+          if (!drewAura) {
+            _stroke.color = const Color(0x88FFC24B);
+            _stroke.strokeWidth = 4;
+            canvas.drawCircle(center, enemy.radius + 12, _stroke);
+            _stroke.strokeWidth = 3;
+          }
+          // 词缀图标：画在外环上方，作为**颜色以外**的识别维度。
+          // 图标素材的状态是 `normal`；画在外环上方，作为**颜色以外**
+          // 的识别维度（色弱下也能分辨是哪个词缀）。
+          _drawSpriteOrNull(
+            canvas,
+            affixVisual.iconAssetId,
+            'normal',
+            Offset(center.dx, center.dy - enemy.radius - 26),
+            10,
+          );
+        } else {
+          // 未登记词缀：退回几何圆环，不猜。
+          _stroke.color = const Color(0x88FFC24B);
+          _stroke.strokeWidth = 4;
+          canvas.drawCircle(center, enemy.radius + 12, _stroke);
+          _stroke.strokeWidth = 3;
+        }
       }
 
       // 优先使用正式素材（含 idle / critical 等语义状态）。
