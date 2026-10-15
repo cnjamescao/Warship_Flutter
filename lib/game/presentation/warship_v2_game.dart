@@ -279,9 +279,35 @@ class BattlefieldComponent extends Component {
     _drawProjectiles(canvas);
     _drawPlayer(canvas);
     _drawEffects(canvas);
+    _drawPickups(canvas);
   }
 
   /// 命中碎片与伤害数字 —— 降级顺序里最外层，最后才被牺牲。
+  /// 拾取物/补给表现（F-12 裁决第 2 步）。
+  ///
+  /// 素材：拾取物图形本身 + **在其中央以原尺寸 42% 叠加**
+  /// `UI-COLORBLIND-PATTERN-REWARD`（菱形加号）。
+  ///
+  /// 两者都**必须来自 manifest 的正式素材** —— 裁决明确禁止用
+  /// Canvas 自绘或其他几何等价物替代。素材缺失时**不画替代图形**，
+  /// 避免实现与素材合同再次分叉（加载失败由资源验收负责）。
+  void _drawPickups(Canvas canvas) {
+    for (final pickup in effects.pickups) {
+      final center = Offset(pickup.position.x, pickup.position.y);
+      const radius = 18.0;
+
+      _drawSpriteOrNull(canvas, pickup.pickupAssetId, 'default', center, radius);
+
+      // 中央叠加色弱叠层，尺寸 = 原尺寸 × 42%（裁决给定比例）。
+      _drawColorblindPattern(
+        canvas,
+        ColorblindPattern.reward,
+        center,
+        radius * PickupFlash.rewardOverlayScale,
+      );
+    }
+  }
+
   void _drawEffects(Canvas canvas) {
     if (degradation.allows(DegradationLevel.hitDebris)) {
       for (final piece in effects.debris) {

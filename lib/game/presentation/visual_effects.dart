@@ -70,6 +70,42 @@ class DamageNumber {
   }
 }
 
+/// 拾取物/补给的一次性表现（F-12 裁决第 2 步）。
+///
+/// 裁决：「在 `GFX-PICKUP-ELITE-CORE` 以及战前补给的
+/// `GFX-PICKUP-SUPPLY-HEAL/SHIELD/DASH` **中央，以原尺寸 42% 叠加**
+/// `UI-COLORBLIND-PATTERN-REWARD`；**只做视觉层，不新增碰撞、掉落或
+/// 数值规则**」。
+///
+/// 因此它是**纯表现**：没有碰撞体、不进 `snapshot` 的实体列表、
+/// 不影响任何数值。位置取自事件发生时的玩家坐标。
+class PickupFlash {
+  PickupFlash({
+    required this.position,
+    required this.pickupAssetId,
+    this.lifetime = 0.6,
+  }) : remaining = lifetime;
+
+  Vec2 position;
+
+  /// 拾取物图形（`GFX-PICKUP-*`）。
+  final String pickupAssetId;
+
+  final double lifetime;
+  double remaining;
+
+  bool get isExpired => remaining <= 0;
+
+  /// 叠层相对原尺寸的比例（裁决：**原尺寸 42%**）。
+  static const double rewardOverlayScale = 0.42;
+
+  void step(double dt) {
+    remaining -= dt;
+    // 轻微上浮，与伤害数字一致的"一次性提示"语汇。
+    position = Vec2(position.x, position.y - 24 * dt);
+  }
+}
+
 /// 特效池：由 DomainEvent 驱动，受预算与降级双重限制。
 class VisualEffects {
   VisualEffects({
@@ -82,6 +118,7 @@ class VisualEffects {
 
   final List<HitDebris> debris = <HitDebris>[];
   final List<DamageNumber> numbers = <DamageNumber>[];
+  final List<PickupFlash> pickups = <PickupFlash>[];
 
   /// 因预算或降级被拒绝的次数（诊断用）。
   int rejectedDebris = 0;
@@ -121,6 +158,26 @@ class VisualEffects {
               damage: damage,
               critical: critical,
               position: position,
+            ),
+          );
+        // F-12 裁决第 2 步：拾取物/补给的表现路径。
+        //
+        // 这三个事件都是**玩家-centric** 的（补给在玩家身上生效），
+        // 因此位置取玩家坐标。**只生成表现**，不产生任何实体或数值。
+        // 降级**不得**削减它 —— 裁决要求色弱叠层"始终显示"。
+        case PickupHeal():
+        case PickupShield():
+        case DashReady():
+          final playerPos = positionOf?.call(
+            const EntityId(EntityKind.player, 0),
+          );
+          if (playerPos == null) {
+            break;
+          }
+          pickups.add(
+            PickupFlash(
+              position: playerPos,
+              pickupAssetId: pickupAssetFor(stamped.event),
             ),
           );
         default:
@@ -204,3 +261,16 @@ class _PendingHit {
   final bool critical;
   final Vec2 position;
 }
+
+/// 拾取事件 → 拾取物图形 Asset ID（按 manifest 的绑定，不猜）。
+///
+/// 与 `assets/config/v2/manifest.json` 的绑定一致：
+/// `PickupHeal` → `GFX-PICKUP-SUPPLY-HEAL`、
+/// `PickupShield` → `GFX-PICKUP-SUPPLY-SHIELD`、
+/// `DashReady` → `GFX-PICKUP-SUPPLY-DASH`。
+String pickupAssetFor(DomainEvent event) => switch (event) {
+  PickupHeal() => 'GFX-PICKUP-SUPPLY-HEAL',
+  PickupShield() => 'GFX-PICKUP-SUPPLY-SHIELD',
+  DashReady() => 'GFX-PICKUP-SUPPLY-DASH',
+  _ => 'GFX-PICKUP-SUPPLY-HEAL',
+};

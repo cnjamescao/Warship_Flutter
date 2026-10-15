@@ -16,7 +16,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/presentation/colorblind_patterns.dart';
+import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/presentation/elite_affix_visuals.dart';
+import 'package:warship_flutter/game/presentation/visual_effects.dart';
 
 late AssetManifest manifest;
 
@@ -157,5 +159,49 @@ void main() {
         reason: '名称条底板缺失：',
       );
     }
+  });
+
+  test('F-12 奖励叠层的比例取自裁决：原尺寸 42%', () {
+    // 裁决：「在 …拾取物**中央，以原尺寸 42% 叠加**
+    // `UI-COLORBLIND-PATTERN-REWARD`」。比例是裁决给定的数字，
+    // 固化成常量并在此守住，避免被随手改成别的值。
+    expect(PickupFlash.rewardOverlayScale, 0.42);
+  });
+
+  test('F-12 拾取物图形与稀有度各档素材都存在且**有运行时可加载文件**', () {
+    // 裁决要求拾取物表现与稀有度各档外形都用正式素材：
+    // 只登记没有文件的话，渲染时 `imageFor` 返回 null，视觉会静默消失。
+    const ids = <String>[
+      'GFX-PICKUP-SUPPLY-HEAL',
+      'GFX-PICKUP-SUPPLY-SHIELD',
+      'GFX-PICKUP-SUPPLY-DASH',
+      'GFX-PICKUP-ELITE-CORE',
+      'UI-RARITY-COMMON',
+      'UI-RARITY-RARE',
+      'UI-RARITY-EPIC',
+    ];
+    for (final id in ids) {
+      final record = manifest.lookup(id);
+      expect(record, isNotNull, reason: '$id 未登记');
+      expect(record!.runtimeFiles, isNotEmpty, reason: '$id 没有运行时文件');
+      for (final rel in record.runtimeFiles) {
+        expect(
+          File(rel).existsSync(),
+          isTrue,
+          reason: '$id 的运行时文件缺失：$rel',
+        );
+      }
+    }
+  });
+
+  test('F-12 拾取事件到拾取物图形的映射与 manifest 绑定一致', () {
+    // 素材侧把三者分别绑定到 PickupHeal / PickupShield / DashReady。
+    // 这里确认我们的映射与之一致 —— 不一致会导致贴错图。
+    expect(pickupAssetFor(const PickupHeal(amount: 15)), 'GFX-PICKUP-SUPPLY-HEAL');
+    expect(
+      pickupAssetFor(const PickupShield(amount: 20)),
+      'GFX-PICKUP-SUPPLY-SHIELD',
+    );
+    expect(pickupAssetFor(const DashReady()), 'GFX-PICKUP-SUPPLY-DASH');
   });
 }

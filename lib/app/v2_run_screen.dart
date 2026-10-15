@@ -936,8 +936,31 @@ class _DraftCard extends StatelessWidget {
   ///
   /// 走 manifest 的 `runtimeFiles`，**不硬编码路径**（协议 §2：
   /// 「资源用 `AssetId` 查表，不允许散落的字符串路径」）。
-  String? _rarityPatternPath() {
-    final record = catalog.manifest.lookup('UI-COLORBLIND-PATTERN-RARITY');
+  String? _rarityPatternPath() => _runtimeFileOf('UI-COLORBLIND-PATTERN-RARITY');
+
+  /// 稀有度**各档外形**（`UI-RARITY-COMMON/RARE/EPIC`）。
+  ///
+  /// 裁决：「`UI-RARITY-COMMON/RARE/EPIC` 继续提供**各档不同的外形/边框**，
+  /// **不能只靠颜色或文本区分**」——因此这里贴的是各档自己的图形，
+  /// 而不是仅靠边框颜色。
+  String? _rarityTierPath() {
+    final tier = switch (card.rarity) {
+      'common' => 'COMMON',
+      'rare' => 'RARE',
+      'epic' => 'EPIC',
+      _ => null,
+    };
+    if (tier == null) {
+      return null;
+    }
+    return _runtimeFileOf('UI-RARITY-$tier');
+  }
+
+  /// 经 manifest 的 `runtimeFiles` 解析资源路径。
+  ///
+  /// **不硬编码字符串路径**（协议 §2：「资源用 `AssetId` 查表」）。
+  String? _runtimeFileOf(String assetId) {
+    final record = catalog.manifest.lookup(assetId);
     final files = record?.runtimeFiles;
     return (files == null || files.isEmpty) ? null : files.first;
   }
@@ -976,8 +999,29 @@ class _DraftCard extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16 * scale),
                 ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          // 稀有度**各档外形**：贴该档自己的图形。
+          // 与上面的同心圆十字叠层并存 —— 前者给"这一档长什么样"，
+          // 后者给"颜色之外仍可分辨"。
+          child: Stack(
+            children: <Widget>[
+              if (_rarityTierPath() != null)
+                Positioned.fill(
+                  child: Image.asset(
+                    _rarityTierPath()!,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              _buildCardBody(scale, color),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardBody(double scale, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1034,10 +1078,7 @@ class _DraftCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-            ],
-          ),
-        ),
-      ),
+      ],
     );
   }
 }
