@@ -30,6 +30,7 @@ import '../core/render_snapshot.dart';
 import '../infrastructure/performance_monitor.dart';
 import '../infrastructure/asset_loader.dart';
 import 'asset_cache.dart';
+import 'colorblind_patterns.dart';
 import 'visual_effects.dart';
 import 'visual_router.dart';
 import 'input_gateway.dart';
@@ -485,6 +486,11 @@ class BattlefieldComponent extends Component {
     }
   }
 
+  /// 三角斜线叠层的画笔（F-12）。
+  final Paint _hatch = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2.0;
+
   void _drawHazards(Canvas canvas) {
     for (final hazard in snapshot.hazards) {
       final center = Offset(hazard.position.x, hazard.position.y);
@@ -495,7 +501,40 @@ class BattlefieldComponent extends Component {
         _fill.color = const Color(0x33FF4BD8);
         canvas.drawCircle(center, hazard.radius, _fill);
       }
+
+      // F-12：**颜色之外的第二识别维度**。
+      // 危险区一律叠加三角斜线 —— 与 `ColorblindPattern.danger`
+      // （`UI-COLORBLIND-PATTERN-DANGER`）语义一致。
+      // **始终绘制，不受任何设置门控**（没有"色弱开关"这回事）。
+      if (hazardNeedsDangerPattern(
+        isWarning: hazard.isWarning,
+        dealsDamage: !hazard.isWarning,
+      )) {
+        _drawDangerHatch(canvas, center, hazard.radius);
+      }
     }
+  }
+
+  /// 三角斜线叠层：把"这是危险"从**颜色**搬到**形状**上。
+  ///
+  /// 灰度下颜色会趋同，但斜线纹理不会 —— 这就是第二维度的意义。
+  void _drawDangerHatch(Canvas canvas, Offset center, double radius) {
+    // clipPath 保证图案不溢出危险区边界（越界会误导玩家判断范围）。
+    canvas.save();
+    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
+
+    _hatch.color = const Color(0x66FFFFFF);
+    const spacing = 12.0;
+    // 45° 斜线：从左上到右下铺满外接正方形。
+    final span = radius * 2;
+    for (var offset = -span; offset <= span; offset += spacing) {
+      canvas.drawLine(
+        Offset(center.dx + offset, center.dy - radius),
+        Offset(center.dx + offset + span, center.dy + radius),
+        _hatch,
+      );
+    }
+    canvas.restore();
   }
 }
 
