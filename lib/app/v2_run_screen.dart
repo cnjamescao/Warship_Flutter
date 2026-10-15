@@ -990,6 +990,12 @@ class _DraftCard extends StatelessWidget {
   /// 「资源用 `AssetId` 查表，不允许散落的字符串路径」）。
   String? _rarityPatternPath() => _runtimeFileOf('UI-COLORBLIND-PATTERN-RARITY');
 
+  /// **逐卡**能力图标的运行时文件（F-26-03）。
+  ///
+  /// 一律经 manifest 的 `runtimeFiles` 解析该卡**自己的**
+  /// `iconAssetId` —— 禁止写死文件路径，也禁止用系列通用图标替代。
+  String? _iconFile() => _runtimeFileOf(card.iconAssetId);
+
   /// 稀有度**各档外形**（`UI-RARITY-COMMON/RARE/EPIC`）。
   ///
   /// 裁决：「`UI-RARITY-COMMON/RARE/EPIC` 继续提供**各档不同的外形/边框**，
@@ -1105,9 +1111,29 @@ class _DraftCard extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 18 * scale),
+              SizedBox(height: 12 * scale),
+
+              // F-26-03：**逐卡能力图标**。
+              //
+              // 此前完全没有渲染 `iconAssetId` —— 素材已交付 16 张
+              // `UI-UP-*`、配置也已逐卡绑定，但 UI 从不使用它，
+              // 玩家只能靠读长描述判断卡牌类型。
+              //
+              // 固定图标位：位于标题**上方**、独立一行，因此不会被
+              // 稀有度叠层、文字或点击层遮挡。
+              SizedBox(
+                height: 52 * scale,
+                child: _iconFile() == null
+                    ? const SizedBox.shrink()
+                    : Image.asset(_iconFile()!, fit: BoxFit.contain),
+              ),
+              SizedBox(height: 10 * scale),
+
+              // ⚠️ F-25：这里此前渲染的是 **`card.cardId`**（内部 Key，
+              // 例如 `UP-PULSE-RATE`），描述渲染的是 **`card.descKey`** ——
+              // 玩家看到的是 key 而不是文案。已改为经 catalog 解析。
               Text(
-                card.cardId,
+                catalog.text(card.nameKey),
                 style: TextStyle(
                   color: color,
                   fontSize: 16 * scale,
@@ -1117,7 +1143,7 @@ class _DraftCard extends StatelessWidget {
               SizedBox(height: 10 * scale),
               Expanded(
                 child: Text(
-                  card.descKey,
+                  catalog.text(card.descKey),
                   style: TextStyle(color: Colors.white70, fontSize: 14 * scale),
                 ),
               ),
