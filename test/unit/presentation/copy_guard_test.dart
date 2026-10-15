@@ -24,6 +24,8 @@ const List<String> kScannedDirs = <String>['lib/app', 'lib/game/presentation'];
 final List<RegExp> kWhitelist = <RegExp>[
   RegExp(r'\bdebugPrint\s*\('),
   RegExp(r'\bprint\s*\('),
+  // StringBuffer 的 writeln 是日志/诊断文本的构建（规范豁免日志）。
+  RegExp(r'\bwriteln\s*\('),
   // 标准输出/错误流也属日志（规范：「日志…不受本条限制」）。
   RegExp(r'\bstdout\.writeln\s*\('),
   RegExp(r'\bstderr\.writeln\s*\('),
