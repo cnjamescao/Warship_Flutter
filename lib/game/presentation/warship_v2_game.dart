@@ -62,17 +62,33 @@ const String kPlayerBaseAssetId = 'GFX-PLAYER-BASE';
 /// "加载成功几张、哪几条失败、玩家素材到底能不能取到"的真实数据，
 /// 不必靠猜。
 void writeAssetDiagnostics(String text) {
-  // Web 上没有 dart:io 的文件系统；直接跳过（诊断是辅助手段，
-  // 绝不能因为它在某个平台上失败而影响游戏）。
   if (kIsWeb) {
     return;
   }
-  try {
-    File('/tmp/warship_assets.log').writeAsStringSync(
-      '${DateTime.now().toIso8601String()}\n$text\n',
-    );
-  } catch (_) {
-    // 诊断失败绝不影响游戏。
+  // ⚠️ macOS 应用是**沙盒**的：`/tmp` 与 `~/Desktop` 都会被拦。
+  // 沙盒下 `HOME` 指向容器内的 Data 目录，因此写 `$HOME/Documents/`
+  // 一定可写，而且**研发能从这里读到**
+  // （`~/Library/Containers/<bundle-id>/Data/Documents/`）。
+  //
+  // 我第一版写死 `/tmp/warship_assets.log` 并被 catch 静默吞掉 ——
+  // 结果**什么都没写出来，而我以为写了**。因此这里把失败也记下来，
+  // 绝不再静默。
+  for (final dir in <String>[
+    '${Platform.environment['HOME'] ?? ''}/Documents',
+    Directory.systemTemp.path,
+  ]) {
+    if (dir.isEmpty) {
+      continue;
+    }
+    try {
+      final target = File('$dir/warship_assets.log');
+      target.writeAsStringSync(
+        '${DateTime.now().toIso8601String()}\n$text\n',
+      );
+      return;
+    } catch (error) {
+      debugPrint('[assets] 诊断写入失败（$dir）：$error');
+    }
   }
 }
 
@@ -172,6 +188,15 @@ class WarshipV2Game extends FlameGame {
     // 预载 firstRun 分组（协议 §7）。
     if (preloadAssets) {
       await visualAssets.loadGroup(AssetLoadGroup.firstRun);
+
+      // **lazy 分组也必须加载。**
+      //
+      // 此前只加载 firstRun，而**敌机、敌弹、部分战机的贴图都在 lazy 里** ——
+      // 于是它们永远取不到图，一律退回程序化占位图形
+      // （玩家看到的"奇奇怪怪的紫色三角形"）。
+      // 协议允许 lazy 惰性加载，但要求"**不得造成攻击缺贴图**"，
+      // 因此这里在进入可玩状态前一次性加载完毕。
+      await visualAssets.loadGroup(AssetLoadGroup.lazy);
 
       // F-26-02：**把预载结果记录下来**。
       //

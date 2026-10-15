@@ -2,10 +2,17 @@
   "id": "enemies.v2",
   "contentVersion": "2.0.5-release",
   "spawnY": -80,
-  "spawnXPoints": [240, 480, 720, 960, 1200, 1440, 1680],
+  "spawnXPoints": [
+    240,
+    480,
+    720,
+    960,
+    1200,
+    1440,
+    1680
+  ],
   "minSpawnDistanceFromPlayer": 360,
   "spawnDeferMaxSeconds": 1.0,
-
   "elite": {
     "hpMultiplier": 6,
     "xpMultiplier": 3,
@@ -14,12 +21,23 @@
     "coreShieldRestore": 10,
     "coreXpIfShieldFull": 15,
     "fixedEvents": [
-      { "second": 65, "enemyId": "EN-WING", "affixId": "AFFIX-ACCEL" },
-      { "second": 105, "enemyId": "EN-SNIPER", "affixId": "AFFIX-SHIELD" },
-      { "second": 130, "enemyId": "EN-SHIELD", "affixId": "AFFIX-BARRAGE" }
+      {
+        "second": 65,
+        "enemyId": "EN-WING",
+        "affixId": "AFFIX-ACCEL"
+      },
+      {
+        "second": 105,
+        "enemyId": "EN-SNIPER",
+        "affixId": "AFFIX-SHIELD"
+      },
+      {
+        "second": 130,
+        "enemyId": "EN-SHIELD",
+        "affixId": "AFFIX-BARRAGE"
+      }
     ]
   },
-
   "affixes": [
     {
       "id": "AFFIX-ACCEL",
@@ -42,19 +60,23 @@
       "auraAssetId": "GFX-ELITE-AURA-BARRAGE"
     }
   ],
-
   "firstAttackRequiresFullCooldownAfterEntry": true,
   "noAttackWhileOffscreen": true,
-
   "enemies": [
     {
       "id": "EN-SCOUT",
       "hp": 18,
-      "bodyHitbox": { "shape": "circle", "radius": 28 },
+      "bodyHitbox": {
+        "shape": "circle",
+        "radius": 28
+      },
       "contactDamage": 10,
       "xp": 4,
       "score": 100,
-      "spawnWindow": { "startSecond": 0, "endSecond": 150 },
+      "spawnWindow": {
+        "startSecond": 0,
+        "endSecond": 150
+      },
       "moveProfile": {
         "kind": "sineDescent",
         "speed": 180,
@@ -66,20 +88,40 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SCOUT",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      }
+      },
+      "bodyAssetId": "GFX-EN-SCOUT"
     },
     {
       "id": "EN-WING",
       "hp": 32,
-      "bodyHitbox": { "shape": "circle", "radius": 32 },
+      "bodyHitbox": {
+        "shape": "circle",
+        "radius": 32
+      },
       "contactDamage": 12,
       "xp": 6,
       "score": 100,
-      "spawnWindow": { "startSecond": 20, "endSecond": 150 },
+      "spawnWindow": {
+        "startSecond": 20,
+        "endSecond": 150
+      },
       "moveProfile": {
         "kind": "formationDescent",
         "speed": 140,
-        "formationOffsets": [[-100, 40], [0, 0], [100, 40]]
+        "formationOffsets": [
+          [
+            -100,
+            40
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            40
+          ]
+        ]
       },
       "attackProfile": {
         "attackId": "wing_shot",
@@ -98,17 +140,28 @@
       "assets": {
         "bodyAssetId": "GFX-EN-WING",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      }
+      },
+      "bodyAssetId": "GFX-EN-WING"
     },
     {
       "id": "EN-SNIPER",
       "hp": 50,
-      "bodyHitbox": { "shape": "circle", "radius": 34 },
+      "bodyHitbox": {
+        "shape": "circle",
+        "radius": 34
+      },
       "contactDamage": 14,
       "xp": 10,
       "score": 100,
-      "spawnWindow": { "startSecond": 45, "endSecond": 150 },
-      "moveProfile": { "kind": "descentThenHold", "speed": 70, "holdY": 260 },
+      "spawnWindow": {
+        "startSecond": 45,
+        "endSecond": 150
+      },
+      "moveProfile": {
+        "kind": "descentThenHold",
+        "speed": 70,
+        "holdY": 260
+      },
       "attackProfile": {
         "attackId": "sniper_line",
         "intervalSeconds": 3.0,
@@ -128,17 +181,27 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SNIPER",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      }
+      },
+      "bodyAssetId": "GFX-EN-SNIPER"
     },
     {
       "id": "EN-BOMBER",
       "hp": 95,
-      "bodyHitbox": { "shape": "circle", "radius": 45 },
+      "bodyHitbox": {
+        "shape": "circle",
+        "radius": 45
+      },
       "contactDamage": 18,
       "xp": 14,
       "score": 100,
-      "spawnWindow": { "startSecond": 70, "endSecond": 150 },
-      "moveProfile": { "kind": "straightDescent", "speed": 55 },
+      "spawnWindow": {
+        "startSecond": 70,
+        "endSecond": 150
+      },
+      "moveProfile": {
+        "kind": "straightDescent",
+        "speed": 55
+      },
       "attackProfile": {
         "attackId": "bomber_drop",
         "intervalSeconds": 3.5,
@@ -158,28 +221,46 @@
       "assets": {
         "bodyAssetId": "GFX-EN-BOMBER",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      }
+      },
+      "bodyAssetId": "GFX-EN-BOMBER"
     },
     {
       "id": "EN-SHIELD",
       "hp": 110,
-      "bodyHitbox": { "shape": "circlePlusCone", "radius": 48, "coneAngleDegrees": 120 },
+      "bodyHitbox": {
+        "shape": "circlePlusCone",
+        "radius": 48,
+        "coneAngleDegrees": 120
+      },
       "frontShield": {
         "damageReduction": 0.75,
-        "facing": [0, 1],
+        "facing": [
+          0,
+          1
+        ],
         "facingSource": "explicit"
       },
       "contactDamage": 16,
       "xp": 16,
       "score": 100,
-      "spawnWindow": { "startSecond": 80, "endSecond": 150 },
-      "moveProfile": { "kind": "straightDescent", "speed": 85 },
+      "spawnWindow": {
+        "startSecond": 80,
+        "endSecond": 150
+      },
+      "moveProfile": {
+        "kind": "straightDescent",
+        "speed": 85
+      },
       "attackProfile": {
         "attackId": "shield_shot",
         "intervalSeconds": 2.5,
         "telegraphSeconds": 0,
         "burstCount": 3,
-        "burstAngleOffsetsDegrees": [-10, 0, 10],
+        "burstAngleOffsetsDegrees": [
+          -10,
+          0,
+          10
+        ],
         "projectile": {
           "damage": 8,
           "speed": 800,
@@ -193,7 +274,8 @@
       "assets": {
         "bodyAssetId": "GFX-EN-SHIELD",
         "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE"
-      }
+      },
+      "bodyAssetId": "GFX-EN-SHIELD"
     }
   ]
 }

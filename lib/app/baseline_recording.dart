@@ -18,6 +18,8 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../game/core/baseline_recorder.dart';
 
 /// 录制目标路径；空字符串表示**不录制**。
@@ -62,11 +64,35 @@ void writeBaselineIfEligible(BaselineRecording? recorder) {
     return;
   }
 
-  try {
-    final file = File(kBaselineOutputPath);
-    file.parent.createSync(recursive: true);
-    file.writeAsStringSync(recorder.encode());
-    stdout.writeln('[baseline] 已写出合规基准：${file.absolute.path}');
+  // ⚠️ macOS 应用是**沙盒**的：写到 `~/Desktop` 会被系统拒绝。
+  // 沙盒下 `HOME` 指向容器内的 Data 目录，因此优先写那里 ——
+  // 研发可以从
+  // `~/Library/Containers/<bundle-id>/Data/Documents/` 读到。
+  // 若 dart-define 给的路径可写则优先用它。
+  final candidates = <String>[
+    kBaselineOutputPath,
+    if (!kIsWeb && Platform.environment['HOME'] != null)
+      '${Platform.environment['HOME']}/Documents/$kBaselineFileName',
+  ];
+
+  for (final path in candidates) {
+    try {
+      final file = File(path);
+      file.parent.createSync(recursive: true);
+      file.writeAsStringSync(recorder.encode());
+      _reportWritten(file, recorder);
+      return;
+    } catch (error) {
+      stderr.writeln('[baseline] 写入失败（$path）：$error');
+    }
+  }
+  stderr.writeln('[baseline] ❌ 所有候选路径都写不进去，基准未保存。');
+}
+
+String get kBaselineFileName => 'warship_baseline.json';
+
+void _reportWritten(File file, BaselineRecording recorder) {
+  stdout.writeln('[baseline] 已写出合规基准：${file.absolute.path}');
     stdout.writeln(
       '[baseline] 帧数=${recorder.frames.length}，'
       '选卡=${recorder.cardSelections.length}，'
@@ -78,7 +104,4 @@ void writeBaselineIfEligible(BaselineRecording? recorder) {
       '并在发布验收记录登记操作员角色、设备/OS、构建 revision、'
       'manifest SHA-256 与录屏路径。',
     );
-  } catch (e) {
-    stderr.writeln('[baseline] 写出失败：$e');
-  }
 }
