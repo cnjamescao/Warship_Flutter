@@ -337,6 +337,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
       case GamePhase.upgradeDraft:
       case GamePhase.riskGate:
         return V2RunScreen(
+          catalog: widget.catalog,
           runtime: runtime,
           input: input,
           manifest: widget.catalog.manifest,
@@ -430,6 +431,7 @@ class _HomeScreenState extends State<_HomeScreen> {
   Widget build(BuildContext context) {
     if (_showSettings) {
       return _SettingsScreen(
+                catalog: widget.catalog,
         settings: widget.settings,
         onChanged: widget.onSettingsChanged,
         onBack: () => setState(() => _showSettings = false),
@@ -483,7 +485,7 @@ class _HomeScreenState extends State<_HomeScreen> {
             // 最高分只在读取完成后显示，避免闪一下 0。
             if (widget.progressReady) ...<Widget>[
               Text(
-                '最高分 ${widget.highScore}',
+                widget.catalog.text('home.highScore', <String, Object?>{'score': widget.highScore}),
                 style: const TextStyle(
                   color: Color(0xFFFFC24B),
                   fontSize: 18,
@@ -494,7 +496,7 @@ class _HomeScreenState extends State<_HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
                   child: Text(
-                    '最快通关 ${widget.bestClearSeconds!.toStringAsFixed(1)} 秒',
+                    widget.catalog.text('home.bestClear', <String, Object?>{'seconds': widget.bestClearSeconds!.toStringAsFixed(1)}),
                     style: const TextStyle(
                       color: Colors.white54,
                       fontSize: 14,
@@ -508,8 +510,8 @@ class _HomeScreenState extends State<_HomeScreen> {
               child: Text(widget.catalog.text('home.settings')),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'WASD / 方向键移动 · 空格或 Shift 冲刺 · Esc 暂停',
+            Text(
+              widget.catalog.text('home.controls'),
               style: TextStyle(color: Colors.white38, fontSize: 14),
             ),
           ],
@@ -525,10 +527,14 @@ class _HomeScreenState extends State<_HomeScreen> {
 /// 只降低非关键动效，不削弱预警与状态可读性。
 class _SettingsScreen extends StatelessWidget {
   const _SettingsScreen({
+    required this.catalog,
     required this.settings,
     required this.onChanged,
     required this.onBack,
   });
+
+  /// F-01：文案只从内容目录按 key 取。
+  final ContentCatalog catalog;
 
   final GameSettings settings;
   final ValueChanged<GameSettings> onChanged;
@@ -544,8 +550,8 @@ class _SettingsScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const Text(
-                '设置',
+              Text(
+                catalog.text('settings.title'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF3FE0FF),
@@ -556,31 +562,31 @@ class _SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               SwitchListTile(
-                title: const Text('背景音乐'),
+                title: Text(catalog.text('settings.music')),
                 value: settings.musicEnabled,
                 onChanged: (v) =>
                     onChanged(settings.copyWith(musicEnabled: v)),
               ),
               SwitchListTile(
-                title: const Text('音效'),
+                title: Text(catalog.text('settings.sfx')),
                 value: settings.sfxEnabled,
                 onChanged: (v) => onChanged(settings.copyWith(sfxEnabled: v)),
               ),
               SwitchListTile(
-                title: const Text('减少动效'),
-                subtitle: const Text('只降低非关键动效，预警仍然清晰'),
+                title: Text(catalog.text('settings.reduceMotion')),
+                subtitle: Text(catalog.text('settings.reduceMotionHint')),
                 value: settings.reduceMotion,
                 onChanged: (v) =>
                     onChanged(settings.copyWith(reduceMotion: v)),
               ),
               SwitchListTile(
-                title: const Text('触感反馈'),
+                title: Text(catalog.text('settings.haptics')),
                 value: settings.hapticsEnabled,
                 onChanged: (v) =>
                     onChanged(settings.copyWith(hapticsEnabled: v)),
               ),
               const SizedBox(height: 20),
-              FilledButton(onPressed: onBack, child: const Text('返回')),
+              FilledButton(onPressed: onBack, child: Text(catalog.text('settings.back'))),
             ],
           ),
         ),
@@ -666,9 +672,9 @@ class _BriefingScreenState extends State<_BriefingScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              widget.catalog
-                  .text('briefing.objective')
-                  .replaceAll('{seconds}', '$kBriefingCountdown'),
+              widget.catalog.text('briefing.objective', <String, Object?>{
+                'seconds': kBriefingCountdown,
+              }),
               style: const TextStyle(color: Colors.white70, fontSize: 18),
             ),
             const SizedBox(height: 28),
@@ -774,6 +780,10 @@ class _ResultScreen extends StatelessWidget {
   final VoidCallback onRestart;
   final VoidCallback onHome;
 
+  /// F-01：文案只从内容目录按 key 取。
+  
+
+
   @override
   Widget build(BuildContext context) {
     final victory = outcome == 'victory';
@@ -797,23 +807,21 @@ class _ResultScreen extends StatelessWidget {
             _ResultMedal(catalog: catalog, tier: tier),
             const SizedBox(height: 20),
             Text(
-              catalog
-                  .text('result.score')
-                  .replaceAll('{score}', '$score'),
+              catalog.text('result.score', <String, Object?>{'score': score}),
               style: const TextStyle(color: Colors.white, fontSize: 26),
             ),
             const SizedBox(height: 8),
             Text(
-              catalog
-                  .text('result.time')
-                  .replaceAll('{seconds}', seconds.toStringAsFixed(1)),
+              catalog.text('result.time', <String, Object?>{
+                'seconds': seconds.toStringAsFixed(1),
+              }),
               style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
             const SizedBox(height: 8),
             Text(
-              catalog
-                  .text('result.best')
-                  .replaceAll('{score}', '$bestScore'),
+              catalog.text('result.best', <String, Object?>{
+                'score': bestScore,
+              }),
               style: const TextStyle(color: Colors.white38, fontSize: 16),
             ),
             const SizedBox(height: 40),
@@ -828,7 +836,7 @@ class _ResultScreen extends StatelessWidget {
                       vertical: 16,
                     ),
                   ),
-                  child: const Text('再来一局'),
+                  child: Text(catalog.text('result.restart')),
                 ),
                 const SizedBox(width: 16),
                 OutlinedButton(
@@ -839,7 +847,7 @@ class _ResultScreen extends StatelessWidget {
                       vertical: 16,
                     ),
                   ),
-                  child: const Text('返回首页'),
+                  child: Text(catalog.text('result.home')),
                 ),
               ],
             ),

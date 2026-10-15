@@ -102,8 +102,57 @@ class ContentCatalog {
   Map<String, Object?>? weaponById(String id) =>
       _byId(weaponList, id);
 
-  /// 本地化文案；缺失时返回 key 本身（便于发现未翻译项，但不崩溃）。
-  String text(String key) => strings[key] ?? key;
+  /// 本地化文案（**唯一正文来源**，技术协议 §2「文本与参数」）。
+  ///
+  /// 契约（严格按规范）：
+  ///   * `strings_zh_CN.json` 是唯一正文来源；文本不得硬编码；
+  ///   * 参数以**命名占位符** `{name}` 表示；
+  ///   * **缺失 key、参数缺失或多余参数必须在 debug/测试失败**；
+  ///     正式版显示受控错误页，**不得回退为硬编码文本或裸 key**。
+  ///
+  /// 因此这里**刻意不写 `?? key`** —— 那种"回退显示 key"的做法会让
+  /// 未翻译项**静默通过**，正是规范禁止的。
+  String text(String key, [Map<String, Object?>? params]) {
+    final template = strings[key];
+    if (template == null) {
+      // 正式版：返回受控错误标记（不崩、也不假装是正常文案）。
+      // debug/测试：直接失败，让缺 key 无法混过 CI。
+      assert(() {
+        throw StateError('缺少文案 key："$key"（文本必须在 strings_zh_CN.json 中）');
+      }());
+      return kMissingTextMarker;
+    }
+
+    final names = _placeholderNames(template);
+    final provided = params ?? const <String, Object?>{};
+
+    assert(() {
+      final missing = names.difference(provided.keys.toSet());
+      final extra = provided.keys.toSet().difference(names);
+      if (missing.isNotEmpty || extra.isNotEmpty) {
+        throw StateError(
+          '文案 "$key" 的参数不匹配：缺失 $missing，多余 $extra',
+        );
+      }
+      return true;
+    }());
+
+    var out = template;
+    for (final entry in provided.entries) {
+      out = out.replaceAll('{${entry.key}}', '${entry.value}');
+    }
+    return out;
+  }
+
+  /// 正式版缺 key 时的**受控错误标记**（不是裸 key、也不是硬编码中文）。
+  static const String kMissingTextMarker = '[text:missing]';
+
+  static final RegExp _placeholderPattern = RegExp(r'\{(\w+)\}');
+
+  static Set<String> _placeholderNames(String template) => _placeholderPattern
+      .allMatches(template)
+      .map((m) => m.group(1)!)
+      .toSet();
 
   bool hasText(String key) => strings.containsKey(key);
 

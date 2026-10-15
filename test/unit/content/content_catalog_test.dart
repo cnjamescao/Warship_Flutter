@@ -206,8 +206,17 @@ void main() {
         expect(catalog.hasText(card['descKey'] as String), isTrue,
             reason: '$id 缺少描述文案');
       }
-      // 缺失键返回 key 本身而不是崩溃
-      expect(catalog.text('never.defined.key'), 'never.defined.key');
+      // F-01 契约（技术协议 §2）：**缺 key 必须在 debug/测试失败**，
+      // **不得回退为硬编码文本或裸 key**。
+      // 此处原先断言的是旧的 `?? key` 回退行为 —— 那正是裁决禁止的
+      // （回退会让未翻译项静默通过）。现改为断言"直接失败"。
+      expect(
+        () => catalog.text('never.defined.key'),
+        throwsA(isA<StateError>()),
+        reason: '缺 key 必须失败，而不是回退显示 key',
+      );
+      // 正式版（无 assert）返回**受控错误标记**，不是裸 key。
+      expect(ContentCatalog.kMissingTextMarker, isNot('never.defined.key'));
     });
 
     test('风险门保底选项一定是可选项之一', () {

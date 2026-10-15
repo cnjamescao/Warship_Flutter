@@ -20,6 +20,7 @@ import '../game/core/game_phase.dart';
 import '../game/core/game_runtime.dart';
 import '../game/core/phase_controller.dart';
 import '../game/content/asset_manifest.dart';
+import '../game/content/content_catalog.dart';
 import '../game/core/render_snapshot.dart';
 import '../game/presentation/asset_cache.dart';
 import '../game/presentation/input_gateway.dart';
@@ -35,6 +36,7 @@ class V2RunScreen extends StatefulWidget {
     required this.runtime,
     required this.input,
     required this.manifest,
+    required this.catalog,
     this.onFrame,
     this.onQuitToHome,
     this.preloadAssets = true,
@@ -44,6 +46,10 @@ class V2RunScreen extends StatefulWidget {
   final GameRuntime runtime;
   final KeyboardInputGateway input;
   final AssetManifest manifest;
+
+  /// 内容目录 —— **玩家可见文本的唯一来源**（F-01）。
+  /// HUD/风险门/草案/暂停的每一句文案都从它按 key 取。
+  final ContentCatalog catalog;
 
   /// 见 `WarshipV2Game.preloadAssets`。生产恒为 `true`。
   final bool preloadAssets;
@@ -196,6 +202,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
                 GameWidget<WarshipV2Game>(game: _game),
                 if (_snapshot.hud != null)
                   _HudOverlay(
+                    catalog: widget.catalog,
                     hud: _snapshot.hud!,
                     phase: _snapshot.phase,
                     viewport: viewport,
@@ -222,6 +229,7 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
 /// HUD 覆盖层。所有坐标都从逻辑安全区换算到屏幕空间。
 class _HudOverlay extends StatelessWidget {
   const _HudOverlay({
+    required this.catalog,
     required this.hud,
     required this.phase,
     required this.viewport,
@@ -233,6 +241,9 @@ class _HudOverlay extends StatelessWidget {
     this.riskGate,
     this.onSelectRisk,
   });
+
+  /// F-01：文案只从内容目录按 key 取，不硬编码。
+  final ContentCatalog catalog;
 
   final HudView hud;
   final String phase;
@@ -272,7 +283,7 @@ class _HudOverlay extends StatelessWidget {
         _atCentered(
           kHudSafeArea.center.dx,
           kHudSafeArea.top,
-          _TimerPanel(hud: hud, scale: scale),
+          _TimerPanel(hud: hud, scale: scale, catalog: catalog),
         ),
         // 右上：连击 + 暂停
         _atRightTop(
@@ -289,6 +300,7 @@ class _HudOverlay extends StatelessWidget {
                 ),
               SizedBox(width: 12 * scale),
               _IconButton(
+                catalog: catalog,
                 icon: isPaused ? Icons.play_arrow : Icons.pause,
                 scale: scale,
                 onTap: isPaused ? onResume : onPause,
@@ -311,18 +323,21 @@ class _HudOverlay extends StatelessWidget {
         ),
         if (riskGate != null && onSelectRisk != null)
           _RiskGateOverlay(
+            catalog: catalog,
             gate: riskGate!,
             scale: scale,
             onSelect: onSelectRisk!,
           ),
         if (draft != null && onSelectCard != null)
           _DraftOverlay(
+            catalog: catalog,
             draft: draft!,
             scale: scale,
             onSelect: onSelectCard!,
           ),
         if (isPaused)
           _PauseOverlay(
+            catalog: catalog,
             onResume: onResume,
             onQuitToHome: onQuitToHome,
             scale: scale,
@@ -465,7 +480,14 @@ class _Bar extends StatelessWidget {
 }
 
 class _TimerPanel extends StatelessWidget {
-  const _TimerPanel({required this.hud, required this.scale});
+  const _TimerPanel({
+    required this.hud,
+    required this.scale,
+    required this.catalog,
+  });
+
+  /// F-01：文案只从内容目录按 key 取。
+  final ContentCatalog catalog;
 
   final HudView hud;
   final double scale;
@@ -488,7 +510,7 @@ class _TimerPanel extends StatelessWidget {
         ),
         if (hud.objectiveWarning)
           Text(
-            '敌人正在逃逸',
+            catalog.text('hud.objective.warning'),
             style: TextStyle(
               color: const Color(0xFFFFB03A),
               fontSize: 15 * scale,
@@ -603,10 +625,14 @@ class _SmallBadge extends StatelessWidget {
 
 class _IconButton extends StatelessWidget {
   const _IconButton({
+    required this.catalog,
     required this.icon,
     required this.scale,
     required this.onTap,
   });
+
+  /// F-01：文案只从内容目录按 key 取。
+  final ContentCatalog catalog;
 
   final IconData icon;
   final double scale;
@@ -618,7 +644,7 @@ class _IconButton extends StatelessWidget {
     final size = 56 * scale;
     return Semantics(
       button: true,
-      label: '暂停',
+      label: catalog.text('pause.title'),
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -642,25 +668,29 @@ class _IconButton extends StatelessWidget {
 /// HP ≤35 时过载**可见但锁定**，且不进入可选项列表。
 class _RiskGateOverlay extends StatelessWidget {
   const _RiskGateOverlay({
+    required this.catalog,
     required this.gate,
     required this.scale,
     required this.onSelect,
   });
 
+  /// F-01：文案只从内容目录按 key 取，不硬编码。
+  final ContentCatalog catalog;
+
   final RiskGateView gate;
   final double scale;
   final void Function(String optionId) onSelect;
 
-  static const Map<String, String> _labels = <String, String>{
-    'RG-SUPPLY': '保底补给',
-    'RG-BOUNTY': '高额赏金',
-    'RG-OVERLOAD': '过载核心',
+  Map<String, String> get _labels => <String, String>{
+    'RG-SUPPLY': catalog.text('risk.supply.name'),
+    'RG-BOUNTY': catalog.text('risk.bounty.name'),
+    'RG-OVERLOAD': catalog.text('risk.overload.name'),
   };
 
-  static const Map<String, String> _descriptions = <String, String>{
-    'RG-SUPPLY': '护盾 +20，生命 +8',
-    'RG-BOUNTY': '下一个精英额外掉落核心，代价是它更强',
-    'RG-OVERLOAD': '立即三选一稀有强化，20 秒内受伤加重',
+  Map<String, String> get _descriptions => <String, String>{
+    'RG-SUPPLY': catalog.text('risk.supply.desc'),
+    'RG-BOUNTY': catalog.text('risk.bounty.desc'),
+    'RG-OVERLOAD': catalog.text('risk.overload.desc'),
   };
 
   @override
@@ -672,7 +702,7 @@ class _RiskGateOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '风险门',
+              catalog.text('risk.title'),
               style: TextStyle(
                 color: const Color(0xFFFFC24B),
                 fontSize: 34 * scale,
@@ -682,7 +712,7 @@ class _RiskGateOverlay extends StatelessWidget {
             ),
             SizedBox(height: 6 * scale),
             Text(
-              '未选择将执行保底 · ${gate.remainingSeconds.toStringAsFixed(1)} 秒',
+              catalog.text('risk.hintWithTimer', <String, Object?>{'seconds': gate.remainingSeconds.toStringAsFixed(1)}),
               style: TextStyle(color: Colors.white54, fontSize: 15 * scale),
             ),
             SizedBox(height: 28 * scale),
@@ -693,6 +723,7 @@ class _RiskGateOverlay extends StatelessWidget {
                   ...<Widget>[
                     if (i > 0) SizedBox(width: 20 * scale),
                     _RiskOptionCard(
+                      catalog: catalog,
                       optionId: gate.availableOptionIds[i],
                       label: _labels[gate.availableOptionIds[i]] ??
                           gate.availableOptionIds[i],
@@ -706,9 +737,10 @@ class _RiskGateOverlay extends StatelessWidget {
                 for (final locked in gate.lockedOptionIds) ...<Widget>[
                   SizedBox(width: 20 * scale),
                   _RiskOptionCard(
+                    catalog: catalog,
                     optionId: locked,
                     label: _labels[locked] ?? locked,
-                    description: '当前生命过低，不可选择',
+                    description: catalog.text('risk.lockedReason'),
                     scale: scale,
                     locked: true,
                     onTap: null,
@@ -725,6 +757,7 @@ class _RiskGateOverlay extends StatelessWidget {
 
 class _RiskOptionCard extends StatelessWidget {
   const _RiskOptionCard({
+    required this.catalog,
     required this.optionId,
     required this.label,
     required this.description,
@@ -732,6 +765,9 @@ class _RiskOptionCard extends StatelessWidget {
     this.locked = false,
     this.onTap,
   });
+
+  /// F-01：文案只从内容目录按 key 取。
+  final ContentCatalog catalog;
 
   final String optionId;
   final String label;
@@ -788,7 +824,7 @@ class _RiskOptionCard extends StatelessWidget {
               ),
               if (locked)
                 Text(
-                  '锁定',
+                  catalog.text('risk.locked'),
                   style: TextStyle(
                     color: const Color(0xFF888888),
                     fontSize: 13 * scale,
@@ -808,10 +844,14 @@ class _RiskOptionCard extends StatelessWidget {
 /// 按产品基线 §4.2 用 1/2/3 或点击选择；战时逻辑已完全冻结。
 class _DraftOverlay extends StatelessWidget {
   const _DraftOverlay({
+    required this.catalog,
     required this.draft,
     required this.scale,
     required this.onSelect,
   });
+
+  /// F-01：文案只从内容目录按 key 取，不硬编码。
+  final ContentCatalog catalog;
 
   final DraftView draft;
   final double scale;
@@ -835,7 +875,7 @@ class _DraftOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '选择强化',
+              catalog.text('draft.title'),
               style: TextStyle(
                 color: const Color(0xFF3FE0FF),
                 fontSize: 34 * scale,
@@ -845,7 +885,7 @@ class _DraftOverlay extends StatelessWidget {
             ),
             SizedBox(height: 6 * scale),
             Text(
-              '第 ${draft.draftIndex + 1} 次强化 · 点击卡片或按 1 / 2 / 3',
+              catalog.text('draft.subtitle', <String, Object?>{'index': draft.draftIndex + 1, 'total': 6}),
               style: TextStyle(color: Colors.white54, fontSize: 15 * scale),
             ),
             SizedBox(height: 28 * scale),
@@ -855,6 +895,7 @@ class _DraftOverlay extends StatelessWidget {
                 for (var i = 0; i < draft.cards.length; i++) ...<Widget>[
                   if (i > 0) SizedBox(width: 22 * scale),
                   _DraftCard(
+                    catalog: catalog,
                     card: draft.cards[i],
                     index: i,
                     color: _seriesColors[draft.cards[i].series] ??
@@ -874,12 +915,16 @@ class _DraftOverlay extends StatelessWidget {
 
 class _DraftCard extends StatelessWidget {
   const _DraftCard({
+    required this.catalog,
     required this.card,
     required this.index,
     required this.color,
     required this.scale,
     required this.onTap,
   });
+
+  /// F-01：文案只从内容目录按 key 取。
+  final ContentCatalog catalog;
 
   final DraftCardView card;
   final int index;
@@ -891,7 +936,7 @@ class _DraftCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '强化卡 ${card.cardId}',
+      label: catalog.text('draft.cardAria', <String, Object?>{'cardId': card.cardId}),
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -957,7 +1002,7 @@ class _DraftCard extends StatelessWidget {
               ),
               if (card.isGuaranteed)
                 Text(
-                  '保底',
+                  catalog.text('draft.guaranteedBadge'),
                   style: TextStyle(
                     color: const Color(0xFFFFC24B),
                     fontSize: 13 * scale,
@@ -974,10 +1019,14 @@ class _DraftCard extends StatelessWidget {
 
 class _PauseOverlay extends StatelessWidget {
   const _PauseOverlay({
+    required this.catalog,
     required this.onResume,
     required this.scale,
     this.onQuitToHome,
   });
+
+  /// F-01：文案只从内容目录按 key 取，不硬编码。
+  final ContentCatalog catalog;
 
   final VoidCallback onResume;
   final double scale;
@@ -993,7 +1042,7 @@ class _PauseOverlay extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                '已暂停',
+                catalog.text('pause.title'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 42 * scale,
@@ -1003,14 +1052,14 @@ class _PauseOverlay extends StatelessWidget {
               SizedBox(height: 24 * scale),
               FilledButton(
                 onPressed: onResume,
-                child: Text('继续', style: TextStyle(fontSize: 20 * scale)),
+                child: Text(catalog.text('pause.resume'), style: TextStyle(fontSize: 20 * scale)),
               ),
               if (onQuitToHome != null) ...<Widget>[
                 SizedBox(height: 12 * scale),
                 OutlinedButton(
                   onPressed: onQuitToHome,
                   child: Text(
-                    '返回首页',
+                    catalog.text('pause.quit'),
                     style: TextStyle(fontSize: 18 * scale),
                   ),
                 ),
