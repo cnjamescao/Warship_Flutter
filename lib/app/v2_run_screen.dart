@@ -93,6 +93,46 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
       onSnapshot: _onSnapshot,
       onFrame: widget.onFrame,
     );
+
+    // F-26-01：**可靠地把键盘焦点交给游戏**。
+    //
+    // 此前只依赖 `Focus(autofocus: true)`，但在
+    // Home → Loading → Briefing → Playing 的**正常重建链路**后，
+    // 该节点并没有拿到焦点 —— 玩家必须额外点一下画布才能控制，
+    // 而产品基线规定 WASD/方向键**开局即可用**。
+    //
+    // 放在 post-frame 而不是构造里：autofocus 的焦点分配发生在
+    // 首帧构建期间，此时立刻 requestFocus 会被随后的分配覆盖。
+    WidgetsBinding.instance.addPostFrameCallback((_) => _ensureGameFocus());
+  }
+
+  /// 把焦点交给游戏 —— 仅在**可玩**相位抢，避免从暂停/草案/结算
+  /// 覆盖层手里夺走焦点（那样玩家就无法用键盘操作菜单）。
+  void _ensureGameFocus() {
+    if (!mounted) {
+      return;
+    }
+    // ⚠️ 必须用 `hasPrimaryFocus`，**不能用 `hasFocus`**。
+    //
+    // `hasFocus` 的语义是"**本节点或其任一子节点**持有 primary focus"，
+    // 因此当实际的 primary focus 落在某个匿名子节点上时，
+    // `warship-v2.hasFocus` 仍为 true —— 于是这里会误判"已聚焦"而跳过
+    // requestFocus，键事件便永远到不了游戏。
+    // 这正是玩家按 A 不动的直接原因（实测：焦点探针显示 hasFocus=true，
+    // 但网关的 pressedKeys 为空）。
+    if (_focusNode.hasPrimaryFocus) {
+      return;
+    }
+    // 注意： 是**字符串**（表现层不该依赖相位枚举）。
+    if (_snapshot.phase != GamePhase.playing.name) {
+      return;
+    }
+    _focusNode.requestFocus();
+  }
+
+  /// 相位变化后补交焦点（覆盖层关闭 → 回到 Playing 时必须恢复键盘控制）。
+  void _afterPhaseSettled() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _ensureGameFocus());
   }
 
   void _onSnapshot(RenderSnapshot snapshot) {
@@ -111,10 +151,15 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
     if (!changed) {
       return;
     }
+    final phaseChanged = previous.phase != snapshot.phase;
     if (!mounted) {
       return;
     }
     setState(() => _snapshot = snapshot);
+    // F-26-01：相位变化（含覆盖层关闭回到 Playing）后重新交还焦点。
+    if (phaseChanged) {
+      _afterPhaseSettled();
+    }
   }
 
   @override

@@ -137,8 +137,9 @@ void main() {
     await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
     expect(find.byType(V2RunScreen), findsOneWidget);
 
-    // 必须先把焦点交给对局界面的 Focus 节点，否则键盘事件无处送达。
-    await focusGameField(tester);
+    // F-26-01 修复后**不得**再手动注入焦点 —— 走生产路径。
+    // （原先这里调用 `focusGameField`，恰好把"开局焦点没交接"这个
+    //   真实缺陷掩盖了：测试全绿，玩家却控制不了。）
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await pumpV2(tester, frames: 30);
 

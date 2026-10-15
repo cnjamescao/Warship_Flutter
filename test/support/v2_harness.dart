@@ -112,25 +112,6 @@ Future<int> advanceAutoPicking(WidgetTester tester, double seconds) async {
   return picks;
 }
 
-/// 把键盘焦点交给**对局界面自己的** Focus 节点。
-///
-/// 必要性：`V2RunScreen` 的 `Focus(autofocus: true)` 在
-/// Home→Loading→Briefing→Playing 的多次重建之后**并没有拿到焦点**
-/// （实测 `primaryFocus.debugLabel` 是 null，即停在某个匿名节点上），
-/// 于是键盘事件送不到输入网关。测试里显式请求一次即可。
-///
-/// 注意：这**不代表生产环境一定有同样问题** —— 生产里玩家会点按钮、
-/// 有真实的输入序列。但它确实说明"仅靠 autofocus"不可靠。
-Future<void> focusGameField(WidgetTester tester) async {
-  for (final widget in tester.widgetList<Focus>(find.byType(Focus))) {
-    final node = widget.focusNode;
-    if (node?.debugLabel == 'warship-v2') {
-      node!.requestFocus();
-      await tester.pump();
-      return;
-    }
-  }
-}
 
 /// 卸载 v2 应用。
 ///
