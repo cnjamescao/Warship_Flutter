@@ -534,17 +534,35 @@ class BattlefieldComponent extends Component {
       canvas.drawCircle(center, player.radius + 10, _stroke);
     }
 
-    // 优先使用正式素材；缺失时回退矢量机体（青蓝、对称轮廓）。
-    // 协议要求：优先用 `eventBindings` 解析出的资源；
-    // 解析不出时才回退快照里的 assetId/visualState。
-    final playerRoute = router.playerRoute;
+    // 机体贴图**只取 `player.assetId`**（配置里的正式机体素材）。
+    //
+    // ⚠️ 此前写的是 `playerRoute?.assetId ?? player.assetId` —— 于是
+    // **受击特效会「替换」机体**：一被打中，战舰就被换成
+    // `GFX-PLAYER-SHIELD-HIT` / `GFX-PLAYER-HIT-FLASH` 那张图。
+    // 那两张图同时还是占位素材（F-30），叠加起来的表现就是
+    // "**被击中完全没有效果**"（玩家第 4 条反馈）。
+    //
+    // 正确语义：受击闪光/护盾受击是**叠层**，画在机体**之上**，
+    // 而不是取代机体 —— 与敌机那边（F-28）是同一类错误。
     final drewSprite = _drawSpriteOrNull(
       canvas,
-      playerRoute?.assetId ?? player.assetId,
-      playerRoute?.renderState ?? player.visualState,
+      player.assetId,
+      player.visualState,
       center,
       player.radius,
     );
+
+    // 受击表现的**叠层**（护盾受击 / 掉血闪光）。
+    final playerRoute = router.playerRoute;
+    if (playerRoute != null) {
+      _drawSpriteOrNull(
+        canvas,
+        playerRoute.assetId,
+        playerRoute.renderState,
+        center,
+        player.radius,
+      );
+    }
     if (drewSprite) {
       playerSpriteDrawn++;
       // 冲刺无敌时叠一层高亮，保证无敌状态**可读**（T-UI-02）。
