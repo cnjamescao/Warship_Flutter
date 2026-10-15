@@ -14,7 +14,13 @@
 // 因此本类**永不抛异常给调用方**：任何失败都退化为内存默认值。
 // ================================================================
 
+import 'package:flutter/foundation.dart' show TargetPlatform;
+
+import 'haptics_port.dart';
+
 /// 固定的持久化键。**不得增删或改名**（产品基线 §8）。
+
+
 class ProgressKeys {
   static const String musicEnabled = 'settings.musicEnabled';
   static const String sfxEnabled = 'settings.sfxEnabled';
@@ -89,6 +95,32 @@ class GameSettings {
   final bool reduceMotion;
 
   final bool hapticsEnabled;
+
+  /// **按平台取默认设置**（F-10 裁决）。
+  ///
+  /// 「支持触感的原生移动端**首次默认开**；Web/macOS **默认关**」。
+  ///
+  /// 为什么必须有这个工厂：`GameSettings()` 的字段默认值是一个
+  /// **与平台无关的常量**，而裁决要求默认值**随平台变**。
+  /// 首次安装（无存档）以及读取失败退化为默认时，都必须走这里 ——
+  /// 否则 macOS / Web 上会默认开着触感，而它们根本没有触感能力。
+  factory GameSettings.forPlatform({
+    bool? isWebOverride,
+    TargetPlatform? platformOverride,
+    bool musicEnabled = true,
+    bool sfxEnabled = true,
+    bool reduceMotion = false,
+  }) {
+    return GameSettings(
+      musicEnabled: musicEnabled,
+      sfxEnabled: sfxEnabled,
+      reduceMotion: reduceMotion,
+      hapticsEnabled: platformSupportsHaptics(
+        isWebOverride: isWebOverride,
+        platformOverride: platformOverride,
+      ),
+    );
+  }
 
   GameSettings copyWith({
     bool? musicEnabled,
@@ -182,9 +214,9 @@ class ProgressStore {
 
       // 空存档：使用默认值。
       if (versionRaw == null) {
-        return const ProgressLoadResult(
-          settings: GameSettings(),
-          records: GameRecords(),
+        return ProgressLoadResult(
+          settings: GameSettings.forPlatform(),
+          records: const GameRecords(),
           usedDefaults: true,
         );
       }
@@ -226,7 +258,7 @@ class ProgressStore {
       // 损坏存档 / 读取失败：使用安全默认值，不阻塞开始。
       _lastError = '$error';
       return ProgressLoadResult(
-        settings: const GameSettings(),
+        settings: GameSettings.forPlatform(),
         records: const GameRecords(),
         usedDefaults: true,
         error: _lastError,

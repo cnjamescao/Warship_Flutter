@@ -30,6 +30,7 @@ import '../domain/upgrade_system.dart';
 import '../domain/result_tier.dart';
 import '../domain/values.dart';
 import '../infrastructure/audio_director.dart';
+import '../infrastructure/haptics_director.dart';
 import '../domain/weapon_system.dart';
 import 'domain_event.dart';
 import 'event_bus.dart';
@@ -156,6 +157,7 @@ class GameRuntime {
     this.bossSystem,
     this.riskGateSystem,
     this.audioDirector,
+    this.hapticsDirector,
   })  : player = PlayerState(
           tuning: tuning ?? PlayerTuning.fromConfig(catalogPlayer),
         );
@@ -197,6 +199,9 @@ class GameRuntime {
   /// 放在 runtime 而不是表现层：事件在本步结束时就被消费掉，
   /// 表现层与音频拿到的是同一批不可变事件，顺序一致。
   final AudioDirector? audioDirector;
+
+  /// 触感导播（F-10）。与音频同一条事件分发路径。
+  final HapticsDirector? hapticsDirector;
 
   /// 最近一帧消费掉的事件（供表现层使用）。
   List<StampedEvent> lastFrameEvents = const <StampedEvent>[];
@@ -360,6 +365,7 @@ class GameRuntime {
     }
     lastFrameEvents = events;
     audioDirector?.handleAll(events);
+    hapticsDirector?.handleAll(events);
     // 逻辑时间推进音频限频窗口（不用墙上时钟，保证可复现）。
     audioDirector?.service.advance(GameClock.fixedStepSeconds * events.length);
   }

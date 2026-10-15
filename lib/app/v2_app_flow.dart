@@ -24,6 +24,9 @@ import '../game/domain/result_tier.dart';
 import '../game/infrastructure/asset_loader.dart';
 import '../game/infrastructure/audio_director.dart';
 import '../game/infrastructure/audio_port.dart';
+import '../game/infrastructure/haptics_director.dart';
+import '../game/infrastructure/haptics_platform.dart';
+import '../game/infrastructure/haptics_port.dart';
 import '../game/infrastructure/progress_store.dart';
 import '../game/infrastructure/shared_preferences_store.dart';
 import '../game/presentation/input_gateway.dart';
@@ -81,6 +84,13 @@ class _V2AppFlowState extends State<V2AppFlow> {
   late final AudioService _audio;
   AudioDirector? _audioDirector;
 
+  /// 触感（F-10）。同样跨局复用。
+  ///
+  /// 注意：**触感能力由平台决定，与用户开关是两回事** ——
+  /// 服务内部做"用户开 且 平台支持"的双重判定，此处只负责传开关。
+  late final HapticsService _haptics;
+  HapticsDirector? _hapticsDirector;
+
   /// 本地设置与记录。
   late final ProgressStore _progress;
   GameSettings _settings = const GameSettings();
@@ -102,6 +112,16 @@ class _V2AppFlowState extends State<V2AppFlow> {
     super.initState();
     // 音频与存档都在 flow 层建立：它们跨局存活，不随 RunSession 重建。
     _audio = AudioService(port: widget.audioPort ?? FlameAudioPort());
+
+    // F-10：触感端口。支持触感时用平台实现，否则用静默实现 ——
+    // 这样上层无需到处判平台，"不支持"只在一处表达。
+    final platformHaptics = PlatformHapticsPort();
+    _haptics = HapticsService(
+      platformHaptics.isSupported
+          ? platformHaptics
+          : const NoopHapticsPort(),
+      enabled: _settings.hapticsEnabled,
+    );
     _progress = ProgressStore(store: widget.store ?? InMemoryKeyValueStore());
     _loadProgress();
     // 初始相位是 Home（架构 §3.1）。这里**不**自动开局 ——
@@ -149,6 +169,9 @@ class _V2AppFlowState extends State<V2AppFlow> {
     ]) {
       _audio.setBusEnabled(bus, _settings.sfxEnabled);
     }
+    // F-10：触感只有一个开关，直接作用到服务。
+    _haptics.enabled = _settings.hapticsEnabled;
+
     // 全局静音保持关闭：真正的开关交给上面的总线判定。
     _audio.setMuted(false);
   }
@@ -169,6 +192,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
       table: const AssetLoader().build(widget.catalog.manifest),
       service: _audio,
     );
+    _hapticsDirector = HapticsDirector(service: _haptics);
     // 每局的音频限频窗口从头开始，避免上一局的节奏影响本局。
     _audio.reset();
 
@@ -176,6 +200,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
       catalog: widget.catalog,
       seed: widget.seed,
       audioDirector: _audioDirector,
+      hapticsDirector: _hapticsDirector,
     );
     runtime.phases.resetToHome();
     runtime.phases.transitionTo(GamePhase.loading, reason: 'start');
