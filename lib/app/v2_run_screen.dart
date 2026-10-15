@@ -1048,32 +1048,46 @@ class _DraftCard extends StatelessWidget {
           // 几何等价替代**」。因此这里贴 `UI-COLORBLIND-PATTERN-RARITY`
           // 本身（同心圆十字），而不是自绘图形或改边框样式。
           // **始终显示，不依赖设置**（没有"色弱开关"这回事）。
-          foregroundDecoration: _rarityPatternPath() == null
-              ? null
-              : BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(_rarityPatternPath()!),
-                    fit: BoxFit.fill,
-                  ),
-                  borderRadius: BorderRadius.circular(16 * scale),
-                ),
-          // 稀有度**各档外形**：贴该档自己的图形。
-          // 与上面的同心圆十字叠层并存 —— 前者给"这一档长什么样"，
-          // 后者给"颜色之外仍可分辨"。
-          child: Stack(
-            children: <Widget>[
-              if (_rarityTierPath() != null)
-                Positioned.fill(
-                  child: Image.asset(
-                    _rarityTierPath()!,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              _buildCardBody(scale, color),
-            ],
-          ),
+          child: _buildCardBody(scale, color),
         ),
       ),
+    );
+  }
+
+  /// 稀有度标识区（卡片右上角的一小块）。
+  ///
+  /// ⚠️ **这里必须是小面积徽标，不能铺满整卡。**
+  /// 我上一版把 `UI-COLORBLIND-PATTERN-RARITY` 用
+  /// `foregroundDecoration` + `BoxFit.fill` 铺满整张卡、又把
+  /// `UI-RARITY-*` 用 `Positioned.fill` 盖在上面 —— 结果**卡面内容
+  /// 被整层盖住**，玩家"完全看不清素材，也不知道是啥意思"。
+  /// 裁决的原话就是「在稀有度**标识区域**合成」，不是铺满卡片。
+  Widget _rarityBadge(double scale) {
+    final tierPath = _rarityTierPath();
+    final patternPath = _rarityPatternPath();
+    if (tierPath == null && patternPath == null) {
+      return const SizedBox.shrink();
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        // 各档**外形**（形状本身可区分，不只靠颜色）。
+        if (tierPath != null)
+          SizedBox(
+            height: 26 * scale,
+            width: 26 * scale,
+            child: Image.asset(tierPath, fit: BoxFit.contain),
+          ),
+        // 颜色之外的**第二识别维度**（同心圆十字）。
+        if (patternPath != null) ...<Widget>[
+          SizedBox(width: 4 * scale),
+          SizedBox(
+            height: 22 * scale,
+            width: 22 * scale,
+            child: Image.asset(patternPath, fit: BoxFit.contain),
+          ),
+        ],
+      ],
     );
   }
 
@@ -1102,12 +1116,19 @@ class _DraftCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    'Lv ${card.nextLevel}/${card.maxLevel}',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 14 * scale,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      _rarityBadge(scale),
+                      SizedBox(width: 8 * scale),
+                      Text(
+                        'Lv ${card.nextLevel}/${card.maxLevel}',
+                        style: TextStyle(
+                          color: Colors.white38,
+                          fontSize: 14 * scale,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
