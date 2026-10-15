@@ -1818,6 +1818,7 @@ class GameRuntime {
                       nameKey: upgradeSystem!.card(id)!.nameKey,
                       descKey: upgradeSystem!.card(id)!.descKey,
                       iconAssetId: upgradeSystem!.card(id)!.iconAssetId,
+                      rarity: upgradeSystem!.card(id)!.rarity,
                       series: upgradeSystem!.card(id)!.series,
                       currentLevel: upgradeState.levelOf(id),
                       maxLevel: upgradeSystem!.card(id)!.maxLevel,

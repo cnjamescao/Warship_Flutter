@@ -932,6 +932,16 @@ class _DraftCard extends StatelessWidget {
   final double scale;
   final VoidCallback onTap;
 
+  /// 把色弱叠层的 Asset ID 解析为 Flutter 资源路径（F-12）。
+  ///
+  /// 走 manifest 的 `runtimeFiles`，**不硬编码路径**（协议 §2：
+  /// 「资源用 `AssetId` 查表，不允许散落的字符串路径」）。
+  String? _rarityPatternPath() {
+    final record = catalog.manifest.lookup('UI-COLORBLIND-PATTERN-RARITY');
+    final files = record?.runtimeFiles;
+    return (files == null || files.isEmpty) ? null : files.first;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Semantics(
@@ -951,6 +961,21 @@ class _DraftCard extends StatelessWidget {
               width: (card.isGuaranteed ? 3 : 2) * scale,
             ),
           ),
+          // F-12：稀有度的**颜色之外**第二识别维度。
+          //
+          // 裁决：「**必须实际合成正式 PNG 素材，禁止用 Canvas 或程序化
+          // 几何等价替代**」。因此这里贴 `UI-COLORBLIND-PATTERN-RARITY`
+          // 本身（同心圆十字），而不是自绘图形或改边框样式。
+          // **始终显示，不依赖设置**（没有"色弱开关"这回事）。
+          foregroundDecoration: _rarityPatternPath() == null
+              ? null
+              : BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(_rarityPatternPath()!),
+                    fit: BoxFit.fill,
+                  ),
+                  borderRadius: BorderRadius.circular(16 * scale),
+                ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

@@ -161,6 +161,7 @@ class DraftCardView {
     required this.nameKey,
     required this.descKey,
     required this.iconAssetId,
+    required this.rarity,
     required this.series,
     required this.currentLevel,
     required this.maxLevel,
@@ -171,6 +172,12 @@ class DraftCardView {
   final String nameKey;
   final String descKey;
   final String iconAssetId;
+
+  /// 稀有度（`common` / `rare` / `epic`）。
+  ///
+  /// F-12 需要它来合成稀有度的色弱叠层（`UI-COLORBLIND-PATTERN-RARITY`）——
+  /// 裁决要求「草案稀有度」也必须有**颜色之外**的第二识别维度。
+  final String rarity;
   final String series;
   final int currentLevel;
   final int maxLevel;
