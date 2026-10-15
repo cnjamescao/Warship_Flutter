@@ -163,6 +163,7 @@ class WarshipV2Game extends FlameGame {
   /// 累计渲染帧数（诊断用）。
   int renderedFrames = 0;
 
+
   @override
   Color backgroundColor() => const Color(0xFF05030F);
 
@@ -310,6 +311,18 @@ class BattlefieldComponent extends Component {
   /// 视觉路由（协议要求：资源必须经 `eventBindings` 解析）。
   final VisualRouter router;
 
+  /// 绘制诊断计数（F-28）：贴图成功 / 退回占位图形。
+  ///
+  /// 存在理由：敌机"三角形 / 五边形"这个问题，我**连续两次靠推理判断
+  /// 都错了**（先是配置、后是路由）。因此改成让程序自己报数 ——
+  /// 玩家玩一次，日志里就有真实数字，不必再猜。
+  int enemySpriteDrawn = 0;
+  int enemyFallbackDrawn = 0;
+  int playerSpriteDrawn = 0;
+  int playerFallbackDrawn = 0;
+  int _renderFrames = 0;
+  bool _drawCountersReported = false;
+
   /// 把实体 ID 解析成当前坐标（供特效池定位）。
   Vec2? positionOf(EntityId id) {
     if (id.kind == EntityKind.player) {
@@ -387,9 +400,25 @@ class BattlefieldComponent extends Component {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 3;
 
+  /// 把绘制计数写进诊断日志（只写一次，进对局后约 2 秒）。
+  void _maybeReportDrawCounters() {
+    _renderFrames++;
+    if (_drawCountersReported || _renderFrames < 120) {
+      return;
+    }
+    _drawCountersReported = true;
+    writeAssetDiagnostics(
+      '绘制计数（约 2 秒时）：\n'
+      '  玩家：贴图 $playerSpriteDrawn / 占位 $playerFallbackDrawn\n'
+      '  敌机：贴图 $enemySpriteDrawn / 占位 $enemyFallbackDrawn\n'
+      '  （占位 > 0 说明贴图路径没走通）',
+    );
+  }
+
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+    _maybeReportDrawCounters();
     _drawBackground(canvas);
     _drawHazards(canvas);
     _drawEnemies(canvas);
@@ -517,6 +546,7 @@ class BattlefieldComponent extends Component {
       player.radius,
     );
     if (drewSprite) {
+      playerSpriteDrawn++;
       // 冲刺无敌时叠一层高亮，保证无敌状态**可读**（T-UI-02）。
       if (snapshot.isPlayerInvulnerable) {
         _stroke.color = const Color(0xCCFFFFFF);
@@ -624,9 +654,11 @@ class BattlefieldComponent extends Component {
         enemy.radius,
       );
       if (drewSprite) {
+        enemySpriteDrawn++;
         _drawEnemyHealthBar(canvas, enemy, center);
         continue;
       }
+      enemyFallbackDrawn++;
 
       // 回退：深紫/洋红、尖锐剪影（与玩家的青蓝明确区分）。
       _fill.color = enemy.hpRatio <= 0.25

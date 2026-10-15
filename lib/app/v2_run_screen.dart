@@ -308,11 +308,19 @@ class _HudOverlay extends StatelessWidget {
   final RiskGateView? riskGate;
   final void Function(String optionId)? onSelectRisk;
 
-  /// 逻辑坐标 → 屏幕坐标。
+  /// 逻辑坐标 → 屏幕坐标（**HUD 锚定窗口**）。
+  ///
+  /// 产品裁决：「**无论窗口大小，HUD 都应该在顶部**」。
+  ///
+  /// 此前这里加上 `viewport.origin`（**留黑边的居中偏移**），因此窗口
+  /// 不是 16:9 时，世界被居中并留边，HUD 也跟着往下掉 ——
+  /// 全屏（16:9）时看不出问题，非全屏时 HUD 就不贴顶了。
+  ///
+  /// 现在 HUD **忽略黑边偏移、只用缩放**：战场仍然 letterbox
+  /// （不拉伸逻辑世界，AC-02 仍然成立），但 HUD 始终贴着窗口边缘。
   Offset _toScreen(double x, double y) {
-    final origin = viewport.origin;
     final scale = viewport.scale;
-    return Offset(origin.dx + x * scale, origin.dy + y * scale);
+    return Offset(x * scale, y * scale);
   }
 
   @override
