@@ -1,6 +1,6 @@
-# Warship v2.0.5 正式发布素材包
+# Warship v2.0.6 素材修复版正式发布素材包
 
-本目录按《Warship v2.0 素材清单与制作规范》的 Asset ID 规则组织，供美术、音频、TA 与客户端直接接入。根目录 `manifest.json` 是客户端唯一允许读取的资源索引。
+本目录按《Warship v2.0 素材清单与制作规范》的 Asset ID 规则组织，供美术、音频、TA 与客户端直接接入。根目录 `manifest.json` 是客户端唯一允许读取的资源索引；当前 `contentVersion` 为 `2.0.6-material-repair`。
 
 ## 目录
 
@@ -12,6 +12,17 @@
 - `元数据/`：可复现导出脚本、音频 manifest、旧图集参考映射和发布门禁。
 
 ## 发布状态
+
+### v2.0.6 素材负责人修复记录
+
+- 五类基础敌机（Scout、Wing、Sniper、Bomber、Shield）的权威源图已替换为
+  `图形/角色与敌机/GFX-EN-*.png` 中五张独立原创 PNG；其运行时状态已同步至
+  `图形/运行时PNG/战斗特效/` 及应用侧 `assets/images/v2/`。
+- 67 个物理 SFX 的 48 kHz / 24-bit WAV 母带与 192 kbps MP3 已分别输出为独立 cue；
+  不得把相同音频副本重新接回不同的 Asset ID。
+- 对上述五个敌机，`源SVG/战斗特效/GFX-EN-*.svg` 是过期的占位参考，**禁止运行时、
+  禁止重新导出、禁止作为修图输入**。素材重导只能以 `角色与敌机/` 中同 Asset ID 的 PNG
+  为权威源，并在完成后更新 manifest hash。
 
 图形主体来自 AI 生成；HUD、预警、状态层和 UI 均以可编辑原创矢量设计导出为独立 PNG。每一个声明状态都有明确 `renderStates → runtimeFiles` 映射，不依赖运行时猜色或推导文件名。Sniper、Bomber、Shield、Dash Trail、HUD、风险门、结算和开关等均已覆盖产品规定的语义状态。四层背景的 `runtimeFiles` 首选 WebP，`fallbackRuntimeFiles` 明确给出 PNG 回退。玩家主机体为 512×512，Boss 主体为 1024×1024；HP、护盾、XP、Boss 和加载进度条均为 960×96 横向九宫格资源。
 

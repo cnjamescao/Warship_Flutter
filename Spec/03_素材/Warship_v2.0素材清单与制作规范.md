@@ -2,8 +2,8 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 版本 | v2.0.5，唯一生效素材规范 |
-| 更新日期 | 2026-10-14 |
+| 版本 | v2.0.6 素材修复版，唯一生效素材规范 |
+| 更新日期 | 2026-10-15 |
 | 适用对象 | UI/游戏美术、TA、音频设计、客户端、QA、构建工程师 |
 | 上游规则 | [v2.0 研发交付基线](../01_产品/Warship_v2.0研发交付基线.md)、[运行时与数据协议](../02_技术/v2.0/02_运行时与数据协议.md) |
 | 覆盖范围 | 横屏 1920×1080、离线 Web 优先版本的全部运行时图形、音频、字体和元数据 |
@@ -41,6 +41,32 @@ Spec/素材/
 `when` 为空仅允许用于没有可区分参数的生命周期事件（例如 `DashStarted`）；敌机攻击 binding 必须同时填写 `enemyId` 与 `attackId`，Boss 攻击 binding 必须填写 `attackId`。`transientMs` 表示临时状态持续时间；出现 `restoreFromSnapshot=true` 时，时长结束必须恢复最后一份数值/防御状态，不能凭素材文件名推断。多状态图形的每个 `states` 项必须至少有一条绑定；发布校验器会拒绝不完整或宽泛攻击绑定。
 
 正式构建中所有必需资源均须真实存在；`fallbackAssetId` 只用于单项加载失败时维持可玩性，不能掩盖发布前的缺失资源。统一回退为 `GFX-FALLBACK-SILHOUETTE`（中性、无伤害含义的轮廓）、`UI-FALLBACK-ICON`（中性轮廓）及静默 `SFX-FALLBACK-SILENT`（逻辑 no-op，不生成音频文件）。三者必须有 manifest 记录；`content_validate` 在发布模式仍须把任何必需资产回退记录判为失败。
+
+### 1.2 v2.0.6 敌机与音频修复接入（2026-10-15，强制）
+
+**本次已生效版本为 `2.0.6-material-repair`。** 一线研发不得继续缓存、复制或加载
+v2.0.5 的敌机或音效副本。运行时唯一依据仍是根目录 `素材/manifest.json`；应用侧同步副本
+为 `assets/config/v2/manifest.json`、`assets/images/v2/` 与 `assets/audio/v2/`。
+
+| Asset ID | 权威源图 | 必须加载的状态文件 | 研发接入结论 |
+| --- | --- | --- | --- |
+| `GFX-EN-SCOUT` | `素材/图形/角色与敌机/GFX-EN-SCOUT.png` | idle / hit / critical / destroy | 窄体侦察机，青色传感核心 |
+| `GFX-EN-WING` | `素材/图形/角色与敌机/GFX-EN-WING.png` | idle / hit / critical / destroy | 宽翼蝠鲼轮廓，琥珀核心 |
+| `GFX-EN-SNIPER` | `素材/图形/角色与敌机/GFX-EN-SNIPER.png` | idle / charge / hit / critical / destroy | 竖向长炮管机体；`charge` 仅用于蓄力 |
+| `GFX-EN-BOMBER` | `素材/图形/角色与敌机/GFX-EN-BOMBER.png` | idle / drop / hit / critical / destroy | 厚重四引擎轰炸机；`drop` 仅用于投放 |
+| `GFX-EN-SHIELD` | `素材/图形/角色与敌机/GFX-EN-SHIELD.png` | body / frontShield / hit / critical / destroy | 实体舰体加正面屏障；不可用通用盾牌 UI 代替 |
+
+实施动作只有以下四项，均由研发完成，**不得重新绘制、改名、补造或猜测路径**：
+
+1. 构建时把当前 `素材/manifest.json` 和 manifest 所列运行时文件同步至应用资源目录，并覆盖旧副本；不得只复制五张源图或只复制图形不复制音频。
+2. 敌机渲染仅按 `Asset ID → renderStates → runtimeFiles` 解析。Sniper 的蓄力和 Bomber 的投放必须分别请求 `charge`、`drop`，Shield 的正面减伤必须请求 `frontShield`；其余时机不得复用这些状态。
+3. 禁止以旧 `图形/源SVG/战斗特效/GFX-EN-*.svg`、`GFX-FALLBACK-SILHOUETTE`、程序化圆点/三角形作为五类敌机的正常显示。资源加载失败在 Release 中应记录为验收失败，而不是静默替换。
+4. 音频仅按 `cueId` 播放当前 manifest 的 MP3。所有 67 个物理 Cue 已具备独立母带与运行时文件；禁止按“同一类音效”合并为一个文件或自行以通用 beep 替换。
+
+**本批次验收结论：**五类敌机的所有运行时状态 SHA-256 互不重复；67 个物理 MP3 的
+SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源预算均已通过。此结论不等同于
+“全包其他图形已经完成去重”：投射物、升级图标与 HUD 的跨语义重复仍由
+`docs/研发反馈意见.md` 的 F-27 跟踪，未关闭前不得把整个图形包标为最终发布完成。
 
 ## 2. 统一视觉、导出与元数据规范
 

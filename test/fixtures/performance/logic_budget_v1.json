@@ -1,12 +1,12 @@
 {
   "seed": 86059590221825,
-  "contentVersion": "2.0.5-release",
+  "contentVersion": "2.0.6-material-repair",
   "scenarioSeconds": 20.0,
   "simulatedFrames": 1320,
   "logicStepMs": {
     "p50": 0.008,
     "p95": 0.028,
-    "p99": 0.069
+    "p99": 0.068
   },
   "objectPeaks": {
     "enemies": 13,

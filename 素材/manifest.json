@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "contentVersion": "2.0.5-release",
+  "contentVersion": "2.0.6-material-repair",
   "assets": [
     {
       "assetId": "GFX-PLAYER-BASE",
@@ -16,7 +16,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -56,24 +56,24 @@
     {
       "assetId": "GFX-EN-SCOUT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-EN-SCOUT.svg",
+      "sourceFile": "图形/角色与敌机/GFX-EN-SCOUT.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-EN-SCOUT__idle.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SCOUT__hit.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SCOUT__critical.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SCOUT__destroy.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "996fc2f2d26426c8d512034ec1480595b733b6f7994e14f7f9300f8dd182343f",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "4906435f380a8fd70e4b45c51058447643aaa67ca9f0fbeae40d1d7199f8e316",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578"
+        "996fc2f2d26426c8d512034ec1480595b733b6f7994e14f7f9300f8dd182343f",
+        "2e7b80100990e730338252bbec95e8434f7d525a18655ae5d99d78f6a2b57d51",
+        "161a633d54a281d9ef4922b15891eb9e97555066d6b766e08040dca22845856d",
+        "8569c06c0c071fa7140c86c9abfe43b64fea8d629ae80eb1217751bb4eb38705"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "idle",
         "hit",
@@ -87,7 +87,7 @@
         "EnemyVitalStateChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 124922,
+      "memoryEstimateBytes": 302655,
       "anchor": [
         0.5,
         0.5
@@ -198,24 +198,24 @@
     {
       "assetId": "GFX-EN-WING",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-EN-WING.svg",
+      "sourceFile": "图形/角色与敌机/GFX-EN-WING.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-EN-WING__idle.png",
         "图形/运行时PNG/战斗特效/GFX-EN-WING__hit.png",
         "图形/运行时PNG/战斗特效/GFX-EN-WING__critical.png",
         "图形/运行时PNG/战斗特效/GFX-EN-WING__destroy.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "363156245d6f320bf1b064691cb23581a1ae545dd7fa39eb154bf225484239e8",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "4906435f380a8fd70e4b45c51058447643aaa67ca9f0fbeae40d1d7199f8e316",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578"
+        "363156245d6f320bf1b064691cb23581a1ae545dd7fa39eb154bf225484239e8",
+        "625b360faafa1f83b91f79d410d8de62ee29b2b13b1a0308c2726d53ae4f42f6",
+        "7c7e3d38a8c2429b7b91fcbf93b5f3c47f479097ed63602c170d9da9917e4155",
+        "6bb3e402d7f9fca3ac2a4d7a8384530d5327155ec0b8bc42ca9367f03bdf07aa"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "idle",
         "hit",
@@ -229,7 +229,7 @@
         "EnemyVitalStateChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 124922,
+      "memoryEstimateBytes": 656584,
       "anchor": [
         0.5,
         0.5
@@ -340,7 +340,7 @@
     {
       "assetId": "GFX-EN-SNIPER",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-EN-SNIPER.svg",
+      "sourceFile": "图形/角色与敌机/GFX-EN-SNIPER.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-EN-SNIPER__idle.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SNIPER__charge.png",
@@ -348,18 +348,18 @@
         "图形/运行时PNG/战斗特效/GFX-EN-SNIPER__critical.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SNIPER__destroy.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "816c0690fa2bf5384b548920d0e08c0169d855569ddab5b812298f6c31322211",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "4906435f380a8fd70e4b45c51058447643aaa67ca9f0fbeae40d1d7199f8e316",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578"
+        "816c0690fa2bf5384b548920d0e08c0169d855569ddab5b812298f6c31322211",
+        "fba47b37e0f5c918862357129d723bc0bd04af5a8a954e7b810507a5ca22904f",
+        "9cc08f9800a44a383f2093601f09dc7169572f23766e3ecdd3c73e37d685ba56",
+        "ef6c2487cc83887622c9c13e9c9a2b15098c1cdbeb1022932d8d978fdf3eb2c5",
+        "bd67356f68ec4fa0654ba78708bc3e86f947b025d1f6669cdf092cdbaa0e1437"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "idle",
         "charge",
@@ -375,7 +375,7 @@
         "EnemyVitalStateChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 150130,
+      "memoryEstimateBytes": 689670,
       "anchor": [
         0.5,
         0.5
@@ -510,7 +510,7 @@
     {
       "assetId": "GFX-EN-BOMBER",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-EN-BOMBER.svg",
+      "sourceFile": "图形/角色与敌机/GFX-EN-BOMBER.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-EN-BOMBER__idle.png",
         "图形/运行时PNG/战斗特效/GFX-EN-BOMBER__drop.png",
@@ -518,18 +518,18 @@
         "图形/运行时PNG/战斗特效/GFX-EN-BOMBER__critical.png",
         "图形/运行时PNG/战斗特效/GFX-EN-BOMBER__destroy.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "0c317ac057e7ed69c2349ffbf073bba8654173bb1fa6cd0757a99773ed8880cc",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "4906435f380a8fd70e4b45c51058447643aaa67ca9f0fbeae40d1d7199f8e316",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578"
+        "0c317ac057e7ed69c2349ffbf073bba8654173bb1fa6cd0757a99773ed8880cc",
+        "af597c5cf5d05ee66f8ecd1f708c25aee957e6ab1216f1b080e9a331ad36634a",
+        "33b5690468fdb504cb8c0487135c0ddfe4f54588a71937f8e390fe2e47368a64",
+        "c86e61aae21d9f7615ad81ba5aff75da499c1ed389ce7f8fb9923cb67df41d7e",
+        "98a1113843b3e8c2a1ad241c56bedb80411cdd7110a110122b18ebafb00c161a"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "idle",
         "drop",
@@ -545,7 +545,7 @@
         "EnemyVitalStateChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 158492,
+      "memoryEstimateBytes": 1508376,
       "anchor": [
         0.5,
         0.5
@@ -682,7 +682,7 @@
     {
       "assetId": "GFX-EN-SHIELD",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-EN-SHIELD.svg",
+      "sourceFile": "图形/角色与敌机/GFX-EN-SHIELD.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-EN-SHIELD__body.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SHIELD__frontShield.png",
@@ -690,18 +690,18 @@
         "图形/运行时PNG/战斗特效/GFX-EN-SHIELD__critical.png",
         "图形/运行时PNG/战斗特效/GFX-EN-SHIELD__destroy.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "ffd379f27300c6bda11a032777b0cc412b1531834b86f84df19c2aa785ff6063",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
-        "54bedec8bf3718be71e1d1300360876bd0cea220f032af8ea8f3ff3aea201030",
-        "22be39e28e8fcdd0353c6f5cb977b88dc6935fed4689aa382eb89b832ba8c859",
-        "9459d9319d3ebbad2fa6f9a17ddbbe4a8048ea1cd0f18de39f75627eeb529c43",
-        "82f90731c85c37853fce6551807c5ebbc5e398a6ef177be9cc2b1e596766bc68"
+        "ffd379f27300c6bda11a032777b0cc412b1531834b86f84df19c2aa785ff6063",
+        "31016c3d3982ef04e3adb8fc9b7ad4efad27f4b53942b93bb5768212f023ecd1",
+        "ff08ff089937fb258b8e9257adb8ed2e027f98934d2ec3ebba08c0be1881b686",
+        "7e311a57fd6f29b0768ec2543db9606c1d18c111a3b62f3d58fcff3229ed8de8",
+        "ba22c6f514ea29a02f4d65de77a07a17de93c905e32aed9eb720028d3e7fa471"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "body",
         "frontShield",
@@ -717,7 +717,7 @@
         "EnemyVitalStateChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 374380,
+      "memoryEstimateBytes": 1710897,
       "anchor": [
         0.5,
         0.5
@@ -873,7 +873,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "active",
         "end"
@@ -957,7 +957,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "active",
         "end"
@@ -1034,7 +1034,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "active",
         "end"
@@ -1115,7 +1115,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "active",
         "end"
@@ -1196,7 +1196,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1255,7 +1255,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1314,7 +1314,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1377,7 +1377,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "p1",
         "p2",
@@ -1476,7 +1476,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "hidden",
         "shown",
@@ -1568,7 +1568,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1626,7 +1626,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1682,7 +1682,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1738,7 +1738,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1794,7 +1794,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1852,7 +1852,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1910,7 +1910,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -1969,7 +1969,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2028,7 +2028,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2087,7 +2087,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2145,7 +2145,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2203,7 +2203,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2261,7 +2261,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2319,7 +2319,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2377,7 +2377,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2435,7 +2435,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2493,7 +2493,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2551,7 +2551,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2610,7 +2610,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2669,7 +2669,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2728,7 +2728,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2787,7 +2787,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2846,7 +2846,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2905,7 +2905,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -2963,7 +2963,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3021,7 +3021,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3079,7 +3079,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3137,7 +3137,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3195,7 +3195,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3251,7 +3251,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3307,7 +3307,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3363,7 +3363,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3419,7 +3419,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -3481,7 +3481,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -3594,7 +3594,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -3707,7 +3707,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -3820,7 +3820,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -3933,7 +3933,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4046,7 +4046,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4159,7 +4159,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4272,7 +4272,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4385,7 +4385,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4498,7 +4498,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4611,7 +4611,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4724,7 +4724,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4837,7 +4837,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -4950,7 +4950,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -5063,7 +5063,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -5176,7 +5176,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -5289,7 +5289,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -5447,7 +5447,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -5605,7 +5605,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -5763,7 +5763,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -5921,7 +5921,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -6044,7 +6044,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "hit",
@@ -6167,7 +6167,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6272,7 +6272,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6377,7 +6377,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6482,7 +6482,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6605,7 +6605,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6728,7 +6728,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -6835,7 +6835,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "ready",
         "cooldown",
@@ -7000,7 +7000,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "ready",
         "cooldown",
@@ -7163,7 +7163,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -7276,7 +7276,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "north",
         "northEast",
@@ -7514,7 +7514,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "low",
@@ -7612,7 +7612,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -7717,7 +7717,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -7830,7 +7830,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -7943,7 +7943,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8050,7 +8050,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal"
       ],
@@ -8108,7 +8108,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal"
       ],
@@ -8167,7 +8167,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal"
       ],
@@ -8226,7 +8226,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal"
       ],
@@ -8291,7 +8291,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8396,7 +8396,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8519,7 +8519,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8636,7 +8636,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8753,7 +8753,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8858,7 +8858,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -8963,7 +8963,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9068,7 +9068,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9173,7 +9173,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9290,7 +9290,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9395,7 +9395,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9512,7 +9512,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9617,7 +9617,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9722,7 +9722,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9827,7 +9827,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -9952,7 +9952,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -10077,7 +10077,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -10182,7 +10182,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -10287,7 +10287,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -10392,7 +10392,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "safe",
         "risk",
@@ -10542,7 +10542,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "safe",
         "risk",
@@ -10680,7 +10680,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "safe",
         "risk",
@@ -10818,7 +10818,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "safe",
         "risk",
@@ -10956,7 +10956,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11073,7 +11073,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11190,7 +11190,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "on",
         "off",
@@ -11291,7 +11291,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "victory",
         "defeat"
@@ -11391,7 +11391,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "bronze",
         "silver",
@@ -11527,7 +11527,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11632,7 +11632,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11737,7 +11737,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11842,7 +11842,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -11941,7 +11941,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -11995,7 +11995,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
         "pressed",
@@ -12096,7 +12096,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -12149,7 +12149,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -12202,7 +12202,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -12255,7 +12255,7 @@
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
@@ -12299,12 +12299,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-TAP.mp3"
       ],
-      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
-      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "sha256": "361994951c52492b0161955b0dca181227573960cb1db31def50ee5bcd802f09",
+      "runtimeSha256": [
+        "9925f167b823fb202560beb0f9a8188fa4e9621ef19a138d911c7f457f7b5ae8"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.tap",
       "states": [
         "ready"
@@ -12344,12 +12346,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-BACK.mp3"
       ],
-      "sha256": "a20c2b7f8d7da303db5e8b882cb7db1b63a4ed49e6481da65684b5805ca7d5bd",
-      "runtimeSha256": "d08032461991af2e95361bfafcb0d06a6e6225bff63ffa5a0ef47c261f4498f7",
+      "sha256": "3d25dfc5cde5282757ca8d491ec89c54dda7064ba1d91d5a186fb38d4841af8f",
+      "runtimeSha256": [
+        "94aacc533d5f28f6795aa4d874278e833da454e24aacbb97a3e337ca2fa2af80"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.back",
       "states": [
         "ready"
@@ -12389,12 +12393,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-ERROR.mp3"
       ],
-      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
-      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "sha256": "6ef566933f65bd3ba52d995b4492e557f504a92f226fad4c637d1ae905733152",
+      "runtimeSha256": [
+        "4220f87cf125f759b91d8679d3e259e9d138d0672ab3f930c6bd7954a5a02083"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.error",
       "states": [
         "ready"
@@ -12434,12 +12440,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-COUNTDOWN.mp3"
       ],
-      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
-      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "sha256": "97a01fd4bd83ece6316bd5d2557da260620c65eb17f76e6589127c24b33cc447",
+      "runtimeSha256": [
+        "4dae352b3da70ebc9115c4b5d95103952d3d518dca8a5c4f439de48c2999a9ba"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.countdown",
       "states": [
         "ready"
@@ -12477,12 +12485,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-DRAFT-OPEN.mp3"
       ],
-      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
-      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "sha256": "b49c98060a765870e3f183b5d2dbd073fa1f21ff2c75b1462f975c3d8fc30480",
+      "runtimeSha256": [
+        "e30b9aecc30bf0f7cb1509be00f1e6baa98542e666fe728b3f1395a348f9260b"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.draft.open",
       "states": [
         "ready"
@@ -12520,12 +12530,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-DRAFT-CHOOSE.mp3"
       ],
-      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
-      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "sha256": "2aca9cc46e9ac39380702d311b99df54db0a511fbd92bf587043fa240e67472d",
+      "runtimeSha256": [
+        "3e793b00faf429e35ce3b02ff3dcc9b6c065245ce9aba71fa1018652e62a0142"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.draft.choose",
       "states": [
         "ready"
@@ -12563,12 +12575,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-RISK-OPEN.mp3"
       ],
-      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
-      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "sha256": "8031cf92a4d9c0ed1dbd196828af88ae98cc47cf88affc373eb072db96681ab9",
+      "runtimeSha256": [
+        "4f8ddf7a10aedf36eb7a0969b6bb897aeffd97d0f8abfd4a29d4f3de1e5360ad"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.risk.open",
       "states": [
         "ready"
@@ -12606,12 +12620,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-RISK-CHOOSE.mp3"
       ],
-      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
-      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "sha256": "ad266480e1995378a4918bb54de553db85793049d37d99c2425db38c3920476b",
+      "runtimeSha256": [
+        "23cc9f30a6fb051ca8863e2367ea88a9eaf85439f690b2e410c1517bbec04076"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.risk.choose",
       "states": [
         "ready"
@@ -12649,12 +12665,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-UI-PAUSE.mp3"
       ],
-      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
-      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "sha256": "f6ca31cad3a598d2f67d678858487d63479bf02be06e5b9a5cd97a896741193f",
+      "runtimeSha256": [
+        "653f1b629b788182716ce2f1c619173fd8ecdf23a98d02cae8bfded90591ce27"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.ui.pause",
       "states": [
         "ready"
@@ -12694,12 +12712,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-PULSE.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "5bc74b6e22556c710ee69f9dabc0da419b1ec33a4036fbcf1e47ff6a0623bec9",
+      "runtimeSha256": [
+        "da84e047cb95c55b15c796318512a96aec86141256d82ca9fb0bf95441219710"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.pulse",
       "states": [
         "ready"
@@ -12739,12 +12759,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-PULSE-CRIT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "6a798d9dbce4e37821eca3a9c0e83e8420e15abb217fce9bdbc6b15bf43f2526",
+      "runtimeSha256": [
+        "efad085a05e833b05f5a87cc208ee9dceaf3cda6cdd9ba3ace11997e86aff6fa"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.pulse.crit",
       "states": [
         "ready"
@@ -12785,12 +12807,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-PULSE-HIT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "0718eeeec57bf29cbeacc8248273ed2ba10a01dbc6e98d078f520cb1337152dc",
+      "runtimeSha256": [
+        "1463a40fde9125c43437ce4b7fbde80dd7689b9d5013f4c472f05b1965806b6b"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.pulse.hit",
       "states": [
         "ready"
@@ -12831,12 +12855,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-MISSILE-LAUNCH.mp3"
       ],
-      "sha256": "324a372901690cf7a18355ed1ca21b1dba08ec7d9cf8d9ddc0a92e7c13837232",
-      "runtimeSha256": "5a067a06956a3089ed8b26a695ba95f9dfa7ff9e10aa74573b693c484ada892c",
+      "sha256": "87450fdb39a57063ee872bfa78db3de013479598f0680bd8150784ea6962ef5c",
+      "runtimeSha256": [
+        "621ebe586c876bf63510e7551ecbb1316a96d89db82add28348dcda32d9a1cbc"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.missile.launch",
       "states": [
         "ready"
@@ -12876,12 +12902,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-MISSILE-IMPACT.mp3"
       ],
-      "sha256": "ca148618c3bfff07194067a2c63ed56690cd392593923e0f4e0f69eb9e978ad1",
-      "runtimeSha256": "0584a6d948abd442c11e7c397f5ea1c4279c220208205def043e1b780ed9d2bf",
+      "sha256": "c3aa6259ad7b776b702137972151a33f57f7c1287a4fb4eca8286feffe327c75",
+      "runtimeSha256": [
+        "3020034ebb0a37f397d10989ea4eb41e65c0f80ca0a23a556218094a28c6d069"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.missile.impact",
       "states": [
         "ready"
@@ -12921,12 +12949,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-LASER-START.mp3"
       ],
-      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
-      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "sha256": "82a63693588b48d53c0d9d125f0cf61b2f91e1f2919288ea075b880110d138dd",
+      "runtimeSha256": [
+        "31049b465eaae21d8f21e5f64d002ede8ddc18d12ef995fa04b980d6f53f14af"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.laser.start",
       "states": [
         "ready"
@@ -12966,12 +12996,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-LASER-LOOP.mp3"
       ],
-      "sha256": "85596660f79d7b36438333002bab4fae36d5816049cfe8a64daf8e881309e85a",
-      "runtimeSha256": "5a0da89dc7f3d07881c00dbd8d450fe2e3d799135955d0871dfb1c46c1cbc959",
+      "sha256": "efe17f2c1efa1099e3247749c724f7750d150b5f384ad4d4604304bd0880c3b7",
+      "runtimeSha256": [
+        "3a30919f0204f5860c761e3332832508e4a2dcffc7bb29e6494ba2f4daaac5a7"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.laser.loop",
       "states": [
         "ready"
@@ -13011,12 +13043,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-LASER-END.mp3"
       ],
-      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
-      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "sha256": "a4ea19d723fc49c8ab9e5dc3b77b1edf4b3361186211f8cd95eab776ea99c75a",
+      "runtimeSha256": [
+        "8083f5ab77016d7b996980290427fe365085fe5150827ba156ab8ec4763d1ccb"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.laser.end",
       "states": [
         "ready"
@@ -13056,12 +13090,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-DRONE-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "e84f730bd71a560980ecae83e73f44ab10f1d3dc08ec671b109e441bd068d81d",
+      "runtimeSha256": [
+        "83ab37146ea1c314fb139b34db3de5f2417b08ea56e08b090bf582502be090b0"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.drone.shot",
       "states": [
         "ready"
@@ -13101,12 +13137,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-ARC.mp3"
       ],
-      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
-      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "sha256": "0dd87ae11220517e4b84566c131e1bdd1f487d5a203ff20e5c3aff15d2deed0c",
+      "runtimeSha256": [
+        "3c7c422c5616ea55ddd40961227a1e230a7fb6a67e0f20e230d735279f7bca9e"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.arc",
       "states": [
         "ready"
@@ -13147,12 +13185,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-DASH.mp3"
       ],
-      "sha256": "db8ae026cd0d323f63b8b51fe7a711ca742ec7326f7c546d2135175b89e3ed3b",
-      "runtimeSha256": "7864a94866884b00f531e44261b17c84aaa80900fdbef441334735d353efd2e0",
+      "sha256": "c190e7e60ad0cd6182416b0101301087aaa486fedef2509285f3f19de4ce12ff",
+      "runtimeSha256": [
+        "fcb385d8d43448b5f9b9ca6d72232a262000b1fa36c09e38b4ee4681b9d48f24"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.dash",
       "states": [
         "ready"
@@ -13190,12 +13230,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-SHIELD-HIT.mp3"
       ],
-      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
-      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "sha256": "0b87d093432499a7d960c872ec4642a5bc067a780a86f62e0f1d50e3837649a5",
+      "runtimeSha256": [
+        "57e7cfb7df50b4a3da6328750abeaf238bb6020aa0a3b376dfc254d455662212"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.shield.hit",
       "states": [
         "ready"
@@ -13235,12 +13277,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-HP-HIT.mp3"
       ],
-      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
-      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "sha256": "b29e30d2192a05c662548f7215661bf23b6a37c676506e4c2978b492c639574f",
+      "runtimeSha256": [
+        "3ea20ecad2bdc79b5eb8ae945135504f469487a6a8626f3c195916ea0b1c4526"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.hp.hit",
       "states": [
         "ready"
@@ -13280,12 +13324,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-LOW-SHIELD.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "73fc621b0ceaf3011b9af3737016675d1142dd44a3816fc99e7160384c9a96d1",
+      "runtimeSha256": [
+        "dc3066eb9d986e18fe5f3e49f91ab4369072728dfbc65c40bc1f3d77e6939dc5"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.low.shield",
       "states": [
         "ready"
@@ -13325,12 +13371,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-LOW-HP.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "a4d96e146491b94d68a2dc7efa92cd668e1c76792a388ba5b51db8a5eaed3117",
+      "runtimeSha256": [
+        "bff325a64bda91b4e772b72b6eb4434c22d9df54548081eebc74be8950233802"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.low.hp",
       "states": [
         "ready"
@@ -13370,12 +13418,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-SHIELD-REGEN.mp3"
       ],
-      "sha256": "3c678c406615a218f759cebc488fe8c73b29b62c0932faf286869aaacd735531",
-      "runtimeSha256": "e3b07932da1244aa95ea770f313a7ffed4620426ab24ed09572162fb1db50d52",
+      "sha256": "3b79132276a90f1659ab620047657955384e5c6f98a4d662da810ce14d4ebcb4",
+      "runtimeSha256": [
+        "c984e296679957cb117a1a42d71814b4c811521c5825bfb132bb67b0b84ee185"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.shield.regen",
       "states": [
         "ready"
@@ -13413,12 +13463,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-HEAL.mp3"
       ],
-      "sha256": "a20c2b7f8d7da303db5e8b882cb7db1b63a4ed49e6481da65684b5805ca7d5bd",
-      "runtimeSha256": "d08032461991af2e95361bfafcb0d06a6e6225bff63ffa5a0ef47c261f4498f7",
+      "sha256": "80578dacca3e85f64d765f2755492f1cde12ad0e3f9c5a830223e45c1a18c978",
+      "runtimeSha256": [
+        "047361d426f455618d3b75bb2aad78169da55a75041f8efd53dee031248a6f63"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.heal",
       "states": [
         "ready"
@@ -13456,12 +13508,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-PLAYER-DASH-READY.mp3"
       ],
-      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
-      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "sha256": "c2a92569912254dfaccac9798ad848ee400c69ee6db2e5e138eb704378a0eba6",
+      "runtimeSha256": [
+        "89420da71c782606fa9215ff25cc7a89042e54e6883c9d188d56eb2b66000727"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.player.dash.ready",
       "states": [
         "ready"
@@ -13499,12 +13553,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-SCOUT-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "224a7233af9822856d97655473f30281ccf102799b4c940090dbd883ba171152",
+      "runtimeSha256": [
+        "65045ab50a8db58a18d88fa4ea6abfd9fbc9527b8b4b83712a64dbdd7e6a2403"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.scout.shot",
       "states": [
         "ready"
@@ -13545,12 +13601,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-WING-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "70bf7286fd468a758f2eb593959ba0d3524947405a51d8bcb7c1588977acf5d9",
+      "runtimeSha256": [
+        "98b0e845125258a51088b0b2fbdf6535aa08456e67617ac7e51d1cf004d6ac08"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.wing.shot",
       "states": [
         "ready"
@@ -13591,12 +13649,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-SNIPER-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "d0d21ae1820ca9607b312a5f1f85db0104ab18b502be5456b830377bf8af3fae",
+      "runtimeSha256": [
+        "1e1821b26d1409c1ea700c31a698e80f33de2556af324d3a42a08ba16fb56177"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.sniper.shot",
       "states": [
         "ready"
@@ -13637,12 +13697,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-SHIELD-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "ceea00cb7cfd222777d92773f5bf8df5b8fff94b83d65c90efdf99d74c332cdd",
+      "runtimeSha256": [
+        "9794f12229e1c222f5e461a8f7b6da057baa446ce17cbcff02a2a2ea4a88b14b"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.shield.shot",
       "states": [
         "ready"
@@ -13683,12 +13745,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-SNIPER-WARN.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "aa9061909d12620bf766ce15e5035e8652d6894874255b161b37683f74fa8a84",
+      "runtimeSha256": [
+        "b9ebd06c976357ff5fb0108f9c0593e3b3224757f9cb3dd3de476ee4818d1d34"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.sniper.warn",
       "states": [
         "ready"
@@ -13729,12 +13793,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-BOMBER-DROP.mp3"
       ],
-      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
-      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "sha256": "7ba1689c32591d3297362ff5996339e0f6dc6c41c737a074ce5f029515b22b4a",
+      "runtimeSha256": [
+        "353d0a321888249cf3c6d7fc089588cf0b94dd2d8166c59bd3acaac4260ebfea"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.bomber.drop",
       "states": [
         "ready"
@@ -13775,12 +13841,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-BOMBER-HAZARD.mp3"
       ],
-      "sha256": "9a64daf4afa30e584f9215459fedbf24327e6e01828556e12dc74aefe5468529",
-      "runtimeSha256": "7e93b0c93f53daea000537fc7362a29208140c5ae3daafa0e24f0db7da28e7ff",
+      "sha256": "316474f3a89d4c0cbea03497485eb995eb952b672799fd4a8b9f1473848f200a",
+      "runtimeSha256": [
+        "5fe68fd3688bf2ca7105f3aed91e74087b4138f83a84c75ed7735c7ebea0e0ef"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.bomber.hazard",
       "states": [
         "ready"
@@ -13821,12 +13889,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-HIT.mp3"
       ],
-      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
-      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "sha256": "d3dc242a76eec506168c3a0108abf2fbbf957dde056ee4e6bb9cf9fe4b41d679",
+      "runtimeSha256": [
+        "01e699b00c4acf827923e395409c40fbf769ca48b987f8e7e5cd9865695cb1f6"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.hit",
       "states": [
         "ready"
@@ -13864,12 +13934,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-CRITICAL.mp3"
       ],
-      "sha256": "bdbc8fe7490a3101124d285212753c250d88f9555566c8bee9d832d01217bf3c",
-      "runtimeSha256": "c89db3e8b7e92caadde6342f42770af582e126722c35f1188eac8b5da0cfcf8e",
+      "sha256": "ae1e9be7342bb0f2aeaf3d772884b717485358425f9083cacb69a44368a8586d",
+      "runtimeSha256": [
+        "696ead788a04ecd2176f7d752f1aa6473c93c6cb533ea68f06eb5d58d5232787"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.critical",
       "states": [
         "ready"
@@ -13907,12 +13979,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-DESTROY-S.mp3"
       ],
-      "sha256": "ed70472e61f50901f4039aba4be629ff9d122228ac523d96bd5618cce320a009",
-      "runtimeSha256": "ef320b89f2592c3f8b81d2618b2ee1e9e1e9f248c34a926c3dc8800763fe1577",
+      "sha256": "34fc3c83063a5d6f6c01edfe133a3542619ac43689ad093db7cd4c5683339dbc",
+      "runtimeSha256": [
+        "20fc6aca986eaf2a4b8d2907ac422f93ac06693c84f6179865854e40cf482f7b"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.destroy.s",
       "states": [
         "ready"
@@ -13950,12 +14024,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-DESTROY-M.mp3"
       ],
-      "sha256": "48178365493aa9c2732b05bda6c40a5c59ecd5776a5ba6ba0e3795bfc957e1ef",
-      "runtimeSha256": "1229ef36943f316d2774b7086b32e5568e4ec30341425fd0aaff4cabed083698",
+      "sha256": "9e104ead237d07751dab1e065688319d076d3327a12dc17d387fc97acb0f5c86",
+      "runtimeSha256": [
+        "9bbc678dc3a81cd76a0273d1ff0a4657a8043d3395394582fc12de5e073b872e"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.destroy.m",
       "states": [
         "ready"
@@ -13993,12 +14069,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-DESTROY-L.mp3"
       ],
-      "sha256": "d4987110f4caab9dcafd6938df2fb2d4c5d22ce3501736625c8b2158d9c41d4c",
-      "runtimeSha256": "f642b0e8627cc805b8e79b4e8ee7210954844884683936048747fd44e4f34819",
+      "sha256": "16ce53c4bd7e158a180a45ec33727e18793708e343934a9dd6fe1e0488659c69",
+      "runtimeSha256": [
+        "7f643bcbd4eb0c5326f96e1a8d306c09d4d3cbfc3598bc68a5392c2c0dd61443"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.destroy.l",
       "states": [
         "ready"
@@ -14036,12 +14114,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-EN-BREACH.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "b5380a518909a09ef050124f9de850749da80d33eb81007a4b947b8c1c0089f5",
+      "runtimeSha256": [
+        "1e004553c2e20953ac8b3adc2474593c00af81841b60c6faeab6b84cdad445d3"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.en.breach",
       "states": [
         "ready"
@@ -14079,12 +14159,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-ELITE-SPAWN.mp3"
       ],
-      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
-      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "sha256": "99bd6d46bf8ad5a3847c93a3b7df9e5a1c31f29f70205407fd8e529ec3cb706d",
+      "runtimeSha256": [
+        "cab626fa151728ebce970430673c9eb254d9416fa91c95f85755eeb346870841"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.elite.spawn",
       "states": [
         "ready"
@@ -14124,12 +14206,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-ELITE-AURA.mp3"
       ],
-      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
-      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "sha256": "0b546dc6927e480d49c72d4c34b90e57badce3d86d39232cab6aa47a46f6fec9",
+      "runtimeSha256": [
+        "7937f986db6b957abb0e2184fb61ebe0f5419f12ee3f1c353932830e67447ee0"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.elite.aura",
       "states": [
         "ready"
@@ -14169,12 +14253,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-ELITE-DEFEAT.mp3"
       ],
-      "sha256": "3f3860f85e6dcd0b56c8552922a3179c1af89ff38d4d3b1e0bf61220721e099c",
-      "runtimeSha256": "9d673ea2d401dcaeb550a5aded937b7b330f5e2912058fee970a2f6c9418eb8b",
+      "sha256": "64b56d346ccca6ffa1062347550ac6a3122331ea9f19f30d85f210cee415829b",
+      "runtimeSha256": [
+        "8189fe13c2e4141ed4a11ebca30b16a1a82ac779df6a74b80ced78da9d068a74"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.elite.defeat",
       "states": [
         "ready"
@@ -14214,12 +14300,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-ELITE-CORE.mp3"
       ],
-      "sha256": "7068ed57aeed2ec3e239bd83dfa67e016b3c0378c992cda32020919470c7bcee",
-      "runtimeSha256": "69cc85bdc50b0e149bdbc8b11f5b3bcae02e6cd8126d2ab953094420dbc3cfa3",
+      "sha256": "8e72cb1d04461965d908acb095ee8e8801cf6fc57a7ee13319bae93ac7009834",
+      "runtimeSha256": [
+        "953b45b32d4a11d36bee8ed6142cdae7fb26e36547d89db0e47b4d0c281a974b"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.elite.core",
       "states": [
         "ready"
@@ -14259,12 +14347,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-ENTRY.mp3"
       ],
-      "sha256": "effb757206713c83b2f1c9834433550d7bb7cc240047bca73831dbbb1e509c0b",
-      "runtimeSha256": "cb886814889251fb1db4a11b4df9ccf5851831d7140e2448698ab51f2adc4155",
+      "sha256": "a3fd8d07bcbadebdf2347b536ab1a72b33968d219a9892f56ce9ac20630cd4bc",
+      "runtimeSha256": [
+        "2bf5e1cbb2ce706e6fa9280136086a4a93b852c2ce4ba3d628652257a88369b4"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.entry",
       "states": [
         "ready"
@@ -14302,12 +14392,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-PHASE.mp3"
       ],
-      "sha256": "ee62e279e353fe4edb7dde3268725b566ec4db844bde4ed5a48f3c74909b9634",
-      "runtimeSha256": "29e9bacf2f6d38b0b85df232f33bd30053c54c17a3521613088b2fe1ac7d8e03",
+      "sha256": "d97ed03847034d427cedc067f39744ad0f0cf4af6f3572be917059848f0776a9",
+      "runtimeSha256": [
+        "b9c8c3bb50151b645afcbf82d8f4a3c93e3d8d79f50f10e09134ca60f7bbb7dd"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.phase",
       "states": [
         "ready"
@@ -14345,12 +14437,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-CRITICAL.mp3"
       ],
-      "sha256": "324a372901690cf7a18355ed1ca21b1dba08ec7d9cf8d9ddc0a92e7c13837232",
-      "runtimeSha256": "5a067a06956a3089ed8b26a695ba95f9dfa7ff9e10aa74573b693c484ada892c",
+      "sha256": "399ef834bf507b9c15962f606984332067c145926217b4899a2bdd05995fe05b",
+      "runtimeSha256": [
+        "a0ba571aa10c8013f58b63c9bc999573c22e5b67e9995b93cbcc388ffc186dbb"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.critical",
       "states": [
         "ready"
@@ -14390,12 +14484,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-DEFEAT.mp3"
       ],
-      "sha256": "976a7cb2688b673f7e65748d1fe99ae1f51be2937d33e6f7bd91da18885bc39f",
-      "runtimeSha256": "506e0b98b7b28075e9b0c47814a3edc3ce82cad69e5760b73f78048c1e32db0d",
+      "sha256": "e461b7dbd659158d8cff67e52917201770a3f0fc38f5cdd4e8338e8c79bc1be1",
+      "runtimeSha256": [
+        "f34e764b07e5c4d67d1bea00f626e5763e000a6200cb0315dd6c23b8f45882df"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.defeat",
       "states": [
         "ready"
@@ -14433,12 +14529,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-FAN-WARN.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "b0b1b60a10c41596efe61a1e742a4d6a7ddf28e502a9ee1981e166625c861f2d",
+      "runtimeSha256": [
+        "d903fc6c65e489364fde6ef096fc9537c77dffb48868a2cb0f1a9b6f4cd63e20"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.fan.warn",
       "states": [
         "ready"
@@ -14478,12 +14576,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-FAN-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "53785e44b9f87bec861df40b4ecdfb6761d75c2ced68039e24f6eb8658fd2ac3",
+      "runtimeSha256": [
+        "609b5a24dff0ad1e649af0eabd04f31a238787844d2ea1551575aa9d37f92d19"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.fan.shot",
       "states": [
         "ready"
@@ -14523,12 +14623,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-CHARGE-WARN.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "7cfe6f31c6c505224cc3925c92c67e9d6d5f76694bdddd2504c44b53bd27958d",
+      "runtimeSha256": [
+        "467438da9ff1116199a877201150ccb19a523c30a6a24b47cc5c7bb3367ea09a"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.charge.warn",
       "states": [
         "ready"
@@ -14568,12 +14670,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-CHARGE-IMPACT.mp3"
       ],
-      "sha256": "a2f08ffc71dfda33a6380e691146665da3975d6434f5d45314427d0a6ec31fd0",
-      "runtimeSha256": "ebc84c57ab72c749f84a209217a6b9d1585174375a260f83e6c1377ba214787b",
+      "sha256": "a1eaa80a996d817626c23a4b574ebc8d6a5b2935cf474b63cf0d8c67adbd2a92",
+      "runtimeSha256": [
+        "a49fb333b5cc95ce8b74d3fd5e9029d0a77b948504788c159912be52971d75b1"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.charge.impact",
       "states": [
         "ready"
@@ -14613,12 +14717,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-RING-WARN.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "3f0b8b61885bc2411f2236b9281790811d25cb2b50ec11b30aa86f1fe83ac31f",
+      "runtimeSha256": [
+        "8822bc1ce7f380fee1e7519bbdc8c52f5e725be62d72bd6ce3f5d8f6d893a522"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.ring.warn",
       "states": [
         "ready"
@@ -14658,12 +14764,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-RING-SHOT.mp3"
       ],
-      "sha256": "cde953cc6d2d7e58748821843f901d03dd0160c53b23ef33e543a5f7d4cfec5b",
-      "runtimeSha256": "e18015683ec897ba04728fea586f6aa90b2bf115b189d898fc5c1446f5edb5cf",
+      "sha256": "3e8e8b2fcb1e48d4dd8fce2027c5dcb04cef02e311c227e29bf6ef26fe3f3d9b",
+      "runtimeSha256": [
+        "c0c5479c9cc265506e881f66089ae341652556452b6d81f4b9cbf7f5ddd3c936"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.ring.shot",
       "states": [
         "ready"
@@ -14703,12 +14811,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-SUMMON.mp3"
       ],
-      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
-      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "sha256": "ef9ca79b650783f7e9872eaa6735d6998f8e9be45c254d043006d1941f28c49c",
+      "runtimeSha256": [
+        "ef6e09baf0eae80cb3c4c237c5ce1ad1bdb6c3144dade370b8819092c4d61e42"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.summon",
       "states": [
         "ready"
@@ -14748,12 +14858,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-LASER-WARN.mp3"
       ],
-      "sha256": "162636d8e0c9ed4d41c1553f0f9b2c5df75b76bd4d86b3baf72d0f98240e2fe7",
-      "runtimeSha256": "6eb61dc7e0cb3c65c49091ec915bb500f634d2f2e6ca6a513862cb6532f4bd2d",
+      "sha256": "949a144bc2068aafc3fc9a2a9ac4bd20c983e1aa8279223d3229a664a0438546",
+      "runtimeSha256": [
+        "b4a302d722f2ca43e65430bf29db35560d1bf983dc8510bc3dce3f221fa31113"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.laser.warn",
       "states": [
         "ready"
@@ -14793,12 +14905,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-LASER-LOOP.mp3"
       ],
-      "sha256": "85596660f79d7b36438333002bab4fae36d5816049cfe8a64daf8e881309e85a",
-      "runtimeSha256": "5a0da89dc7f3d07881c00dbd8d450fe2e3d799135955d0871dfb1c46c1cbc959",
+      "sha256": "0a36aee9a6c45772e9b1a758510c29dd4e6581fd01c98189154642c7ab4e63dd",
+      "runtimeSha256": [
+        "49a68a5ae931d9f24c76a2e8c8cbd66d17a3517b09507c8e77fe1c88e3076a74"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.laser.loop",
       "states": [
         "ready"
@@ -14838,12 +14952,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-LASER-END.mp3"
       ],
-      "sha256": "4335ada3ab9a345eb605918348e3d4c6fd83a52737e3b487a2277fa5c02c4900",
-      "runtimeSha256": "cda0d9feb57a680461628ab6ca244daaa97603888fe93dd06e883d50b8f206b5",
+      "sha256": "50237e0f12f3d52eb1e5427ffe5a0b1cf3da6994df472883290eb5be30be1a9a",
+      "runtimeSha256": [
+        "44e1a580b30d99df841895bab051cfda90febb4dc147221a281376b5da27fdb3"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.laser.end",
       "states": [
         "ready"
@@ -14883,12 +14999,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-BOSS-WEAKPOINT-OPEN.mp3"
       ],
-      "sha256": "47040e270ff962e723a1c3c9a9c377f3a9737f0a8faccb4876a7c72fad98cfe3",
-      "runtimeSha256": "78409214ec67c9d7fa8743930e7b508b5b188c28d88f20330677ff6ec6b4cdda",
+      "sha256": "25258024354ad6f14f50763307b2b6914723171f991d7e2bfe717d1061a987fc",
+      "runtimeSha256": [
+        "a627702019b72d987ad0266583f5d2741292e5d25d8fbfb2c4c39700c9b20f46"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.boss.weakpoint.open",
       "states": [
         "ready"
@@ -14928,12 +15046,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-RUN-VICTORY.mp3"
       ],
-      "sha256": "3c6e630c61ce5651973d42bd08797b67df788d912b105bc8ba5d460ae78a84b4",
-      "runtimeSha256": "b3f5516d9a42aed2cbf1ea967820d35f3c46668283e3458629c011e28c2d64b7",
+      "sha256": "856fa98a77e15e7af9e2b421a2ac701765fadc6062098649ea86e9d1f3317f9d",
+      "runtimeSha256": [
+        "b70dcf4ad38b781ced31576129d556435eae29f66e3a3e27adbc9ba0ebbf332d"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.run.victory",
       "states": [
         "ready"
@@ -14973,12 +15093,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-RUN-DEFEAT.mp3"
       ],
-      "sha256": "1736e94978fadcfaadbb7fb1b2e5f17f99a6e88009ec86a27b8053a494ed50f4",
-      "runtimeSha256": "55ba1a2a5ef48104599a3a49e2e93d7ca3611036d87afafac6126fea7f69470e",
+      "sha256": "cc3aed028ff6ea74074e9b980581d8fb5a4a4aa5f984d044779c7fda44c3b450",
+      "runtimeSha256": [
+        "fa9e39233d2273b434749d7f80cfafd5e395caedd486605493d7e325a5f62b03"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.run.defeat",
       "states": [
         "ready"
@@ -15018,12 +15140,14 @@
       "runtimeFiles": [
         "音频/运行时MP3/SFX-RUN-RESULT-OPEN.mp3"
       ],
-      "sha256": "d728e1966d249d0cc202e3f7cba3cb3c88bc754c52c01aab80c509cdabfaf7f0",
-      "runtimeSha256": "fb97721702a7254a16317678f9abf121263bd3e150346d6eca43d28900494e73",
+      "sha256": "9481f1a81e8ebd3437d3e1cc57bbf6320a6953350ed6cb2c2b630f4bd098d4b3",
+      "runtimeSha256": [
+        "d309bbc263a860ebf45d3d65693cb351b0dfbdc9522cb85a8ccb0ffd187ce7a1"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.sfx.run.result.open",
       "states": [
         "ready"
@@ -15064,11 +15188,13 @@
         "音频/运行时MP3/BGM-HOME.mp3"
       ],
       "sha256": "58f568272ab7bae4f65a6c05daf53c6b87f4b7926123214bc5190aba200576d5",
-      "runtimeSha256": "5e8a0cac296ad9846e7624c81c7e98c191a64203daddb80aead349a1e2be1804",
+      "runtimeSha256": [
+        "5e8a0cac296ad9846e7624c81c7e98c191a64203daddb80aead349a1e2be1804"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.bgm.home",
       "states": [
         "ready"
@@ -15109,11 +15235,13 @@
         "音频/运行时MP3/BGM-RUN-BASE.mp3"
       ],
       "sha256": "9e17b634774670e933d1892efe06e4a4a6811d87cb88c8bc595d750f9079a39f",
-      "runtimeSha256": "063277c518b3981f579e671a1ac60940dbed4e070878dce05683bc4c5918e3fd",
+      "runtimeSha256": [
+        "063277c518b3981f579e671a1ac60940dbed4e070878dce05683bc4c5918e3fd"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.bgm.run.base",
       "states": [
         "ready"
@@ -15152,11 +15280,13 @@
         "音频/运行时MP3/BGM-RUN-TENSION.mp3"
       ],
       "sha256": "079aef888845fb43b687ce5149866e4d8da193d21364e9f79d67ec651dcf1a5f",
-      "runtimeSha256": "d082798c29792ebced789678fa67893d5e53c6e7ac8d6e8c2e2b7f51da7576ee",
+      "runtimeSha256": [
+        "d082798c29792ebced789678fa67893d5e53c6e7ac8d6e8c2e2b7f51da7576ee"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.bgm.run.tension",
       "states": [
         "ready"
@@ -15197,11 +15327,13 @@
         "音频/运行时MP3/BGM-BOSS.mp3"
       ],
       "sha256": "4a568031061d77d115e3dbccd9f5fc9a1fffff6f177011ea67cd166eac77d6b0",
-      "runtimeSha256": "20a67d2b1759a64c7d00dcb811a41079b78fd08f8b5c0b570f098802d0ff504d",
+      "runtimeSha256": [
+        "20a67d2b1759a64c7d00dcb811a41079b78fd08f8b5c0b570f098802d0ff504d"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.bgm.boss",
       "states": [
         "ready"
@@ -15242,11 +15374,13 @@
         "音频/运行时MP3/BGM-BOSS-CRITICAL.mp3"
       ],
       "sha256": "45477b3b9510d1d8d99fae80a79168d7b9cac9fdb2768d654d33c2b3ba75ff3d",
-      "runtimeSha256": "56b0813337cda7dd2ab826d5b65d65f9078c35f554ab6c41d5e19c6ab10db189",
+      "runtimeSha256": [
+        "56b0813337cda7dd2ab826d5b65d65f9078c35f554ab6c41d5e19c6ab10db189"
+      ],
       "license": "Original synthetic candidate generated in this workspace; no third-party samples.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-13T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "cueId": "cue.bgm.boss.critical",
       "states": [
         "ready"
@@ -15289,7 +15423,7 @@
       "license": "Logical no-op fallback; no audio file is shipped.",
       "authorOrVendor": "Warship asset pipeline",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "states": [
         "ready"
       ],
@@ -15326,7 +15460,7 @@
       ],
       "license": "Use only installed system font licenses.",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "status": "release_ready"
     },
     {
@@ -15339,7 +15473,7 @@
       ],
       "license": "Use only installed system font licenses.",
       "createdAt": "2026-10-14T00:00:00+08:00",
-      "contentVersion": "2.0.5-release",
+      "contentVersion": "2.0.6-material-repair",
       "status": "release_ready"
     }
   ]

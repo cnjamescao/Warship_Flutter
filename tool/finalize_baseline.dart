@@ -21,7 +21,7 @@ import 'dart:io';
 
 const String kTargetPath =
     'test/fixtures/replays/baseline_clear_v1.json';
-const String kExpectedContentVersion = '2.0.5-release';
+const String kExpectedContentVersion = '2.0.6-material-repair';
 const int kFixedStepFps = 60;
 
 void main(List<String> args) {

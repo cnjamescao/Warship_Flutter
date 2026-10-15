@@ -32,7 +32,7 @@ import 'package:warship_flutter/game/infrastructure/asset_loader.dart';
 import 'package:warship_flutter/game/infrastructure/audio_director.dart';
 import 'package:warship_flutter/game/infrastructure/audio_port.dart';
 
-const String kContentVersion = '2.0.5-release';
+const String kContentVersion = '2.0.6-material-repair';
 const int kCycles = 20;
 
 Map<String, Object?> readJson(String name) =>

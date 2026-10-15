@@ -1,6 +1,6 @@
 {
   "id": "enemies.v2",
-  "contentVersion": "2.0.5-release",
+  "contentVersion": "2.0.6-material-repair",
   "spawnY": -80,
   "spawnXPoints": [
     240,

@@ -6,7 +6,7 @@
 //     事件序列、候选卡、波次、分数、胜负**完全相同**。」
 //   §5.1：「`AC-06` 不得用人工操作判定…提交
 //     `test/fixtures/replays/baseline_clear_v1.json`，固定为
-//     `seed=0x4E454F4E0001`、`contentVersion=2.0.5-release` 和正式
+//     `seed=0x4E454F4E0001`、`contentVersion=2.0.6-material-repair` 和正式
 //     `素材/manifest.json` 的 SHA-256，并记录每个逻辑帧的 `InputFrame`、
 //     选卡 ID、风险门选项和期望的 `RunEnded` 摘要。」
 //

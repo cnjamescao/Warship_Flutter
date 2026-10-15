@@ -63,7 +63,7 @@ void main() {
           runId: 'rm',
           seed: 1,
           prngAlgorithm: 'pcg32-xsh-rr',
-          contentVersion: '2.0.5-release',
+          contentVersion: '2.0.6-material-repair',
           contentManifestSha256: '',
         ),
         random: Pcg32(1),

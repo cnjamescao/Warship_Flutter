@@ -676,20 +676,14 @@ class BattlefieldComponent extends Component {
         _drawEnemyHealthBar(canvas, enemy, center);
         continue;
       }
+      // ⚠️ **不再绘制程序化回退图形**（v2.0.6 接入说明）。
+      //
+      // 此前素材缺失时会退回"尖锐剪影"，玩家看到的三角形/五边形
+      // 正是它 —— 让人**以为游戏长这样**，而不是**以为出了问题**。
+      // 素材侧已交付 5 类敌机的独立图形，因此这里不再保留正常显示分支：
+      // 取不到图就**不画**，并计入诊断（`enemyFallbackDrawn`），
+      // 由资源就绪检查负责暴露问题。
       enemyFallbackDrawn++;
-
-      // 回退：深紫/洋红、尖锐剪影（与玩家的青蓝明确区分）。
-      _fill.color = enemy.hpRatio <= 0.25
-          ? const Color(0xFFFF5C8A) // 临界
-          : const Color(0xFF9B4BFF);
-
-      final path = Path()
-        ..moveTo(center.dx, center.dy + enemy.radius)
-        ..lineTo(center.dx + enemy.radius * 0.85, center.dy - enemy.radius * 0.6)
-        ..lineTo(center.dx, center.dy - enemy.radius * 0.2)
-        ..lineTo(center.dx - enemy.radius * 0.85, center.dy - enemy.radius * 0.6)
-        ..close();
-      canvas.drawPath(path, _fill);
 
       _drawEnemyHealthBar(canvas, enemy, center);
     }

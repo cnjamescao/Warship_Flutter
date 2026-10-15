@@ -1,8 +1,8 @@
 {
   "version": 1,
   "seed": 86059590221825,
-  "contentVersion": "2.0.5-release",
-  "manifestSha256": "records=197;version=2.0.5-release",
+  "contentVersion": "2.0.6-material-repair",
+  "manifestSha256": "records=197;version=2.0.6-material-repair",
   "result": "running",
   "score": 10470,
   "durationSeconds": 99.99999999999561,

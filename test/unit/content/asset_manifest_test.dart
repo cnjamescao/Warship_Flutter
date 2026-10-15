@@ -32,9 +32,9 @@ Map<String, Object?> loadBuiltManifest() {
 
 void main() {
   group('构建复制链路', () {
-    test('构建复制品存在且内容版本为 2.0.5-release', () {
+    test('构建复制品存在且内容版本为 2.0.6-material-repair', () {
       final json = loadBuiltManifest();
-      expect(json['contentVersion'], '2.0.5-release');
+      expect(json['contentVersion'], '2.0.6-material-repair');
       expect(json['schemaVersion'], AssetManifest.expectedSchemaVersion);
     });
 

@@ -5,7 +5,7 @@
 //
 //   「**AC-06 不得用人工操作判定。** WP-06 完成时，研发必须提交
 //     `test/fixtures/replays/baseline_clear_v1.json`，固定为
-//     `seed=0x4E454F4E0001`、`contentVersion=2.0.5-release` 和正式
+//     `seed=0x4E454F4E0001`、`contentVersion=2.0.6-material-repair` 和正式
 //     `素材/manifest.json` 的 SHA-256，并记录每个逻辑帧的 `InputFrame`、
 //     选卡 ID、风险门选项和期望的 `RunEnded` 摘要。该文件由技术负责人
 //     通过一次后冻结并纳入版本控制；以后每次构建都回放它，要求
@@ -27,7 +27,7 @@ import 'package:flutter_test/flutter_test.dart';
 const String kBaselinePath =
     'test/fixtures/replays/baseline_clear_v1.json';
 const int kExpectedSeed = 0x4E454F4E0001;
-const String kExpectedContentVersion = '2.0.5-release';
+const String kExpectedContentVersion = '2.0.6-material-repair';
 
 void main() {
   test('⚠️ 协议 §5.1 要求的 AC-06 固定回放基准尚未提交（已知缺口）', () {
@@ -59,7 +59,7 @@ void main() {
   });
 
   test('基准所用的 seed 与 contentVersion 与当前内容一致（§5.1 固定值）', () {
-    // §5.1 把基准固定为 seed=0x4E454F4E0001、contentVersion=2.0.5-release。
+    // §5.1 把基准固定为 seed=0x4E454F4E0001、contentVersion=2.0.6-material-repair。
     // 这里确认当前内容版本与之匹配 —— 否则夹具补齐后会被判定为版本不符。
     final config = jsonDecode(
       File('assets/config/v2/boss_aegis.json').readAsStringSync(),

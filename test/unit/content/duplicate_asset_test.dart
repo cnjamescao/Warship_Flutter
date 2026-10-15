@@ -67,8 +67,11 @@ void main() {
     // 127 个图形/UI Asset ID 中有 107 个（84%）与别的 ID 共用同一个文件，
     // 只有 20 个是独立美术。因此这里冻结的是**规模**：
     // 素材侧补齐后重复组数会大幅下降，本用例即会失败并提示更新。
+    // v2.0.6 已修复 5 类敌机的独立美术（107 → 102）。
+    // 其余跨语义重复（投射物、武器效果、升级图标、HUD 等）仍待素材侧处理，
+    // 产品负责人已明确 F-27 保持 P0 未关闭，因此这里继续冻结剩余规模。
     const knownDuplicateGroups = 42;
-    const knownDuplicateIds = 107;
+    const knownDuplicateIds = 102;
 
     final duplicateIds = shared.expand((g) => g).toSet();
 
@@ -96,5 +99,43 @@ void main() {
       reason: 'F-30 登记的重复规模已变化（现为 ${duplicateIds.length}）—— '
           '素材侧补齐了？请把本用例改为 expect(shared, isEmpty) 并关闭 F-30。',
     );
+  });
+
+  test('F-27（敌机部分）5 类基础敌机的运行时状态互不重复（v2.0.6 已交付）', () {
+    // 产品负责人 2026-10-16 确认：「5 类基础敌机均替换为独立原创图形与
+    // 状态素材…23 个运行时状态无重复」。
+    // 这里做**正向**确认：敌机之间不得共用任何运行时文件。
+    const enemies = <String>[
+      'GFX-EN-SCOUT',
+      'GFX-EN-WING',
+      'GFX-EN-SNIPER',
+      'GFX-EN-BOMBER',
+      'GFX-EN-SHIELD',
+    ];
+
+    final owner = <String, String>{}; // 文件路径 -> 持有它的敌机
+    final clashes = <String>[];
+    for (final id in enemies) {
+      final record = manifest.lookup(id);
+      expect(record, isNotNull, reason: '$id 未登记');
+      for (final path in record!.runtimeFiles) {
+        final previous = owner[path];
+        if (previous != null && previous != id) {
+          clashes.add('$path 同时属于 $previous 与 $id');
+        }
+        owner[path] = id;
+      }
+    }
+
+    expect(
+      clashes,
+      isEmpty,
+      reason: '敌机之间仍共用素材（F-27 的敌机部分未真正完成）：\n'
+          '${clashes.join("\n")}',
+    );
+    // 顺带确认敌机的状态文件确实各自独立（不只是登记不同、内容相同由
+    // T-ASSET-03 的重复检测负责）。
+    expect(owner.length, greaterThanOrEqualTo(20),
+        reason: '5 类敌机的运行时状态文件数量偏少（现 ${owner.length}）');
   });
 }

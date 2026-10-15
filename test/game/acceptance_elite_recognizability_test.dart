@@ -79,7 +79,7 @@ void main() {
   });
 
   test('§7.5「名称条」：UI-ELITE-NAMEPLATE 已入正式 manifest 并按 isElite 路由', () {
-    // 2.0.5-release 已补齐。原先这里是「缺口冻结」断言（断言不存在）；
+    // 2.0.6-material-repair 已补齐。原先这里是「缺口冻结」断言（断言不存在）；
     // 素材交付后按约定改为**正向接入断言**。
     final r = manifest.lookup('UI-ELITE-NAMEPLATE');
     expect(r, isNotNull, reason: '精英名称条应存在');

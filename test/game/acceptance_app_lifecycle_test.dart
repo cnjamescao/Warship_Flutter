@@ -59,7 +59,7 @@ GameRuntime _build() {
         runId: 'lifecycle',
         seed: 0x4E454F4E0001,
         prngAlgorithm: 'pcg32-xsh-rr',
-        contentVersion: '2.0.5-release',
+        contentVersion: '2.0.6-material-repair',
         contentManifestSha256: '',
       ),
       random: Pcg32(0x4E454F4E0001),
