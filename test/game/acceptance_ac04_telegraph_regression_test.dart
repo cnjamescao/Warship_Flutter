@@ -188,4 +188,76 @@ void main() {
           '不能据此判定通过）：$missing',
     );
   });
+
+  test('AC-04 补齐：集合外招式不得新增预警（F-19），且集合精确等于 F-07', () {
+    // F-19 裁决：「消除 AC-04 的"每种攻击"歧义，**不为 Wing/Shield 添加新预警**。
+    // 精确集合与 F-07 一致。」
+    //
+    // 因此集合**外**的招式（`wing_shot`、`shield_shot`、`scout_shot`）：
+    //   * 不得被 F-36 赋予预警视觉（配置里 `telegraphAssetId` 必须为空）；
+    //   * 其 `telegraphSeconds` 必须为 0（不得因本条新增预警时长）。
+    final enemies = _read('enemies.json');
+    final offenders = <String>[];
+    final observed = <String>{};
+
+    for (final raw in (enemies['enemies'] as List).cast<Map>()) {
+      final ap = (raw['attackProfile'] as Map?) ?? const <String, Object?>{};
+      final attackId = ap['attackId'] as String?;
+      if (attackId == null) {
+        continue;
+      }
+      observed.add(attackId);
+      final seconds = (ap['telegraphSeconds'] as num?)?.toDouble() ?? 0;
+      final assetId = ap['telegraphAssetId'] as String?;
+      if (kMandatoryTelegraphAttacks.contains(attackId)) {
+        continue;
+      }
+      if (seconds > 0 && assetId != null) {
+        offenders.add('$attackId：telegraphSeconds=$seconds，'
+            'telegraphAssetId=$assetId');
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason: '集合外招式被赋予了预警素材 —— F-19 明确"不为 Wing/Shield '
+          '添加新预警"，精确集合须与 F-07 一致：\n${offenders.join('\n')}',
+    );
+
+    // 集合的敌机部分必须**恰好**是这两个（Boss 四招由 boss_aegis.json 提供）。
+    const enemySideMandatory = <String>{'sniper_line', 'bomber_drop'};
+    final enemySide = observed.intersection(enemySideMandatory);
+    expect(
+      enemySide,
+      enemySideMandatory,
+      reason: 'F-07 集合中属于敌机的两招必须都存在：$enemySideMandatory',
+    );
+
+    // Boss 侧四招：配置里必须有非零预警时长。
+    final bossAttacks = <String, double>{
+      for (final raw
+          in ((_read('boss_aegis.json')['attacks'] as List?) ?? const [])
+              .cast<Map>())
+        (raw['attackId'] as String):
+            ((raw['telegraphSeconds'] as num?)?.toDouble() ?? 0),
+    };
+    for (final id in <String>[
+      'boss_fan',
+      'boss_charge',
+      'boss_ring',
+      'boss_laser',
+    ]) {
+      expect(
+        bossAttacks[id],
+        isNotNull,
+        reason: 'F-07 集合中的 $id 应在 boss_aegis.json 中登记',
+      );
+      expect(
+        bossAttacks[id]!,
+        greaterThan(0),
+        reason: '$id 必须有非零预警时长（F-07 强制预警集合）',
+      );
+    }
+  });
 }
