@@ -228,16 +228,15 @@ void main() {
       json: report.encode(),
     );
 
-    // 基线（**只读输入**）对比：仅作**信息性**记录。
-    // 按裁定第 5 条：**不**把开发机 p50/p95/p99 当作跨机器硬门槛。
-    final baseline = readPerfBaseline(kReportPath);
-    if (baseline != null) {
-      final baseP95 = (baseline['logicStepMs'] as Map?)?['p95'];
-      // ignore: avoid_print
-      print('[perf] 基线 p95=$baseP95，本次 p95='
-          '${(report.encode().contains('p95')) ? '见报告' : '-'}'
-          '（信息性，不作硬门槛）');
-    }
+    // **F-43**：基线（**只读输入**）对照 ——
+    // 先校验元数据可比性，再逐项输出「历史 / 本次 / 差值 / 比例」。
+    // 按裁定：**不作硬门槛**（开发机耗时不是跨机器性能门槛），
+    // 输出供验收记录与人工判读。
+    reportPerfComparison(
+      label: 'AC-07 逻辑侧（$kSeed）',
+      current: jsonDecode(report.encode()) as Map<String, Object?>,
+      baseline: readPerfBaseline(kReportPath),
+    );
 
     // 关键断言：**逻辑成本必须远低于帧预算**，给渲染留出余量。
     // 取 16.67 ms 的一半作为门槛 —— 逻辑与渲染大致是同一量级，

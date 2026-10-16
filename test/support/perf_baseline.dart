@@ -84,3 +84,120 @@ String _sha256Of(List<int> bytes) {
   // 见 test/support/sha256.dart。
   return sha256Hex(bytes);
 }
+
+/// **F-43**：基线元数据可比性校验项。
+///
+/// 负责人裁定（2026-10-16，F-43 / P2）：
+/// 「校验基线元数据，并输出"历史值 / 本次值 / 差值或比例"；
+///   **仍然不得把开发机耗时当作跨机器性能门槛**。」
+///
+/// 只有这些字段**全部一致**时，两次数值才可比 ——
+/// 否则（换 seed、换内容版本、换场景时长、换帧预算）数值差异
+/// 反映的是条件变化，而不是性能回归。
+const List<String> kBaselineComparableFields = <String>[
+  'seed',
+  'contentVersion',
+  'scenarioSeconds',
+  'simulatedFrames',
+  'frameBudgetMs',
+];
+
+/// 元数据比较结果。
+class PerfBaselineComparison {
+  const PerfBaselineComparison({
+    required this.comparable,
+    required this.mismatches,
+    required this.lines,
+  });
+
+  /// 元数据是否全部一致（一致才可比较数值）。
+  final bool comparable;
+
+  /// 不一致的字段说明。
+  final List<String> mismatches;
+
+  /// 「历史值 / 本次值 / 差值 / 比例」逐项输出行。
+  final List<String> lines;
+}
+
+/// 对比本次报告与只读基线：**先校验元数据，再逐项输出数值对照**。
+///
+/// **不抛断言失败** —— 按 F-43 要求，开发机耗时不是跨机器门槛；
+/// 本函数的输出用于**验收记录与人工判读**。
+PerfBaselineComparison comparePerfBaseline({
+  required Map<String, Object?> current,
+  required Map<String, Object?> baseline,
+}) {
+  final mismatches = <String>[];
+  for (final field in kBaselineComparableFields) {
+    final a = baseline[field];
+    final b = current[field];
+    if ('$a' != '$b') {
+      mismatches.add('$field: 基线=$a，本次=$b');
+    }
+  }
+
+  final lines = <String>[];
+  void row(String label, Object? base, Object? now) {
+    if (base is! num || now is! num) {
+      return;
+    }
+    final delta = now - base;
+    final ratio = base == 0 ? double.nan : now / base;
+    final ratioText = ratio.isFinite ? '${ratio.toStringAsFixed(2)}×' : 'n/a';
+    lines.add(
+      '  ${label.padRight(18)} 历史 ${base.toStringAsFixed(3)}'
+      '  本次 ${now.toStringAsFixed(3)}'
+      '  差值 ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(3)}'
+      '  比例 $ratioText',
+    );
+  }
+
+  final baseMs = (baseline['logicStepMs'] as Map?)?.cast<String, Object?>();
+  final nowMs = (current['logicStepMs'] as Map?)?.cast<String, Object?>();
+  for (final q in <String>['p50', 'p95', 'p99']) {
+    row('logicStepMs.$q', baseMs?[q], nowMs?[q]);
+  }
+
+  final basePeaks =
+      (baseline['objectPeaks'] as Map?)?.cast<String, Object?>() ??
+          const <String, Object?>{};
+  final nowPeaks =
+      (current['objectPeaks'] as Map?)?.cast<String, Object?>() ??
+          const <String, Object?>{};
+  for (final key in basePeaks.keys) {
+    row('objectPeaks.$key', basePeaks[key], nowPeaks[key]);
+  }
+
+  return PerfBaselineComparison(
+    comparable: mismatches.isEmpty,
+    mismatches: mismatches,
+    lines: lines,
+  );
+}
+
+/// 打印对照结果（信息性；**不作硬门槛**）。
+void reportPerfComparison({
+  required String label,
+  required Map<String, Object?> current,
+  required Map<String, Object?>? baseline,
+}) {
+  if (baseline == null) {
+    stdout.writeln('[perf-compare] $label：无历史基线（跳过对照）');
+    return;
+  }
+  final result = comparePerfBaseline(current: current, baseline: baseline);
+  stdout.writeln('[perf-compare] $label');
+  if (!result.comparable) {
+    stdout.writeln('  ⚠️ 元数据不一致，数值**不可比**（条件已变）：');
+    for (final m in result.mismatches) {
+      stdout.writeln('    - $m');
+    }
+  } else {
+    stdout.writeln('  元数据一致（seed/contentVersion/场景/帧预算）');
+  }
+  for (final line in result.lines) {
+    stdout.writeln(line);
+  }
+  stdout.writeln('  （信息性对照 —— 开发机耗时不是跨机器性能门槛，F-43）');
+}

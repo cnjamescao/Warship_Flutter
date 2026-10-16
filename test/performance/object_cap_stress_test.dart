@@ -263,21 +263,21 @@ void main() {
     // `UPDATE_PERF_BASELINE=1` 显式维护流程下重建。
     // 修复前此处直接改写 fixture —— 既弄脏工作区，又让后续
     // "读回同一文件"的断言恒为真、测不出回归。
-    final reportPath = writePerfReport(
+    writePerfReport(
       baselinePath: kReportPath,
       json: report.encode(),
     );
+    // 报告路径用于读回校验（见下方 reloaded 断言）。
 
-    // 基线（**只读输入**）对比：仅作**信息性**记录。
-    // 按裁定第 5 条：**不**把开发机 p50/p95/p99 当作跨机器硬门槛。
-    final baseline = readPerfBaseline(kReportPath);
-    if (baseline != null) {
-      final baseP95 = (baseline['logicStepMs'] as Map?)?['p95'];
-      // ignore: avoid_print
-      print('[perf] 基线 p95=$baseP95，本次 p95='
-          '${(report.encode().contains('p95')) ? '见报告' : '-'}'
-          '（信息性，不作硬门槛）');
-    }
+    // **F-43**：基线（**只读输入**）对照 ——
+    // 先校验元数据可比性，再逐项输出「历史 / 本次 / 差值 / 比例」。
+    // 按裁定：**不作硬门槛**（开发机耗时不是跨机器性能门槛），
+    // 输出供验收记录与人工判读。
+    reportPerfComparison(
+      label: 'AC-07 逻辑侧（$kSeed）',
+      current: jsonDecode(report.encode()) as Map<String, Object?>,
+      baseline: readPerfBaseline(kReportPath),
+    );
 
     // --- 断言 1：满载下逻辑成本仍给渲染留余量 ---
     expect(
