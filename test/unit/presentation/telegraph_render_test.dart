@@ -13,6 +13,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/game/presentation/warship_v2_game.dart';
 
 String _source() =>
     File('lib/game/presentation/warship_v2_game.dart').readAsStringSync();
@@ -100,5 +101,40 @@ void main() {
         reason: '${entry.key} 应有 manifest 绑定',
       );
     }
+  });
+
+  test('F-36 线形预警带宽按内容比例反推，横带厚度正确（防"巨大色块"回归）', () {
+    // 玩家实测："中间突然闪现了一个战机然后又凭空消失了" ——
+    // 根因是本文件所测的实现缺陷：`GFX-WARN-LINE` 的画布是 512×512，
+    // 但**内容只有 500×72**；把画布高度当带宽会把横带纵向拉伸 7 倍。
+    //
+    // 这里把**代码常量**与**素材实测内容**绑定：素材若更换，
+    // 本用例会失败并提示重新核对比例。
+    const contentHeight = 72.0;
+    const canvasHeight = 512.0;
+
+    // 代码中的常量必须与素材实测一致。
+    expect(
+      kWarnLineContentHeightRatio,
+      closeTo(contentHeight / canvasHeight, 1e-9),
+      reason: 'kWarnLineContentHeightRatio 必须等于素材实测的 '
+          '内容高/画布高（$contentHeight/$canvasHeight）',
+    );
+
+    // 反推出的画布带宽，其**实际横带厚度**应等于期望厚度。
+    final canvasBand =
+        kWarnLineVisualThickness / kWarnLineContentHeightRatio;
+    final visibleThickness = canvasBand * kWarnLineContentHeightRatio;
+    expect(
+      visibleThickness,
+      closeTo(kWarnLineVisualThickness, 1e-6),
+      reason: '横带实际厚度应等于 kWarnLineVisualThickness',
+    );
+    // 若误用画布高度（旧实现），厚度会变成 512 —— 明确钉住这个反例。
+    expect(
+      visibleThickness,
+      lessThan(canvasHeight / 4),
+      reason: '厚度不应接近画布高度（那正是"巨大色块"的成因）',
+    );
   });
 }

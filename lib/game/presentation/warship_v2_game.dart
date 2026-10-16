@@ -97,6 +97,23 @@ double clipRayToWorldLength(Vec2 origin, Vec2 aimTarget) {
   return maxT;
 }
 
+/// **F-36 修正**：`GFX-WARN-LINE` 的**内容只占画布中央一条横带**。
+///
+/// 该素材画布为 512×512，但内容框实测只有 **500×72**（宽高比 6.94）。
+/// `drawImageRect` 映射的是**整张画布**，所以若把画布高度直接当作带宽，
+/// 这条横带会被**纵向拉伸 512/72 ≈ 7.1 倍** —— 画出来是一个巨大色块。
+///
+/// 玩家实测反馈：「中间突然闪现了一个战机然后又凭空消失了」——
+/// 那就是被拉伸变形的预警带，不是敌机。**这是研发的实现缺陷**，
+/// 与素材无关（素材本身是正确的横带）。
+///
+/// 修正方式：按**内容比例**反推画布带宽，使横带的**实际厚度**
+/// 约为 [kWarnLineVisualThickness] 逻辑像素。
+const double kWarnLineVisualThickness = 16;
+
+/// `GFX-WARN-LINE` 内容框高度 / 画布高度 = 72 / 512。
+const double kWarnLineContentHeightRatio = 72 / 512;
+
 /// **F-36**：`bomber_drop` 危险区半径（协议 §3.2 明文：半径 90）。
 ///
 /// 预警与危险区共用该半径 —— 预警在 t=0 的 origin 处以收缩形态预示它。
@@ -874,20 +891,17 @@ class BattlefieldComponent extends Component {
     if (length <= 0.001) {
       return;
     }
-    final longest = math.max<double>(
-      image.width.toDouble(),
-      image.height.toDouble(),
-    );
-    if (longest <= 0) {
-      return;
-    }
-    final scale = (kHazardTelegraphRadius * 2 * kSpriteScale) / longest;
 
     canvas.save();
     canvas.translate(telegraph.origin.x, telegraph.origin.y);
     canvas.rotate(math.atan2(dy, dx));
-    // 素材沿射线拉伸；宽度按素材比例，整体受收缩系数影响。
-    final halfWidth = (image.height / 2) * scale * contraction;
+    // ⚠️ 带宽必须按**内容比例**反推，不能用画布高度。
+    //
+    // 参见 `kWarnLineContentHeightRatio` 的说明：画布是正方形，
+    // 内容只占 72/512，直接把画布高度当带宽会把横带纵向拉伸 7 倍。
+    final canvasBandHeight =
+        (kWarnLineVisualThickness / kWarnLineContentHeightRatio) * contraction;
+    final halfWidth = canvasBandHeight / 2;
     // 沿射线**裁切到逻辑世界边界**（协议 §3.2）。
     final drawLength = clipRayToWorldLength(
       telegraph.origin,
