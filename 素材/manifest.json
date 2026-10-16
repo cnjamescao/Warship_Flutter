@@ -2779,13 +2779,13 @@
     {
       "assetId": "GFX-HAZARD-BOMBER-ACTIVE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-HAZARD-BOMBER-ACTIVE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-HAZARD-BOMBER-ACTIVE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-HAZARD-BOMBER-ACTIVE__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "f2ab42c59b799b641f3a87c21ea8080a69a46bb6003fdb732c6ea1bb4150d362",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "f2ab42c59b799b641f3a87c21ea8080a69a46bb6003fdb732c6ea1bb4150d362"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -2833,7 +2833,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/投射物与预警/GFX-HAZARD-BOMBER-ACTIVE.png"
+      ]
     },
     {
       "assetId": "GFX-WARN-LINE",
@@ -2897,13 +2900,13 @@
     {
       "assetId": "GFX-WARN-CONE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WARN-CONE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WARN-CONE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WARN-CONE__default.png"
       ],
-      "sha256": "a23aa11325e21769384b3ee44a296f319ebe8d3c712f533b785788a27e51fdf7",
+      "sha256": "77d0c8c9380890fc519b45acc9d55b2678b973e72b510bd8d7da507a4011b338",
       "runtimeSha256": [
-        "a23aa11325e21769384b3ee44a296f319ebe8d3c712f533b785788a27e51fdf7"
+        "77d0c8c9380890fc519b45acc9d55b2678b973e72b510bd8d7da507a4011b338"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -2950,7 +2953,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/投射物与预警/GFX-WARN-CONE.png"
+      ]
     },
     {
       "assetId": "GFX-WARN-CIRCLE",
@@ -3129,13 +3135,13 @@
     {
       "assetId": "GFX-BOSS-LASER",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-LASER.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-LASER.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-LASER__default.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "9c59eea3330b89690ee1fd460c95ae92861a00c84d70ee8b74e95c1263782ad7",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd"
+        "9c59eea3330b89690ee1fd460c95ae92861a00c84d70ee8b74e95c1263782ad7"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -3182,7 +3188,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/战斗特效/GFX-BOSS-LASER.png"
+      ]
     },
     {
       "assetId": "GFX-PICKUP-ELITE-CORE",
@@ -3411,13 +3420,13 @@
     {
       "assetId": "GFX-ENEMY-BREACH-WARN",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-ENEMY-BREACH-WARN.svg",
+      "sourceFile": "图形/投射物与预警/GFX-ENEMY-BREACH-WARN.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-ENEMY-BREACH-WARN__default.png"
       ],
-      "sha256": "a23aa11325e21769384b3ee44a296f319ebe8d3c712f533b785788a27e51fdf7",
+      "sha256": "35089698f47b4b4d4cee51cf5b7027fba353c05cca861b68498ad928c790d4b6",
       "runtimeSha256": [
-        "a23aa11325e21769384b3ee44a296f319ebe8d3c712f533b785788a27e51fdf7"
+        "35089698f47b4b4d4cee51cf5b7027fba353c05cca861b68498ad928c790d4b6"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -3462,7 +3471,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/投射物与预警/GFX-ENEMY-BREACH-WARN.png"
+      ]
     },
     {
       "assetId": "UI-UP-PULSE-RATE",

@@ -83,6 +83,23 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 当前普通态跨语义重复仍是 P0/P1 阻塞项；研发不得用通用图、回退剪影、程序化圆点/三角形
 替代，也不得自行修改素材来规避问题。
 
+### 1.4 v2.0.7 战斗预警素材补丁（场景 1，2026-10-16，强制）
+
+针对 EN-SHIELD 在约 80–150 秒阶段出现的“敌机周围蓝色大矩阵”，以下四个资源已由独立
+透明 PNG 替换，均已同步至 `素材/图形/运行时PNG/`、`assets/images/v2/` 和 manifest：
+
+| Asset ID | 视觉定义 | 研发调用边界 |
+| --- | --- | --- |
+| `GFX-WARN-CONE` | 琥珀色扇形投射区，底部小顶点向前展开，含边缘虚线与距离弧 | 仅按 manifest 用于 `BossAttackTelegraphed + attackId=boss_fan`；不能替代 Shield 机体/正面护盾或子弹。 |
+| `GFX-HAZARD-BOMBER-ACTIVE` | 红橙色圆形落点危险区，双环与中心十字 | 仅在 `EN-BOMBER / bomber_drop` 已发射后显示；不能复用为预警锥形。 |
+| `GFX-BOSS-LASER` | 横向洋红 Boss 激光，左端发射器闪光、白色核心与不规则电弧边缘 | 仅在 `BossAttackFired / boss_laser` 期间显示；按攻击方向旋转。 |
+| `GFX-ENEMY-BREACH-WARN` | 琥珀下箭头与底部边界线 | 仅在 `EnemyBreached` 事件显示于 y=920 边线；不是通用预警或击毁特效。 |
+
+四者的运行时 SHA-256 已互不相同，且不再与任何上述场景资源共用。研发只需继续按现有
+`eventBindings` 路由，不改事件名、数值、路径或素材本体。特别地，若 `EN-SHIELD` 在
+80–150 秒阶段显示 `GFX-WARN-CONE`，则是代码绕过/违背 manifest 的错误：Shield 仅应显示
+`GFX-EN-SHIELD.frontShield` 作为正面防御视觉；研发须修复错误路由，不能修改本素材绑定。
+
 ## 2. 统一视觉、导出与元数据规范
 
 ### 2.1 视觉语言
