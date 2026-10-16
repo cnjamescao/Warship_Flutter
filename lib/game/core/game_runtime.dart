@@ -86,6 +86,23 @@ class Projectile {
 }
 
 /// 危险区（Bomber）。
+/// **F-36**：一条待执行的敌机攻击（不可变）。
+///
+/// 协议 §3.2 要求以 t=0 的 `origin`/`aimTarget`/`shape` 建立
+/// **不可变**待执行攻击 —— 因此这里持有 `EnemyAttackRequest` 本身
+/// （它已含这些字段），到期时用**原值**发射，不受期间敌机移动影响。
+class _PendingAttack {
+  const _PendingAttack({
+    required this.request,
+    required this.fireAtSeconds,
+  });
+
+  final EnemyAttackRequest request;
+
+  /// 到期时刻（逻辑秒）。
+  final double fireAtSeconds;
+}
+
 class HazardZone {
   HazardZone({
     required this.id,
@@ -286,6 +303,16 @@ class GameRuntime {
   final List<Projectile> _pendingProjectiles = <Projectile>[];
   final List<HazardZone> _pendingHazards = <HazardZone>[];
 
+  /// **F-36：待执行攻击队列**（协议 §3.2 时序合同）。
+  ///
+  /// `telegraphSeconds > 0` 的攻击在 t=0 只发预警，并以**当时的**
+  /// `origin`/`aimTarget`/`shape` 建立不可变待执行攻击；
+  /// 到期**同一步**才发 `EnemyAttackFired` 并生成伤害实体。
+  ///
+  /// 此前 Fired / Telegraphed / 生成实体发生在**同一步**，
+  /// 预警时长对玩家完全无效。
+  final List<_PendingAttack> _pendingAttacks = <_PendingAttack>[];
+
   /// 是否推进过逻辑（用于测试断言"冻结"）。
   int logicSteps = 0;
 
@@ -381,6 +408,10 @@ class GameRuntime {
 
     final dt = GameClock.fixedStepSeconds;
 
+    // **F-36**：待执行攻击到期判定（必须早于本步的碰撞与伤害结算，
+    // 以保证"到期同一步才发 Fired 并生成实体"）。
+    _servicePendingAttacks();
+
     // 3. 计时器：冲刺/护盾恢复/连击衰减。
     player.dash.tick(dt);
     if (player.dash.endLockRemaining > 0) {
@@ -458,6 +489,7 @@ class GameRuntime {
       _pendingVictoryClear = false;
       projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
       hazards.clear();
+      _pendingAttacks.clear();
       // 裁决要求"清除敌人" —— 不只是在飞的投射物。
       // 敌人本体接触也会造成 HP 伤害，只清投射物仍然会挨打。
       for (final enemy in enemies) {
@@ -502,6 +534,7 @@ class GameRuntime {
       if (trigger.row.clearEnemyBullets) {
         projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
         hazards.clear();
+      _pendingAttacks.clear();
       }
       if (trigger.spawns.isEmpty) {
         continue;
@@ -582,17 +615,9 @@ class GameRuntime {
       }
 
       for (final request in event.attackRequests) {
-        bus.emit(
-          EnemyAttackFired(
-            entityId: request.sourceId,
-            enemyId: request.enemyId,
-            attackId: request.attackId,
-            position: request.origin,
-            telegraphSeconds: request.telegraphSeconds,
-          ),
-          runtime,
-        );
-        // 有预警的招式先发预警事件，再生成投射物。
+        // **F-36 时序合同**（协议 §3.2）：
+        // `telegraphSeconds > 0` 的攻击在 t=0 **只发预警**，
+        // 并建立不可变待执行攻击；到期同一步才发 Fired 并生成实体。
         if (request.telegraphSeconds > 0) {
           bus.emit(
             EnemyAttackTelegraphed(
@@ -604,8 +629,16 @@ class GameRuntime {
             ),
             runtime,
           );
+          _pendingAttacks.add(
+            _PendingAttack(
+              request: request,
+              fireAtSeconds: combatSeconds + request.telegraphSeconds,
+            ),
+          );
+          continue;
         }
-        _spawnEnemyAttack(request);
+        // 无预警招式：立即发射。
+        _fireEnemyAttack(request);
       }
     }
   }
@@ -647,6 +680,55 @@ class GameRuntime {
       _onPlayerTookHpDamage(result.hpDamage);
     }
     _checkPlayerDeath();
+  }
+
+  /// **F-36**：发 `EnemyAttackFired` 并生成伤害实体。
+  ///
+  /// 无预警招式立即调用；有预警招式由待执行队列**到期同一步**调用。
+  void _fireEnemyAttack(EnemyAttackRequest request) {
+    bus.emit(
+      EnemyAttackFired(
+        entityId: request.sourceId,
+        enemyId: request.enemyId,
+        attackId: request.attackId,
+        position: request.origin,
+        telegraphSeconds: request.telegraphSeconds,
+      ),
+      runtime,
+    );
+    _spawnEnemyAttack(request);
+  }
+
+  /// **F-36**：推进待执行攻击 —— 到期则发 Fired 并生成实体。
+  ///
+  /// 取消/冻结规则（协议 §3.2「预警期间源敌机被移除、风险门开启、
+  /// 胜利锁定、重开或非 Playing 状态，待执行攻击必须取消/冻结且不得残留」）：
+  ///
+  /// * **非 Playing（含暂停）**：`_stepOnce` 在相位门禁处提前返回，
+  ///   本方法不会被调用 —— 即**冻结**（逻辑时钟不前进，到期时间不推移）。
+  /// * **源敌机被移除**：此处剔除（`enemies` 是存活列表）。
+  /// * **风险门 / 胜利锁定 / 重开 / 阶段切换 / 战前补给**：
+  ///   由各处既有的 `hazards.clear()` 旁一并 `_pendingAttacks.clear()`。
+  void _servicePendingAttacks() {
+    if (_pendingAttacks.isEmpty) {
+      return;
+    }
+    // 源敌机已移除 → 取消，不得残留。
+    _pendingAttacks.removeWhere(
+      (pending) => !enemies.any((enemy) => enemy.id == pending.request.sourceId),
+    );
+    // 到期 → 同一步发 Fired 并生成实体。
+    final due = <_PendingAttack>[];
+    _pendingAttacks.removeWhere((pending) {
+      if (combatSeconds >= pending.fireAtSeconds) {
+        due.add(pending);
+        return true;
+      }
+      return false;
+    });
+    for (final pending in due) {
+      _fireEnemyAttack(pending.request);
+    }
   }
 
   void _spawnEnemyAttack(EnemyAttackRequest request) {
@@ -725,6 +807,7 @@ class GameRuntime {
 
     projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
     hazards.clear();
+      _pendingAttacks.clear();
 
     // 过载的可选项＝稀有池 ∩ 当前可用卡（满级/互斥/前置不满足的要过滤）。
     final rarePool = <String>[];
@@ -887,6 +970,7 @@ class GameRuntime {
     // 清理所有普通敌弹/危险区 → HP +15 → 护盾 +20 → 冲刺为 0 时归 1 → 入场。
     projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
     hazards.clear();
+      _pendingAttacks.clear();
 
     final supply = system.applyPreEntrySupply(
       playerHealth: player.health,
@@ -941,6 +1025,7 @@ class GameRuntime {
       // 转阶段：清理所有敌方投射物与危险区（产品基线 §7.2）。
       projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
       hazards.clear();
+      _pendingAttacks.clear();
       bus.emit(
         BossPhaseChanged(phase: event.phaseChangedTo!.name),
         runtime,
@@ -1854,6 +1939,7 @@ class GameRuntime {
     enemies.clear();
     projectiles.clear();
     hazards.clear();
+      _pendingAttacks.clear();
     _pendingEnemies.clear();
     _pendingProjectiles.clear();
     _pendingHazards.clear();
