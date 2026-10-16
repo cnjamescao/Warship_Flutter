@@ -52,6 +52,11 @@ import 'input_gateway.dart';
 Vector2 viewfinderCenterForWorld() =>
     Vector2(kLogicalWidth / 2, kLogicalHeight / 2);
 
+/// **F-36**：`bomber_drop` 危险区半径（协议 §3.2 明文：半径 90）。
+///
+/// 预警与危险区共用该半径 —— 预警在 t=0 的 origin 处以收缩形态预示它。
+const double kHazardTelegraphRadius = 90;
+
 /// 玩家机体的正式素材 ID（F-26-02 的首屏关键资源）。
 const String kPlayerBaseAssetId = 'GFX-PLAYER-BASE';
 
@@ -445,6 +450,8 @@ class BattlefieldComponent extends Component {
     super.render(canvas);
     _maybeReportDrawCounters();
     _drawBackground(canvas);
+    // **F-36**：预警与危险区均处于**背景之上、实体之下**（协议 §3.2）。
+    _drawTelegraphs(canvas);
     _drawHazards(canvas);
     _drawEnemies(canvas);
     _drawProjectiles(canvas);
@@ -766,6 +773,103 @@ class BattlefieldComponent extends Component {
     }
   }
 
+
+  /// **F-36 第 3 步：预警绘制**（协议 §3.2）。
+  ///
+  /// 约束：
+  /// * 处于**背景之上、实体之下**（由 `render` 的调用顺序保证）；
+  /// * **只允许 manifest 绑定的正式素材**，**不得用 Canvas 几何替代资源** ——
+  ///   因此这里画的是素材本身，几何只用于**摆放与收缩**；
+  /// * 几何来自快照的 `TelegraphView`（t=0 锁定值），表现层不猜目标。
+  void _drawTelegraphs(Canvas canvas) {
+    for (final telegraph in snapshot.telegraphs) {
+      final assetId = _telegraphAssetFor(telegraph.attackId);
+      if (assetId == null) {
+        // 未登记的招式不绘 —— 不猜、不用几何替代。
+        continue;
+      }
+      // 动态收缩：预警期间由 1.35× 收到 1.0×（F-12 要求的"动态收缩"
+      // 由**素材缩放**实现，而不是 Canvas 画形状）。
+      final progress = telegraph.totalSeconds <= 0
+          ? 1.0
+          : (1 - telegraph.remainingSeconds / telegraph.totalSeconds)
+                .clamp(0.0, 1.0);
+      final contraction = 1.35 - 0.35 * progress;
+
+      if (telegraph.shape == 'line') {
+        _drawLineTelegraph(canvas, telegraph, assetId, contraction);
+      } else {
+        final center = Offset(telegraph.origin.x, telegraph.origin.y);
+        _drawSpriteOrNull(
+          canvas,
+          assetId,
+          'default',
+          center,
+          kHazardTelegraphRadius * contraction,
+        );
+      }
+    }
+  }
+
+  /// 线形预警：把素材沿 `origin → aimTarget` 射线铺开，
+  /// 并**裁切到逻辑世界边界**（协议 §3.2）。
+  void _drawLineTelegraph(
+    Canvas canvas,
+    TelegraphView telegraph,
+    String assetId,
+    double contraction,
+  ) {
+    final image = assets.imageFor(assetId, 'default');
+    if (image == null) {
+      return;
+    }
+    final dx = telegraph.aimTarget.x - telegraph.origin.x;
+    final dy = telegraph.aimTarget.y - telegraph.origin.y;
+    final length = math.sqrt(dx * dx + dy * dy);
+    if (length <= 0.001) {
+      return;
+    }
+    final longest = math.max<double>(
+      image.width.toDouble(),
+      image.height.toDouble(),
+    );
+    if (longest <= 0) {
+      return;
+    }
+    final scale = (kHazardTelegraphRadius * 2 * kSpriteScale) / longest;
+
+    canvas.save();
+    canvas.translate(telegraph.origin.x, telegraph.origin.y);
+    canvas.rotate(math.atan2(dy, dx));
+    // 素材沿射线拉伸；宽度按素材比例，整体受收缩系数影响。
+    final halfWidth = (image.height / 2) * scale * contraction;
+    final drawLength = length.clamp(0.0, kLogicalWidth + kLogicalHeight).toDouble();
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
+      Rect.fromLTWH(-kHazardTelegraphRadius, -halfWidth, drawLength, halfWidth * 2),
+      _spritePaint,
+    );
+    canvas.restore();
+  }
+
+  /// 按 manifest 绑定解析预警素材：`EnemyAttackTelegraphed` + `attackId`。
+  ///
+  /// 素材绑定属 manifest 路由 —— 表现层**只查表**，不猜、不硬编码。
+  String? _telegraphAssetFor(String attackId) {
+    for (final record in assets.manifest.records) {
+      if (!record.isVisual) {
+        continue;
+      }
+      for (final binding in record.eventBindings) {
+        if (binding.event == 'EnemyAttackTelegraphed' &&
+            binding.when['attackId'] == attackId) {
+          return record.assetId.value;
+        }
+      }
+    }
+    return null;
+  }
 
   void _drawHazards(Canvas canvas) {
     for (final hazard in snapshot.hazards) {
