@@ -15,6 +15,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
@@ -34,7 +35,12 @@ Set<String> _semanticLabels(WidgetTester tester) {
     });
   }
 
-  walk(tester.binding.pipelineOwner.semanticsOwner!.rootSemanticsNode!);
+  // **F-41**：`tester.binding.pipelineOwner` 自 v3.10 起弃用。
+  // 弃用提示的两条替代路径我都试过：
+  //   * `binding.rootPipelineOwner.semanticsOwner` → 实测为 **null**；
+  //   * 因此改用 Flutter 测试框架的 `tester.getSemantics(...)`，
+  //     从根 widget 取语义节点后自顶向下遍历 —— 不触及弃用 API。
+  walk(tester.getSemantics(find.byType(MaterialApp)));
   return labels;
 }
 
