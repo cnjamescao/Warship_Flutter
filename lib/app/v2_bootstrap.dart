@@ -147,6 +147,11 @@ class V2Bootstrap {
       catalogPlayer: catalog.player,
       enemyTunings: tunings,
       eliteAffixes: affixes,
+      // **F-38**：Boss 招式预警规格（attackId → 素材/形状/时长）。
+      // 素材取自 manifest 的 `BossAttackTelegraphed` **视觉**绑定
+      //（已核对：每个 Boss 招式只对应一个图形素材，故无歧义）；
+      // 形状与时长取自 `boss_aegis.json`。
+      bossTelegraphs: _buildBossTelegraphs(catalog),
       runtime: RunContext(
         identity: RunIdentity(
           runId: 'run-$seed-${DateTime.now().microsecondsSinceEpoch}',
@@ -237,4 +242,46 @@ class ContentFailure implements Exception {
 
   @override
   String toString() => message;
+}
+
+/// **F-38**：从 manifest 视觉绑定 + `boss_aegis.json` 组装 Boss 预警规格。
+///
+/// 为什么可以按 `attackId` 解析素材：**Boss 招式的视觉绑定是唯一的**
+///（实测：`boss_fan→GFX-WARN-CONE`、`boss_charge→GFX-WARN-CHARGE`、
+/// `boss_ring→GFX-WARN-CIRCLE`、`boss_laser→GFX-WARN-LASER`，
+/// 各只对应一个 `graphic`，另有同名 `sfx`）。
+/// 这与敌机侧不同（`sniper_line` 同时绑定机体与预警素材），
+/// 因此敌机侧必须用配置注入，而 Boss 侧此处解析是**无歧义**的。
+Map<String, BossTelegraphSpec> _buildBossTelegraphs(ContentCatalog catalog) {
+  final assetsByAttack = <String, String>{};
+  for (final record in catalog.manifest.records) {
+    if (!record.isVisual) {
+      continue;
+    }
+    for (final binding in record.eventBindings) {
+      if (binding.event == 'BossAttackTelegraphed') {
+        final attackId = binding.when['attackId'] as String?;
+        if (attackId != null) {
+          assetsByAttack[attackId] = record.assetId.value;
+        }
+      }
+    }
+  }
+
+  final out = <String, BossTelegraphSpec>{};
+  final raw = catalog.boss;
+  for (final attack in ((raw['attacks'] as List?) ?? const []).cast<Map>()) {
+    final attackId = attack['attackId'] as String?;
+    final assetId = assetsByAttack[attackId];
+    final seconds = (attack['telegraphSeconds'] as num?)?.toDouble() ?? 0;
+    if (attackId == null || assetId == null || seconds <= 0) {
+      continue;
+    }
+    out[attackId] = BossTelegraphSpec(
+      assetId: assetId,
+      shape: (attack['telegraphShape'] as String?) ?? 'circle',
+      totalSeconds: seconds,
+    );
+  }
+  return out;
 }

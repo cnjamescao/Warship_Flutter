@@ -103,6 +103,25 @@ class _PendingAttack {
   final double fireAtSeconds;
 }
 
+/// **F-38**：Boss 招式的预警规格（由内容配置注入运行时）。
+///
+/// 与敌机的 `telegraphAssetId` 同一设计：**素材与形状由 Domain 持有**，
+/// 表现层直接使用，不按 `attackId` 猜绑定。
+class BossTelegraphSpec {
+  const BossTelegraphSpec({
+    required this.assetId,
+    required this.shape,
+    required this.totalSeconds,
+  });
+
+  final String assetId;
+
+  /// `cone` | `line` | `circle`。
+  final String shape;
+
+  final double totalSeconds;
+}
+
 class HazardZone {
   HazardZone({
     required this.id,
@@ -179,6 +198,7 @@ class GameRuntime {
     this.breachEliteHpDamage = 15,
     this.upgradeSystem,
     this.bossSystem,
+    this.bossTelegraphs = const <String, BossTelegraphSpec>{},
     this.riskGateSystem,
     this.audioDirector,
     this.hapticsDirector,
@@ -214,6 +234,9 @@ class GameRuntime {
 
   /// Boss 系统（可为 null 表示本局不启用 Boss）。
   final BossSystem? bossSystem;
+
+  /// **F-38**：Boss 招式的预警规格（attackId → 规格）。
+  final Map<String, BossTelegraphSpec> bossTelegraphs;
 
   /// 风险门系统（可为 null 表示本局不启用风险门）。
   final RiskGateSystem? riskGateSystem;
@@ -1925,6 +1948,22 @@ class GameRuntime {
       projectiles: List<EntityView>.unmodifiable(projectileViews),
       hazards: List<HazardView>.unmodifiable(hazardViews),
       telegraphs: List<TelegraphView>.unmodifiable(<TelegraphView>[
+        // **F-38**：Boss 招式的预警也以独立 `TelegraphView` 公开。
+        // 几何取自 `BossState` 在 **t=0 锁定**的 origin/aim；
+        // 素材与形状来自内容配置（`bossTelegraphs`），表现层不猜绑定。
+        if (boss != null &&
+            boss!.telegraphRemaining > 0 &&
+            boss!.currentAttack != null &&
+            bossTelegraphs.containsKey(boss!.currentAttack))
+          TelegraphView(
+            attackId: boss!.currentAttack!,
+            shape: bossTelegraphs[boss!.currentAttack!]!.shape,
+            origin: boss!.telegraphOrigin,
+            aimTarget: boss!.telegraphAim,
+            remainingSeconds: boss!.telegraphRemaining,
+            totalSeconds: bossTelegraphs[boss!.currentAttack!]!.totalSeconds,
+            assetId: bossTelegraphs[boss!.currentAttack!]!.assetId,
+          ),
         for (final pending in _pendingAttacks)
           TelegraphView(
             attackId: pending.request.attackId,

@@ -148,6 +148,13 @@ class BossState {
   /// 当前招式（null 表示在冷却/等待）。
   String? currentAttack;
 
+  /// **F-38**：预警几何在 **t=0 锁定**（协议 §3.2 对预警的通用要求）。
+  ///
+  /// 若不锁定，预警会逐帧跟随玩家，玩家就失去了"看到预警后躲避"的机会 ——
+  /// 预警时长也就失去意义。
+  Vec2 telegraphOrigin = Vec2.zero;
+  Vec2 telegraphAim = Vec2.zero;
+
   /// 当前招式的预警剩余时间（>0 表示正在预警）。
   double telegraphRemaining = 0;
 
@@ -518,6 +525,9 @@ class BossSystem {
     state.loopIndex = (state.loopIndex + 1) % config.loop.length;
     state.currentAttack = attackId;
     state.telegraphRemaining = _telegraphFor(attackId);
+    // F-38：在预警开始这一步**锁定**几何（源点=Boss，瞄准点=当时的玩家位置）。
+    state.telegraphOrigin = state.position;
+    state.telegraphAim = playerPosition;
 
     final event = _buildEvent(
       state: state,
