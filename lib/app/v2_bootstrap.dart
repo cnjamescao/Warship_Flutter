@@ -1,9 +1,36 @@
 // ================================================================
 // lib/app/v2_bootstrap.dart —— v2.0 启动引导
 // ================================================================
-// 依据：Spec/02_技术/v2.0/02_运行时与数据协议.md §1
+// **架构位置**：App 层。**依赖装配的唯一入口** ——
+//   把「磁盘上的内容配置 + 素材」翻译成「Domain 可直接使用的运行时对象」。
+//
+// **依据**：Spec/02_技术/v2.0/02_运行时与数据协议.md §1
 //   「加载器必须在进入 Briefing 前完成版本、hash 和 ID 交叉引用校验；
 //     三者任一不一致均应停留在 Loading 并显示可重试错误。」
+//
+// **与谁交互**：
+//   * 上游：`main.dart` / `V2AppFlow`
+//   * 下游：`ContentCatalog`（内容）→ 各 Domain 系统的构造
+//   * 产出：`GameRuntime`（含 `DirectorSystem` / `EnemySystem` / `BossSystem` …）
+//
+// **⚠️ 本文件最重要的易错点（真实事故，务必先读）**：
+//   `buildRuntime` 必须把**每一个** Domain 系统都传进 `GameRuntime`。
+//   曾经漏传 `bossSystem` —— 而 `_startBossFight()` 的首行守卫正是
+//   `if (bossSystem == null) return;`，于是**150 秒的 bossEntry 波次行
+//   被正常触发，但 Boss 入场被静默跳过**：玩家永远打不到 Boss、
+//   **永远无法通关**（F-39，P0 发布阻塞）。
+//   该缺陷的表现极具迷惑性：时间正常推进、行索引正常走到 31/31，
+//   只有 Boss 不出现。最终靠"行已消费但实体不存在"这一对照才定位。
+//   **因此：新增/修改 Domain 系统时，必须确认此处同步注入。**
+//
+// **关键约束**：
+//   * 内容校验失败必须**拒绝开局**，不得以默认值兜底 ——
+//     配置错误要在加载期暴露，而不是运行期变成难查的玩法异常
+//   * `bossTelegraphs` 的素材按 manifest 的 `BossAttackTelegraphed`
+//     **视觉**绑定解析；Boss 侧该绑定**唯一**（每招只对应一个 graphic），
+//     故按 `attackId` 解析**无歧义**。敌机侧则**不可**这样做 ——
+//     `sniper_line` 同时绑定机体与预警两张图，按 attackId 会命中机体
+//     （F-38 的事故），故敌机侧必须由配置注入 `telegraphAssetId`。
 //
 // 这里只从 `assets/config/v2/` 读取（由 `tool/build_v2_assets.dart`
 // 从仓库根目录 素材/ 复制而来），不接触 v1.x 的 assets/images、assets/audio。
