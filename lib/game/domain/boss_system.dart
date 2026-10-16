@@ -166,6 +166,14 @@ class BossState {
   /// 狂暴是否已触发（唯一变化：激光扫射时长）。
   bool enraged = false;
 
+  /// **AC-05 / §7.5**：Boss「濒毁」音画是否已播报 —— **一次性闩锁**。
+  ///
+  /// §7.5 明文：「`sfx.boss.critical` **最多一次**」。
+  /// 此前 `BossCriticalReached` 直接跟随 `weakpointActive`（核心暴露是一个
+  /// **会来回切换**的状态），因此一局内会重复播报（实测自然战斗中 3 次）。
+  /// 改为首次进入即置位、此后不再播报。
+  bool criticalAnnounced = false;
+
   /// 入场期间与阶段转场期间不可受击。
   bool get invulnerable =>
       !hasEntered || transitionInvulnerableRemaining > 0 || entryRemaining > 0;
@@ -521,10 +529,15 @@ class BossSystem {
     // 无预警的招式（核心暴露）立即进入执行期。
     if (state.telegraphRemaining <= 0) {
       _beginAction(state, attackId);
+      // 仅在**首次**暴露核心时上报「濒毁」（§7.5：最多一次）。
+      final announceCritical = state.weakpointActive && !state.criticalAnnounced;
+      if (announceCritical) {
+        state.criticalAnnounced = true;
+      }
       return BossStepEvent(
         telegraphStarted: event,
         attackFired: event,
-        weakpointOpened: state.weakpointActive,
+        weakpointOpened: announceCritical,
       );
     }
 
