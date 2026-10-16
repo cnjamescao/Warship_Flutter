@@ -52,6 +52,51 @@ import 'input_gateway.dart';
 Vector2 viewfinderCenterForWorld() =>
     Vector2(kLogicalWidth / 2, kLogicalHeight / 2);
 
+/// **F-36 第 5 步**：把一条射线裁切到逻辑世界矩形 `(0,0)..(W,H)`。
+///
+/// 协议 §3.2：「`sniper_line` 的 origin/aimTarget 均在 t=0 锁定，
+/// **线形预警沿该射线裁切到逻辑世界边界**」。
+///
+/// 返回从 `origin` 沿 `aimTarget` 方向、**仍位于世界内**的最大长度。
+/// 起点已在世界外时返回 0（该预警不出现在可视区内）。
+///
+/// 抽成纯函数是为了能直接测（不必渲染画面）。
+double clipRayToWorldLength(Vec2 origin, Vec2 aimTarget) {
+  final dx = aimTarget.x - origin.x;
+  final dy = aimTarget.y - origin.y;
+  final length = math.sqrt(dx * dx + dy * dy);
+  if (length <= 1e-6) {
+    return 0;
+  }
+  final ux = dx / length;
+  final uy = dy / length;
+
+  // 起点已在世界外 → 不绘制（裁切结果为 0）。
+  if (origin.x < 0 ||
+      origin.x > kLogicalWidth ||
+      origin.y < 0 ||
+      origin.y > kLogicalHeight) {
+    return 0;
+  }
+
+  // 分别求与四条边界正向相交的最小 t。
+  var maxT = length;
+  void limit(double direction, double distanceToBoundary) {
+    if (direction > 1e-9) {
+      final t = distanceToBoundary / direction;
+      if (t >= 0 && t < maxT) {
+        maxT = t;
+      }
+    }
+  }
+
+  limit(ux, kLogicalWidth - origin.x);
+  limit(-ux, origin.x);
+  limit(uy, kLogicalHeight - origin.y);
+  limit(-uy, origin.y);
+  return maxT;
+}
+
 /// **F-36**：`bomber_drop` 危险区半径（协议 §3.2 明文：半径 90）。
 ///
 /// 预警与危险区共用该半径 —— 预警在 t=0 的 origin 处以收缩形态预示它。
@@ -843,7 +888,15 @@ class BattlefieldComponent extends Component {
     canvas.rotate(math.atan2(dy, dx));
     // 素材沿射线拉伸；宽度按素材比例，整体受收缩系数影响。
     final halfWidth = (image.height / 2) * scale * contraction;
-    final drawLength = length.clamp(0.0, kLogicalWidth + kLogicalHeight).toDouble();
+    // 沿射线**裁切到逻辑世界边界**（协议 §3.2）。
+    final drawLength = clipRayToWorldLength(
+      telegraph.origin,
+      telegraph.aimTarget,
+    );
+    if (drawLength <= 0) {
+      canvas.restore();
+      return;
+    }
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
