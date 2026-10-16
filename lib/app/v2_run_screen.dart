@@ -417,30 +417,46 @@ class _HudOverlay extends StatelessWidget {
     Widget child, {
     bool alignBottom = false,
   }) {
-    final offset = _toScreen(x, y);
+    final scale = viewport.scale;
     return Positioned(
       left: 0,
       right: 0,
-      top: alignBottom ? null : offset.dy,
-      bottom: alignBottom ? (viewport.viewportSize.height - offset.dy) : null,
+      // 顶部元素：距窗口顶 = 逻辑 y × scale（y 就是距世界顶的距离）。
+      top: alignBottom ? null : y * scale,
+      // 底部元素：距窗口底 = (逻辑世界高 − y) × scale，即**距世界底的边距**。
+      //
+      // ⚠️ 这里此前写的是「窗口高 − y × scale」—— 那等于把元素锚在
+      // **距窗口顶** y×scale 的位置，于是窗口越高越窄，它越往中间浮
+      //（1000×1000 的窗口下浮到距底 456px，接近窗口中央；
+      //  1920×1080 全屏时恰好是 36px 所以看不出问题）。
+      // 现在改为「距窗口底的固定边距」，与窗口尺寸无关 ——
+      // 与顶部元素对称，HUD 四周都贴窗口边。
+      bottom: alignBottom
+          ? ((kLogicalHeight - y) * scale).clamp(0.0, double.infinity)
+          : null,
       child: Center(child: child),
     );
   }
 
+  /// 右侧元素：距窗口右 = (逻辑世界宽 − x) × scale，即**距世界右边缘的边距**。
+  ///
+  /// ⚠️ 与底部同源的问题：此前写「窗口宽 − x × scale」= 锚在**距窗口左**
+  /// x×scale 处，于是超宽窗口（世界被居中留边）下元素会远离右边缘。
   Widget _atRightTop(double x, double y, Widget child) {
-    final offset = _toScreen(x, y);
+    final scale = viewport.scale;
     return Positioned(
-      right: viewport.viewportSize.width - offset.dx,
-      top: offset.dy,
+      right: ((kLogicalWidth - x) * scale).clamp(0.0, double.infinity),
+      top: y * scale,
       child: child,
     );
   }
 
+  /// 右下角元素：两边都用**距窗口边的固定边距**，与窗口尺寸无关。
   Widget _atRightBottom(double x, double y, Widget child) {
-    final offset = _toScreen(x, y);
+    final scale = viewport.scale;
     return Positioned(
-      right: viewport.viewportSize.width - offset.dx,
-      bottom: viewport.viewportSize.height - offset.dy,
+      right: ((kLogicalWidth - x) * scale).clamp(0.0, double.infinity),
+      bottom: ((kLogicalHeight - y) * scale).clamp(0.0, double.infinity),
       child: child,
     );
   }

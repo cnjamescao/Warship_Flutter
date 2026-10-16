@@ -944,15 +944,15 @@
     {
       "assetId": "GFX-PLAYER-SHIELD-HIT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-PLAYER-SHIELD-HIT.svg",
+      "sourceFile": "图形/角色与敌机/GFX-PLAYER-SHIELD-HIT.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-PLAYER-SHIELD-HIT__active.png",
         "图形/运行时PNG/战斗特效/GFX-PLAYER-SHIELD-HIT__end.png"
       ],
-      "sha256": "4074ae5c40c86cc20d063202321977d3285344c757bc9e90fd0b43f99cd7d47a",
+      "sha256": "afa04aa01fb3f84c6de605d9c7f0bf3365c783710b65f4526ab177bcf62a0025",
       "runtimeSha256": [
-        "4074ae5c40c86cc20d063202321977d3285344c757bc9e90fd0b43f99cd7d47a",
-        "82f90731c85c37853fce6551807c5ebbc5e398a6ef177be9cc2b1e596766bc68"
+        "afa04aa01fb3f84c6de605d9c7f0bf3365c783710b65f4526ab177bcf62a0025",
+        "e52ab5f278a7557704473ad643aff5cdef930c1a86417774968ef7c23673176f"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -1016,7 +1016,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/角色与敌机/GFX-PLAYER-SHIELD-HIT.png"
+      ]
     },
     {
       "assetId": "GFX-PLAYER-HIT-FLASH",
