@@ -236,7 +236,7 @@ Boss P3 开始、技能冷却结束、且 HP ≤10% 时，下一次激光扫射�
 - v2.0 首发语言仅简体中文；所有面向玩家的展示文案（含可访问语义标签）必须以 key 管理并经 `catalog.text(key, params)` 读取，唯一正文来源为 `strings_zh_CN.json`。运行时代码不得保留玩家可见硬编码文字，也不得以显示 key 或硬编码文本作为缺 key 回退；英语/RTL 不是本版本验收项。
 - HUD 固定位置：左上 HP/护盾；顶部中间 Boss/倒计时；右上暂停和连击；底部中间经验/LV；右下冲刺。详细 Asset ID 见素材清单。
 - 本地持久化键固定为：`settings.musicEnabled`、`settings.sfxEnabled`、`settings.reduceMotion`、`settings.hapticsEnabled`、`record.highScore`、`record.bestClearSeconds`、`schemaVersion`。触感在支持的原生移动端首次默认开，在 Web/macOS 默认关；只在实际 HP 受伤、确认风险门、Boss 击败时触发，平台不支持时静默 no-op。无任何账号和网络请求。
-- 结算评价：胜利为 Gold；Boss HP ≥35% 的失败为 Silver；其余为 Bronze。只显示成绩，不提供局外战力或抽奖。
+- 结算评价：胜利为 Gold；失败且 Boss **剩余 HP <35%**（即已进入 P3）为 Silver；其余失败为 Bronze。不产生 none。只显示成绩，不提供局外战力或抽奖。
 
 ## 9. 最终验收用例
 
