@@ -396,6 +396,9 @@ class BattlefieldComponent extends Component {
   /// 是精英名称条/光环，但推测不等于事实。这里直接把**每一帧真正画了
   /// 哪些资源、画了多大**记下来 —— 大尺寸资源一目了然。
   final Map<String, double> drawnAssetMaxRadius = <String, double>{};
+
+  /// **F-36 诊断**：本帧线形/圆形预警的**实际绘制几何**。
+  final List<String> telegraphDrawLog = <String>[];
   Map<String, double> _lastFrameDrawn = <String, double>{};
 
   /// 把实体 ID 解析成当前坐标（供特效池定位）。
@@ -503,7 +506,9 @@ class BattlefieldComponent extends Component {
       '  玩家：贴图 $playerSpriteDrawn / 占位 $playerFallbackDrawn\n'
       '  敌机：贴图 $enemySpriteDrawn / 占位 $enemyFallbackDrawn\n'
       '  （占位 > 0 说明贴图路径没走通）\n'
-      '实际绘制过的资源（按绘制半径从大到小，前 12）：\n$bigList',
+      '实际绘制过的资源（按绘制半径从大到小，前 12）：\n$bigList\n'
+      '本帧预警绘制几何：\n'
+      '${telegraphDrawLog.isEmpty ? "    （本帧无预警）" : telegraphDrawLog.map((e) => "    $e").join("\n")}',
     );
   }
 
@@ -844,6 +849,7 @@ class BattlefieldComponent extends Component {
   ///   因此这里画的是素材本身，几何只用于**摆放与收缩**；
   /// * 几何来自快照的 `TelegraphView`（t=0 锁定值），表现层不猜目标。
   void _drawTelegraphs(Canvas canvas) {
+    telegraphDrawLog.clear();
     for (final telegraph in snapshot.telegraphs) {
       final assetId = _telegraphAssetFor(telegraph.attackId);
       if (assetId == null) {
@@ -868,6 +874,12 @@ class BattlefieldComponent extends Component {
           'default',
           center,
           kHazardTelegraphRadius * contraction,
+        );
+        telegraphDrawLog.add(
+          'circle ${telegraph.attackId}: at=('
+          '${telegraph.origin.x.toStringAsFixed(0)},'
+          '${telegraph.origin.y.toStringAsFixed(0)}) '
+          'r=${(kHazardTelegraphRadius * contraction).toStringAsFixed(0)}',
         );
       }
     }
@@ -911,13 +923,34 @@ class BattlefieldComponent extends Component {
       canvas.restore();
       return;
     }
+    final dest = Rect.fromLTWH(
+      -kHazardTelegraphRadius,
+      -halfWidth,
+      drawLength,
+      halfWidth * 2,
+    );
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
-      Rect.fromLTWH(-kHazardTelegraphRadius, -halfWidth, drawLength, halfWidth * 2),
+      dest,
       _spritePaint,
     );
     canvas.restore();
+
+    // **F-36 诊断**：记录线形预警的**实际绘制几何**。
+    // 玩家反馈"还是一个战机凭空出来再旋转"，而静态检查无法回答
+    // "画出来是什么形状" —— 因此把真实参数写进日志，用数据定位。
+    telegraphDrawLog.add(
+      'line ${telegraph.attackId}: origin=('
+      '${telegraph.origin.x.toStringAsFixed(0)},'
+      '${telegraph.origin.y.toStringAsFixed(0)}) '
+      'aim=(${telegraph.aimTarget.x.toStringAsFixed(0)},'
+      '${telegraph.aimTarget.y.toStringAsFixed(0)}) '
+      'len=${drawLength.toStringAsFixed(0)} '
+      'band=${(halfWidth * 2).toStringAsFixed(0)} '
+      'rot=${math.atan2(dy, dx).toStringAsFixed(2)}rad '
+      'img=${image.width}x${image.height}',
+    );
   }
 
   /// 按 manifest 绑定解析预警素材：`EnemyAttackTelegraphed` + `attackId`。
