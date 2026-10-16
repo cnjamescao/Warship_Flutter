@@ -911,6 +911,17 @@ class BattlefieldComponent extends Component {
           center,
           kHazardTelegraphRadius * contraction,
         );
+        final circleSignature =
+            'CIRCLE ${telegraph.attackId} '
+            'r=${(kHazardTelegraphRadius * contraction).round()} '
+            'at=(${telegraph.origin.x.round()},${telegraph.origin.y.round()})';
+        drawHistory.putIfAbsent(
+          circleSignature,
+          () => 't=${(_renderFrames / 60).toStringAsFixed(1)}s',
+        );
+        drawHistoryCount[circleSignature] =
+            (drawHistoryCount[circleSignature] ?? 0) + 1;
+
         telegraphDrawLog.add(
           'circle ${telegraph.attackId}: at=('
           '${telegraph.origin.x.toStringAsFixed(0)},'
@@ -976,6 +987,21 @@ class BattlefieldComponent extends Component {
     // **F-36 诊断**：记录线形预警的**实际绘制几何**。
     // 玩家反馈"还是一个战机凭空出来再旋转"，而静态检查无法回答
     // "画出来是什么形状" —— 因此把真实参数写进日志，用数据定位。
+    // ⚠️ **必须也进累积历史**：线形预警不走 `_drawSpriteOrNull`，
+    // 因此它**不会**被上面的贴图历史记录 —— 这正是我上一版日志
+    // 无法回答"旋转的战机是什么"的原因（唯一嫌疑对象漏记了）。
+    final lineSignature =
+        'LINE ${telegraph.attackId} len=${drawLength.round()} '
+        'band=${(halfWidth * 2).round()} '
+        'rot=${math.atan2(dy, dx).toStringAsFixed(2)} '
+        'img=${image.width}x${image.height}';
+    drawHistory.putIfAbsent(
+      lineSignature,
+      () => 't=${(_renderFrames / 60).toStringAsFixed(1)}s',
+    );
+    drawHistoryCount[lineSignature] =
+        (drawHistoryCount[lineSignature] ?? 0) + 1;
+
     telegraphDrawLog.add(
       'line ${telegraph.attackId}: origin=('
       '${telegraph.origin.x.toStringAsFixed(0)},'
