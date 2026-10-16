@@ -22,6 +22,7 @@ import '../game/core/game_runtime.dart';
 import '../game/core/phase_controller.dart';
 import '../game/core/random_source.dart';
 import '../game/core/run_context.dart';
+import '../game/domain/boss_system.dart';
 import '../game/domain/director_system.dart';
 import '../game/domain/enemy_system.dart';
 import '../game/domain/risk_gate_system.dart';
@@ -172,6 +173,12 @@ class V2Bootstrap {
         eliteRules: const <String, int>{'hp': 6, 'xp': 3, 'score': 8},
         totalEnemyCap: enemyCap,
       ),
+      // **F-39 修复**：`bossSystem` 此前**从未传入** —— 而
+      // `_startBossFight()` 的第一行守卫是 `if (bossSystem == null) return;`，
+      // 因此**真实应用里 Boss 永远不会生成**，玩家永远无法通关。
+      // 这是"声明了没接上"类缺陷：150 秒的 `bossEntry` 波次行被正常触发
+      //（诊断实测 `nextRowIndex` 走到 31/31），但入场处理被静默跳过。
+      bossSystem: BossSystem(),
       enemySystem: EnemySystem(breachWarningY: 920, breachRemoveY: 1140),
       pulse: PulseWeapon(),
       breachNormalHpDamage: (breach['normalHpDamage'] as num?)?.toInt() ?? 8,

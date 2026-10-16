@@ -58,27 +58,26 @@ void main() {
       }
     }
 
-    // ⚠️ **已知缺陷冻结（F-39）**：合同测试**抓到了真实缺陷** ——
-    // 见 docs/研发反馈意见.md F-39。诊断实测：
+    // **正式正向合同**（负责人批复）：
+    // 「真实 V2AppFlow 与真实目录配置下，**150 秒后 Boss 已入场**，
+    //   190 秒前未死亡/未胜利**不得进入 Result**。」
     //
-    //     combatSeconds=180.1  boss=false  victory=false
-    //     phaseCount={playing: 10794, upgradeDraft: 6, riskGate: 600}
-    //
-    // 即：**逻辑时间推进到 180 秒、相位仍是 playing，但 Boss 从未出现**
-    //（产品基线：「Boss 在 150 秒出现」）。修复前不得把本条写成通过，
-    // 因此这里**冻结现状**：断言"当前确实没有 Boss"，并在缺陷修复后
-    // 由本用例失败提示改为正向断言。
+    // F-39 的根因是 `V2Bootstrap` **从未传入 `bossSystem`**，
+    // 而 `_startBossFight()` 的首行守卫是 `if (bossSystem == null) return;`
+    // —— 于是 150 秒的 `bossEntry` 行虽被正常触发（诊断实测
+    // `nextRowIndex` 走到 31/31），入场处理却被**静默跳过**。
+    // 修复后实测 `bossSeenAt = 150.0`（精确命中产品基线的 150 秒）。
     expect(
       bossSeenAt,
-      -1,
-      reason: 'F-39 登记的「Boss 未在 150 秒出现」缺陷已消失 —— '
-          '说明已修复！请把本用例改回正向断言：'
-          'expect(bossSeenAt, greaterThan(0)) 且 bossSeenAt <= 155，'
-          '并关闭 F-39。',
+      greaterThan(0),
+      reason: '150 秒后必须已出现 Boss（产品基线：Boss 在 150 秒出现）—— '
+          '实际 bossSeenAt=$bossSeenAt',
     );
-    // ignore: avoid_print
-    print('F-39 冻结：190 秒内 Boss 未出现（combatSeconds 已到 '
-        '${rt.combatSeconds.toStringAsFixed(1)}，victory=${rt.victory}）');
+    expect(
+      bossSeenAt,
+      lessThanOrEqualTo(155),
+      reason: 'Boss 应在 150 秒左右出现 —— 实际 $bossSeenAt 秒',
+    );
 
     // 合同第二半：**玩家存活**时不得提前进入 Result。
     //

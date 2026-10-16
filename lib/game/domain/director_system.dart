@@ -175,6 +175,26 @@ class DirectorSystem {
   /// 精英倍率（供生成时使用；Director 只在固定精英事件上消费它）。
   final Map<String, int> eliteRules;
 
+  // ---- F-39 诊断（**只读**，不参与任何规则判定） ----
+  //
+  // 存在理由：实测应用流中 `combatSeconds` 已推进到 180 秒，
+  // 但 150 秒的 `bossEntry` 行从未触发。怀疑卡在
+  // 「2. 先处理被延后的批次」的提前 return 上，需要观测
+  // `_nextRowIndex` 与 `_deferred` 的实际状态，而不是继续推测。
+
+  /// 总行数。
+  int get rowCount => _rows.length;
+
+  /// 是否存在**未解决的延后批次**（存在时会阻止推进新行）。
+  bool get hasDeferredBatch => _deferred != null;
+
+  /// 被延后行的 `startSecond`（无则 null）。
+  int? get deferredStartSecond => _deferred?.row.startSecond;
+
+  /// 尚未触发的行里最早的一行的 `startSecond`（全触发完则 null）。
+  int? get nextPendingRowSecond =>
+      _nextRowIndex < _rows.length ? _rows[_nextRowIndex].startSecond : null;
+
   final double spawnY;
   final List<double> spawnXPoints;
   final double minDistanceFromPlayerX;
