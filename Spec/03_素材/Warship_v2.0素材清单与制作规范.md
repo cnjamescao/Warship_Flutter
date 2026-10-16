@@ -185,7 +185,7 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 | GFX-WPN-LASER-HEAD/BEAM/IMPACT | 可平铺/拉伸激光部件 | 128/64/128 px | 宽 28；激活/停止不跳帧 |
 | GFX-WPN-DRONE / GFX-WPN-DRONE-BOLT | 无人机和无人机弹 | 128/64 px | 轨道半径 120；不可显示为可拾取物 |
 | GFX-ENEMY-BULLET-WING/SNIPER/SHIELD | 三类敌弹 | 64 px，轮廓互异 | 半径分别 14/12/14；狙击弹带高亮头部 |
-| GFX-HAZARD-BOMBER-WARN/ACTIVE | 轰炸机投放预警/生效危险区 | 256/256 px | 0.4 s 预警后生效；半径 90 |
+| GFX-HAZARD-BOMBER-WARN/ACTIVE | 轰炸机投放预警/生效危险区 | 256/256 px | 0.4 s 预警后生效；半径 90。两者都必须是圆形地面区域：WARN 为圆环/十字/圆内刻度，ACTIVE 为圆环/十字/圆内纹理；禁止三角警示牌、感叹号或复用 UI 警告图。ACTIVE 的正式圆形纹理即其色弱第二识别维度，不再叠加 UI-COLORBLIND-PATTERN-DANGER。 |
 | GFX-WARN-LINE/CONE/CIRCLE | 狙击线、扇形、环形、地面圆预警 | 可拉伸/旋转 | 预警在实体之下、背景之上 |
 | GFX-BOSS-FAN-BULLET/RING-BULLET/LASER | Boss P1/P2/P3 攻击素材 | 64/64/可拉伸 | 与招式几何和安全缺口一致 |
 | GFX-PICKUP-ELITE-CORE / GFX-PICKUP-SUPPLY-HEAL/SHIELD/DASH | 精英核心、Boss 前补给反馈 | 128 px；spawn/collect | 精英核心与战前补给不能共用同一剪影 |

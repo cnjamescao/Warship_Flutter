@@ -971,35 +971,34 @@ class BattlefieldComponent extends Component {
     return null;
   }
 
+  /// **F-36 / 产品裁决**：危险区用**正式素材**绘制。
+  ///
+  /// 裁决原文：
+  /// * 「研发应**移除 ACTIVE 危险区上的通用三角色弱图案**，
+  ///   保留**圆环、十字等正式素材识别**」；
+  /// * 「素材侧必须重制 `GFX-HAZARD-BOMBER-WARN` 为独立的**圆形落点预警**，
+  ///   不能再复用 UI 警示牌」。
+  ///
+  /// 因此这里**不再**贴 `UI-COLORBLIND-PATTERN-DANGER`（那是一枚
+  /// **大型三角斜杠图标**，叠到圆形危险区上会变成"大红三角"，
+  /// 玩家实测反馈即为此）。改为贴危险区自己的**正式素材**
+  /// （`HazardView.assetId`，例如 `GFX-HAZARD-BOMBER-ACTIVE`）。
+  ///
+  /// 素材缺失时**不绘制几何替代** —— 与敌机回退图形同样的处理原则：
+  /// 让人**以为出了问题**，好过让人**以为游戏长这样**。
   void _drawHazards(Canvas canvas) {
     for (final hazard in snapshot.hazards) {
-      final center = Offset(hazard.position.x, hazard.position.y);
-      if (hazard.isWarning) {
-        _stroke.color = const Color(0x99FFB03A);
-        canvas.drawCircle(center, hazard.radius, _stroke);
-      } else {
-        _fill.color = const Color(0x33FF4BD8);
-        canvas.drawCircle(center, hazard.radius, _fill);
+      final assetId = hazard.assetId;
+      if (assetId == null) {
+        continue;
       }
-
-      // F-12：**颜色之外的第二识别维度**。
-      //
-      // 裁决明确：「**必须实际合成正式 PNG 素材，禁止用 Canvas 或
-      // 程序化几何等价替代**」。因此这里贴的是
-      // `UI-COLORBLIND-PATTERN-DANGER` 本身，而不是我先前画的几何斜线。
-      //
-      // **始终绘制，不受任何设置门控**（没有"色弱开关"这回事）。
-      if (hazardNeedsDangerPattern(
-        isWarning: hazard.isWarning,
-        dealsDamage: !hazard.isWarning,
-      )) {
-        _drawColorblindPattern(
-          canvas,
-          ColorblindPattern.danger,
-          center,
-          hazard.radius,
-        );
-      }
+      _drawSpriteOrNull(
+        canvas,
+        assetId,
+        'default',
+        Offset(hazard.position.x, hazard.position.y),
+        hazard.radius,
+      );
     }
   }
 

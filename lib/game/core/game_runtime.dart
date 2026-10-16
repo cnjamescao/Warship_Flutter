@@ -113,6 +113,7 @@ class HazardZone {
     required this.tickSeconds,
     required this.damagePerTick,
     required this.sourceId,
+    this.assetId,
   });
 
   final EntityId id;
@@ -123,6 +124,12 @@ class HazardZone {
   final double tickSeconds;
   final int damagePerTick;
   final EntityId sourceId;
+
+  /// **F-36**：危险区的**正式素材**（`HazardSpec.assetId`）。
+  ///
+  /// 产品裁决要求危险区以**正式素材**识别（圆环/十字等），
+  /// 而不是 Canvas 几何，也不是通用三角色弱图案。
+  final String? assetId;
 
   double age = 0;
   double _tickAccumulator = 0;
@@ -751,6 +758,7 @@ class GameRuntime {
           tickSeconds: hazardSpec.tickSeconds,
           damagePerTick: hazardSpec.damagePerTick,
           sourceId: request.sourceId,
+          assetId: hazardSpec.assetId,
         ),
       );
     }
@@ -1897,6 +1905,7 @@ class GameRuntime {
           radius: hazard.radius,
           isWarning: hazard.isWarning,
           remainingRatio: hazard.remainingRatio,
+          assetId: hazard.assetId,
         ),
     ];
 

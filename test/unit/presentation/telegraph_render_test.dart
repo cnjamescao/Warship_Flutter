@@ -137,4 +137,43 @@ void main() {
       reason: '厚度不应接近画布高度（那正是"巨大色块"的成因）',
     );
   });
+
+  test('产品裁决：ACTIVE 危险区不得贴通用三角色弱图案，且必须用正式素材', () {
+    final source = _source();
+    final start = source.indexOf('void _drawHazards(');
+    expect(start, greaterThanOrEqualTo(0));
+    final end = source.indexOf('\n  /// 合成色弱叠层素材', start);
+    final body = source.substring(start, end);
+
+    // 裁决：「研发应**移除 ACTIVE 危险区上的通用三角色弱图案**」。
+    expect(
+      body.contains('_drawColorblindPattern'),
+      isFalse,
+      reason: '危险区仍在贴通用色弱图案 —— 那是一枚大型三角斜杠图标，'
+          '叠到圆形危险区上会变成"大红三角"（产品裁决要求移除）',
+    );
+    expect(
+      body.contains('ColorblindPattern.danger'),
+      isFalse,
+      reason: '危险区仍在引用 danger 色弱图案（产品裁决要求移除）',
+    );
+
+    // 裁决：「保留**圆环、十字等正式素材识别**」。
+    expect(
+      body.contains('_drawSpriteOrNull'),
+      isTrue,
+      reason: '危险区应以**正式素材**绘制（HazardView.assetId）',
+    );
+    expect(
+      body.contains('hazard.assetId'),
+      isTrue,
+      reason: '危险区素材必须取自 HazardView.assetId',
+    );
+    // 不得退回 Canvas 几何替代正式素材。
+    expect(
+      body.contains('drawCircle('),
+      isFalse,
+      reason: '危险区不得用 Canvas 圆替代正式素材',
+    );
+  });
 }

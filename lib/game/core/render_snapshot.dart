@@ -70,11 +70,15 @@ class HazardView {
     required this.radius,
     required this.isWarning,
     required this.remainingRatio,
+    this.assetId,
   });
 
   final EntityId id;
   final Vec2 position;
   final double radius;
+
+  /// **F-36**：危险区的正式素材 ID（如 `GFX-HAZARD-BOMBER-ACTIVE`）。
+  final String? assetId;
 
   /// true 表示还处于延迟预警（未生效），false 表示正在造成伤害。
   final bool isWarning;
