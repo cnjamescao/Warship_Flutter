@@ -99,6 +99,22 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 `eventBindings` 路由，不改事件名、数值、路径或素材本体。后续运行时诊断证明
 `GFX-WARN-CONE` 并未在所述精英场景实际绘制；该场景的矩阵根因见 §1.5。
 
+### 1.4.1 F-38 Boss 预警素材合同（2026-10-16，已交付）
+
+`boss_charge` 与 `boss_laser` 当前错误地复用 Sniper 的 `GFX-WARN-LINE`。该资源只有
+`EnemyAttackTelegraphed + enemyId=EN-SNIPER + attackId=sniper_line` 的路由，不能作为 Boss
+预警的回退素材。下列两项已交付；F-38 仍须待研发接入和四条 Golden 通过后才能关闭：
+
+| 新 Asset ID | 主视觉与尺寸 | 精确 manifest 绑定 | 绘制合同 |
+| --- | --- | --- | --- |
+| `GFX-WARN-CHARGE` | 1024×682 透明 PNG；琥珀色纵向冲锋走廊，双侧箭头、前进端封口、中心透明；禁止三角牌/文字/实心底板 | `BossAttackTelegraphed` + `attackId=boss_charge` | 按 t=0 锁定的冲锋轴旋转和拉伸；背景之上、实体之下；预警 0.8 s 到期即移除。 |
+| `GFX-WARN-LASER` | 1024×682 透明 PNG；洋红色细线扫射轴，起点发射器刻度、终点警戒刻度、中心透明；禁止实心矩形底板 | `BossAttackTelegraphed` + `attackId=boss_laser` | 按 t=0 锁定轴旋转和拉伸；背景之上、实体之下；预警 0.9 s 到期即移除；不能与 Fired 后的 `GFX-BOSS-LASER` 混用。 |
+
+两项均需同步到 `素材/图形/投射物与预警/`、`素材/图形/运行时PNG/投射物与预警/`、
+`assets/images/v2/` 和两份 manifest，提供独立 SHA-256。完成后将
+`boss_aegis.json` 的 `boss_charge.telegraphAssetId` 与 `boss_laser.telegraphAssetId` 分别改为上述
+ID；`GFX-WARN-LINE` 仍只绑定 Sniper。
+
 ### 1.5 v2.0.7 精英名称条与词缀光环补丁（2026-10-16，强制）
 
 运行时诊断确认“蓝色大矩阵”实际来自精英名称条和词缀光环的占位图，**不是**

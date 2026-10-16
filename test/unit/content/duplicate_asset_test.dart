@@ -73,7 +73,7 @@ void main() {
     // 其余跨语义重复（投射物、武器效果、升级图标、HUD 等）仍待素材侧处理，
     // 产品负责人已明确 F-27 保持 P0 未关闭，因此这里继续冻结剩余规模。
     const knownDuplicateGroups = 42;
-    const knownDuplicateIds = 92;
+    const knownDuplicateIds = 32;
 
     final duplicateIds = shared.expand((g) => g).toSet();
 

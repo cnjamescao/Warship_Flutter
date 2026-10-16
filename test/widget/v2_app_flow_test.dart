@@ -41,10 +41,10 @@ void main() {
     expect(find.text('设置'), findsOneWidget);
   });
 
-  testWidgets('内容目录经生产路径加载成功（197 条 / 2.0.6-material-repair）', (tester) async {
+  testWidgets('内容目录经生产路径加载成功（199 条 / 2.0.6-material-repair）', (tester) async {
     await mountV2App(tester, catalog);
 
-    expect(catalog.manifest.length, 197);
+    expect(catalog.manifest.length, 199);
     expect(catalog.manifest.contentVersion, '2.0.6-material-repair');
   });
 

@@ -63,7 +63,7 @@ void main() {
         }
       }
 
-      expect(visual, 372, reason: '图形/UI 状态文件数量应与素材包一致');
+      expect(visual, 374, reason: '图形/UI 状态文件数量应与素材包一致');
       expect(audio, 67, reason: '物理音频数量应与素材包一致');
     });
 
@@ -112,14 +112,14 @@ void main() {
       manifest = result.requireValue;
     });
 
-    test('共 197 条记录，分五大类', () {
-      expect(manifest.length, 197);
+    test('共 199 条记录，分五大类', () {
+      expect(manifest.length, 199);
 
       int countOf(AssetCategory category) =>
           manifest.records.where((r) => r.category == category).length;
 
       expect(countOf(AssetCategory.ui), 74);
-      expect(countOf(AssetCategory.graphic), 53);
+      expect(countOf(AssetCategory.graphic), 55);
       expect(countOf(AssetCategory.sfx), 63);
       expect(countOf(AssetCategory.bgm), 5);
       expect(countOf(AssetCategory.font), 2);

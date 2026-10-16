@@ -1569,17 +1569,17 @@
     {
       "assetId": "GFX-BOSS-AEGIS-CRITICAL",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-AEGIS-CRITICAL.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-AEGIS-CRITICAL.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-AEGIS-CRITICAL__default.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "f95ba78c9fc342198400be1a29b3fa2aac05cda9bdba6efd238410ef2c0be442",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd"
+        "f95ba78c9fc342198400be1a29b3fa2aac05cda9bdba6efd238410ef2c0be442"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1588,7 +1588,7 @@
         "BossCriticalReached"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 31686,
+      "memoryEstimateBytes": 314982,
       "anchor": [
         0.5,
         0.5
@@ -1627,17 +1627,17 @@
     {
       "assetId": "GFX-BOSS-ENTRY",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-ENTRY.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-ENTRY.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-ENTRY__default.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "da72bc3b9a2939deba50e48b4633b5d1efd7e986609e9f367d90e823508540a3",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd"
+        "da72bc3b9a2939deba50e48b4633b5d1efd7e986609e9f367d90e823508540a3"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1646,7 +1646,7 @@
         "BossPhaseChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 31686,
+      "memoryEstimateBytes": 404337,
       "anchor": [
         0.5,
         0.5
@@ -1683,17 +1683,17 @@
     {
       "assetId": "GFX-BOSS-PHASE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-PHASE.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-PHASE.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-PHASE__default.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "f45ae5949743ec1d8737547208b76ceb461a59dbee211cc6a62b0570b20eb22c",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd"
+        "f45ae5949743ec1d8737547208b76ceb461a59dbee211cc6a62b0570b20eb22c"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1702,7 +1702,7 @@
         "BossPhaseChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 31686,
+      "memoryEstimateBytes": 448222,
       "anchor": [
         0.5,
         0.5
@@ -1739,17 +1739,17 @@
     {
       "assetId": "GFX-BOSS-DEFEAT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-DEFEAT.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-DEFEAT.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-DEFEAT__default.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "2fd6c94152aea8ac79c3a0eaabc3d2624a853a01f8e4868fd645417211078ad6",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd"
+        "2fd6c94152aea8ac79c3a0eaabc3d2624a853a01f8e4868fd645417211078ad6"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1758,7 +1758,7 @@
         "BossPhaseChanged"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 31686,
+      "memoryEstimateBytes": 382946,
       "anchor": [
         0.5,
         0.5
@@ -1795,17 +1795,17 @@
     {
       "assetId": "GFX-WPN-PULSE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-PULSE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-PULSE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-PULSE__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "3d4da07e08b08477b13e3f585bf0ec9b7a34a0847945c013523b8ab938833e39",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "3d4da07e08b08477b13e3f585bf0ec9b7a34a0847945c013523b8ab938833e39"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1814,7 +1814,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 173878,
       "anchor": [
         0.5,
         0.5
@@ -1853,17 +1853,17 @@
     {
       "assetId": "GFX-WPN-PULSE-MUZZLE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-PULSE-MUZZLE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-PULSE-MUZZLE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-PULSE-MUZZLE__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "a64db14c8d3516dd756543b073ae48efdfc9adc82da97662d96250539a02f8d8",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "a64db14c8d3516dd756543b073ae48efdfc9adc82da97662d96250539a02f8d8"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1872,7 +1872,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 234537,
       "anchor": [
         0.5,
         0.5
@@ -1911,17 +1911,17 @@
     {
       "assetId": "GFX-FX-PULSE-HIT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-FX-PULSE-HIT.svg",
+      "sourceFile": "图形/投射物与预警/GFX-FX-PULSE-HIT.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-FX-PULSE-HIT__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "bca154c45ed980461db8fa905a5b8847e402e30d1a2e8d4c56c30d3a89673502",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "bca154c45ed980461db8fa905a5b8847e402e30d1a2e8d4c56c30d3a89673502"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1930,7 +1930,7 @@
         "WeaponHit"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 277006,
       "anchor": [
         0.5,
         0.5
@@ -1970,17 +1970,17 @@
     {
       "assetId": "GFX-FX-PULSE-CRIT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-FX-PULSE-CRIT.svg",
+      "sourceFile": "图形/投射物与预警/GFX-FX-PULSE-CRIT.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-FX-PULSE-CRIT__default.png"
       ],
-      "sha256": "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9",
+      "sha256": "c5e125e542298c5979b9d003e3611250552970e6dcf414f9a4c7364c143fefe2",
       "runtimeSha256": [
-        "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9"
+        "c5e125e542298c5979b9d003e3611250552970e6dcf414f9a4c7364c143fefe2"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -1989,7 +1989,7 @@
         "WeaponHit"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 30238,
+      "memoryEstimateBytes": 250997,
       "anchor": [
         0.5,
         0.5
@@ -2029,17 +2029,17 @@
     {
       "assetId": "GFX-WPN-ARC",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-ARC.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-ARC.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-ARC__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "1b3663930019972034b04611ab9c8c5c9227ffe8fd2d386645aaaba3a0837403",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "1b3663930019972034b04611ab9c8c5c9227ffe8fd2d386645aaaba3a0837403"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2048,7 +2048,7 @@
         "WeaponHit"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29868,
+      "memoryEstimateBytes": 218349,
       "anchor": [
         0.5,
         0.5
@@ -2088,17 +2088,17 @@
     {
       "assetId": "GFX-WPN-MISSILE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-MISSILE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-MISSILE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-MISSILE__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "0988563eed4855e707115393ca6c4a8fc5f0113469b93758b8d16bbc154b7f60",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "0988563eed4855e707115393ca6c4a8fc5f0113469b93758b8d16bbc154b7f60"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2107,7 +2107,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 144972,
       "anchor": [
         0.5,
         0.5
@@ -2146,17 +2146,17 @@
     {
       "assetId": "GFX-WPN-MISSILE-TRAIL",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-MISSILE-TRAIL.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-MISSILE-TRAIL.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-MISSILE-TRAIL__default.png"
       ],
-      "sha256": "b89db3e0a9c3847673d36f2e6cfdd71f0930e4adf75246fe3b0a371862049f9f",
+      "sha256": "fd91e3b5b971ff1e2bcb5846b74a71e52f8dcea29c8837f5b8b348ccebebfbd2",
       "runtimeSha256": [
-        "b89db3e0a9c3847673d36f2e6cfdd71f0930e4adf75246fe3b0a371862049f9f"
+        "fd91e3b5b971ff1e2bcb5846b74a71e52f8dcea29c8837f5b8b348ccebebfbd2"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2165,7 +2165,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 3127,
+      "memoryEstimateBytes": 189556,
       "anchor": [
         0.5,
         0.5
@@ -2204,17 +2204,17 @@
     {
       "assetId": "GFX-FX-MISSILE-BLAST",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-FX-MISSILE-BLAST.svg",
+      "sourceFile": "图形/投射物与预警/GFX-FX-MISSILE-BLAST.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-FX-MISSILE-BLAST__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "a94bae17f3540ac640556e7736787c05d27732b48479283912ac1ecec589f244",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "a94bae17f3540ac640556e7736787c05d27732b48479283912ac1ecec589f244"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2223,7 +2223,7 @@
         "WeaponHit"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 364813,
       "anchor": [
         0.5,
         0.5
@@ -2262,17 +2262,17 @@
     {
       "assetId": "GFX-WPN-LASER-HEAD",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-LASER-HEAD.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-LASER-HEAD.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-LASER-HEAD__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "cce60bec6908a3730a8089ce8d87b463df1525a9ab2c2e01bc5a9c8e3022806b",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "cce60bec6908a3730a8089ce8d87b463df1525a9ab2c2e01bc5a9c8e3022806b"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2281,7 +2281,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29868,
+      "memoryEstimateBytes": 139159,
       "anchor": [
         0.5,
         0.5
@@ -2320,17 +2320,17 @@
     {
       "assetId": "GFX-WPN-LASER-BEAM",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-LASER-BEAM.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-LASER-BEAM.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-LASER-BEAM__default.png"
       ],
-      "sha256": "b89db3e0a9c3847673d36f2e6cfdd71f0930e4adf75246fe3b0a371862049f9f",
+      "sha256": "ea1765a454c319705999131864483146b7b5cb7812971bb6350f813d9a1d49cc",
       "runtimeSha256": [
-        "b89db3e0a9c3847673d36f2e6cfdd71f0930e4adf75246fe3b0a371862049f9f"
+        "ea1765a454c319705999131864483146b7b5cb7812971bb6350f813d9a1d49cc"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2339,7 +2339,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 3127,
+      "memoryEstimateBytes": 131558,
       "anchor": [
         0.5,
         0.5
@@ -2378,17 +2378,17 @@
     {
       "assetId": "GFX-WPN-LASER-IMPACT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-LASER-IMPACT.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-LASER-IMPACT.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-LASER-IMPACT__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "823f0bf37acc3c9f169e1d0ce3fc5f7cbf0bf9ddb99300a7772e89300ce945c0",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "823f0bf37acc3c9f169e1d0ce3fc5f7cbf0bf9ddb99300a7772e89300ce945c0"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2397,7 +2397,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29868,
+      "memoryEstimateBytes": 308259,
       "anchor": [
         0.5,
         0.5
@@ -2436,17 +2436,17 @@
     {
       "assetId": "GFX-WPN-DRONE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-DRONE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-DRONE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-DRONE__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "cf0870dbc228d233274f1205246833e0974cc268b385f4c120f4a88d8eaf709f",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "cf0870dbc228d233274f1205246833e0974cc268b385f4c120f4a88d8eaf709f"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2455,7 +2455,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29868,
+      "memoryEstimateBytes": 163882,
       "anchor": [
         0.5,
         0.5
@@ -2494,17 +2494,17 @@
     {
       "assetId": "GFX-WPN-DRONE-BOLT",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WPN-DRONE-BOLT.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WPN-DRONE-BOLT.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WPN-DRONE-BOLT__default.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "b4fffe47e5dc608edb10dc71632077497d1a80d1b1c578fe80d0b10f4f7d3fa6",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff"
+        "b4fffe47e5dc608edb10dc71632077497d1a80d1b1c578fe80d0b10f4f7d3fa6"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2513,7 +2513,7 @@
         "WeaponFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29529,
+      "memoryEstimateBytes": 119450,
       "anchor": [
         0.5,
         0.5
@@ -2552,17 +2552,17 @@
     {
       "assetId": "GFX-ENEMY-BULLET-WING",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-ENEMY-BULLET-WING.svg",
+      "sourceFile": "图形/投射物与预警/GFX-ENEMY-BULLET-WING.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-ENEMY-BULLET-WING__default.png"
       ],
-      "sha256": "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9",
+      "sha256": "c8297d2190ad3fbc6863540581ba5355f159ac0796ea179dc70263eb69a4817a",
       "runtimeSha256": [
-        "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9"
+        "c8297d2190ad3fbc6863540581ba5355f159ac0796ea179dc70263eb69a4817a"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2571,7 +2571,7 @@
         "EnemyAttackFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 30238,
+      "memoryEstimateBytes": 218413,
       "anchor": [
         0.5,
         0.5
@@ -2611,17 +2611,17 @@
     {
       "assetId": "GFX-ENEMY-BULLET-SNIPER",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-ENEMY-BULLET-SNIPER.svg",
+      "sourceFile": "图形/投射物与预警/GFX-ENEMY-BULLET-SNIPER.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-ENEMY-BULLET-SNIPER__default.png"
       ],
-      "sha256": "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9",
+      "sha256": "9d2d8bf9c216e48ed4ef760813282c5ab3bff21bc14b23738c66e77e9a04bfdf",
       "runtimeSha256": [
-        "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9"
+        "9d2d8bf9c216e48ed4ef760813282c5ab3bff21bc14b23738c66e77e9a04bfdf"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2630,7 +2630,7 @@
         "EnemyAttackFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 30238,
+      "memoryEstimateBytes": 124729,
       "anchor": [
         0.5,
         0.5
@@ -2670,17 +2670,17 @@
     {
       "assetId": "GFX-ENEMY-BULLET-SHIELD",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-ENEMY-BULLET-SHIELD.svg",
+      "sourceFile": "图形/投射物与预警/GFX-ENEMY-BULLET-SHIELD.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-ENEMY-BULLET-SHIELD__default.png"
       ],
-      "sha256": "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723",
+      "sha256": "53201fc62413e2bb1ac5d4f2fea8c2f1b0f91964aad28d372c5b689a0c7f1a97",
       "runtimeSha256": [
-        "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723"
+        "53201fc62413e2bb1ac5d4f2fea8c2f1b0f91964aad28d372c5b689a0c7f1a97"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2689,7 +2689,7 @@
         "EnemyAttackFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 76681,
+      "memoryEstimateBytes": 231683,
       "anchor": [
         0.5,
         0.5
@@ -2910,6 +2910,122 @@
       "status": "release_ready"
     },
     {
+      "assetId": "GFX-WARN-CHARGE",
+      "category": "graphic",
+      "sourceFile": "图形/投射物与预警/GFX-WARN-CHARGE.png",
+      "runtimeFiles": [
+        "图形/运行时PNG/投射物与预警/GFX-WARN-CHARGE__default.png"
+      ],
+      "sha256": "c4e5e08d33526e0de79f505aedeac80b4dc508b3fbb6a40d63d2db541b67309c",
+      "runtimeSha256": [
+        "c4e5e08d33526e0de79f505aedeac80b4dc508b3fbb6a40d63d2db541b67309c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-16T00:00:00+08:00",
+      "contentVersion": "2.0.6-material-repair",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 371724,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_charge"
+          },
+          "renderState": "default"
+        }
+      ],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/运行时PNG/投射物与预警/GFX-WARN-CHARGE__default.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
+      "assetId": "GFX-WARN-LASER",
+      "category": "graphic",
+      "sourceFile": "图形/投射物与预警/GFX-WARN-LASER.png",
+      "runtimeFiles": [
+        "图形/运行时PNG/投射物与预警/GFX-WARN-LASER__default.png"
+      ],
+      "sha256": "db1e184cd10d6d500d63c1a8238ec9f0d955f90f8efb84533df0273b7940b2f9",
+      "runtimeSha256": [
+        "db1e184cd10d6d500d63c1a8238ec9f0d955f90f8efb84533df0273b7940b2f9"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-16T00:00:00+08:00",
+      "contentVersion": "2.0.6-material-repair",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [
+        "BossAttackTelegraphed"
+      ],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 250872,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [
+        {
+          "event": "BossAttackTelegraphed",
+          "when": {
+            "attackId": "boss_laser"
+          },
+          "renderState": "default"
+        }
+      ],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/运行时PNG/投射物与预警/GFX-WARN-LASER__default.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "format": "png",
+      "status": "release_ready"
+    },
+    {
       "assetId": "GFX-WARN-CONE",
       "category": "graphic",
       "sourceFile": "图形/投射物与预警/GFX-WARN-CONE.png",
@@ -2973,17 +3089,17 @@
     {
       "assetId": "GFX-WARN-CIRCLE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-WARN-CIRCLE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-WARN-CIRCLE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-WARN-CIRCLE__default.png"
       ],
-      "sha256": "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723",
+      "sha256": "d5b42738dcc692766655cc3163cadff0755a28c65fea48eee744b50379a1882c",
       "runtimeSha256": [
-        "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723"
+        "d5b42738dcc692766655cc3163cadff0755a28c65fea48eee744b50379a1882c"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -2992,7 +3108,7 @@
         "BossAttackTelegraphed"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 76681,
+      "memoryEstimateBytes": 323572,
       "anchor": [
         0.5,
         0.5
@@ -3031,17 +3147,17 @@
     {
       "assetId": "GFX-BOSS-FAN-BULLET",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-FAN-BULLET.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-FAN-BULLET.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-FAN-BULLET__default.png"
       ],
-      "sha256": "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9",
+      "sha256": "80ed3c2801b92f882ad0da5291c2757c20bb14e9d569248b994fd1f45cd99b23",
       "runtimeSha256": [
-        "7e7fce0524fd157b79c8e7a64de145001f29a7d7093136aa337647a2682151a9"
+        "80ed3c2801b92f882ad0da5291c2757c20bb14e9d569248b994fd1f45cd99b23"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -3050,7 +3166,7 @@
         "BossAttackFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 30238,
+      "memoryEstimateBytes": 345857,
       "anchor": [
         0.5,
         0.5
@@ -3089,17 +3205,17 @@
     {
       "assetId": "GFX-BOSS-RING-BULLET",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-BOSS-RING-BULLET.svg",
+      "sourceFile": "图形/战斗特效/GFX-BOSS-RING-BULLET.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-BOSS-RING-BULLET__default.png"
       ],
-      "sha256": "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723",
+      "sha256": "e5539113d21b1d519bd95e9d61cdf6a6a1825962d04aca3dc0b46ba28b0f54e8",
       "runtimeSha256": [
-        "7d8b9446a74e8263e7d385daf803257a70eca361f0ed79ae6ca3afbe7d507723"
+        "e5539113d21b1d519bd95e9d61cdf6a6a1825962d04aca3dc0b46ba28b0f54e8"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -3108,7 +3224,7 @@
         "BossAttackFired"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 76681,
+      "memoryEstimateBytes": 372396,
       "anchor": [
         0.5,
         0.5
@@ -3208,17 +3324,17 @@
     {
       "assetId": "GFX-PICKUP-ELITE-CORE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-PICKUP-ELITE-CORE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-PICKUP-ELITE-CORE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-PICKUP-ELITE-CORE__default.png"
       ],
-      "sha256": "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15",
+      "sha256": "8a0e5ac07119104d2aa73375807ce515d26822651f7197fa13f0cd37edd72320",
       "runtimeSha256": [
-        "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15"
+        "8a0e5ac07119104d2aa73375807ce515d26822651f7197fa13f0cd37edd72320"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -3227,7 +3343,7 @@
         "DashReady"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 44012,
+      "memoryEstimateBytes": 314193,
       "anchor": [
         0.5,
         0.5
@@ -3264,17 +3380,17 @@
     {
       "assetId": "GFX-PICKUP-SUPPLY-HEAL",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-PICKUP-SUPPLY-HEAL.svg",
+      "sourceFile": "图形/投射物与预警/GFX-PICKUP-SUPPLY-HEAL.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-PICKUP-SUPPLY-HEAL__default.png"
       ],
-      "sha256": "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15",
+      "sha256": "f54277f1bd203a22c1628b74981124ab982adffd7061da5eca98ecb7d1d4a476",
       "runtimeSha256": [
-        "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15"
+        "f54277f1bd203a22c1628b74981124ab982adffd7061da5eca98ecb7d1d4a476"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -3283,7 +3399,7 @@
         "PickupHeal"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 44012,
+      "memoryEstimateBytes": 335090,
       "anchor": [
         0.5,
         0.5
@@ -3376,17 +3492,17 @@
     {
       "assetId": "GFX-PICKUP-SUPPLY-DASH",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-PICKUP-SUPPLY-DASH.svg",
+      "sourceFile": "图形/投射物与预警/GFX-PICKUP-SUPPLY-DASH.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-PICKUP-SUPPLY-DASH__default.png"
       ],
-      "sha256": "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15",
+      "sha256": "d408d74a9304c23d4a803acbbc8c5a5052dc384b19ae3353db3892feee859999",
       "runtimeSha256": [
-        "915e497c557d5d4a3bc528304ec3917a63fede73e733c10233e125fc0c857f15"
+        "d408d74a9304c23d4a803acbbc8c5a5052dc384b19ae3353db3892feee859999"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
@@ -3395,7 +3511,7 @@
         "DashReady"
       ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 44012,
+      "memoryEstimateBytes": 340113,
       "anchor": [
         0.5,
         0.5
@@ -3491,23 +3607,23 @@
     {
       "assetId": "UI-UP-PULSE-RATE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-PULSE-RATE.svg",
+      "sourceFile": "图形/UI界面/UI-UP-PULSE-RATE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-PULSE-RATE__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-RATE__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-RATE__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-RATE__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "ad80bc5495e994a20670c9cb51200976ad989b75de6b5b8df8b70fc2ff42a677",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "ad80bc5495e994a20670c9cb51200976ad989b75de6b5b8df8b70fc2ff42a677",
+        "ad80bc5495e994a20670c9cb51200976ad989b75de6b5b8df8b70fc2ff42a677",
+        "ad80bc5495e994a20670c9cb51200976ad989b75de6b5b8df8b70fc2ff42a677",
+        "ad80bc5495e994a20670c9cb51200976ad989b75de6b5b8df8b70fc2ff42a677"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -3519,7 +3635,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 331827,
       "anchor": [
         0.5,
         0.5
@@ -3604,23 +3720,23 @@
     {
       "assetId": "UI-UP-PULSE-DAMAGE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-PULSE-DAMAGE.svg",
+      "sourceFile": "图形/UI界面/UI-UP-PULSE-DAMAGE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-PULSE-DAMAGE__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-DAMAGE__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-DAMAGE__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-DAMAGE__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "7fd37f3b06c3dc33a84c301e51fc4751d61f3b9aef6fa25e1ea3bfed644d0cfb",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "7fd37f3b06c3dc33a84c301e51fc4751d61f3b9aef6fa25e1ea3bfed644d0cfb",
+        "7fd37f3b06c3dc33a84c301e51fc4751d61f3b9aef6fa25e1ea3bfed644d0cfb",
+        "7fd37f3b06c3dc33a84c301e51fc4751d61f3b9aef6fa25e1ea3bfed644d0cfb",
+        "7fd37f3b06c3dc33a84c301e51fc4751d61f3b9aef6fa25e1ea3bfed644d0cfb"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -3632,7 +3748,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 257804,
       "anchor": [
         0.5,
         0.5
@@ -3717,23 +3833,23 @@
     {
       "assetId": "UI-UP-PULSE-SPREAD",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-PULSE-SPREAD.svg",
+      "sourceFile": "图形/UI界面/UI-UP-PULSE-SPREAD.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-PULSE-SPREAD__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-SPREAD__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-SPREAD__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-PULSE-SPREAD__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "189ce244e606374d0a0755d4f7d9bc756e9bedd432542b7f34780f660b8f91cb",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "189ce244e606374d0a0755d4f7d9bc756e9bedd432542b7f34780f660b8f91cb",
+        "189ce244e606374d0a0755d4f7d9bc756e9bedd432542b7f34780f660b8f91cb",
+        "189ce244e606374d0a0755d4f7d9bc756e9bedd432542b7f34780f660b8f91cb",
+        "189ce244e606374d0a0755d4f7d9bc756e9bedd432542b7f34780f660b8f91cb"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -3745,7 +3861,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 254997,
       "anchor": [
         0.5,
         0.5
@@ -3830,23 +3946,23 @@
     {
       "assetId": "UI-UP-CRIT-ARC",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-CRIT-ARC.svg",
+      "sourceFile": "图形/UI界面/UI-UP-CRIT-ARC.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-CRIT-ARC__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-CRIT-ARC__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-CRIT-ARC__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-CRIT-ARC__focus.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "5408f8cafb75744bab42aeb28484a82f69d5c035911f449031207b62d982c98f",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
-        "8b2085ec03565ae6af4bc7305c27d8e87f59929de3846326782927dc83538f71",
-        "4088e100837dc2ee8b0b59b5f2182580e87e8374df613d4e69d1c12f3374a32c",
-        "25d5dd741c4c4f0c8475d2847b8327ae6fb11fc3aafea4de84edbb6e01545b26"
+        "5408f8cafb75744bab42aeb28484a82f69d5c035911f449031207b62d982c98f",
+        "5408f8cafb75744bab42aeb28484a82f69d5c035911f449031207b62d982c98f",
+        "5408f8cafb75744bab42aeb28484a82f69d5c035911f449031207b62d982c98f",
+        "5408f8cafb75744bab42aeb28484a82f69d5c035911f449031207b62d982c98f"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -3858,7 +3974,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 137273,
+      "memoryEstimateBytes": 307893,
       "anchor": [
         0.5,
         0.5
@@ -3943,23 +4059,23 @@
     {
       "assetId": "UI-UP-MISSILE-UNLOCK",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-MISSILE-UNLOCK.svg",
+      "sourceFile": "图形/UI界面/UI-UP-MISSILE-UNLOCK.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-UNLOCK__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-UNLOCK__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-UNLOCK__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-UNLOCK__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "f03ddd71fc6e809bcba414a42f27366ca0578705b355a2908b9dcc7ddc6af07f",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "f03ddd71fc6e809bcba414a42f27366ca0578705b355a2908b9dcc7ddc6af07f",
+        "f03ddd71fc6e809bcba414a42f27366ca0578705b355a2908b9dcc7ddc6af07f",
+        "f03ddd71fc6e809bcba414a42f27366ca0578705b355a2908b9dcc7ddc6af07f",
+        "f03ddd71fc6e809bcba414a42f27366ca0578705b355a2908b9dcc7ddc6af07f"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -3971,7 +4087,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 164542,
       "anchor": [
         0.5,
         0.5
@@ -4056,23 +4172,23 @@
     {
       "assetId": "UI-UP-MISSILE-SALVO",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-MISSILE-SALVO.svg",
+      "sourceFile": "图形/UI界面/UI-UP-MISSILE-SALVO.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-SALVO__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-SALVO__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-SALVO__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-SALVO__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "9f247b664a19dca7a0b0eca6d119f64ad7a8c7e21d0e0d8e3c0854082ec98605",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "9f247b664a19dca7a0b0eca6d119f64ad7a8c7e21d0e0d8e3c0854082ec98605",
+        "9f247b664a19dca7a0b0eca6d119f64ad7a8c7e21d0e0d8e3c0854082ec98605",
+        "9f247b664a19dca7a0b0eca6d119f64ad7a8c7e21d0e0d8e3c0854082ec98605",
+        "9f247b664a19dca7a0b0eca6d119f64ad7a8c7e21d0e0d8e3c0854082ec98605"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4084,7 +4200,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 309990,
       "anchor": [
         0.5,
         0.5
@@ -4169,23 +4285,23 @@
     {
       "assetId": "UI-UP-MISSILE-RADIUS",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-MISSILE-RADIUS.svg",
+      "sourceFile": "图形/UI界面/UI-UP-MISSILE-RADIUS.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-RADIUS__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-RADIUS__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-RADIUS__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-MISSILE-RADIUS__focus.png"
       ],
-      "sha256": "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
+      "sha256": "bbb32b00824055f7fed040f1b32c386a29b454d00df3741ae98810444365b11c",
       "runtimeSha256": [
-        "28c5135320b3314e8f04c183dd307ff1738e7086868a5069ada3bdb3653187ff",
-        "15b62bb83a168947b7cee95725a2f788dd98fae45e9cfcc7d5001573f46ed26b",
-        "086272da0879171161d9885c1d6acacd5a5888cff9416f9392e46dfa623c9125",
-        "fa723fc0d03eaa7cef1deb92e4b5b77c83baf81257b13102df1a0af0ffdab303"
+        "bbb32b00824055f7fed040f1b32c386a29b454d00df3741ae98810444365b11c",
+        "bbb32b00824055f7fed040f1b32c386a29b454d00df3741ae98810444365b11c",
+        "bbb32b00824055f7fed040f1b32c386a29b454d00df3741ae98810444365b11c",
+        "bbb32b00824055f7fed040f1b32c386a29b454d00df3741ae98810444365b11c"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4197,7 +4313,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 123779,
+      "memoryEstimateBytes": 367951,
       "anchor": [
         0.5,
         0.5
@@ -4282,23 +4398,23 @@
     {
       "assetId": "UI-UP-LASER-UNLOCK",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-LASER-UNLOCK.svg",
+      "sourceFile": "图形/UI界面/UI-UP-LASER-UNLOCK.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-LASER-UNLOCK__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-UNLOCK__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-UNLOCK__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-UNLOCK__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "31fe6fa532290d7487a1a0b1a893bf5128c94a3a65330e02710a8f0cd5191d5e",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "31fe6fa532290d7487a1a0b1a893bf5128c94a3a65330e02710a8f0cd5191d5e",
+        "31fe6fa532290d7487a1a0b1a893bf5128c94a3a65330e02710a8f0cd5191d5e",
+        "31fe6fa532290d7487a1a0b1a893bf5128c94a3a65330e02710a8f0cd5191d5e",
+        "31fe6fa532290d7487a1a0b1a893bf5128c94a3a65330e02710a8f0cd5191d5e"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4310,7 +4426,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 283752,
       "anchor": [
         0.5,
         0.5
@@ -4395,23 +4511,23 @@
     {
       "assetId": "UI-UP-LASER-PRISM",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-LASER-PRISM.svg",
+      "sourceFile": "图形/UI界面/UI-UP-LASER-PRISM.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-LASER-PRISM__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-PRISM__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-PRISM__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-LASER-PRISM__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "8fe0e21fdcf01e98569319f7b0428bbe59eb2741da110e61d62b7c7c269c5f9d",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "8fe0e21fdcf01e98569319f7b0428bbe59eb2741da110e61d62b7c7c269c5f9d",
+        "8fe0e21fdcf01e98569319f7b0428bbe59eb2741da110e61d62b7c7c269c5f9d",
+        "8fe0e21fdcf01e98569319f7b0428bbe59eb2741da110e61d62b7c7c269c5f9d",
+        "8fe0e21fdcf01e98569319f7b0428bbe59eb2741da110e61d62b7c7c269c5f9d"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4423,7 +4539,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 223194,
       "anchor": [
         0.5,
         0.5
@@ -4508,23 +4624,23 @@
     {
       "assetId": "UI-UP-DRONE-UNLOCK",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-DRONE-UNLOCK.svg",
+      "sourceFile": "图形/UI界面/UI-UP-DRONE-UNLOCK.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-DRONE-UNLOCK__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-UNLOCK__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-UNLOCK__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-UNLOCK__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "7c7a703abd0d8054d6e05e327fea39e0a17a6705eb56186defe9ffabbe90c829",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "7c7a703abd0d8054d6e05e327fea39e0a17a6705eb56186defe9ffabbe90c829",
+        "7c7a703abd0d8054d6e05e327fea39e0a17a6705eb56186defe9ffabbe90c829",
+        "7c7a703abd0d8054d6e05e327fea39e0a17a6705eb56186defe9ffabbe90c829",
+        "7c7a703abd0d8054d6e05e327fea39e0a17a6705eb56186defe9ffabbe90c829"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4536,7 +4652,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 191013,
       "anchor": [
         0.5,
         0.5
@@ -4621,23 +4737,23 @@
     {
       "assetId": "UI-UP-DRONE-COUNT",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-DRONE-COUNT.svg",
+      "sourceFile": "图形/UI界面/UI-UP-DRONE-COUNT.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-DRONE-COUNT__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-COUNT__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-COUNT__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-DRONE-COUNT__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "285454a00fa0dc45d0414013e90402a32c89cfc653bc0099aab7f254b05568f2",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "285454a00fa0dc45d0414013e90402a32c89cfc653bc0099aab7f254b05568f2",
+        "285454a00fa0dc45d0414013e90402a32c89cfc653bc0099aab7f254b05568f2",
+        "285454a00fa0dc45d0414013e90402a32c89cfc653bc0099aab7f254b05568f2",
+        "285454a00fa0dc45d0414013e90402a32c89cfc653bc0099aab7f254b05568f2"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4649,7 +4765,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 266133,
       "anchor": [
         0.5,
         0.5
@@ -4734,23 +4850,23 @@
     {
       "assetId": "UI-UP-SHIELD-MAX",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-SHIELD-MAX.svg",
+      "sourceFile": "图形/UI界面/UI-UP-SHIELD-MAX.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-SHIELD-MAX__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-SHIELD-MAX__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-SHIELD-MAX__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-SHIELD-MAX__focus.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "5fe979118281e0884d798d2dcef6eb179324b517cccab776297c39b9641814f2",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
-        "22be39e28e8fcdd0353c6f5cb977b88dc6935fed4689aa382eb89b832ba8c859",
-        "82f90731c85c37853fce6551807c5ebbc5e398a6ef177be9cc2b1e596766bc68",
-        "54bedec8bf3718be71e1d1300360876bd0cea220f032af8ea8f3ff3aea201030"
+        "5fe979118281e0884d798d2dcef6eb179324b517cccab776297c39b9641814f2",
+        "5fe979118281e0884d798d2dcef6eb179324b517cccab776297c39b9641814f2",
+        "5fe979118281e0884d798d2dcef6eb179324b517cccab776297c39b9641814f2",
+        "5fe979118281e0884d798d2dcef6eb179324b517cccab776297c39b9641814f2"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4762,7 +4878,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 303073,
+      "memoryEstimateBytes": 322381,
       "anchor": [
         0.5,
         0.5
@@ -4847,23 +4963,23 @@
     {
       "assetId": "UI-UP-DASH-CHARGE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-DASH-CHARGE.svg",
+      "sourceFile": "图形/UI界面/UI-UP-DASH-CHARGE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-DASH-CHARGE__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-CHARGE__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-CHARGE__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-CHARGE__focus.png"
       ],
-      "sha256": "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
+      "sha256": "ceb603f14524af2329bb0137f6235895462fcdabf10c79f16afb8278049f6341",
       "runtimeSha256": [
-        "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
-        "461eba136bde06bf6c0c8f2f505e5e9c3b5b44d9593ec56d476e116b83c77790",
-        "67e1a6b7e5bf14516ed9d867bd7a4206392d88e682490c5fb7daecaa0fc4082c",
-        "aa7f20a550c8a11de19a437cceee33d8361f743caa5136caef6ffe9e2ba6ae93"
+        "ceb603f14524af2329bb0137f6235895462fcdabf10c79f16afb8278049f6341",
+        "ceb603f14524af2329bb0137f6235895462fcdabf10c79f16afb8278049f6341",
+        "ceb603f14524af2329bb0137f6235895462fcdabf10c79f16afb8278049f6341",
+        "ceb603f14524af2329bb0137f6235895462fcdabf10c79f16afb8278049f6341"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4875,7 +4991,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 136179,
+      "memoryEstimateBytes": 184813,
       "anchor": [
         0.5,
         0.5
@@ -4960,23 +5076,23 @@
     {
       "assetId": "UI-UP-DASH-REPAIR",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-DASH-REPAIR.svg",
+      "sourceFile": "图形/UI界面/UI-UP-DASH-REPAIR.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-DASH-REPAIR__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-REPAIR__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-REPAIR__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-DASH-REPAIR__focus.png"
       ],
-      "sha256": "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
+      "sha256": "748fb53ba98267e255a59e68c77e74f2b38d3aed7d5e7ef0e02f56e413fc7c78",
       "runtimeSha256": [
-        "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
-        "461eba136bde06bf6c0c8f2f505e5e9c3b5b44d9593ec56d476e116b83c77790",
-        "67e1a6b7e5bf14516ed9d867bd7a4206392d88e682490c5fb7daecaa0fc4082c",
-        "aa7f20a550c8a11de19a437cceee33d8361f743caa5136caef6ffe9e2ba6ae93"
+        "748fb53ba98267e255a59e68c77e74f2b38d3aed7d5e7ef0e02f56e413fc7c78",
+        "748fb53ba98267e255a59e68c77e74f2b38d3aed7d5e7ef0e02f56e413fc7c78",
+        "748fb53ba98267e255a59e68c77e74f2b38d3aed7d5e7ef0e02f56e413fc7c78",
+        "748fb53ba98267e255a59e68c77e74f2b38d3aed7d5e7ef0e02f56e413fc7c78"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -4988,7 +5104,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 136179,
+      "memoryEstimateBytes": 275247,
       "anchor": [
         0.5,
         0.5
@@ -5186,23 +5302,23 @@
     {
       "assetId": "UI-UP-COMBO-GUARD",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-UP-COMBO-GUARD.svg",
+      "sourceFile": "图形/UI界面/UI-UP-COMBO-GUARD.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-UP-COMBO-GUARD__normal.png",
         "图形/运行时PNG/UI界面/UI-UP-COMBO-GUARD__pressed.png",
         "图形/运行时PNG/UI界面/UI-UP-COMBO-GUARD__disabled.png",
         "图形/运行时PNG/UI界面/UI-UP-COMBO-GUARD__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "714455135547161028d40bb39813b291ed7cd7ecc8815a0c98096b7b512a3552",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "714455135547161028d40bb39813b291ed7cd7ecc8815a0c98096b7b512a3552",
+        "714455135547161028d40bb39813b291ed7cd7ecc8815a0c98096b7b512a3552",
+        "714455135547161028d40bb39813b291ed7cd7ecc8815a0c98096b7b512a3552",
+        "714455135547161028d40bb39813b291ed7cd7ecc8815a0c98096b7b512a3552"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -5214,7 +5330,7 @@
         "UpgradeDraftOpened"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 363205,
       "anchor": [
         0.5,
         0.5
@@ -6177,23 +6293,23 @@
     {
       "assetId": "UI-HUD-LV-BADGE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-LV-BADGE.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-LV-BADGE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-LV-BADGE__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-LV-BADGE__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-LV-BADGE__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-LV-BADGE__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "4de00129103c8d11e4fe4f03058e31ed1760e06161b3bae18ad18a7876bd764b",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "4de00129103c8d11e4fe4f03058e31ed1760e06161b3bae18ad18a7876bd764b",
+        "4de00129103c8d11e4fe4f03058e31ed1760e06161b3bae18ad18a7876bd764b",
+        "4de00129103c8d11e4fe4f03058e31ed1760e06161b3bae18ad18a7876bd764b",
+        "4de00129103c8d11e4fe4f03058e31ed1760e06161b3bae18ad18a7876bd764b"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -6203,7 +6319,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 229905,
       "anchor": [
         0.5,
         0.5
@@ -6282,23 +6398,23 @@
     {
       "assetId": "UI-HUD-COMBO",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-COMBO.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-COMBO.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-COMBO__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-COMBO__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-COMBO__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-COMBO__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "89b891a70514fd616e2d22344b95dc8dd98dddbe93fa46907a4e50e43ad14337",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "89b891a70514fd616e2d22344b95dc8dd98dddbe93fa46907a4e50e43ad14337",
+        "89b891a70514fd616e2d22344b95dc8dd98dddbe93fa46907a4e50e43ad14337",
+        "89b891a70514fd616e2d22344b95dc8dd98dddbe93fa46907a4e50e43ad14337",
+        "89b891a70514fd616e2d22344b95dc8dd98dddbe93fa46907a4e50e43ad14337"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -6308,7 +6424,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 275112,
       "anchor": [
         0.5,
         0.5
@@ -6387,23 +6503,23 @@
     {
       "assetId": "UI-HUD-TIMER",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-TIMER.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-TIMER.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-TIMER__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-TIMER__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-TIMER__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-TIMER__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "9faa8e765111dc518f704e88a371a587356413fb78e08159624a0f89d9bc9b47",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "9faa8e765111dc518f704e88a371a587356413fb78e08159624a0f89d9bc9b47",
+        "9faa8e765111dc518f704e88a371a587356413fb78e08159624a0f89d9bc9b47",
+        "9faa8e765111dc518f704e88a371a587356413fb78e08159624a0f89d9bc9b47",
+        "9faa8e765111dc518f704e88a371a587356413fb78e08159624a0f89d9bc9b47"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -6413,7 +6529,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 288241,
       "anchor": [
         0.5,
         0.5
@@ -6738,23 +6854,23 @@
     {
       "assetId": "UI-HUD-BOSS-WEAKPOINT",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-BOSS-WEAKPOINT.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-BOSS-WEAKPOINT.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-BOSS-WEAKPOINT__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-BOSS-WEAKPOINT__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-BOSS-WEAKPOINT__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-BOSS-WEAKPOINT__focus.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "6c58adbf3d7e805b8d3baf686e8cbe3af97c37eb601a611162612e1ddd65ecad",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
-        "8b2085ec03565ae6af4bc7305c27d8e87f59929de3846326782927dc83538f71",
-        "4088e100837dc2ee8b0b59b5f2182580e87e8374df613d4e69d1c12f3374a32c",
-        "25d5dd741c4c4f0c8475d2847b8327ae6fb11fc3aafea4de84edbb6e01545b26"
+        "6c58adbf3d7e805b8d3baf686e8cbe3af97c37eb601a611162612e1ddd65ecad",
+        "6c58adbf3d7e805b8d3baf686e8cbe3af97c37eb601a611162612e1ddd65ecad",
+        "6c58adbf3d7e805b8d3baf686e8cbe3af97c37eb601a611162612e1ddd65ecad",
+        "6c58adbf3d7e805b8d3baf686e8cbe3af97c37eb601a611162612e1ddd65ecad"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -6764,7 +6880,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 137273,
+      "memoryEstimateBytes": 275572,
       "anchor": [
         0.5,
         0.5
@@ -7173,23 +7289,23 @@
     {
       "assetId": "UI-HUD-PAUSE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-PAUSE.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-PAUSE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-PAUSE__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-PAUSE__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-PAUSE__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-PAUSE__focus.png"
       ],
-      "sha256": "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
+      "sha256": "29e06dfce92275d671c360191a36b4adc288c346d9a4d43b77fb75739829a1a8",
       "runtimeSha256": [
-        "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
-        "461eba136bde06bf6c0c8f2f505e5e9c3b5b44d9593ec56d476e116b83c77790",
-        "67e1a6b7e5bf14516ed9d867bd7a4206392d88e682490c5fb7daecaa0fc4082c",
-        "aa7f20a550c8a11de19a437cceee33d8361f743caa5136caef6ffe9e2ba6ae93"
+        "29e06dfce92275d671c360191a36b4adc288c346d9a4d43b77fb75739829a1a8",
+        "29e06dfce92275d671c360191a36b4adc288c346d9a4d43b77fb75739829a1a8",
+        "29e06dfce92275d671c360191a36b4adc288c346d9a4d43b77fb75739829a1a8",
+        "29e06dfce92275d671c360191a36b4adc288c346d9a4d43b77fb75739829a1a8"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -7199,7 +7315,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 136179,
+      "memoryEstimateBytes": 211316,
       "anchor": [
         0.5,
         0.5
@@ -7622,23 +7738,23 @@
     {
       "assetId": "UI-HUD-OBJECTIVE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HUD-OBJECTIVE.svg",
+      "sourceFile": "图形/UI界面/UI-HUD-OBJECTIVE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HUD-OBJECTIVE__normal.png",
         "图形/运行时PNG/UI界面/UI-HUD-OBJECTIVE__pressed.png",
         "图形/运行时PNG/UI界面/UI-HUD-OBJECTIVE__disabled.png",
         "图形/运行时PNG/UI界面/UI-HUD-OBJECTIVE__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "3756adee3b8330a88164ec1375c9fdea04ceda1198e71eaa8195ae1f027954d7",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "3756adee3b8330a88164ec1375c9fdea04ceda1198e71eaa8195ae1f027954d7",
+        "3756adee3b8330a88164ec1375c9fdea04ceda1198e71eaa8195ae1f027954d7",
+        "3756adee3b8330a88164ec1375c9fdea04ceda1198e71eaa8195ae1f027954d7",
+        "3756adee3b8330a88164ec1375c9fdea04ceda1198e71eaa8195ae1f027954d7"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -7648,7 +7764,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 263836,
       "anchor": [
         0.5,
         0.5
@@ -7840,23 +7956,23 @@
     {
       "assetId": "UI-BOSS-PHASE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-BOSS-PHASE.svg",
+      "sourceFile": "图形/UI界面/UI-BOSS-PHASE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-BOSS-PHASE__normal.png",
         "图形/运行时PNG/UI界面/UI-BOSS-PHASE__pressed.png",
         "图形/运行时PNG/UI界面/UI-BOSS-PHASE__disabled.png",
         "图形/运行时PNG/UI界面/UI-BOSS-PHASE__focus.png"
       ],
-      "sha256": "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
+      "sha256": "9c9ab7ebe9aa6bb810842bee80da9b2bea6ebe7d49145c060d5fe1fd44a1e062",
       "runtimeSha256": [
-        "0b102a2dcfe50955b833a4b183801ddc7f4e01e23dcd929d78a93e6c8709fdbd",
-        "8b2085ec03565ae6af4bc7305c27d8e87f59929de3846326782927dc83538f71",
-        "4088e100837dc2ee8b0b59b5f2182580e87e8374df613d4e69d1c12f3374a32c",
-        "25d5dd741c4c4f0c8475d2847b8327ae6fb11fc3aafea4de84edbb6e01545b26"
+        "9c9ab7ebe9aa6bb810842bee80da9b2bea6ebe7d49145c060d5fe1fd44a1e062",
+        "9c9ab7ebe9aa6bb810842bee80da9b2bea6ebe7d49145c060d5fe1fd44a1e062",
+        "9c9ab7ebe9aa6bb810842bee80da9b2bea6ebe7d49145c060d5fe1fd44a1e062",
+        "9c9ab7ebe9aa6bb810842bee80da9b2bea6ebe7d49145c060d5fe1fd44a1e062"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -7868,7 +7984,7 @@
         "BossPhaseChanged"
       ],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 137273,
+      "memoryEstimateBytes": 326170,
       "anchor": [
         0.5,
         0.5
@@ -8304,23 +8420,23 @@
     {
       "assetId": "UI-HOME-LOGO",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-HOME-LOGO.svg",
+      "sourceFile": "图形/UI界面/UI-HOME-LOGO.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-HOME-LOGO__normal.png",
         "图形/运行时PNG/UI界面/UI-HOME-LOGO__pressed.png",
         "图形/运行时PNG/UI界面/UI-HOME-LOGO__disabled.png",
         "图形/运行时PNG/UI界面/UI-HOME-LOGO__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "5be8b4c763cbdeeb460c5b2cc8f76c69548208c4a9ec04c0e141cee05c6b6dba",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "5be8b4c763cbdeeb460c5b2cc8f76c69548208c4a9ec04c0e141cee05c6b6dba",
+        "5be8b4c763cbdeeb460c5b2cc8f76c69548208c4a9ec04c0e141cee05c6b6dba",
+        "5be8b4c763cbdeeb460c5b2cc8f76c69548208c4a9ec04c0e141cee05c6b6dba",
+        "5be8b4c763cbdeeb460c5b2cc8f76c69548208c4a9ec04c0e141cee05c6b6dba"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -8330,7 +8446,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 254753,
       "anchor": [
         0.5,
         0.5
@@ -8766,23 +8882,23 @@
     {
       "assetId": "UI-ICON-SETTINGS",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-ICON-SETTINGS.svg",
+      "sourceFile": "图形/UI界面/UI-ICON-SETTINGS.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-ICON-SETTINGS__normal.png",
         "图形/运行时PNG/UI界面/UI-ICON-SETTINGS__pressed.png",
         "图形/运行时PNG/UI界面/UI-ICON-SETTINGS__disabled.png",
         "图形/运行时PNG/UI界面/UI-ICON-SETTINGS__focus.png"
       ],
-      "sha256": "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
+      "sha256": "48ac8f807e1fb9d5c4dd067a61d4ea770b368d506ebbef25c58ae68adef9b69d",
       "runtimeSha256": [
-        "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
-        "461eba136bde06bf6c0c8f2f505e5e9c3b5b44d9593ec56d476e116b83c77790",
-        "67e1a6b7e5bf14516ed9d867bd7a4206392d88e682490c5fb7daecaa0fc4082c",
-        "aa7f20a550c8a11de19a437cceee33d8361f743caa5136caef6ffe9e2ba6ae93"
+        "48ac8f807e1fb9d5c4dd067a61d4ea770b368d506ebbef25c58ae68adef9b69d",
+        "48ac8f807e1fb9d5c4dd067a61d4ea770b368d506ebbef25c58ae68adef9b69d",
+        "48ac8f807e1fb9d5c4dd067a61d4ea770b368d506ebbef25c58ae68adef9b69d",
+        "48ac8f807e1fb9d5c4dd067a61d4ea770b368d506ebbef25c58ae68adef9b69d"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -8792,7 +8908,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 136179,
+      "memoryEstimateBytes": 294405,
       "anchor": [
         0.5,
         0.5
@@ -8871,23 +8987,23 @@
     {
       "assetId": "UI-ICON-MUTE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-ICON-MUTE.svg",
+      "sourceFile": "图形/UI界面/UI-ICON-MUTE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-ICON-MUTE__normal.png",
         "图形/运行时PNG/UI界面/UI-ICON-MUTE__pressed.png",
         "图形/运行时PNG/UI界面/UI-ICON-MUTE__disabled.png",
         "图形/运行时PNG/UI界面/UI-ICON-MUTE__focus.png"
       ],
-      "sha256": "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
+      "sha256": "51373fec81a0326494f94e3364493c2c78c70f49fb7de02ae12dde1f97f25845",
       "runtimeSha256": [
-        "e1329fc52aa6e159b44df5cf7ddc1796952698fef29fa47af30c5ba10ecda791",
-        "461eba136bde06bf6c0c8f2f505e5e9c3b5b44d9593ec56d476e116b83c77790",
-        "67e1a6b7e5bf14516ed9d867bd7a4206392d88e682490c5fb7daecaa0fc4082c",
-        "aa7f20a550c8a11de19a437cceee33d8361f743caa5136caef6ffe9e2ba6ae93"
+        "51373fec81a0326494f94e3364493c2c78c70f49fb7de02ae12dde1f97f25845",
+        "51373fec81a0326494f94e3364493c2c78c70f49fb7de02ae12dde1f97f25845",
+        "51373fec81a0326494f94e3364493c2c78c70f49fb7de02ae12dde1f97f25845",
+        "51373fec81a0326494f94e3364493c2c78c70f49fb7de02ae12dde1f97f25845"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -8897,7 +9013,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 136179,
+      "memoryEstimateBytes": 204459,
       "anchor": [
         0.5,
         0.5
@@ -9303,23 +9419,23 @@
     {
       "assetId": "UI-BRIEFING-TIP",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-BRIEFING-TIP.svg",
+      "sourceFile": "图形/UI界面/UI-BRIEFING-TIP.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-BRIEFING-TIP__normal.png",
         "图形/运行时PNG/UI界面/UI-BRIEFING-TIP__pressed.png",
         "图形/运行时PNG/UI界面/UI-BRIEFING-TIP__disabled.png",
         "图形/运行时PNG/UI界面/UI-BRIEFING-TIP__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "dcae34a5fc3ecf60ef81f02cfd1b724f43f52b60842c2bf3996c7d209d7c4017",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "dcae34a5fc3ecf60ef81f02cfd1b724f43f52b60842c2bf3996c7d209d7c4017",
+        "dcae34a5fc3ecf60ef81f02cfd1b724f43f52b60842c2bf3996c7d209d7c4017",
+        "dcae34a5fc3ecf60ef81f02cfd1b724f43f52b60842c2bf3996c7d209d7c4017",
+        "dcae34a5fc3ecf60ef81f02cfd1b724f43f52b60842c2bf3996c7d209d7c4017"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -9329,7 +9445,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 301959,
       "anchor": [
         0.5,
         0.5
@@ -9525,23 +9641,23 @@
     {
       "assetId": "UI-SLIDER-TRACK",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-SLIDER-TRACK.svg",
+      "sourceFile": "图形/UI界面/UI-SLIDER-TRACK.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-SLIDER-TRACK__normal.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-TRACK__pressed.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-TRACK__disabled.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-TRACK__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "840fa1a97edf83390bf31f981fcdfa64199953c056d751a70131bbbd62684205",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "840fa1a97edf83390bf31f981fcdfa64199953c056d751a70131bbbd62684205",
+        "840fa1a97edf83390bf31f981fcdfa64199953c056d751a70131bbbd62684205",
+        "840fa1a97edf83390bf31f981fcdfa64199953c056d751a70131bbbd62684205",
+        "840fa1a97edf83390bf31f981fcdfa64199953c056d751a70131bbbd62684205"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -9551,7 +9667,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 77890,
       "anchor": [
         0.5,
         0.5
@@ -9735,23 +9851,23 @@
     {
       "assetId": "UI-SLIDER-THUMB",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-SLIDER-THUMB.svg",
+      "sourceFile": "图形/UI界面/UI-SLIDER-THUMB.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-SLIDER-THUMB__normal.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-THUMB__pressed.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-THUMB__disabled.png",
         "图形/运行时PNG/UI界面/UI-SLIDER-THUMB__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "4b56ddb9cf61b7e10ea9adb7b1640523c8d068be54ebaa8d420f8c79e76ef32d",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "4b56ddb9cf61b7e10ea9adb7b1640523c8d068be54ebaa8d420f8c79e76ef32d",
+        "4b56ddb9cf61b7e10ea9adb7b1640523c8d068be54ebaa8d420f8c79e76ef32d",
+        "4b56ddb9cf61b7e10ea9adb7b1640523c8d068be54ebaa8d420f8c79e76ef32d",
+        "4b56ddb9cf61b7e10ea9adb7b1640523c8d068be54ebaa8d420f8c79e76ef32d"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -9761,7 +9877,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 164135,
       "anchor": [
         0.5,
         0.5
@@ -10090,23 +10206,23 @@
     {
       "assetId": "UI-RARITY-COMMON",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-RARITY-COMMON.svg",
+      "sourceFile": "图形/UI界面/UI-RARITY-COMMON.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-RARITY-COMMON__normal.png",
         "图形/运行时PNG/UI界面/UI-RARITY-COMMON__pressed.png",
         "图形/运行时PNG/UI界面/UI-RARITY-COMMON__disabled.png",
         "图形/运行时PNG/UI界面/UI-RARITY-COMMON__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "bb678a058a732c3355c6e2d53d22a2c68948882b91c414737f58e99063a5b904",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "bb678a058a732c3355c6e2d53d22a2c68948882b91c414737f58e99063a5b904",
+        "bb678a058a732c3355c6e2d53d22a2c68948882b91c414737f58e99063a5b904",
+        "bb678a058a732c3355c6e2d53d22a2c68948882b91c414737f58e99063a5b904",
+        "bb678a058a732c3355c6e2d53d22a2c68948882b91c414737f58e99063a5b904"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -10116,7 +10232,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 150465,
       "anchor": [
         0.5,
         0.5
@@ -10195,23 +10311,23 @@
     {
       "assetId": "UI-RARITY-RARE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-RARITY-RARE.svg",
+      "sourceFile": "图形/UI界面/UI-RARITY-RARE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-RARITY-RARE__normal.png",
         "图形/运行时PNG/UI界面/UI-RARITY-RARE__pressed.png",
         "图形/运行时PNG/UI界面/UI-RARITY-RARE__disabled.png",
         "图形/运行时PNG/UI界面/UI-RARITY-RARE__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "e9188c3feb84272df4fab7a2eec7b07b2699aa574b1baf8cf53a2f2549f04f42",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "e9188c3feb84272df4fab7a2eec7b07b2699aa574b1baf8cf53a2f2549f04f42",
+        "e9188c3feb84272df4fab7a2eec7b07b2699aa574b1baf8cf53a2f2549f04f42",
+        "e9188c3feb84272df4fab7a2eec7b07b2699aa574b1baf8cf53a2f2549f04f42",
+        "e9188c3feb84272df4fab7a2eec7b07b2699aa574b1baf8cf53a2f2549f04f42"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -10221,7 +10337,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 183605,
       "anchor": [
         0.5,
         0.5
@@ -10300,23 +10416,23 @@
     {
       "assetId": "UI-RARITY-EPIC",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-RARITY-EPIC.svg",
+      "sourceFile": "图形/UI界面/UI-RARITY-EPIC.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-RARITY-EPIC__normal.png",
         "图形/运行时PNG/UI界面/UI-RARITY-EPIC__pressed.png",
         "图形/运行时PNG/UI界面/UI-RARITY-EPIC__disabled.png",
         "图形/运行时PNG/UI界面/UI-RARITY-EPIC__focus.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "af31666e2b39a30c6b8445bb7911f921ddda9f931cad3b814423c0c3ba458337",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
-        "150cfb666edb74117cc60e60eaec0944535f2058aae58a17a4621a9b37ad8259",
-        "10ed28733807e29012dfe4a5b0d3e323d383257e339b5d05e7b9f4063a873578",
-        "8b3e5167540de094b8ca532770c732eb0e86013197898a64c09a0da3abe98379"
+        "af31666e2b39a30c6b8445bb7911f921ddda9f931cad3b814423c0c3ba458337",
+        "af31666e2b39a30c6b8445bb7911f921ddda9f931cad3b814423c0c3ba458337",
+        "af31666e2b39a30c6b8445bb7911f921ddda9f931cad3b814423c0c3ba458337",
+        "af31666e2b39a30c6b8445bb7911f921ddda9f931cad3b814423c0c3ba458337"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -10326,7 +10442,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 119131,
+      "memoryEstimateBytes": 267749,
       "anchor": [
         0.5,
         0.5
@@ -11540,23 +11656,23 @@
     {
       "assetId": "UI-FOCUS-RING",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-FOCUS-RING.svg",
+      "sourceFile": "图形/UI界面/UI-FOCUS-RING.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-FOCUS-RING__normal.png",
         "图形/运行时PNG/UI界面/UI-FOCUS-RING__pressed.png",
         "图形/运行时PNG/UI界面/UI-FOCUS-RING__disabled.png",
         "图形/运行时PNG/UI界面/UI-FOCUS-RING__focus.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "aea3cdfef4046bc7974bdf06eeb149d5fa03b3019f8877ea33d8f6e4fed36497",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
-        "22be39e28e8fcdd0353c6f5cb977b88dc6935fed4689aa382eb89b832ba8c859",
-        "82f90731c85c37853fce6551807c5ebbc5e398a6ef177be9cc2b1e596766bc68",
-        "54bedec8bf3718be71e1d1300360876bd0cea220f032af8ea8f3ff3aea201030"
+        "aea3cdfef4046bc7974bdf06eeb149d5fa03b3019f8877ea33d8f6e4fed36497",
+        "aea3cdfef4046bc7974bdf06eeb149d5fa03b3019f8877ea33d8f6e4fed36497",
+        "aea3cdfef4046bc7974bdf06eeb149d5fa03b3019f8877ea33d8f6e4fed36497",
+        "aea3cdfef4046bc7974bdf06eeb149d5fa03b3019f8877ea33d8f6e4fed36497"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "normal",
@@ -11566,7 +11682,7 @@
       ],
       "triggerEvents": [],
       "fallbackAssetId": "UI-FALLBACK-ICON",
-      "memoryEstimateBytes": 303073,
+      "memoryEstimateBytes": 286954,
       "anchor": [
         0.5,
         0.5
@@ -11960,24 +12076,24 @@
     {
       "assetId": "GFX-FALLBACK-SILHOUETTE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/投射物与预警/GFX-FALLBACK-SILHOUETTE.svg",
+      "sourceFile": "图形/投射物与预警/GFX-FALLBACK-SILHOUETTE.png",
       "runtimeFiles": [
         "图形/运行时PNG/投射物与预警/GFX-FALLBACK-SILHOUETTE__default.png"
       ],
-      "sha256": "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b",
+      "sha256": "0b3425225184d73aa0e1bc29d647437db2877e190d3cfd7fe5946ab0ecd4cf57",
       "runtimeSha256": [
-        "c1970942b8bcab46db1ef806858fbbb01d02b213355033801646fb8f552b7c4b"
+        "0b3425225184d73aa0e1bc29d647437db2877e190d3cfd7fe5946ab0ecd4cf57"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
-      "createdAt": "2026-10-14T00:00:00+08:00",
+      "createdAt": "2026-10-16T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "states": [
         "default"
       ],
       "triggerEvents": [],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
-      "memoryEstimateBytes": 29868,
+      "memoryEstimateBytes": 259084,
       "anchor": [
         0.5,
         0.5
