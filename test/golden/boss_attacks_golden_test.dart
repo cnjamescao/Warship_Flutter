@@ -19,7 +19,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/app/v2_run_screen.dart';
+import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
+import 'package:warship_flutter/game/presentation/asset_cache.dart';
 
 import '../support/v2_harness.dart';
 
@@ -38,9 +40,25 @@ void main() {
     catalog = await loadV2CatalogForTests();
   });
 
+  /// **F-40 关键**：用 `tester.runAsync` 把素材**真实加载**进缓存，
+  /// 再注入应用 —— 否则表现层走**矢量占位**，Golden 截到的是
+  /// "无素材回退图"，不能作为视觉验收证据。
+  ///
+  /// （`testWidgets` 处于假异步区，`rootBundle` 的真实 I/O 永不完成，
+  /// 所以必须用 `runAsync` 才能真正把贴图读进内存。）
+  Future<VisualAssetCache> preloadRealAssets(WidgetTester tester) async {
+    final cache = VisualAssetCache(manifest: catalog.manifest);
+    await tester.runAsync(() async {
+      await cache.loadGroup(AssetLoadGroup.firstRun);
+      await cache.loadGroup(AssetLoadGroup.lazy);
+    });
+    return cache;
+  }
+
   for (final entry in kBossAttacks.entries) {
     testWidgets('Golden：Boss 招式 ${entry.key} 预警帧', (tester) async {
-      await mountV2App(tester, catalog);
+      final cache = await preloadRealAssets(tester);
+      await mountV2App(tester, catalog, assetCache: cache);
       await tapText(tester, '开始战斗');
       await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
 
@@ -81,8 +99,45 @@ void main() {
         isTrue,
         reason: '应在 Boss 入场后捕捉到 ${entry.key} 的预警帧',
       );
+      // **F-40 断言 ①**：该招式的**预警素材已真实加载**。
+      final assetId = rt.director.rowCount > 0
+          ? (rt.snapshot().telegraphs
+                    .firstWhere((t) => t.attackId == entry.key)
+                    .assetId ??
+                '')
+          : '';
+      expect(
+        assetId,
+        isNotEmpty,
+        reason: '${entry.key} 的预警应携带素材 ID',
+      );
+      expect(
+        cache.imageFor(assetId, 'default'),
+        isNotNull,
+        reason: 'F-40：${entry.key} 的预警素材 $assetId **未真实加载** —— '
+            'Golden 会是"无素材回退图"，不能作为视觉证据',
+      );
+
+      // **F-40 断言 ②**：该素材**确实被绘制**（读渲染器自身的绘制记录）。
+      //
+      // 说明：`game` getter 定义在 `V2RunScreen` 的**私有 State 类**上，
+      // 测试无法静态引用，因此这里用 `dynamic` 分派取到它 ——
+      // 这只是绕过私有类型的可见性，getter 本身是公开的、只读的。
+      final state = tester.state(find.byType(V2RunScreen));
+      final game = (state as dynamic).game;
+      final drawn =
+          (game.battlefield.drawnAssetMaxRadius as Map<String, double>).keys
+              .where((k) => k.startsWith(assetId))
+              .toList();
+      expect(
+        drawn,
+        isNotEmpty,
+        reason: 'F-40：$assetId 捕获帧内**未被实际绘制**（drawnAssetMaxRadius '
+            '中无记录）',
+      );
+
       // ignore: avoid_print
-      print('Boss 招式基线捕捉到：${entry.key}');
+      print('Boss 招式基线捕捉到：${entry.key} asset=$assetId drawn=$drawn');
 
       await expectLater(
         find.byType(MaterialApp),

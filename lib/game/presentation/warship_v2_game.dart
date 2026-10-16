@@ -224,6 +224,9 @@ class WarshipV2Game extends FlameGame {
 
   late final BattlefieldComponent _battlefield;
 
+  /// **F-40 诊断**：只读暴露战场组件（含绘制记录 `drawnAssetMaxRadius`）。
+  BattlefieldComponent get battlefield => _battlefield;
+
   /// 最近一帧快照（供 HUD 读取）。
   RenderSnapshot latestSnapshot = RenderSnapshot.empty;
 
@@ -1006,6 +1009,16 @@ class BattlefieldComponent extends Component {
     );
     drawHistoryCount[lineSignature] =
         (drawHistoryCount[lineSignature] ?? 0) + 1;
+
+    // ⚠️ **线形预警也必须进绘制记录**：它用 `drawImageRect` 直接绘制，
+    // **不经过 `_drawSpriteOrNull`**，因此不会自动出现在
+    // `drawnAssetMaxRadius` 里 —— 这是仪表盲区（我先前查敌机线形预警时
+    // 已踩过一次，此处再次踩到）。Golden 的"素材确实被绘制"断言正需要它。
+    final recordKey = assetId;
+    final previous = drawnAssetMaxRadius[recordKey] ?? 0;
+    if (kHazardTelegraphRadius > previous) {
+      drawnAssetMaxRadius[recordKey] = kHazardTelegraphRadius;
+    }
 
     telegraphDrawLog.add(
       'line ${telegraph.attackId}: origin=('

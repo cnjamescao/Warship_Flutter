@@ -17,6 +17,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
+import '../game/presentation/asset_cache.dart';
 import 'baseline_recording.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
@@ -61,6 +62,7 @@ class V2AppFlow extends StatefulWidget {
     this.audioPort,
     this.store,
     this.preloadAssets = true,
+    this.assetCache,
   });
 
   final ContentCatalog catalog;
@@ -86,6 +88,9 @@ class V2AppFlow extends StatefulWidget {
   /// 在 `testWidgets` 的假异步区里不会完成。
   /// 关掉后表现层走矢量占位，**规则不受影响**（架构 §7）。
   final bool preloadAssets;
+
+  /// **F-40**：透传给 `V2RunScreen` 的已预填资源缓存（测试用）。
+  final VisualAssetCache? assetCache;
 
   @override
   State<V2AppFlow> createState() => _V2AppFlowState();
@@ -387,6 +392,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
           input: input,
           manifest: widget.catalog.manifest,
           preloadAssets: widget.preloadAssets,
+          assetCache: widget.assetCache,
           reduceMotion: _settings.reduceMotion,
           onFrame: () => _checkRunOver(runtime),
           onQuitToHome: _backToHome,

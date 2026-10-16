@@ -42,6 +42,7 @@ class V2RunScreen extends StatefulWidget {
     this.onFrame,
     this.onQuitToHome,
     this.preloadAssets = true,
+    this.assetCache,
     this.reduceMotion = false,
   });
 
@@ -60,6 +61,20 @@ class V2RunScreen extends StatefulWidget {
   /// 见 `WarshipV2Game.preloadAssets`。生产恒为 `true`。
   final bool preloadAssets;
 
+  /// **F-40**：可注入的**已预填**资源缓存。
+  ///
+  /// 生产恒为 `null`（由本页新建并按 `preloadAssets` 加载）。
+  ///
+  /// 存在理由：`testWidgets` 处于**假异步区**，`rootBundle` 的真实 I/O
+  /// 永不完成，因此测试脚手架一律传 `preloadAssets: false`，
+  /// 表现层随即退回**矢量占位** —— 于是 Golden 截到的是"无素材回退图"，
+  /// **不能作为视觉验收证据**（F-40）。
+  ///
+  /// 正确做法：测试先用 `tester.runAsync` 把素材**真实加载**进一个
+  /// `VisualAssetCache`，再把它注入这里 —— 此时 `imageFor` 返回的是
+  /// 正式贴图，画面即发布路径。
+  final VisualAssetCache? assetCache;
+
   /// 见 `WarshipV2Game.reduceMotion`。来自本地设置。
   final bool reduceMotion;
 
@@ -77,6 +92,13 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
   final FocusNode _focusNode = FocusNode(debugLabel: 'warship-v2');
   late final WarshipV2Game _game;
 
+  /// **F-40 诊断**：只读暴露本页的 `WarshipV2Game`。
+  ///
+  /// 存在理由：Golden 需要断言"某个正式素材**确实被绘制**"，
+  /// 而这只能从渲染器自身的绘制记录读取（见 `drawnAssetMaxRadius`），
+  /// 不能靠"运行时出现过该 attackId"推断。
+  WarshipV2Game get game => _game;
+
   RenderSnapshot _snapshot = RenderSnapshot.empty;
 
   @override
@@ -89,7 +111,8 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
       reduceMotion: widget.reduceMotion,
       runtime: widget.runtime,
       input: widget.input,
-      visualAssets: VisualAssetCache(manifest: widget.manifest),
+      visualAssets:
+          widget.assetCache ?? VisualAssetCache(manifest: widget.manifest),
       onSnapshot: _onSnapshot,
       onFrame: widget.onFrame,
     );

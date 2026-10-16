@@ -27,6 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warship_flutter/app/v2_app_flow.dart';
 import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
+import 'package:warship_flutter/game/presentation/asset_cache.dart';
 import 'package:warship_flutter/game/infrastructure/audio_port.dart';
 import 'package:warship_flutter/game/infrastructure/progress_store.dart';
 
@@ -55,6 +56,7 @@ Future<void> mountV2App(
   ContentCatalog catalog, {
   int seed = 0x4E454F4E0001,
   KeyValueStore? store,
+  VisualAssetCache? assetCache,
 }) async {
   // SharedPreferences 也必须 mock，否则 initState 里的存档读取会等平台通道。
   SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -70,6 +72,10 @@ Future<void> mountV2App(
         // 是真实 I/O，在 testWidgets 的假异步区里永不完成。
         // 关掉后表现层走矢量占位，规则不受影响（架构 §7）。
         preloadAssets: false,
+        // **F-40**：若调用方用 `tester.runAsync` 真实预载过素材，
+        // 注入后 `imageFor` 即返回**正式贴图**，画面走发布路径 ——
+        // 这是产出有效视觉验收 Golden 的前置。
+        assetCache: assetCache,
       ),
       debugShowCheckedModeBanner: false,
     ),
