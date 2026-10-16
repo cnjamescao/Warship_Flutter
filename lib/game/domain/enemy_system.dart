@@ -396,6 +396,7 @@ class EnemyAttackRequest {
     required this.projectileCount,
     required this.angleOffsetsDegrees,
     required this.telegraphSeconds,
+    this.telegraphShape,
     this.projectile,
     this.hazard,
     this.dropAt,
@@ -409,6 +410,13 @@ class EnemyAttackRequest {
   final int projectileCount;
   final List<double> angleOffsetsDegrees;
   final double telegraphSeconds;
+
+  /// **F-36**：t=0 锁定的预警形状（`line` / `circle`）。
+  ///
+  /// 协议 §3.2 要求以当时的 `origin`、`aimTarget`、`shape` 建立不可变
+  /// 待执行攻击 —— 因此形状必须随请求一起携带，不能在到期时再查配置。
+  final String? telegraphShape;
+
   final ProjectileSpec? projectile;
   final HazardSpec? hazard;
   final String? dropAt;
@@ -544,6 +552,7 @@ class EnemySystem {
               projectileCount: enemy.effectiveProjectileCount,
               angleOffsetsDegrees: attack.burstAngleOffsetsDegrees,
               telegraphSeconds: enemy.effectiveTelegraphSeconds,
+              telegraphShape: attack.telegraphShape,
               projectile: attack.projectile,
               hazard: attack.hazard,
               dropAt: attack.dropAt,

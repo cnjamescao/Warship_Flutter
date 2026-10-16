@@ -1883,6 +1883,18 @@ class GameRuntime {
       enemies: List<EntityView>.unmodifiable(enemyViews),
       projectiles: List<EntityView>.unmodifiable(projectileViews),
       hazards: List<HazardView>.unmodifiable(hazardViews),
+      telegraphs: List<TelegraphView>.unmodifiable(<TelegraphView>[
+        for (final pending in _pendingAttacks)
+          TelegraphView(
+            attackId: pending.request.attackId,
+            shape: pending.request.telegraphShape ?? 'circle',
+            origin: pending.request.origin,
+            aimTarget: pending.request.aimTarget,
+            remainingSeconds: pending.fireAtSeconds - combatSeconds,
+            totalSeconds: pending.request.telegraphSeconds,
+            enemyId: pending.request.enemyId,
+          ),
+      ]),
       riskGate: riskGate == null || riskGate!.isResolved
           ? null
           : RiskGateView(

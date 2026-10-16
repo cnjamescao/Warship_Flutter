@@ -216,6 +216,51 @@ class RiskGateView {
   final List<String> lockedOptionIds;
 }
 
+/// **F-36：预警的独立不可变视图**（协议 §3.2）。
+///
+/// 协议明确要求：
+/// * 渲染快照以**独立不可变 `TelegraphView`** 公开预警；
+/// * **禁止**将其折叠为 `EntityView`；
+/// * **禁止**由表现层猜测目标 —— 因此 `origin` / `aimTarget` / `shape`
+///   全部由 Domain 在 t=0 锁定的原值直接给出。
+///
+/// 资产（`assetId`）**不在**这里解析：素材绑定属 manifest 路由，
+/// 由表现层按 `attackId` 查绑定表取得 —— 这不是"猜目标"。
+class TelegraphView {
+  const TelegraphView({
+    required this.attackId,
+    required this.shape,
+    required this.origin,
+    required this.aimTarget,
+    required this.remainingSeconds,
+    required this.totalSeconds,
+    this.enemyId,
+  });
+
+  /// 稳定枚举的招式 ID（`sniper_line` / `bomber_drop` / …）。
+  final String attackId;
+
+  /// 预警形状：`line` | `circle`（来自 t=0 锁定的 `telegraphShape`）。
+  final String shape;
+
+  /// t=0 锁定的源点。
+  final Vec2 origin;
+
+  /// t=0 锁定的瞄准点。
+  /// * `line`：预警线沿 `origin → aimTarget` 射线，裁切到逻辑世界边界；
+  /// * `circle`：落点即 `origin`（`bomber_drop` 的落点固定为 t=0 的 origin）。
+  final Vec2 aimTarget;
+
+  /// 预警剩余时间（秒）；≤0 表示已到期。
+  final double remainingSeconds;
+
+  /// 预警总时长（秒）。
+  final double totalSeconds;
+
+  /// 发出预警的敌机 ID（表现层用于层级/调试，不用于猜测几何）。
+  final String? enemyId;
+}
+
 /// 一帧的完整只读快照。
 class RenderSnapshot {
   const RenderSnapshot({
@@ -225,6 +270,7 @@ class RenderSnapshot {
     required this.enemies,
     required this.projectiles,
     required this.hazards,
+    required this.telegraphs,
     required this.hud,
     this.upgradeDraft,
     this.riskGate,
@@ -241,6 +287,7 @@ class RenderSnapshot {
     enemies: <EntityView>[],
     projectiles: <EntityView>[],
     hazards: <HazardView>[],
+    telegraphs: <TelegraphView>[],
     hud: null,
     upgradeDraft: null,
     riskGate: null,
@@ -255,6 +302,10 @@ class RenderSnapshot {
   final List<EntityView> enemies;
   final List<EntityView> projectiles;
   final List<HazardView> hazards;
+
+  /// **F-36**：当前生效的预警（独立于 `enemies`，禁止折叠）。
+  final List<TelegraphView> telegraphs;
+
   final HudView? hud;
 
   /// 当前的升级草案；null 表示不在选卡状态。
