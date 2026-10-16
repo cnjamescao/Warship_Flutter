@@ -39,6 +39,19 @@ import 'v2_run_screen.dart';
 /// 简报只占表现时间，不消耗有效战斗时间）。
 const int kBriefingCountdown = 3;
 
+/// **F-25-02 修复**：简报目标里「坚持 N 秒」的权威值。
+///
+/// 来源：`Spec/01_产品/Warship_v2.0研发交付基线.md` ——
+/// 「一局有效战斗时间**上限为 190 秒**，计时从 `Briefing` 结束开始。
+///   Boss 在 150 秒出现；180 秒未击败时进入狂暴，但仍允许到 190 秒，
+///   190 秒判负。」
+///
+/// ⚠️ 此前这里错误地传入了 [kBriefingCountdown]（=3，即简报界面的
+/// 3→1 展示倒计时），于是玩家看到「**坚持 3 秒**，击败守门者 Aegis」——
+/// 把**界面展示倒计时**当成了**游戏目标**（F-25-02 的实测现象）。
+/// 两者是完全不同的数值，不可混用。
+const int kRunObjectiveSeconds = 190;
+
 /// 应用主流程。
 class V2AppFlow extends StatefulWidget {
   const V2AppFlow({
@@ -704,8 +717,9 @@ class _BriefingScreenState extends State<_BriefingScreen> {
             ),
             const SizedBox(height: 16),
             Text(
+              // F-25-02：目标是**战斗时长上限**，不是简报的 3 秒展示倒计时。
               widget.catalog.text('briefing.objective', <String, Object?>{
-                'seconds': kBriefingCountdown,
+                'seconds': kRunObjectiveSeconds,
               }),
               style: const TextStyle(color: Colors.white70, fontSize: 18),
             ),
