@@ -579,6 +579,9 @@ class BattlefieldComponent extends Component {
       }
       return;
     }
+    if (!drewSprite) {
+      playerFallbackDrawn++;
+    }
     _fill.color = snapshot.isPlayerInvulnerable
         ? const Color(0x99FFFFFF)
         : const Color(0xFF3FE0FF);
