@@ -321,7 +321,15 @@ class BattlefieldComponent extends Component {
   int playerSpriteDrawn = 0;
   int playerFallbackDrawn = 0;
   int _renderFrames = 0;
-  bool _drawCountersReported = false;
+
+
+  /// 本帧实际绘制过的资源 → 最大绘制半径（F-35 诊断）。
+  ///
+  /// 存在理由：玩家反复看到"敌机周围一个蓝色大矩阵"。我先按尺寸**推测**
+  /// 是精英名称条/光环，但推测不等于事实。这里直接把**每一帧真正画了
+  /// 哪些资源、画了多大**记下来 —— 大尺寸资源一目了然。
+  final Map<String, double> drawnAssetMaxRadius = <String, double>{};
+  Map<String, double> _lastFrameDrawn = <String, double>{};
 
   /// 把实体 ID 解析成当前坐标（供特效池定位）。
   Vec2? positionOf(EntityId id) {
@@ -374,6 +382,13 @@ class BattlefieldComponent extends Component {
     if (image == null) {
       return false;
     }
+    if (assetId != null) {
+      final key = state == null ? assetId : '$assetId[$state]';
+      final previous = drawnAssetMaxRadius[key] ?? 0;
+      if (radius > previous) {
+        drawnAssetMaxRadius[key] = radius;
+      }
+    }
     final anchor = assets.anchorFor(assetId, state);
     final iw = image.width.toDouble();
     final ih = image.height.toDouble();
@@ -403,15 +418,25 @@ class BattlefieldComponent extends Component {
   /// 把绘制计数写进诊断日志（只写一次，进对局后约 2 秒）。
   void _maybeReportDrawCounters() {
     _renderFrames++;
-    if (_drawCountersReported || _renderFrames < 120) {
+    // **每 5 秒覆盖上报一次**，而不是只报一次。
+    // 玩家看到的"矩阵"出现在较后的时间点；只报一次会正好错过它。
+    // 覆盖式写入保证日志里**始终是最近 5 秒**的画面构成。
+    if (_renderFrames < 120 || _renderFrames % 300 != 0) {
       return;
     }
-    _drawCountersReported = true;
+    _lastFrameDrawn = Map<String, double>.from(drawnAssetMaxRadius);
+    final top = _lastFrameDrawn.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final bigList = top
+        .take(12)
+        .map((e) => '    ${e.value.toStringAsFixed(0).padLeft(4)}  ${e.key}')
+        .join('\n');
     writeAssetDiagnostics(
       '绘制计数（约 2 秒时）：\n'
       '  玩家：贴图 $playerSpriteDrawn / 占位 $playerFallbackDrawn\n'
       '  敌机：贴图 $enemySpriteDrawn / 占位 $enemyFallbackDrawn\n'
-      '  （占位 > 0 说明贴图路径没走通）',
+      '  （占位 > 0 说明贴图路径没走通）\n'
+      '实际绘制过的资源（按绘制半径从大到小，前 12）：\n$bigList',
     );
   }
 
