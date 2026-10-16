@@ -720,7 +720,15 @@ class _IconButton extends StatelessWidget {
     final size = 56 * scale;
     return Semantics(
       button: true,
-      label: catalog.text('pause.title'),
+      // **F-25-03 修复**：语义标签必须描述**本控件会执行的动作**。
+      //
+      // 此前这里用的是 `pause.title`，而该 key 的文案是「**已暂停**」——
+      // 那是一个**状态描述**，用于暂停覆盖层的标题（见下方覆盖层 ✓）。
+      // 把它用在**运行中**的暂停按钮上，会让读屏软件在玩家**并未暂停**时
+      // 播报「已暂停」—— 即 F-25-03 的实测现象「辅助标签描述了错误状态」。
+      //
+      // 运行中的按钮动作是「暂停」，故改用 `hud.pauseAria`。
+      label: catalog.text('hud.pauseAria'),
       child: InkWell(
         onTap: onTap,
         child: Container(

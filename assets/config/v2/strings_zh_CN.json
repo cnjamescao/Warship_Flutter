@@ -68,6 +68,7 @@
     "pause.resume": "继续",
     "pause.settings": "设置",
     "pause.title": "已暂停",
+    "hud.pauseAria": "暂停",
     "result.best": "最佳成绩 {score}",
     "result.buildSummary": "本局构筑",
     "result.defeat": "防线失守",
