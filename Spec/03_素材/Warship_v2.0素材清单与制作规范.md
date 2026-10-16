@@ -96,9 +96,23 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 | `GFX-ENEMY-BREACH-WARN` | 琥珀下箭头与底部边界线 | 仅在 `EnemyBreached` 事件显示于 y=920 边线；不是通用预警或击毁特效。 |
 
 四者的运行时 SHA-256 已互不相同，且不再与任何上述场景资源共用。研发只需继续按现有
-`eventBindings` 路由，不改事件名、数值、路径或素材本体。特别地，若 `EN-SHIELD` 在
-80–150 秒阶段显示 `GFX-WARN-CONE`，则是代码绕过/违背 manifest 的错误：Shield 仅应显示
-`GFX-EN-SHIELD.frontShield` 作为正面防御视觉；研发须修复错误路由，不能修改本素材绑定。
+`eventBindings` 路由，不改事件名、数值、路径或素材本体。后续运行时诊断证明
+`GFX-WARN-CONE` 并未在所述精英场景实际绘制；该场景的矩阵根因见 §1.5。
+
+### 1.5 v2.0.7 精英名称条与词缀光环补丁（2026-10-16，强制）
+
+运行时诊断确认“蓝色大矩阵”实际来自精英名称条和词缀光环的占位图，**不是**
+`GFX-WARN-CONE`。以下四项已替换为独立素材并同步至应用资源目录：
+
+| Asset ID | 正式视觉 | 尺寸/调用合同 |
+| --- | --- | --- |
+| `UI-ELITE-NAMEPLATE` | 深紫黑横向底板，洋红边轨与机械角件；中心留空供运行时文字绘制 | **512×102 px**，现有 `radius=110` 缩放链路输出准确的 **220×44 logical px**；禁止重新导出为 512×512 方形。 |
+| `GFX-ELITE-AURA-ACCEL` | 金色三重箭头速度轨道 | 512×512；仅 `AFFIX-ACCEL`。 |
+| `GFX-ELITE-AURA-SHIELD` | 青色分段六边形护盾环 | 512×512；仅 `AFFIX-SHIELD`。 |
+| `GFX-ELITE-AURA-BARRAGE` | 洋红外射三角弹幕环 | 512×512；仅 `AFFIX-BARRAGE`。 |
+
+三种光环的 SHA-256 必须互不相同，名称条不得与 UI 容器、Boss、武器或回退图共用。
+研发继续使用既有 `EnemySpawned(isElite=true, affixId)` 精确绑定；无需也不得改写素材。
 
 ## 2. 统一视觉、导出与元数据规范
 
@@ -154,7 +168,7 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 | GFX-EN-BOMBER | idle、drop、hit、critical、destroy | 288×288 @2x | 危险区素材独立 |
 | GFX-EN-SHIELD | body、front-shield、hit、critical、destroy | 288×288 @2x | front-shield 独立，120°正面减伤清晰 |
 | GFX-ELITE-AURA-ACCEL/SHIELD/BARRAGE | 3 个可叠加外环/词缀标识 | 256×256 @2x | 65/105/130 秒固定精英使用 |
-| UI-ELITE-NAMEPLATE | 精英头顶名称条底板 | 512×512 @2x；运行时缩放至 220×44 logical px | 文本由 `enemy.*` / `affix.*` key 绘制，禁止烘焙文字 |
+| UI-ELITE-NAMEPLATE | 精英头顶名称条底板 | **512×102 px**；运行时缩放至 220×44 logical px | 文本由 `enemy.*` / `affix.*` key 绘制，禁止烘焙文字 |
 | UI-ELITE-AFFIX-ACCEL/SHIELD/BARRAGE | 加速双箭头 / 护体盾牌 / 弹幕三点图标 | 512×512 @2x；运行时 32×32 logical px | 必须按 `affixId` 与外环一对一匹配 |
 | GFX-BOSS-AEGIS-BODY | 基础装甲、P1/P2/P3 装甲层 | 1024×1024 @2x | Body r=150；阶段切换不改锚点 |
 | GFX-BOSS-AEGIS-WEAKPOINT | hidden、shown、hit | 256×256 @2x | P3 核心暴露 3 s；r=52 |

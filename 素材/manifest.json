@@ -1188,13 +1188,13 @@
     {
       "assetId": "GFX-ELITE-AURA-ACCEL",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-ELITE-AURA-ACCEL.svg",
+      "sourceFile": "图形/战斗特效/GFX-ELITE-AURA-ACCEL.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-ELITE-AURA-ACCEL__default.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "0e070916cdef637c27fec0231a3d7282f721f23fd29dccd9b697cd469cde22c0",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671"
+        "0e070916cdef637c27fec0231a3d7282f721f23fd29dccd9b697cd469cde22c0"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -1242,18 +1242,21 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/战斗特效/GFX-ELITE-AURA-ACCEL.png"
+      ]
     },
     {
       "assetId": "GFX-ELITE-AURA-SHIELD",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-ELITE-AURA-SHIELD.svg",
+      "sourceFile": "图形/战斗特效/GFX-ELITE-AURA-SHIELD.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-ELITE-AURA-SHIELD__default.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "05f4dc6ce9d98af81f43eec1110f126af3c01be4eead2c30ce61dfbbab27c0fe",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671"
+        "05f4dc6ce9d98af81f43eec1110f126af3c01be4eead2c30ce61dfbbab27c0fe"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -1301,18 +1304,21 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/战斗特效/GFX-ELITE-AURA-SHIELD.png"
+      ]
     },
     {
       "assetId": "GFX-ELITE-AURA-BARRAGE",
       "category": "graphic",
-      "sourceFile": "图形/源SVG/战斗特效/GFX-ELITE-AURA-BARRAGE.svg",
+      "sourceFile": "图形/战斗特效/GFX-ELITE-AURA-BARRAGE.png",
       "runtimeFiles": [
         "图形/运行时PNG/战斗特效/GFX-ELITE-AURA-BARRAGE__default.png"
       ],
-      "sha256": "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671",
+      "sha256": "1c38cfae5de0601a3d784887502e9901c9783c9d1fea518e8a0735d3faf206be",
       "runtimeSha256": [
-        "edb50034e104964ddd8c3724d154d01fa329f2f16c226279307c4e3e26bb8671"
+        "1c38cfae5de0601a3d784887502e9901c9783c9d1fea518e8a0735d3faf206be"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -1360,7 +1366,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/战斗特效/GFX-ELITE-AURA-BARRAGE.png"
+      ]
     },
     {
       "assetId": "GFX-BOSS-AEGIS-BODY",
@@ -8054,13 +8063,13 @@
     {
       "assetId": "UI-ELITE-NAMEPLATE",
       "category": "ui",
-      "sourceFile": "图形/源SVG/UI界面/UI-ELITE-NAMEPLATE.svg",
+      "sourceFile": "图形/UI界面/UI-ELITE-NAMEPLATE.png",
       "runtimeFiles": [
         "图形/运行时PNG/UI界面/UI-ELITE-NAMEPLATE__normal.png"
       ],
-      "sha256": "3361942640b867606ee3bd96d320f26aeb1283bbd57ff920b2c9a5cc337ae5c6",
+      "sha256": "7d7e7d431b409b54db28f2f96065c559f718b05dd231391ba81716cba05919ed",
       "runtimeSha256": [
-        "3361942640b867606ee3bd96d320f26aeb1283bbd57ff920b2c9a5cc337ae5c6"
+        "7d7e7d431b409b54db28f2f96065c559f718b05dd231391ba81716cba05919ed"
       ],
       "license": "Original workspace asset; no third-party source used.",
       "authorOrVendor": "Warship asset pipeline",
@@ -8107,7 +8116,10 @@
         }
       },
       "format": "png",
-      "status": "release_ready"
+      "status": "release_ready",
+      "sourceMasterFiles": [
+        "图形/UI界面/UI-ELITE-NAMEPLATE.png"
+      ]
     },
     {
       "assetId": "UI-ELITE-AFFIX-ACCEL",
