@@ -98,6 +98,11 @@ const Set<String> kFilesWithoutHeader = <String>{
 /// 判断一个文件是否已有符合规范的文件头。
 ///
 /// 判据（刻意**不**要求任何特定字面标记）：
+///   0. **文件头必须从第 1 行开始**（`lines[0]` 即 `// ====`）——
+///      这条是后续补的：B2 补丁曾把「易错点」块插到文件头**之前**，
+///      文件变成以正文注释开头再出现分隔块；当时的判据只在"前 24 行内
+///      找块"，**放过了这个结构错误**。文件头是文件的"封面"，
+///      必须从第一行开始。
 ///   1. 前 20 行内存在 `// ====` 分隔块；
 ///   2. 该块**闭合**（再次出现 `// ====`）—— 避免只有一行装饰；
 ///   3. 块内至少 3 行实质注释（去除 `//` 与装饰后非空）。
@@ -106,6 +111,10 @@ const Set<String> kFilesWithoutHeader = <String>{
 /// 结果把 59 个**已有详细文件头**的文件全判为不合规。
 /// 注释要求的本质是「讲清楚」，不是「包含某个词」。
 bool hasStandardHeader(List<String> lines) {
+  // 第 0 条：文件头必须**从第一行开始**。
+  if (lines.isEmpty || !lines.first.trimLeft().startsWith('// ====')) {
+    return false;
+  }
   final head = lines.take(24).toList();
   final open = head.indexWhere((l) => l.trimLeft().startsWith('// ===='));
   if (open < 0) {
