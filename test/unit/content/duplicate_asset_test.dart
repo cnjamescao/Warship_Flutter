@@ -68,12 +68,12 @@ void main() {
     // 只有 20 个是独立美术。因此这里冻结的是**规模**：
     // 素材侧补齐后重复组数会大幅下降，本用例即会失败并提示更新。
     // 素材侧逐批修复中：107 → 101（敌机）→ 97（预警/危险区/激光/突破箭头）
-    // → 93（精英名称条与三种词缀光环）。
+    // → 93（精英名称条与三种词缀光环）→ 92（Bomber 圆形预警 WARN 独立）。
     // 按审计要求**只更新临时基线，不关闭 F-30 / F-27**。
     // 其余跨语义重复（投射物、武器效果、升级图标、HUD 等）仍待素材侧处理，
     // 产品负责人已明确 F-27 保持 P0 未关闭，因此这里继续冻结剩余规模。
     const knownDuplicateGroups = 42;
-    const knownDuplicateIds = 93;
+    const knownDuplicateIds = 92;
 
     final duplicateIds = shared.expand((g) => g).toSet();
 
