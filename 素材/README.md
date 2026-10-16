@@ -30,7 +30,7 @@
   `assets/images/v2/` 已同步。它必须作为 additive/screen 叠加层使用，不能当成不透明
   机体贴图。
 - 此资源包仍**不能被标注为全图形发布完成**。投射物、升级图标、HUD、风险门等跨语义重复
-  的完整清单和研发边界见 `docs/全量素材语义审计_2026-10-16.md`；这些问题由 F-27 阻塞。
+  的完整清单和研发边界见 `docs/99_历史归档/素材审计/全量素材语义审计_2026-10-16.md`；当前未关闭状态由 `docs/研发工作进度.md` 的 F-27/F-30 维护。
 
 图形主体来自 AI 生成；HUD、预警、状态层和 UI 均以可编辑原创矢量设计导出为独立 PNG。每一个声明状态都有明确 `renderStates → runtimeFiles` 映射，不依赖运行时猜色或推导文件名。Sniper、Bomber、Shield、Dash Trail、HUD、风险门、结算和开关等均已覆盖产品规定的语义状态。四层背景的 `runtimeFiles` 首选 WebP，`fallbackRuntimeFiles` 明确给出 PNG 回退。玩家主机体为 512×512，Boss 主体为 1024×1024；HP、护盾、XP、Boss 和加载进度条均为 960×96 横向九宫格资源。
 
