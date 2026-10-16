@@ -399,6 +399,18 @@ class BattlefieldComponent extends Component {
 
   /// **F-36 诊断**：本帧线形/圆形预警的**实际绘制几何**。
   final List<String> telegraphDrawLog = <String>[];
+
+  /// **F-36 诊断**：**累积去重**的绘制历史。
+  ///
+  /// 存在理由：玩家反馈"旋转的战机"只**一闪而过**，而玩家不该为了抓日志
+  /// 中断游戏。此前诊断每 5 秒**覆盖**日志、只留最近一帧 —— 没停在那
+  /// 一刻证据就丢了。因此改为**累积**：出现过的每个绘制签名都留下，
+  /// 记录首次出现的时间与累计次数。
+  ///
+  /// 签名包含 **assetId[state] + 绘制半径**，足以区分
+  /// "同素材不同缩放"（例如被拉伸变形的预警带）。
+  final Map<String, String> drawHistory = <String, String>{};
+  final Map<String, int> drawHistoryCount = <String, int>{};
   Map<String, double> _lastFrameDrawn = <String, double>{};
 
   /// 把实体 ID 解析成当前坐标（供特效池定位）。
@@ -458,6 +470,14 @@ class BattlefieldComponent extends Component {
       if (radius > previous) {
         drawnAssetMaxRadius[key] = radius;
       }
+      // 累积历史：同素材不同半径记为**不同签名**，
+      // 这样"被异常拉伸/缩放"能一眼看出来。
+      final signature = '$key r=${radius.round()}';
+      drawHistory.putIfAbsent(
+        signature,
+        () => 't=${(_renderFrames / 60).toStringAsFixed(1)}s',
+      );
+      drawHistoryCount[signature] = (drawHistoryCount[signature] ?? 0) + 1;
     }
     final anchor = assets.anchorFor(assetId, state);
     final iw = image.width.toDouble();
@@ -485,7 +505,21 @@ class BattlefieldComponent extends Component {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 3;
 
-  /// 把绘制计数写进诊断日志（只写一次，进对局后约 2 秒）。
+  /// 把累积的绘制历史格式化为可读文本（按首次出现时间排序）。
+  String _drawHistoryReport() {
+    final entries = drawHistory.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    if (entries.isEmpty) {
+      return '    (none yet)';
+    }
+    return entries
+        .map(
+          (e) => '    ${e.value.padLeft(8)}  x${(drawHistoryCount[e.key] ?? 0).toString().padLeft(6)}  ${e.key}',
+        )
+        .join('\n');
+  }
+
+  /// 把绘制计数写进诊断日志（每 5 秒覆盖一次，含累积历史）。
   void _maybeReportDrawCounters() {
     _renderFrames++;
     // **每 5 秒覆盖上报一次**，而不是只报一次。
@@ -502,13 +536,15 @@ class BattlefieldComponent extends Component {
         .map((e) => '    ${e.value.toStringAsFixed(0).padLeft(4)}  ${e.key}')
         .join('\n');
     writeAssetDiagnostics(
-      '绘制计数（约 2 秒时）：\n'
-      '  玩家：贴图 $playerSpriteDrawn / 占位 $playerFallbackDrawn\n'
-      '  敌机：贴图 $enemySpriteDrawn / 占位 $enemyFallbackDrawn\n'
-      '  （占位 > 0 说明贴图路径没走通）\n'
-      '实际绘制过的资源（按绘制半径从大到小，前 12）：\n$bigList\n'
-      '本帧预警绘制几何：\n'
-      '${telegraphDrawLog.isEmpty ? "    （本帧无预警）" : telegraphDrawLog.map((e) => "    $e").join("\n")}',
+      'draw counters:\n'
+      '  player: sprite $playerSpriteDrawn / fallback $playerFallbackDrawn\n'
+      '  enemy : sprite $enemySpriteDrawn / fallback $enemyFallbackDrawn\n'
+      '  (fallback > 0 means sprite path failed)\n'
+      'drawn assets (by radius desc, top 12):\n$bigList\n'
+      'telegraph geometry (this frame):\n'
+      '${telegraphDrawLog.isEmpty ? "    （本帧无预警）" : telegraphDrawLog.map((e) => "    $e").join("\n")}\n'
+      'draw history (deduped, first-seen time + count):\n'
+      '${_drawHistoryReport()}',
     );
   }
 
