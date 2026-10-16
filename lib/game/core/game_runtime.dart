@@ -1934,6 +1934,7 @@ class GameRuntime {
             remainingSeconds: pending.fireAtSeconds - combatSeconds,
             totalSeconds: pending.request.telegraphSeconds,
             enemyId: pending.request.enemyId,
+            assetId: pending.request.telegraphAssetId,
           ),
       ]),
       riskGate: riskGate == null || riskGate!.isResolved

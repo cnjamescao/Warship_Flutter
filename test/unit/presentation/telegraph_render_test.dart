@@ -55,11 +55,20 @@ void main() {
     final end = source.indexOf('\n  void _drawHazards(', start);
     final body = source.substring(start, end);
 
-    // 必须经 manifest 查绑定 —— 不允许硬编码素材 ID。
+    // ⚠️ 必须用 **Domain 锁定的配置素材**（`TelegraphView.assetId`），
+    // **不得**按 attackId 去 manifest 猜绑定 —— manifest 里机体与预警
+    // 素材可能绑定同一个 attackId（`GFX-EN-SNIPER` 与 `GFX-WARN-LINE`
+    // 都绑定 `sniper_line`），猜绑定会把**机体贴图**当成预警线拉伸旋转
+    // （玩家实测："中间出现了一个旋转的战机"）。
+    expect(
+      body.contains('telegraph.assetId'),
+      isTrue,
+      reason: '预警素材必须取自 TelegraphView.assetId（Domain 锁定值）',
+    );
     expect(
       body.contains('_telegraphAssetFor('),
-      isTrue,
-      reason: '预警素材必须按 manifest 绑定解析，不得硬编码',
+      isFalse,
+      reason: '不得再按 attackId 猜 manifest 绑定',
     );
 
     // 不得用 Canvas 几何**替代**资源：

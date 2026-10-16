@@ -887,9 +887,14 @@ class BattlefieldComponent extends Component {
   void _drawTelegraphs(Canvas canvas) {
     telegraphDrawLog.clear();
     for (final telegraph in snapshot.telegraphs) {
-      final assetId = _telegraphAssetFor(telegraph.attackId);
+      // ⚠️ **直接使用 Domain 在 t=0 锁定的配置素材**，不按 attackId
+      // 去 manifest 猜绑定 —— manifest 里机体与预警素材**可能绑定同一
+      // attackId**（`GFX-EN-SNIPER` 与 `GFX-WARN-LINE` 都绑定
+      // `sniper_line`），猜绑定会把**机体贴图**当成预警线拉伸旋转
+      // （玩家实测："中间出现了一个旋转的战机"）。
+      final assetId = telegraph.assetId;
       if (assetId == null) {
-        // 未登记的招式不绘 —— 不猜、不用几何替代。
+        // 未配置预警素材的招式不绘 —— 不猜、不用几何替代。
         continue;
       }
       // 动态收缩：预警期间由 1.35× 收到 1.0×（F-12 要求的"动态收缩"
@@ -1015,39 +1020,6 @@ class BattlefieldComponent extends Component {
     );
   }
 
-  /// 按 manifest 绑定解析预警素材：`EnemyAttackTelegraphed` + `attackId`。
-  ///
-  /// 素材绑定属 manifest 路由 —— 表现层**只查表**，不猜、不硬编码。
-  String? _telegraphAssetFor(String attackId) {
-    for (final record in assets.manifest.records) {
-      if (!record.isVisual) {
-        continue;
-      }
-      for (final binding in record.eventBindings) {
-        if (binding.event == 'EnemyAttackTelegraphed' &&
-            binding.when['attackId'] == attackId) {
-          return record.assetId.value;
-        }
-      }
-    }
-    return null;
-  }
-
-  /// **F-36 / 产品裁决**：危险区用**正式素材**绘制。
-  ///
-  /// 裁决原文：
-  /// * 「研发应**移除 ACTIVE 危险区上的通用三角色弱图案**，
-  ///   保留**圆环、十字等正式素材识别**」；
-  /// * 「素材侧必须重制 `GFX-HAZARD-BOMBER-WARN` 为独立的**圆形落点预警**，
-  ///   不能再复用 UI 警示牌」。
-  ///
-  /// 因此这里**不再**贴 `UI-COLORBLIND-PATTERN-DANGER`（那是一枚
-  /// **大型三角斜杠图标**，叠到圆形危险区上会变成"大红三角"，
-  /// 玩家实测反馈即为此）。改为贴危险区自己的**正式素材**
-  /// （`HazardView.assetId`，例如 `GFX-HAZARD-BOMBER-ACTIVE`）。
-  ///
-  /// 素材缺失时**不绘制几何替代** —— 与敌机回退图形同样的处理原则：
-  /// 让人**以为出了问题**，好过让人**以为游戏长这样**。
   void _drawHazards(Canvas canvas) {
     for (final hazard in snapshot.hazards) {
       final assetId = hazard.assetId;

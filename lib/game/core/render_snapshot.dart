@@ -239,6 +239,7 @@ class TelegraphView {
     required this.remainingSeconds,
     required this.totalSeconds,
     this.enemyId,
+    this.assetId,
   });
 
   /// 稳定枚举的招式 ID（`sniper_line` / `bomber_drop` / …）。
@@ -263,6 +264,11 @@ class TelegraphView {
 
   /// 发出预警的敌机 ID（表现层用于层级/调试，不用于猜测几何）。
   final String? enemyId;
+
+  /// **该招式配置的**预警素材 —— 由 Domain 在 t=0 一并锁定。
+  ///
+  /// 表现层**直接使用**它，不按 attackId 猜 manifest 绑定。
+  final String? assetId;
 }
 
 /// 一帧的完整只读快照。

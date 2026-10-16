@@ -397,6 +397,7 @@ class EnemyAttackRequest {
     required this.angleOffsetsDegrees,
     required this.telegraphSeconds,
     this.telegraphShape,
+    this.telegraphAssetId,
     this.projectile,
     this.hazard,
     this.dropAt,
@@ -416,6 +417,15 @@ class EnemyAttackRequest {
   /// 协议 §3.2 要求以当时的 `origin`、`aimTarget`、`shape` 建立不可变
   /// 待执行攻击 —— 因此形状必须随请求一起携带，不能在到期时再查配置。
   final String? telegraphShape;
+
+  /// **F-36**：该招式**配置的**预警素材（`enemies.json` 的
+  /// `attackProfile.telegraphAssetId`）。
+  ///
+  /// ⚠️ 必须用这个字段，**不能按 `attackId` 去 manifest 里猜绑定** ——
+  /// manifest 里 `GFX-EN-SNIPER`（机体）与 `GFX-WARN-LINE`（预警）
+  /// **都绑定** `sniper_line`，按 attackId 匹配会命中**机体贴图**，
+  /// 于是把战机贴图当作预警线拉伸旋转（玩家实测的"旋转的战机"）。
+  final String? telegraphAssetId;
 
   final ProjectileSpec? projectile;
   final HazardSpec? hazard;
@@ -553,6 +563,7 @@ class EnemySystem {
               angleOffsetsDegrees: attack.burstAngleOffsetsDegrees,
               telegraphSeconds: enemy.effectiveTelegraphSeconds,
               telegraphShape: attack.telegraphShape,
+              telegraphAssetId: attack.telegraphAssetId,
               projectile: attack.projectile,
               hazard: attack.hazard,
               dropAt: attack.dropAt,

@@ -22,6 +22,7 @@ import 'package:warship_flutter/game/core/input_frame.dart';
 import 'package:warship_flutter/game/core/phase_controller.dart';
 import 'package:warship_flutter/game/core/random_source.dart';
 import 'package:warship_flutter/game/core/run_context.dart';
+import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/domain/boss_system.dart';
 import 'package:warship_flutter/game/domain/director_system.dart';
 import 'package:warship_flutter/game/domain/enemy_system.dart';
@@ -137,5 +138,40 @@ void main() {
             '协议 §3.2 明确禁止把预警折叠为 EntityView',
       );
     }
+  });
+
+  test('F-36 预警素材必须是**配置的** telegraphAssetId，不得取到机体贴图', () {
+    // 玩家实测："中间出现了一个旋转的战机"。根因是表现层按 `attackId`
+    // 去 manifest 猜绑定，而 manifest 里
+    //   GFX-EN-SNIPER（**机体**，448×448）与 GFX-WARN-LINE（**预警**，512×512）
+    // **都绑定** `sniper_line`，于是命中机体贴图并被拉伸旋转。
+    //
+    // 本用例守住：TelegraphView.assetId 必须等于 **Domain 从配置锁定**的
+    // `attackProfile.telegraphAssetId`。
+    final rt = _build();
+    const step = GameClock.fixedStepSeconds;
+
+    final seen = <String, String>{};
+    for (var i = 0; i < 200 * 60; i++) {
+      rt.advance(step, InputFrame.idle);
+      for (final t in rt.snapshot().telegraphs) {
+        seen.putIfAbsent(t.attackId, () => t.assetId ?? '(null)');
+      }
+    }
+
+    expect(seen, isNotEmpty, reason: '应出现过预警');
+    // 配置即规范值（enemies.json 的 attackProfile.telegraphAssetId）。
+    expect(
+      seen['sniper_line'],
+      'GFX-WARN-LINE',
+      reason: 'sniper_line 的预警素材必须是 GFX-WARN-LINE（配置值）—— '
+          '若为 GFX-EN-SNIPER 则说明又在按 attackId 猜绑定，'
+          '会把机体贴图当预警线拉伸旋转',
+    );
+    expect(
+      seen['bomber_drop'],
+      'GFX-HAZARD-BOMBER-WARN',
+      reason: 'bomber_drop 的预警素材必须是配置值 GFX-HAZARD-BOMBER-WARN',
+    );
   });
 }
