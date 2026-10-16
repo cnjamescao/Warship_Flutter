@@ -553,8 +553,14 @@ class BattlefieldComponent extends Component {
     );
 
     // 受击表现的**叠层**（护盾受击 / 掉血闪光）。
+    //
+    // ⚠️ 必须用**叠加混合**（`BlendMode.plus`）而不是普通覆盖：
+    // 普通覆盖会用一张不透明图把战舰整个盖住 —— 玩家看到的是
+    // "被击中后战舰变成了别的东西 / 像占位符"（实测反馈）。
+    // 叠加混合只能**提亮**，机体始终可见，这才是"闪光"的语义。
     final playerRoute = router.playerRoute;
     if (playerRoute != null) {
+      _spritePaint.blendMode = BlendMode.plus;
       _drawSpriteOrNull(
         canvas,
         playerRoute.assetId,
@@ -562,6 +568,7 @@ class BattlefieldComponent extends Component {
         center,
         player.radius,
       );
+      _spritePaint.blendMode = BlendMode.srcOver;
     }
     if (drewSprite) {
       playerSpriteDrawn++;
