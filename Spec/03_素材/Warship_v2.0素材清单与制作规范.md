@@ -12,7 +12,7 @@
 
 ## 1. 交付状态与目录
 
-`Spec/03_素材/` 中仅保留 v2.0 正式素材规范；概念样张、旧原型 WAV 和旧清单均在 `Spec/99_历史归档/`，不可作为实现依据。正式 v2.0 发布包位于仓库根目录的 [`素材/`](../../素材/README.md)：其根 `manifest.json` 含 197 条记录（127 图形/UI、67 个物理音频、1 个静默逻辑回退、2 字体声明），运行时仅可读取 manifest 显式引用的 `图形/运行时PNG/` 和 `音频/运行时MP3/` 文件。发布前必须通过 `validate_release_manifest.py`、`validate_audio_mix.py`、`validate_visual_state_assets.py` 三项门禁；`图形/*ATLAS.png`、`图形/源SVG/` 和原型文件只用于美术迭代，不可在运行时直接引用。
+`Spec/03_素材/` 中仅保留 v2.0 正式素材规范；概念样张、旧原型 WAV 和旧清单均在 `Spec/99_历史归档/`，不可作为实现依据。正式 v2.0 发布包位于仓库根目录的 [`素材/`](../../素材/README.md)：其根 `manifest.json` 当前含 **199** 条记录（**129 图形/UI**、67 个物理音频、1 个静默逻辑回退、2 字体声明），运行时仅可读取 manifest 显式引用的 `图形/运行时PNG/` 和 `音频/运行时MP3/` 文件。发布前必须通过 `validate_release_manifest.py`、`validate_audio_mix.py`、`validate_visual_state_assets.py` 三项门禁；`图形/*ATLAS.png`、`图形/源SVG/` 和原型文件只用于美术迭代，不可在运行时直接引用。
 
 ~~~text
 Spec/素材/
@@ -101,9 +101,9 @@ SHA-256 互不重复；manifest、图形状态、音频混音、Web 首屏资源
 
 ### 1.4.1 F-38 Boss 预警素材合同（2026-10-16，已交付）
 
-`boss_charge` 与 `boss_laser` 当前错误地复用 Sniper 的 `GFX-WARN-LINE`。该资源只有
+`boss_charge` 与 `boss_laser` 曾错误复用 Sniper 的 `GFX-WARN-LINE`。该资源只有
 `EnemyAttackTelegraphed + enemyId=EN-SNIPER + attackId=sniper_line` 的路由，不能作为 Boss
-预警的回退素材。下列两项已交付；F-38 仍须待研发接入和四条 Golden 通过后才能关闭：
+预警的回退素材。下列两项现已交付、接入并经四条真实素材 Golden 复核；F-38 已关闭：
 
 | 新 Asset ID | 主视觉与尺寸 | 精确 manifest 绑定 | 绘制合同 |
 | --- | --- | --- | --- |
@@ -219,7 +219,7 @@ ID；`GFX-WARN-LINE` 仍只绑定 Sniper。
 | UI-BRIEFING-PANEL/TIP、UI-SETTINGS-PANEL、UI-SLIDER-TRACK/FILL/THUMB | 开局短提示、设置容器、音乐/SFX 音量控件 | Briefing 仅展示简短移动/冲刺提示；Slider 支持 normal/pressed/focus/disabled，数值由文字渲染 |
 | UI-DRAFT-PANEL/CARD、UI-RARITY-COMMON/RARE/EPIC | 三选一升级 | normal/pressed/focus/disabled；稀有度有形状差异 |
 | UI-RISK-PANEL、UI-RISK-SAFE/BOUNTY/OVERLOAD、UI-TOOLTIP | 风险门 | safe/risk/locked/selected；锁定原因可放文本 |
-| UI-PAUSE-PANEL、UI-TOGGLE、UI-RESULT-PANEL、UI-RESULT-MEDAL | 暂停/设置/结算 | victory/defeat、on/off、bronze/silver/gold/none |
+| UI-PAUSE-PANEL、UI-TOGGLE、UI-RESULT-PANEL、UI-RESULT-MEDAL | 暂停/设置/结算 | victory/defeat、on/off、bronze/silver/gold；**不得产生或请求 `none`** |
 
 以下 16 个升级图标必须**逐卡独立交付**，不能只交“系列通用图标”：`UI-UP-PULSE-RATE`、`UI-UP-PULSE-DAMAGE`、`UI-UP-PULSE-SPREAD`、`UI-UP-CRIT-ARC`、`UI-UP-MISSILE-UNLOCK`、`UI-UP-MISSILE-SALVO`、`UI-UP-MISSILE-RADIUS`、`UI-UP-LASER-UNLOCK`、`UI-UP-LASER-PRISM`、`UI-UP-DRONE-UNLOCK`、`UI-UP-DRONE-COUNT`、`UI-UP-SHIELD-MAX`、`UI-UP-DASH-CHARGE`、`UI-UP-DASH-REPAIR`、`UI-UP-ENERGY-GAIN`、`UI-UP-COMBO-GUARD`。正式交付只以这 16 个 `UP-*` ID 为准。
 

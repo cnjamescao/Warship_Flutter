@@ -17,6 +17,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/perf_baseline.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
 import 'package:warship_flutter/game/core/game_clock.dart';
 import 'package:warship_flutter/game/core/game_phase.dart';
@@ -217,9 +219,25 @@ void main() {
     );
 
     // 写出报告供验收记录引用。
-    final file = File(kReportPath);
-    file.parent.createSync(recursive: true);
-    file.writeAsStringSync(report.encode());
+    // **F-42**：报告写到 `build/`（不提交）；基线只在
+    // `UPDATE_PERF_BASELINE=1` 显式维护流程下重建。
+    // 修复前此处直接改写 fixture —— 既弄脏工作区，又让后续
+    // "读回同一文件"的断言恒为真、测不出回归。
+    final reportPath = writePerfReport(
+      baselinePath: kReportPath,
+      json: report.encode(),
+    );
+
+    // 基线（**只读输入**）对比：仅作**信息性**记录。
+    // 按裁定第 5 条：**不**把开发机 p50/p95/p99 当作跨机器硬门槛。
+    final baseline = readPerfBaseline(kReportPath);
+    if (baseline != null) {
+      final baseP95 = (baseline['logicStepMs'] as Map?)?['p95'];
+      // ignore: avoid_print
+      print('[perf] 基线 p95=$baseP95，本次 p95='
+          '${(report.encode().contains('p95')) ? '见报告' : '-'}'
+          '（信息性，不作硬门槛）');
+    }
 
     // 关键断言：**逻辑成本必须远低于帧预算**，给渲染留出余量。
     // 取 16.67 ms 的一半作为门槛 —— 逻辑与渲染大致是同一量级，
@@ -248,8 +266,7 @@ void main() {
     );
 
     // 报告本身要能被解析回来（验收记录依赖它）。
-    final reloaded =
-        jsonDecode(File(kReportPath).readAsStringSync()) as Map<String, Object?>;
+    final reloaded = readPerfReport(reportPath);
     expect(reloaded['seed'], kSeed);
     expect(reloaded['scope'], contains('logic-step cost only'));
     expect((reloaded['logicStepMs'] as Map)['p95'], isA<num>());

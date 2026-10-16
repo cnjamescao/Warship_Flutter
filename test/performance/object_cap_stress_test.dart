@@ -18,6 +18,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/perf_baseline.dart';
 import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
 import 'package:warship_flutter/game/core/game_clock.dart';
@@ -257,9 +259,25 @@ void main() {
           '对象上限压力场景（AC-07 的逻辑侧证据）。'
           '**不含帧时间** —— 须在 profile/release 构建的真机上采样。',
     );
-    final file = File(kReportPath);
-    file.parent.createSync(recursive: true);
-    file.writeAsStringSync(report.encode());
+    // **F-42**：报告写到 `build/`（不提交）；基线只在
+    // `UPDATE_PERF_BASELINE=1` 显式维护流程下重建。
+    // 修复前此处直接改写 fixture —— 既弄脏工作区，又让后续
+    // "读回同一文件"的断言恒为真、测不出回归。
+    final reportPath = writePerfReport(
+      baselinePath: kReportPath,
+      json: report.encode(),
+    );
+
+    // 基线（**只读输入**）对比：仅作**信息性**记录。
+    // 按裁定第 5 条：**不**把开发机 p50/p95/p99 当作跨机器硬门槛。
+    final baseline = readPerfBaseline(kReportPath);
+    if (baseline != null) {
+      final baseP95 = (baseline['logicStepMs'] as Map?)?['p95'];
+      // ignore: avoid_print
+      print('[perf] 基线 p95=$baseP95，本次 p95='
+          '${(report.encode().contains('p95')) ? '见报告' : '-'}'
+          '（信息性，不作硬门槛）');
+    }
 
     // --- 断言 1：满载下逻辑成本仍给渲染留余量 ---
     expect(
