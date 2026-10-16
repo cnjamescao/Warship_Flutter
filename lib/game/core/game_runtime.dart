@@ -732,6 +732,29 @@ class GameRuntime {
   }
 
   void _spawnEnemyAttack(EnemyAttackRequest request) {
+    // **F-36 第 4 步：`bomber_drop` 的危险区**（协议 §3.2）。
+    //
+    // * 落点固定为 **t=0 的 `origin`**（配置 `dropAt = selfBelow`）；
+    // * 半径 90 / 持续 2.2s / 每 0.25s 每目标至多 8 点 —— 全部取自
+    //   `attackProfile.hazard`（配置即规范值）；
+    // * **`warningSeconds = 0`**：预警已由 `TelegraphView` 负责，
+    //   协议明确"ACTIVE Hazard 的 warningSeconds 为 0，不能重复预警"。
+    final hazardSpec = request.hazard;
+    if (hazardSpec != null) {
+      _pendingHazards.add(
+        HazardZone(
+          id: ids.next(EntityKind.hazard),
+          position: request.origin,
+          radius: hazardSpec.radius,
+          warningSeconds: 0,
+          activeSeconds: hazardSpec.activeSeconds,
+          tickSeconds: hazardSpec.tickSeconds,
+          damagePerTick: hazardSpec.damagePerTick,
+          sourceId: request.sourceId,
+        ),
+      );
+    }
+
     final spec = request.projectile;
     if (spec == null) {
       return;
@@ -772,7 +795,16 @@ class GameRuntime {
   void _updateHazards(double dt) {
     for (final hazard in hazards) {
       final shouldDamage = hazard.tick(dt);
-      if (shouldDamage && !player.isInvulnerable) {
+      // **只在目标位于危险区内时结算伤害**（协议 §3.2：
+      // 「每 0.25 s **每目标**至多造成 8 点伤害」——"每目标"即区内目标）。
+      //
+      // 此前这里对玩家**无差别**造成伤害：只要地图上存在危险区，
+      // 玩家在任何位置都会被扣血。
+      final dx = player.position.x - hazard.position.x;
+      final dy = player.position.y - hazard.position.y;
+      final reach = hazard.radius + player.tuning.bodyRadius;
+      final playerInside = dx * dx + dy * dy <= reach * reach;
+      if (shouldDamage && playerInside && !player.isInvulnerable) {
         damageSystem.applyToPlayer(
           intent: DamageIntent(
             sourceId: hazard.sourceId,
