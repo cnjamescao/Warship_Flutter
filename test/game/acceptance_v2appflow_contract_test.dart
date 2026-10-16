@@ -14,6 +14,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/app/v2_run_screen.dart';
+import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
 
 import '../support/v2_harness.dart';
@@ -36,6 +37,8 @@ void main() {
 
     var resultReachedAt = -1.0;
     var bossSeenAt = -1.0;
+    var victorySeen = false;
+    final earlyResults = <String>[];
 
     // 覆盖到 190 秒上限（产品基线：190 秒判负）。
     const totalSeconds = 190;
@@ -52,8 +55,27 @@ void main() {
         if (phase == 'result' && resultReachedAt < 0) {
           resultReachedAt = rt.combatSeconds;
         }
+        // **复核补正**：`combatSeconds < 190.0` 的**每一步**都不得进入
+        // Result —— 除非有明确的 `RunEnded(victory)`。
+        // 旧断言只要求 `>= 150`，会错误放行 150.0–189.999 秒进入 Result，
+        // 与「190 秒判负」冲突。
+        if (phase == 'result' && rt.combatSeconds < 190.0 && !victorySeen) {
+          earlyResults.add(
+            '${rt.combatSeconds.toStringAsFixed(1)}s（'
+            'victory=${rt.victory}）',
+          );
+        }
         if (rt.boss != null && bossSeenAt < 0) {
           bossSeenAt = rt.combatSeconds;
+        }
+        if (rt.victory) {
+          victorySeen = true;
+        }
+        for (final stamped in rt.lastFrameEvents) {
+          if (stamped.event is RunEnded &&
+              (stamped.event as RunEnded).result == 'victory') {
+            victorySeen = true;
+          }
         }
       }
     }
@@ -79,21 +101,28 @@ void main() {
       reason: 'Boss 应在 150 秒左右出现 —— 实际 $bossSeenAt 秒',
     );
 
-    // 合同第二半：**玩家存活**时不得提前进入 Result。
-    //
-    // 注：这里刻意**不**清空敌人 —— 越界失败（breach）是**合法的**
-    // 失败原因，不属于"提前结算"。若因此进入 result，应记录的是
-    // **结束原因**，而不是判定流程有缺陷。
+    // **合同第二半（复核补正后）**：
+    // 「在测试驱动保持玩家存活的前提下，`combatSeconds < 190.0` 的每个
+    //   逻辑/渲染步中 `phase != result`；若发生 Result，必须是
+    //   `combatSeconds >= 190.0`，或有明确的 `RunEnded(victory)`。
+    //   **不得以 `>=150` 代替 190 秒上限。**」
+    expect(
+      earlyResults,
+      isEmpty,
+      reason: '玩家存活且未胜利时，在 190 秒前进入了 Result —— '
+          '与产品「190 秒判负」冲突（复核补正前的旧断言只要求 >=150，'
+          '会错误放行 150.0–189.999 秒）：\n${earlyResults.join("\n")}',
+    );
+    // 若确实进入了 result，必须要么已胜利、要么已达 190 秒上限。
     if (resultReachedAt >= 0) {
       // ignore: avoid_print
       print('V2AppFlow 记录：在 $resultReachedAt 秒进入 result；'
           'victory=${rt.victory}');
       expect(
-        resultReachedAt,
-        greaterThanOrEqualTo(150),
-        reason: '玩家存活时在 $resultReachedAt 秒进入 result —— '
-            '早于 190 秒上限且未收到 RunEnded 的正常结束：'
-            '需记录结束原因并修真实流程缺陷',
+        victorySeen || resultReachedAt >= 190.0,
+        isTrue,
+        reason: '在 $resultReachedAt 秒进入 result，但既非胜利、'
+            '也未到 190 秒上限',
       );
     }
   });
