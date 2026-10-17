@@ -117,6 +117,39 @@ class V21EffectRuntime {
     return true;
   }
 
+  /// 移除某一类的全部实例（状态离开时调用，如"不再低血"）。
+  void removeKind(String kind) {
+    instances.removeWhere((i) => i.spec.id == kind);
+    _lastSpawnAt.remove(kind);
+  }
+
+  /// 确保某类**状态动效**存在（已有则不重复生成）。
+  ///
+  /// 与 [spawn] 的区别：`spawn` 用于**瞬时**动效（受击/击毁），
+  /// 这里用于**持续状态**（低血/濒危）—— 状态还在就不该重建，
+  /// 否则每次 `PlayerVitalStateChanged` 都会让动画从头开始。
+  void ensurePersistent({
+    required V21EffectSpec spec,
+    required double nowSeconds,
+    required double centerX,
+    required double centerY,
+  }) {
+    for (final i in instances) {
+      if (i.spec.id == spec.id) {
+        return;
+      }
+    }
+    instances.add(
+      V21EffectInstance(
+        spec: spec,
+        startedAtSeconds: nowSeconds,
+        centerX: centerX,
+        centerY: centerY,
+        size: spec.size,
+      ),
+    );
+  }
+
   /// 移除已结束的实例（每帧调用一次）。
   void prune(double nowSeconds, {required bool reduceMotion}) {
     instances.removeWhere(

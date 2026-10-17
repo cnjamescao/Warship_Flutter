@@ -91,6 +91,9 @@ import 'colorblind_patterns.dart';
 
 import 'elite_affix_visuals.dart';
 import 'visual_effects.dart';
+import '../core/domain_event.dart';
+import 'v21_effect_runtime.dart';
+import 'v21_state_effects.dart';
 import 'visual_router.dart';
 import 'input_gateway.dart';
 
@@ -378,6 +381,49 @@ class WarshipV2Game extends FlameGame {
   }
 
   @override
+  /// **v2.1 状态动效实例管理**（冻结表 §5.1）。
+  final V21EffectRuntime v21Effects = V21EffectRuntime();
+
+  /// 把事件映射到 v2.1 状态动效（冻结表 §5.1）。
+  ///
+  /// 只处理**玩家中心**的四类 —— 它们都以玩家为中心，位置天然可得。
+  /// 击毁动效需要**已移除实体**的位置，无法从事件取到，故另行处理。
+  void _spawnV21Effect(DomainEvent event) {
+    final now = runtime.combatSeconds;
+    final player = latestSnapshot?.player;
+    if (player == null) {
+      return; // 玩家视图未就绪（首帧/结算）：不生成动效。
+    }
+    final p = Offset(player.position.x, player.position.y);
+    switch (event) {
+      case PlayerDamaged(:final shieldDamage):
+        // 护盾伤害优先显示护盾环（同时有护盾与 HP 伤害时，
+        // 护盾那一下是玩家最需要看到的）。
+        final spec = kV21StateEffects[
+            shieldDamage > 0 ? 'shieldHit' : 'hpHit']!;
+        v21Effects.spawn(
+          spec: spec, nowSeconds: now, centerX: p.dx, centerY: p.dy,
+        );
+      case PlayerVitalStateChanged(:final hpRatio):
+        // 低血 / 濒危是**状态**：进入时生成一次，离开时移除。
+        final want = hpRatio <= 0.10
+            ? 'critical'
+            : (hpRatio <= 0.30 ? 'low' : null);
+        if (want == null) {
+          v21Effects.removeKind('low');
+          v21Effects.removeKind('critical');
+        } else {
+          v21Effects.removeKind(want == 'low' ? 'critical' : 'low');
+          v21Effects.ensurePersistent(
+            spec: kV21StateEffects[want]!,
+            nowSeconds: now, centerX: p.dx, centerY: p.dy,
+          );
+        }
+      default:
+        break;
+    }
+  }
+
   void update(double dt) {
     // 0. 帧时间采样 → 降级决策（产品基线 §2 的 95%/99% 预算）。
     performance.recordFrame(dt);
@@ -405,6 +451,16 @@ class WarshipV2Game extends FlameGame {
     visualRouter.consume(runtime.lastFrameEvents);
 
     // 事件驱动的纯表现特效；预算与降级都在特效池内部把关。
+    // **v2.1 状态动效**（冻结表 §5.1）：玩家侧 4 类。
+    // 与 `effects`（旧的粒子/伤害数字）并行，互不替代。
+    for (final stamped in runtime.lastFrameEvents) {
+      _spawnV21Effect(stamped.event);
+    }
+    v21Effects.prune(
+      runtime.combatSeconds,
+      reduceMotion: reduceMotion,
+    );
+
     effects.consume(
       runtime.lastFrameEvents,
       level: performance.level,
