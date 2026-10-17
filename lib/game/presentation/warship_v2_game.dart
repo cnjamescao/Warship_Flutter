@@ -380,7 +380,6 @@ class WarshipV2Game extends FlameGame {
     return perf.index >= _reduceMotionFloor.index ? perf : _reduceMotionFloor;
   }
 
-  @override
   /// **v2.1 状态动效实例管理**（冻结表 §5.1）。
   final V21EffectRuntime v21Effects = V21EffectRuntime();
 
@@ -390,7 +389,7 @@ class WarshipV2Game extends FlameGame {
   /// 击毁动效需要**已移除实体**的位置，无法从事件取到，故另行处理。
   void _spawnV21Effect(DomainEvent event) {
     final now = runtime.combatSeconds;
-    final player = latestSnapshot?.player;
+    final player = latestSnapshot.player;
     if (player == null) {
       return; // 玩家视图未就绪（首帧/结算）：不生成动效。
     }
@@ -424,6 +423,7 @@ class WarshipV2Game extends FlameGame {
     }
   }
 
+  @override
   void update(double dt) {
     // 0. 帧时间采样 → 降级决策（产品基线 §2 的 95%/99% 预算）。
     performance.recordFrame(dt);
