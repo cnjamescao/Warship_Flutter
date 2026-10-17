@@ -75,6 +75,7 @@ void main() {
         seed: 0x4E454F4E0001,
         bossHpRatio: 1.0,
         resultTier: 'bronze',
+              reason: 'playerDead',
       ),
     );
     expect(r.victory, isFalse);
@@ -114,6 +115,7 @@ void main() {
         seed: 0x4E454F4E0001,
         bossHpRatio: 0,
         resultTier: 'gold',
+              reason: 'bossDefeated',
       ),
     );
     final json = jsonDecode(r.encode()) as Map<String, Object?>;

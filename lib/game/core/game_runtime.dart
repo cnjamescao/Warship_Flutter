@@ -1686,6 +1686,9 @@ class GameRuntime {
         seed: runtime.seed,
         bossHpRatio: 0,
         resultTier: resultTierFor(victory: true, bossHpRatio: null).id,
+        // v2.1：本处是**击败 Boss** 的胜利路径。
+        // 清场胜利走 `SectorClearConfirmed` → `reason: 'sectorCleared'`。
+        reason: 'bossDefeated',
       ),
       runtime,
     );
@@ -1745,6 +1748,10 @@ class GameRuntime {
           victory: false,
           bossHpRatio: bossHpRatio,
         ).id,
+        // v2.1：失败有两条路 —— 阵亡 / 190 秒判负（蓝图 §4.1）。
+        // 本次改造（B1）先按既有 v2.0 行为标 playerDead；
+        // B3 接入 `hardDefeatSeconds` 时改为按超时判定 timeLimit。
+        reason: 'playerDead',
       ),
       runtime,
     );

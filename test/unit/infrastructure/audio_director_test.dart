@@ -183,7 +183,8 @@ void main() {
           seed: 1,
           bossHpRatio: 0,
           resultTier: 'gold',
-        ),
+                reason: 'bossDefeated',
+      ),
       );
       final victory = port.playedCueIds.toList();
 
@@ -196,7 +197,8 @@ void main() {
           seed: 1,
           bossHpRatio: 0.5,
           resultTier: 'none',
-        ),
+                reason: 'playerDead',
+      ),
       );
 
       expect(victory, isNotEmpty);
@@ -294,6 +296,7 @@ void main() {
         seed: 1,
         bossHpRatio: 0,
         resultTier: 'gold',
+              reason: 'bossDefeated',
       );
 
       director.handle(result);

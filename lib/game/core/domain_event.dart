@@ -102,6 +102,7 @@ class RunEnded extends DomainEvent {
     required this.seed,
     required this.bossHpRatio,
     required this.resultTier,
+    required this.reason,
   });
 
   /// `victory` 或 `defeat`。
@@ -120,6 +121,17 @@ class RunEnded extends DomainEvent {
   /// 已按交付清单 §8 的优先级（产品基线优先）裁决，
   /// 因此**不产生 `none`**。完整裁决记录见该文件头。
   final String resultTier;
+
+  /// **结束原因**（v2.1 / 蓝图 §3.1）。
+  ///
+  /// 取值**只能是**：`bossDefeated` / `sectorCleared` / `playerDead` / `timeLimit`。
+  /// 由 `GameRuntime` 唯一决定，**App 层禁止重算**
+  /// （蓝图 §4.2：「`_onRunFinished` 不得重新计算奖章」）。
+  ///
+  /// 为什么要单列：v2.1 起**胜利有两条路**（击败 Boss / 清场），
+  /// 失败也有两条路（阵亡 / 190 秒判负）。只看 `result` 无法区分
+  /// 「清场胜利」与「Boss 击败」，也无法区分「阵亡」与「超时」。
+  final String reason;
 
   @override
   String get eventType => 'RunEnded';
@@ -321,12 +333,20 @@ class WeaponFired extends DomainEvent {
     required this.sourceId,
     required this.position,
     required this.direction,
+    this.weaponStyleId,
   });
 
   final String weaponId;
   final EntityId sourceId;
   final Vec2 position;
   final Vec2 direction;
+
+  /// **五种主弹道的稳定 style ID**（v2.1 / 蓝图 §3.1）。
+  ///
+  /// 旧主炮与副武器传 `null`；五个 `UP-WSTYLE-*` 形态传
+  /// `prism`/`arc`/`plasma`/`needle`/`missile`。
+  /// manifest 用它做**等值** `when` 路由（命中 cue / 命中图）。
+  final String? weaponStyleId;
 
   @override
   String get eventType => 'WeaponFired';
@@ -341,6 +361,7 @@ class WeaponHit extends DomainEvent {
     required this.critical,
     required this.damage,
     this.targetEnemyId,
+    this.weaponStyleId,
   });
 
   final String weaponId;
@@ -350,8 +371,80 @@ class WeaponHit extends DomainEvent {
   final int damage;
   final String? targetEnemyId;
 
+  /// 同 [WeaponFired.weaponStyleId]：命中资源路由用（v2.1）。
+  final String? weaponStyleId;
+
   @override
   String get eventType => 'WeaponHit';
+}
+
+/// **自动强化授予**（v2.1 / 冻结表 §2.2）。
+///
+/// v2.1 起标准 XP 路径**不再打开三选一草案**：达标即**单张**授予，
+/// 直接 `applyCard` 一次并广播本事件（冻结表 §2.2 原文：
+/// 「**禁止创建 `DraftOffer`、进入 `UpgradeDraft` 或等待输入**」）。
+///
+/// 消费方：`UI-V21-UPGRADE-NOTICE` + `SFX-V21-UPGRADE-GAIN`
+/// （见 manifest 的 `AutoUpgradeGranted` 路由）；Toast 用
+/// `nameKey`/`descKey` 从 catalog 解析文案，**不得**直接显示 key。
+class AutoUpgradeGranted extends DomainEvent {
+  const AutoUpgradeGranted({
+    required this.grantOrdinal,
+    required this.cardId,
+    required this.level,
+    required this.nameKey,
+    required this.descKey,
+    this.styleId,
+  });
+
+  /// 本局第几次自动强化（0 起）—— 冻结表 §2.2：
+  /// 「`grantOrdinal` 从 0 开始，且必须作为快照/回放状态保存」。
+  final int grantOrdinal;
+  final String cardId;
+
+  /// 授予后的**新等级**（不是增量）。
+  final int level;
+
+  /// 文案 key（供 Toast 解析成中文）。
+  final String nameKey;
+  final String descKey;
+
+  /// 若这张卡是五种主弹道形态之一，给出其 style ID。
+  final String? styleId;
+
+  @override
+  String get eventType => 'AutoUpgradeGranted';
+}
+
+/// **清场确认窗开始**（v2.1 / 技术协议 §3.2、蓝图 §4.1）。
+///
+/// 四条件同时满足的那一逻辑步产生本事件，并进入固定 **0.8 s** 确认窗；
+/// 期间任何新威胁都会产生 [SectorClearCancelled]。
+class SectorClearStarted extends DomainEvent {
+  const SectorClearStarted();
+
+  @override
+  String get eventType => 'SectorClearStarted';
+}
+
+/// 清场确认窗**被取消**（确认期内出现新威胁）。
+class SectorClearCancelled extends DomainEvent {
+  const SectorClearCancelled({required this.reason});
+
+  /// 取消原因（诊断用）。取值如 `newThreat` / `phaseChanged` / `bossRevived`。
+  final String reason;
+
+  @override
+  String get eventType => 'SectorClearCancelled';
+}
+
+/// 清场**确认成功** —— 唯一的"清场胜利"来源，随后由 `GameRuntime`
+/// 产生 `RunEnded(victory, reason=sectorCleared)`。
+class SectorClearConfirmed extends DomainEvent {
+  const SectorClearConfirmed();
+
+  @override
+  String get eventType => 'SectorClearConfirmed';
 }
 
 /// 升级草案开启（产品基线 §4.2）。
