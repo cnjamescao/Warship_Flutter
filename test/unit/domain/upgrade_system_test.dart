@@ -55,7 +55,7 @@ void main() {
   });
 
   group('配置加载', () {
-    test('16 张卡、阈值与首抽时间门与产品基线 §4.2 一致', () {
+    test('21 张卡（16 基础 + 5 形态）、阈值与首抽时间门与产品基线一致', () {
       expect(system.card('UP-PULSE-RATE'), isNotNull);
       expect(system.xpThresholds, <int>[20, 55, 105, 170, 250, 345]);
       expect(system.firstDraftEarliestSecond, 15.0);
@@ -384,6 +384,12 @@ void main() {
         'UP-DASH-REPAIR',
         'UP-ENERGY-GAIN',
         'UP-COMBO-GUARD',
+        // v2.1 新增的五张主弹道形态卡（冻结表 §3）—— 一并满级才算池空。
+        'UP-WSTYLE-PRISM',
+        'UP-WSTYLE-ARC',
+        'UP-WSTYLE-PLASMA',
+        'UP-WSTYLE-NEEDLE',
+        'UP-WSTYLE-MISSILE',
       ]) {
         state.levels[id] = system.card(id)!.maxLevel;
       }

@@ -8,14 +8,27 @@
       "nearestNormalEnemy",
       "forward"
     ],
-    "missile": ["bossWeakpoint", "nearestElite", "nearestNormalEnemy"],
-    "laser": ["bossWeakpoint", "nearestElite", "nearestNormalEnemy"]
+    "missile": [
+      "bossWeakpoint",
+      "nearestElite",
+      "nearestNormalEnemy"
+    ],
+    "laser": [
+      "bossWeakpoint",
+      "nearestElite",
+      "nearestNormalEnemy"
+    ]
   },
   "notes": {
-    "highTierDamageTargets": ["enemyBody", "bossWeakpoint"],
-    "highTierNeverDamages": ["player", "pickup"]
+    "highTierDamageTargets": [
+      "enemyBody",
+      "bossWeakpoint"
+    ],
+    "highTierNeverDamages": [
+      "player",
+      "pickup"
+    ]
   },
-
   "weapons": [
     {
       "id": "WPN-PULSE",
@@ -31,7 +44,10 @@
         "pierces": false,
         "hitsPerTarget": 1
       },
-      "hitbox": { "shape": "circle", "radius": 6 },
+      "hitbox": {
+        "shape": "circle",
+        "radius": 6
+      },
       "damage": 9,
       "lifetime": 1.2,
       "turnRate": null,
@@ -50,7 +66,6 @@
         "critical": "GFX-FX-PULSE-CRIT"
       }
     },
-
     {
       "id": "WPN-MISSILE",
       "series": "missile",
@@ -65,7 +80,10 @@
         "pierces": false,
         "hitsPerTarget": 1
       },
-      "hitbox": { "shape": "circle", "radius": 16 },
+      "hitbox": {
+        "shape": "circle",
+        "radius": 16
+      },
       "damage": 36,
       "lifetime": 2.0,
       "turnRate": 300,
@@ -84,7 +102,6 @@
         "explosion": "GFX-FX-MISSILE-BLAST"
       }
     },
-
     {
       "id": "WPN-LASER",
       "series": "laser",
@@ -92,7 +109,10 @@
       "range": 900,
       "cadence": 5.0,
       "projectile": null,
-      "hitbox": { "shape": "capsule", "width": 28 },
+      "hitbox": {
+        "shape": "capsule",
+        "width": 28
+      },
       "damage": 6,
       "lifetime": 1.2,
       "turnRate": null,
@@ -111,7 +131,6 @@
         "impact": "GFX-WPN-LASER-IMPACT"
       }
     },
-
     {
       "id": "WPN-LASER-PRISM",
       "series": "laser",
@@ -130,13 +149,17 @@
         "maxHopsLevel2": 2,
         "candidateRadius": 360,
         "damageRatioPerHop": 0.6,
-        "ordering": ["distance", "entityId"],
+        "ordering": [
+          "distance",
+          "entityId"
+        ],
         "perTargetOncePerActivation": true
       },
       "unlockedBy": "UP-LASER-PRISM",
-      "assetIds": { "impact": "GFX-WPN-LASER-IMPACT" }
+      "assetIds": {
+        "impact": "GFX-WPN-LASER-IMPACT"
+      }
     },
-
     {
       "id": "WPN-DRONE",
       "series": "drone",
@@ -151,7 +174,10 @@
         "pierces": false,
         "hitsPerTarget": 1
       },
-      "hitbox": { "shape": "circle", "radius": 10 },
+      "hitbox": {
+        "shape": "circle",
+        "radius": 10
+      },
       "damage": 12,
       "lifetime": 0.8,
       "turnRate": null,
@@ -169,7 +195,6 @@
         "bolt": "GFX-WPN-DRONE-BOLT"
       }
     },
-
     {
       "id": "WPN-ARC",
       "series": "pulse",
@@ -187,37 +212,184 @@
         "maxHops": 1,
         "candidateRadius": 360,
         "damageRatioOfFinalPulseDamage": 0.5,
-        "ordering": ["distance", "entityId"],
+        "ordering": [
+          "distance",
+          "entityId"
+        ],
         "perTargetOncePerCritical": true,
         "noCandidateKeepsCriticalOnly": true
       },
       "unlockedBy": "UP-CRIT-ARC",
-      "assetIds": { "effect": "GFX-WPN-ARC" }
+      "assetIds": {
+        "effect": "GFX-WPN-ARC"
+      }
     }
   ],
-
   "missileSalvo": {
-    "countByLevel": [1, 2, 3],
-    "anglesDegreesByLevel": [
-      [0],
-      [-8, 8],
-      [-8, 0, 8]
+    "countByLevel": [
+      1,
+      2,
+      3
     ],
-    "angleSpreadBeyondThree": { "minDegrees": -16, "maxDegrees": 16, "evenlySpaced": true },
+    "anglesDegreesByLevel": [
+      [
+        0
+      ],
+      [
+        -8,
+        8
+      ],
+      [
+        -8,
+        0,
+        8
+      ]
+    ],
+    "angleSpreadBeyondThree": {
+      "minDegrees": -16,
+      "maxDegrees": 16,
+      "evenlySpaced": true
+    },
     "damageFormula": "max(29, 36 * (1 - 0.10 * salvoLevel))",
-    "damageByLevel": [36, 32.4, 29],
+    "damageByLevel": [
+      36,
+      32.4,
+      29
+    ],
     "eachMissileIndependentTargeting": true,
     "mayHitSameTarget": true
   },
-
   "missileRadius": {
-    "radiusByLevel": [70, 90, 110],
+    "radiusByLevel": [
+      70,
+      90,
+      110
+    ],
     "perLevelBonus": 20,
     "maxRadius": 110
   },
-
   "pulseSpread": {
-    "projectileCountByLevel": [1, 2, 3],
-    "angleDegreesByLevel": [0, 6, 0]
-  }
+    "projectileCountByLevel": [
+      1,
+      2,
+      3
+    ],
+    "angleDegreesByLevel": [
+      0,
+      6,
+      0
+    ]
+  },
+  "mainWeaponStyles": [
+    {
+      "styleId": "prism",
+      "cardId": "UP-WSTYLE-PRISM",
+      "displayName": "棱晶脉冲",
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 0.95,
+      "radiusMultiplier": 1.0,
+      "extraPierce": 1,
+      "bounce": 0,
+      "homing": false,
+      "projectileAssetId": "GFX-V21-WPN-PRISM",
+      "impactAssetId": "GFX-V21-WPN-PRISM-IMPACT",
+      "impactCueId": "SFX-V21-WPN-PRISM-IMPACT",
+      "projectileSize": [
+        16,
+        38
+      ],
+      "impactSize": [
+        72,
+        72
+      ]
+    },
+    {
+      "styleId": "arc",
+      "cardId": "UP-WSTYLE-ARC",
+      "displayName": "电弧脉冲",
+      "damageMultiplier": 0.82,
+      "speedMultiplier": 1.0,
+      "radiusMultiplier": 0.9,
+      "extraPierce": 0,
+      "bounce": 1,
+      "homing": false,
+      "projectileAssetId": "GFX-V21-WPN-ARC",
+      "impactAssetId": "GFX-V21-WPN-ARC-IMPACT",
+      "impactCueId": "SFX-V21-WPN-ARC-IMPACT",
+      "projectileSize": [
+        22,
+        46
+      ],
+      "impactSize": [
+        80,
+        80
+      ]
+    },
+    {
+      "styleId": "plasma",
+      "cardId": "UP-WSTYLE-PLASMA",
+      "displayName": "等离子脉冲",
+      "damageMultiplier": 1.22,
+      "speedMultiplier": 0.78,
+      "radiusMultiplier": 1.35,
+      "extraPierce": 0,
+      "bounce": 0,
+      "homing": false,
+      "projectileAssetId": "GFX-V21-WPN-PLASMA",
+      "impactAssetId": "GFX-V21-WPN-PLASMA-IMPACT",
+      "impactCueId": "SFX-V21-WPN-PLASMA-IMPACT",
+      "projectileSize": [
+        42,
+        42
+      ],
+      "impactSize": [
+        96,
+        96
+      ]
+    },
+    {
+      "styleId": "needle",
+      "cardId": "UP-WSTYLE-NEEDLE",
+      "displayName": "针束脉冲",
+      "damageMultiplier": 0.72,
+      "speedMultiplier": 1.48,
+      "radiusMultiplier": 0.62,
+      "extraPierce": 2,
+      "bounce": 0,
+      "homing": false,
+      "projectileAssetId": "GFX-V21-WPN-NEEDLE",
+      "impactAssetId": "GFX-V21-WPN-NEEDLE-IMPACT",
+      "impactCueId": "SFX-V21-WPN-NEEDLE-IMPACT",
+      "projectileSize": [
+        10,
+        54
+      ],
+      "impactSize": [
+        60,
+        60
+      ]
+    },
+    {
+      "styleId": "missile",
+      "cardId": "UP-WSTYLE-MISSILE",
+      "displayName": "微导弹脉冲",
+      "damageMultiplier": 1.08,
+      "speedMultiplier": 0.86,
+      "radiusMultiplier": 1.05,
+      "extraPierce": 0,
+      "bounce": 0,
+      "homing": true,
+      "projectileAssetId": "GFX-V21-WPN-MISSILE",
+      "impactAssetId": "GFX-V21-WPN-MISSILE-IMPACT",
+      "impactCueId": "SFX-V21-WPN-MISSILE-IMPACT",
+      "projectileSize": [
+        20,
+        46
+      ],
+      "impactSize": [
+        92,
+        92
+      ]
+    }
+  ]
 }

@@ -395,6 +395,126 @@
           "cooldownSeconds": 25.0
         }
       ]
+    },
+    {
+      "id": "UP-WSTYLE-PRISM",
+      "nameKey": "up.style.prism.name",
+      "descKey": "up.style.prism.desc",
+      "series": "mainStyle",
+      "maxLevel": 1,
+      "weight": 20,
+      "prerequisites": [],
+      "excludes": [
+        "UP-WSTYLE-ARC",
+        "UP-WSTYLE-PLASMA",
+        "UP-WSTYLE-NEEDLE",
+        "UP-WSTYLE-MISSILE"
+      ],
+      "iconAssetId": "UI-V21-UPGRADE-NOTICE",
+      "rarity": "rare",
+      "countsAsDamage": true,
+      "effects": [
+        {
+          "kind": "grantMainWeaponStyle",
+          "styleId": "prism"
+        }
+      ]
+    },
+    {
+      "id": "UP-WSTYLE-ARC",
+      "nameKey": "up.style.arc.name",
+      "descKey": "up.style.arc.desc",
+      "series": "mainStyle",
+      "maxLevel": 1,
+      "weight": 20,
+      "prerequisites": [],
+      "excludes": [
+        "UP-WSTYLE-PRISM",
+        "UP-WSTYLE-PLASMA",
+        "UP-WSTYLE-NEEDLE",
+        "UP-WSTYLE-MISSILE"
+      ],
+      "iconAssetId": "UI-V21-UPGRADE-NOTICE",
+      "rarity": "rare",
+      "countsAsDamage": true,
+      "effects": [
+        {
+          "kind": "grantMainWeaponStyle",
+          "styleId": "arc"
+        }
+      ]
+    },
+    {
+      "id": "UP-WSTYLE-PLASMA",
+      "nameKey": "up.style.plasma.name",
+      "descKey": "up.style.plasma.desc",
+      "series": "mainStyle",
+      "maxLevel": 1,
+      "weight": 20,
+      "prerequisites": [],
+      "excludes": [
+        "UP-WSTYLE-PRISM",
+        "UP-WSTYLE-ARC",
+        "UP-WSTYLE-NEEDLE",
+        "UP-WSTYLE-MISSILE"
+      ],
+      "iconAssetId": "UI-V21-UPGRADE-NOTICE",
+      "rarity": "rare",
+      "countsAsDamage": true,
+      "effects": [
+        {
+          "kind": "grantMainWeaponStyle",
+          "styleId": "plasma"
+        }
+      ]
+    },
+    {
+      "id": "UP-WSTYLE-NEEDLE",
+      "nameKey": "up.style.needle.name",
+      "descKey": "up.style.needle.desc",
+      "series": "mainStyle",
+      "maxLevel": 1,
+      "weight": 20,
+      "prerequisites": [],
+      "excludes": [
+        "UP-WSTYLE-PRISM",
+        "UP-WSTYLE-ARC",
+        "UP-WSTYLE-PLASMA",
+        "UP-WSTYLE-MISSILE"
+      ],
+      "iconAssetId": "UI-V21-UPGRADE-NOTICE",
+      "rarity": "rare",
+      "countsAsDamage": true,
+      "effects": [
+        {
+          "kind": "grantMainWeaponStyle",
+          "styleId": "needle"
+        }
+      ]
+    },
+    {
+      "id": "UP-WSTYLE-MISSILE",
+      "nameKey": "up.style.missile.name",
+      "descKey": "up.style.missile.desc",
+      "series": "mainStyle",
+      "maxLevel": 1,
+      "weight": 20,
+      "prerequisites": [],
+      "excludes": [
+        "UP-WSTYLE-PRISM",
+        "UP-WSTYLE-ARC",
+        "UP-WSTYLE-PLASMA",
+        "UP-WSTYLE-NEEDLE"
+      ],
+      "iconAssetId": "UI-V21-UPGRADE-NOTICE",
+      "rarity": "rare",
+      "countsAsDamage": true,
+      "effects": [
+        {
+          "kind": "grantMainWeaponStyle",
+          "styleId": "missile"
+        }
+      ]
     }
   ],
   "rarityPools": {

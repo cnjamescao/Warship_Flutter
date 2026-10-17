@@ -73,9 +73,9 @@ void main() {
       expect(catalog.contentVersion, '2.1.0-neon-flow');
     });
 
-    test('五类敌人、十六张升级卡、六个武器系统均被加载', () {
+    test('五类敌人、二十一张升级卡（16 基础 + 5 形态）、六个武器系统均被加载', () {
       expect(catalog.enemyList.length, 5);
-      expect(catalog.upgradeCards.length, 16);
+      expect(catalog.upgradeCards.length, 21);
       expect(catalog.weaponList.length, 6);
 
       for (final id in <String>[
