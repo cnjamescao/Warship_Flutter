@@ -71,6 +71,8 @@ class UpgradeCard {
     required this.effects,
     required this.iconAssetId,
     required this.rarity,
+    this.countsAsDamage = false,
+    this.styleId,
   });
 
   final String id;
@@ -84,6 +86,35 @@ class UpgradeCard {
   final List<UpgradeEffect> effects;
   final String iconAssetId;
   final String rarity;
+
+  /// **该卡是否计入"伤害类"**（v2.1 / 冻结表 §2.2）。
+  ///
+  /// 五张主弹道形态卡显式声明 `countsAsDamage=true`；
+  /// 其余卡以 `damageCardIds` 名单为准（两者取"或"，见 `grantAutomatic`）。
+  final bool countsAsDamage;
+
+  /// **该卡授予的主弹道形态 ID**（v2.1）。
+  ///
+  /// 从 `effects` 中 `kind == 'grantMainWeaponStyle'` 的 `styleId` 提取；
+  /// 非形态卡为 `null`。
+  final String? styleId;
+
+  /// 从 `effects` 中提取 `grantMainWeaponStyle` 的 `styleId`（v2.1）。
+  static String? _styleIdOf(Map<String, Object?> config) {
+    final effects = config['effects'];
+    if (effects is! List) {
+      return null;
+    }
+    for (final e in effects) {
+      if (e is Map && e['kind'] == 'grantMainWeaponStyle') {
+        final id = e['styleId'];
+        if (id is String && id.isNotEmpty) {
+          return id;
+        }
+      }
+    }
+    return null;
+  }
 
   static UpgradeCard fromConfig(Map<String, Object?> config) => UpgradeCard(
     id: config['id'] as String? ?? 'UP-UNKNOWN',
@@ -100,6 +131,10 @@ class UpgradeCard {
         .toList(growable: false),
     iconAssetId: config['iconAssetId'] as String? ?? '',
     rarity: config['rarity'] as String? ?? 'common',
+    // v2.1：形态卡显式声明 countsAsDamage（冻结表 §3）。
+    countsAsDamage: config['countsAsDamage'] == true,
+    // v2.1：从 effects 提取主弹道形态 ID。
+    styleId: _styleIdOf(config),
     effects: ((config['effects'] as List?) ?? const [])
         .whereType<Map>()
         .map(
@@ -225,6 +260,13 @@ class UpgradeSystem {
 
   final Map<String, UpgradeCard> _cards;
   final List<String> _order;
+
+  /// **全部卡片 ID**（固定顺序，只读）。
+  ///
+  /// 存在理由：测试需要枚举全部卡（例如"把所有卡拉满以验证空池行为"），
+  /// 而不应各自复制一份 ID 名单 —— 那样新增卡时会漏改。
+  /// **不参与任何规则判定。**
+  List<String> get allCardIds => List<String>.unmodifiable(_order);
   final List<int> _thresholds;
 
   final double firstDraftEarliestSecond;
@@ -428,6 +470,134 @@ class UpgradeSystem {
   ///
   /// 使用 `rng.nextInt(totalWeight)` 走权重区间 —— 只依赖 [RandomSource]
   /// 的整数原语，因此回放一致。
+  // ------------------------------------------------------------
+  // 自动强化授予（v2.1 / 冻结表 §2.2）
+  // ------------------------------------------------------------
+
+  /// 一次自动强化的结果（**单张**）。
+  ///
+  /// 冻结表 §2.2：「每次只授予一张……**禁止创建 `DraftOffer`、
+  /// 进入 `UpgradeDraft` 或等待输入**。」
+  /// 因此本对象是**纯数据**，不产生任何"待选择"状态。
+  // (AutoUpgradeGrant 定义在文件末尾的独立类中)
+
+  /// 按 `grantOrdinal` 的逐序号规则挑选**一张**卡并返回授予结果。
+  ///
+  /// **调用方负责 `applyCard` 一次并广播 `AutoUpgradeGranted`**
+  /// （本方法不改 `state`，便于测试与回放）。
+  ///
+  /// **空池必须响亮失败**（蓝图 §3.2 第 3 条）：
+  /// 抛 [StateError] 并带上 `grantOrdinal` 与**当时的可用 ID**，
+  /// **不得静默跳过、不得"安全回退"到没有强化** ——
+  /// 静默跳过会把"玩家没拿到强化"变成难查的玩法异常。
+  AutoUpgradeGrant grantAutomatic({
+    required UpgradeState state,
+    required RandomSource rng,
+  }) {
+    final ordinal = state.grantCount;
+    if (ordinal >= maxDrafts) {
+      throw StateError(
+        '自动强化已达上限 maxDrafts=$maxDrafts（grantOrdinal=$ordinal）',
+      );
+    }
+
+    final available = availableCards(state);
+    if (available.isEmpty) {
+      throw StateError(
+        '自动强化候选池为空：grantOrdinal=$ordinal；'
+        '已拥有 ${state.levels.length} 张卡；可用 ID=[]',
+      );
+    }
+
+    String pick;
+    switch (ordinal) {
+      // ---- 0：强制 Pulse Rate ----
+      case 0:
+        if (!available.contains('UP-PULSE-RATE')) {
+          throw StateError(
+            'grantOrdinal=0 要求强制授予 UP-PULSE-RATE，但它不在可用池中；'
+            '可用 ID=$available',
+          );
+        }
+        pick = 'UP-PULSE-RATE';
+
+      // ---- 1：两张保证卡二选一（仅剩一张时取该张）----
+      case 1:
+        final pool = <String>[
+          for (final id in <String>['UP-PULSE-SPREAD', 'UP-MISSILE-UNLOCK'])
+            if (available.contains(id)) id,
+        ];
+        if (pool.isEmpty) {
+          throw StateError(
+            'grantOrdinal=1 的两张保证卡都不可用；可用 ID=$available',
+          );
+        }
+        // 冻结表 §2.2 原文：「仅剩一张时取该张」，否则**加权**抽。
+        pick = pool.length == 1 ? pool.first : _weightedDraw(pool, rng);
+
+      // ---- 2：强制进入五形态池，等权抽一张 ----
+      case 2:
+        final styles = <String>[
+          for (final id in _mainStyleCardIds)
+            if (available.contains(id)) id,
+        ];
+        if (styles.isEmpty) {
+          throw StateError(
+            'grantOrdinal=2 要求强制进入主弹道形态池，但五种形态都不可用；'
+            '可用 ID=$available',
+          );
+        }
+        // 冻结表 §2.2：「**等权**抽一张」—— 不按 weight 加权。
+        pick = styles[rng.nextInt(styles.length)];
+
+      // ---- 3–5：常规过滤 + 伤害干旱优先 ----
+      default:
+        // ① 连续两次未取得伤害类 → 优先在 damageCardIds 中**加权**抽。
+        if (state.consecutiveGrantsWithoutDamage >= 2) {
+          final damagePool = <String>[
+            for (final id in available)
+              if (damageCardIds.contains(id) || _cards[id]!.countsAsDamage) id,
+          ];
+          if (damagePool.isNotEmpty) {
+            pick = _weightedDraw(damagePool, rng);
+            break;
+          }
+        }
+        // ② 否则在「已拥有系列或 survival」可用卡中加权抽。
+        final ownedSeries = _ownedSeries(state);
+        final preferredPool = <String>[
+          for (final id in available)
+            if (ownedSeries.contains(_cards[id]!.series) ||
+                _cards[id]!.series == 'survival')
+              id,
+        ];
+        if (preferredPool.isNotEmpty) {
+          pick = _weightedDraw(preferredPool, rng);
+          break;
+        }
+        // ③ 该集合为空 → 退回完整可用池加权抽取。
+        pick = _weightedDraw(available, rng);
+    }
+
+    final card = _cards[pick]!;
+    return AutoUpgradeGrant(
+      grantOrdinal: ordinal,
+      cardId: pick,
+      // 授予后的**新等级**（不是增量）—— Toast 要显示 "等级 {level}"。
+      level: state.levelOf(pick) + 1,
+      styleId: card.styleId,
+    );
+  }
+
+  /// 五张主弹道形态卡的固定 ID（顺序即等权抽取的候选顺序）。
+  static const List<String> _mainStyleCardIds = <String>[
+    'UP-WSTYLE-PRISM',
+    'UP-WSTYLE-ARC',
+    'UP-WSTYLE-PLASMA',
+    'UP-WSTYLE-NEEDLE',
+    'UP-WSTYLE-MISSILE',
+  ];
+
   String _weightedDraw(List<String> pool, RandomSource rng) {
     var total = 0;
     for (final id in pool) {
@@ -519,4 +689,27 @@ class UpgradeAccumulator {
     }
     return factor;
   }
+}
+
+/// **一次自动强化的授予结果**（v2.1 / 冻结表 §2.2）。
+///
+/// 纯数据：**不含**任何"候选列表"或"待确认"语义 ——
+/// v2.1 起标准 XP 路径不再有可选择的草案（蓝图 §3.2）。
+class AutoUpgradeGrant {
+  const AutoUpgradeGrant({
+    required this.grantOrdinal,
+    required this.cardId,
+    required this.level,
+    this.styleId,
+  });
+
+  /// 本局第几次授予（0 起），等同授予前的 `state.grantCount`。
+  final int grantOrdinal;
+  final String cardId;
+
+  /// 授予后的**新等级**。
+  final int level;
+
+  /// 若该卡是五种主弹道形态之一，其 style ID（否则 null）。
+  final String? styleId;
 }
