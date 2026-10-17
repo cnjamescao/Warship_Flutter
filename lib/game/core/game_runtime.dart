@@ -378,6 +378,49 @@ class GameRuntime {
   /// 预警时长对玩家完全无效。
   final List<_PendingAttack> _pendingAttacks = <_PendingAttack>[];
 
+  // ---- v2.1 清场胜利（B1 步骤 4 / 蓝图 §4.1）----
+
+  /// 清场确认状态（`inactive` / `confirming` / `confirmed`）。
+  SectorClearState sectorClearState = SectorClearState.inactive;
+
+  /// 进入 `confirming` 的逻辑时间；确认窗固定 0.8 s。
+  double? sectorClearStartedAtSeconds;
+
+  /// **终局结果的唯一来源**（蓝图 §4.1）。
+  ///
+  /// App 层**只允许**消费它，**禁止**用 `health.isDead` 或
+  /// `combatSeconds >= 190` 自行推断胜负（蓝图 §4.2）。
+  RunEnded? terminalResult;
+
+  /// 清场确认窗时长（技术协议 §3.2：固定 0.8 s）。
+  static const double kSectorClearConfirmSeconds = 0.8;
+
+  /// 构建**同一逻辑步内一致**的威胁快照。
+  ThreatSnapshot threatSnapshot() {
+    final d = director;
+    var enemyProjectiles = 0;
+    for (final p in projectiles) {
+      if (p.faction == ProjectileFaction.enemy) {
+        enemyProjectiles++;
+      }
+    }
+    // 待提交队列里的实体**也算威胁** —— 否则会在它们出生前误判清场。
+    for (final p in _pendingProjectiles) {
+      if (p.faction == ProjectileFaction.enemy) {
+        enemyProjectiles++;
+      }
+    }
+    return ThreatSnapshot(
+      directorCompleted: d.isExhausted,
+      hasFutureBossPlan: d.hasFutureBossEntry,
+      enemyCount: enemies.length + _pendingEnemies.length,
+      enemyProjectileCount: enemyProjectiles,
+      hazardCount: hazards.length + _pendingHazards.length,
+      pendingAttackCount: _pendingAttacks.length,
+      bossAlive: boss != null && !(boss?.isDefeated ?? true),
+    );
+  }
+
   /// 是否推进过逻辑（用于测试断言"冻结"）。
   int logicSteps = 0;
 
@@ -563,8 +606,11 @@ class GameRuntime {
       _commitPending();
     }
 
-    // 10. 经验阈值 → 打开升级草案（相位迁移，下一步起逻辑冻结）。
+    // 10. 自动强化（不冻结逻辑）+ 清场确认（v2.1）。
+    //     顺序：先强化再取威胁快照 —— 与冻结表 §2.1「同一逻辑步先应用
+    //     强化，再构建 ThreatSnapshot」一致。
     _checkAutoGrantDue();
+    _updateSectorClear();
   }
 
   // ------------------------------------------------------------
@@ -1765,6 +1811,98 @@ class GameRuntime {
   ///
   /// 第 1 次草案不得早于有效战斗时间 15.0 秒 —— 15 秒前积累的经验
   /// 由 `UpgradeSystem.isAutoGrantDue` 保留，不做任何补偿。
+  /// **唯一的终局出口**（蓝图 §4.1）。
+  ///
+  /// 一切结束都必须经此：设置 [terminalResult]、发[一次] `RunEnded`、
+  /// 并在胜利时**原子冻结**后续伤害。
+  ///
+  /// **为什么不各处自己 emit**：v2.0 曾让 `health.isDead` 与
+  /// `combatSeconds >= 190` 各自推断结局，导致 App 层与运行时
+  /// 可能得出不同结论。现在只留这一个出口，App 只消费
+  /// [terminalResult]（蓝图 §4.2 明文禁止 App 重算）。
+  void _endRun({
+    required String result,
+    required String reason,
+    required double bossHpRatio,
+  }) {
+    if (terminalResult != null) {
+      return; // 只结束一次。
+    }
+    if (result == 'victory') {
+      _victoryFrozen = true;
+      _pendingVictoryClear = true;
+    }
+    final tier = resultTierFor(
+      victory: result == 'victory',
+      bossHpRatio: result == 'victory' ? null : bossHpRatio,
+    ).id;
+    final ended = RunEnded(
+      result: result,
+      durationSeconds: combatSeconds,
+      score: score,
+      seed: runtime.seed,
+      bossHpRatio: bossHpRatio,
+      resultTier: tier,
+      reason: reason,
+    );
+    terminalResult = ended;
+    bus.emit(ended, runtime);
+  }
+
+  /// **推进清场确认状态机**（v2.1 / 蓝图 §4.1、技术协议 §3.2）。
+  ///
+  /// 三态迁移：
+  ///   * `inactive` --四条件满足--> `confirming`（发 `SectorClearStarted`）
+  ///   * `confirming` --出现新威胁--> `inactive`（发 `SectorClearCancelled`）
+  ///   * `confirming` --满 0.8s--> `confirmed`（发 `SectorClearConfirmed`，
+  ///     并写入 `terminalResult` —— **唯一的清场胜利来源**）
+  ///
+  /// **只在 `Playing` 推进**（本方法由 `_stepOnce` 调用，天然满足）。
+  /// 确认窗用**逻辑时间**计时，因此暂停会冻结它 ✓。
+  void _updateSectorClear() {
+    if (sectorClearState == SectorClearState.confirmed) {
+      return;
+    }
+    final snapshot = threatSnapshot();
+    final empty = snapshot.isEmpty;
+
+    switch (sectorClearState) {
+      case SectorClearState.inactive:
+        if (!empty) {
+          return;
+        }
+        sectorClearState = SectorClearState.confirming;
+        sectorClearStartedAtSeconds = combatSeconds;
+        bus.emit(SectorClearStarted(), runtime);
+
+      case SectorClearState.confirming:
+        if (!empty) {
+          // **新威胁出现 → 立即取消**（协议：确认期内新威胁即取消）。
+          sectorClearState = SectorClearState.inactive;
+          sectorClearStartedAtSeconds = null;
+          bus.emit(
+            SectorClearCancelled(reason: 'newThreat: $snapshot'),
+            runtime,
+          );
+          return;
+        }
+        final startedAt = sectorClearStartedAtSeconds;
+        if (startedAt != null &&
+            combatSeconds - startedAt >= kSectorClearConfirmSeconds) {
+          sectorClearState = SectorClearState.confirmed;
+          bus.emit(SectorClearConfirmed(), runtime);
+          _endRun(
+            result: 'victory',
+            reason: 'sectorCleared',
+            bossHpRatio: boss?.hpRatio ?? 0,
+          );
+        }
+
+      case SectorClearState.confirmed:
+        break;
+    }
+  }
+
   void _checkAutoGrantDue() {
     final system = upgradeSystem;
     if (system == null) {
@@ -2119,4 +2257,69 @@ class _LaserSweep {
 
   double remaining;
   double tickAccumulator;
+}
+
+// ================================================================
+// v2.1 清场胜利（B1 步骤 4）
+// ================================================================
+
+/// **威胁快照** —— `VictorySystem` 的**唯一输入**（技术协议 §3.2）。
+///
+/// 为什么必须是"快照"而不是实时查询：清场判定要求**同一逻辑步**内
+/// 各项计数彼此一致。分别查询可能跨步取到不同时刻的值，
+/// 造成"敌人已清但待提交队列里还有"这类假清场。
+class ThreatSnapshot {
+  const ThreatSnapshot({
+    required this.directorCompleted,
+    required this.hasFutureBossPlan,
+    required this.enemyCount,
+    required this.enemyProjectileCount,
+    required this.hazardCount,
+    required this.pendingAttackCount,
+    required this.bossAlive,
+  });
+
+  /// Director 是否已跑完全部波次行。
+  final bool directorCompleted;
+
+  /// Director 是否还有**未来的 Boss 入场行**（有则不算清场）。
+  final bool hasFutureBossPlan;
+
+  final int enemyCount;
+  final int enemyProjectileCount;
+  final int hazardCount;
+  final int pendingAttackCount;
+  final bool bossAlive;
+
+  /// **清场四条件**（技术协议 §3.2 原文）。
+  ///
+  /// `directorCompleted && !hasFutureBossPlan && enemyCount == 0 &&
+  ///  enemyProjectileCount == 0 && hazardCount == 0 &&
+  ///  pendingAttackCount == 0 && !bossAlive`
+  bool get isEmpty =>
+      directorCompleted &&
+      !hasFutureBossPlan &&
+      enemyCount == 0 &&
+      enemyProjectileCount == 0 &&
+      hazardCount == 0 &&
+      pendingAttackCount == 0 &&
+      !bossAlive;
+
+  @override
+  String toString() =>
+      'ThreatSnapshot(dirDone=$directorCompleted futureBoss=$hasFutureBossPlan '
+      'enemies=$enemyCount eProj=$enemyProjectileCount hazards=$hazardCount '
+      'pending=$pendingAttackCount bossAlive=$bossAlive)';
+}
+
+/// 清场确认的三种状态（蓝图 §4.1）。
+enum SectorClearState {
+  /// 条件不满足。
+  inactive,
+
+  /// 四条件已满足，正在 0.8 s 确认窗内；出现新威胁则取消。
+  confirming,
+
+  /// 确认成功 —— 唯一的"清场胜利"来源。
+  confirmed,
 }

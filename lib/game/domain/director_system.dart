@@ -218,6 +218,23 @@ class DirectorSystem {
   int? get deferredStartSecond => _deferred?.row.startSecond;
 
   /// 尚未触发的行里最早的一行的 `startSecond`（全触发完则 null）。
+  /// **是否还有尚未触发的 Boss 入场行**（v2.1 清场四条件之一）。
+  ///
+  /// 清场判定必须排除"Director 还没跑完、后面还有 Boss 要来"的情形，
+  /// 否则玩家会在 Boss 出现前就"清场胜利"。
+  bool get hasFutureBossEntry {
+    for (var i = _nextRowIndex; i < _rows.length; i++) {
+      if (_rows[i].bossEntry) {
+        return true;
+      }
+    }
+    return _deferred != null && _deferred!.row.bossEntry;
+  }
+
+  /// **Director 是否已跑完全部行**（v2.1 清场四条件之一）。
+  bool get isExhausted =>
+      _nextRowIndex >= _rows.length && _deferred == null;
+
   int? get nextPendingRowSecond =>
       _nextRowIndex < _rows.length ? _rows[_nextRowIndex].startSecond : null;
 
