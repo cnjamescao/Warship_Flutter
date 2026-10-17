@@ -62,15 +62,38 @@ Map<String, Object?> conditionalParamsOf(DomainEvent event) {
         'shieldDamage': shieldDamage,
         'hpDamage': hpDamage,
         'direction': direction,
+        // **v2.1**：稳定枚举，区分这一击打在护盾还是 HP。
+        //
+        // 蓝图 §2.2 明文：「manifest 只允许**等值** when 条件，因此
+        // `conditionalParamsOf` **必须输出稳定枚举** damageLayer=shield 或 hp，
+        // **不得隐式扩展 schema 做数值表达式比较**。」
+        // 判定：本击产生了护盾伤害即记为 shield，否则 hp。
+        'damageLayer': shieldDamage > 0 ? 'shield' : 'hp',
       };
     case PlayerVitalStateChanged(:final hpRatio, :final shieldRatio):
-      return <String, Object?>{'hpRatio': hpRatio, 'shieldRatio': shieldRatio};
-    case WeaponFired(:final weaponId):
-      return <String, Object?>{'weaponId': _audioWeaponId(weaponId)};
-    case WeaponHit(:final weaponId, :final critical):
+      return <String, Object?>{
+        'hpRatio': hpRatio,
+        'shieldRatio': shieldRatio,
+        // **v2.1**：低血 / 濒危的稳定枚举（B3 的动效路由用）。
+        // 阈值取产品基线：>30% normal / (10%,30%] low / ≤10% critical。
+        'hpVisualState': hpRatio <= 0.10
+            ? 'critical'
+            : (hpRatio <= 0.30 ? 'low' : 'normal'),
+      };
+    case WeaponFired(:final weaponId, :final weaponStyleId):
+      return <String, Object?>{
+        'weaponId': _audioWeaponId(weaponId),
+        // **v2.1**：五种主弹道的稳定 style ID（null 表示旧主炮/副武器，
+        // 此时不参与任何 weaponStyleId 路由 —— 符合"旧主炮传 null"）。
+        if (weaponStyleId != null) 'weaponStyleId': weaponStyleId,
+      };
+    case WeaponHit(:final weaponId, :final critical, :final weaponStyleId):
       return <String, Object?>{
         'weaponId': _audioWeaponId(weaponId),
         'critical': critical,
+        // **v2.1**：命中资源按 style 精确路由（五形态各自一张命中图 + cue）。
+        // 旧主炮/副武器为 null ⇒ 不参与 weaponStyleId 路由。
+        if (weaponStyleId != null) 'weaponStyleId': weaponStyleId,
       };
     case BossPhaseChanged(:final phase):
       return <String, Object?>{'phase': phase};

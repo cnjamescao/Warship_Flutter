@@ -340,10 +340,18 @@ void main() {
       'EnemyDamaged': <String>{'enemyId', 'hpRatio'},
       'EnemyAttackTelegraphed': <String>{'enemyId', 'attackId'},
       'EnemyAttackFired': <String>{'enemyId', 'attackId'},
-      'PlayerDamaged': <String>{'shieldDamage', 'hpDamage', 'direction'},
-      'PlayerVitalStateChanged': <String>{'hpRatio', 'shieldRatio'},
+      'PlayerDamaged': <String>{
+        'shieldDamage', 'hpDamage', 'direction',
+        // v2.1：稳定枚举，区分护盾/HP。
+        'damageLayer',
+      },
+      'PlayerVitalStateChanged': <String>{
+        'hpRatio', 'shieldRatio',
+        // v2.1：低血/濒危的稳定枚举。
+        'hpVisualState',
+      },
       'WeaponFired': <String>{'weaponId'},
-      'WeaponHit': <String>{'weaponId', 'critical'},
+      'WeaponHit': <String>{'weaponId', 'critical', 'weaponStyleId'},
       'BossPhaseChanged': <String>{'phase'},
       'BossAttackTelegraphed': <String>{'attackId'},
       'BossAttackFired': <String>{'attackId'},
@@ -404,9 +412,9 @@ void main() {
       //
       // ⚠️ **B1/B2 完成时必须从本登记表删除对应项** ——
       // 本用例会在集合**减少**时失败并提示，正是为此设计。
-      'weaponStyleId:WeaponHit',
-      'damageLayer:PlayerDamaged',
-      'hpVisualState:PlayerVitalStateChanged',
+      // v2.1 步骤 5 已让以下三项**真正产出**，故从这里移除：
+      //   weaponStyleId:WeaponHit / damageLayer:PlayerDamaged /
+      //   hpVisualState:PlayerVitalStateChanged
     };
 
     test('条件键的基名必须由适配器产出，或已登记为已知死路由', () {
