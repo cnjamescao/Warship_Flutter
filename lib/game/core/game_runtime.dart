@@ -1484,6 +1484,11 @@ class GameRuntime {
         projectile.consumed = true;
         continue;
       }
+      // **v2.1 Missile 追踪**（蓝图 §3.4）：
+      // 「每逻辑步向**初次锁定**的最近合法目标转向；目标无效时
+      //   **仅重新选一次**、**不消耗随机**；无目标直线飞行。」
+      _steerHomingProjectile(projectile);
+
       projectile.position =
           projectile.position + projectile.direction * (projectile.speed * dt);
       // 出界即失效。
@@ -1667,6 +1672,86 @@ class GameRuntime {
   ///
   /// 排序必须**确定**（同距离时按 EntityId），否则回放不可复现。
   /// 只考虑**存活**敌人 —— 已移除实体不得被选中。
+  /// **Missile 的逐步转向**（蓝图 §3.4）。
+  ///
+  /// 规则（逐条实现）：
+  /// * 每逻辑步朝**初次锁定**的目标转向（不是每步重新选目标）；
+  /// * 目标**无效**（已死/已移除）时**仅重新选一次**，且
+  ///   **不消耗随机数**（用确定性的"最近存活敌人"而非加权抽）；
+  /// * **无目标则直线飞行**（不改 direction）；
+  /// * 转向采用**有上限的角度步进**，避免瞬间掉头（视觉与手感都不可接受）。
+  void _steerHomingProjectile(Projectile projectile) {
+    if (projectile.homingTargetId == null && !_homingRetried(projectile)) {
+      return; // 非追踪弹，直接返回（v2.0 行为）。
+    }
+    // 找到当前锁定目标；无效则重选**一次**。
+    EnemyState? target;
+    final lockedId = projectile.homingTargetId;
+    for (final e in enemies) {
+      if (e.id == lockedId && !e.isDead) {
+        target = e;
+        break;
+      }
+    }
+    if (target == null) {
+      if (_homingRetried(projectile)) {
+        projectile.homingTargetId = null;
+        return; // 已经重试过 ⇒ 直线飞行。
+      }
+      _markHomingRetried(projectile);
+      // **不消耗随机**：确定性地取最近存活敌人（同距离按 EntityId）。
+      EnemyState? nearest;
+      var bestDistance = double.infinity;
+      for (final e in enemies) {
+        if (e.isDead) {
+          continue;
+        }
+        final d = (e.position - projectile.position).length;
+        if (d < bestDistance ||
+            (d == bestDistance &&
+                nearest != null &&
+                e.id.compareTo(nearest.id) < 0)) {
+          bestDistance = d;
+          nearest = e;
+        }
+      }
+      target = nearest;
+      projectile.homingTargetId = nearest?.id;
+      if (target == null) {
+        return; // 无目标 ⇒ 直线。
+      }
+    }
+
+    // 朝目标转向（有角速度上限）。
+    final desired = (target.position - projectile.position);
+    if (desired.length == 0) {
+      return;
+    }
+    final want = desired.normalized;
+    const maxTurnRadiansPerSecond = 6.0;
+    final maxTurn = maxTurnRadiansPerSecond * (1 / 60);
+    final currentAngle = math.atan2(projectile.direction.y, projectile.direction.x);
+    final wantAngle = math.atan2(want.y, want.x);
+    var delta = wantAngle - currentAngle;
+    while (delta > math.pi) {
+      delta -= 2 * math.pi;
+    }
+    while (delta < -math.pi) {
+      delta += 2 * math.pi;
+    }
+    final turn = delta.clamp(-maxTurn, maxTurn);
+    final newAngle = currentAngle + turn;
+    projectile.direction = Vec2(math.cos(newAngle), math.sin(newAngle));
+  }
+
+  /// 追踪弹是否已经"重选过一次"（`homingTargetId` 为 null 的追踪弹也需记录）。
+  /// 用 `attackId` 之外的独立集合避免给 `Projectile` 加易忘的布尔字段。
+  final Set<EntityId> _homingRetryDone = <EntityId>{};
+
+  bool _homingRetried(Projectile p) => _homingRetryDone.contains(p.id);
+
+  void _markHomingRetried(Projectile p) => _homingRetryDone.add(p.id);
+
   EnemyState? _pickBounceTarget(Projectile projectile) {
     const maxDistance = 360.0;
     final candidates = <EnemyState>[];
