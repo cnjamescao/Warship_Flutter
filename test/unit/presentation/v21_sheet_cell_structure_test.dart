@@ -45,7 +45,8 @@ Future<({double widthFactor, double heightFactor, Alignment align})> probe(
   );
   await tester.pump();
 
-  final clip = tester.widget<ClipRect>(find.byType(ClipRect));
+  // 确认 ClipRect 存在（裁切真的被应用）。
+  expect(find.byType(ClipRect), findsOneWidget);
   final alignFinder = find.descendant(
     of: find.byType(ClipRect),
     matching: find.byType(Align),
