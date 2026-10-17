@@ -134,6 +134,18 @@
     "up.pulseSpread.desc": "增加一条弹道",
     "up.pulseSpread.name": "双联分束",
     "up.shieldMax.desc": "护盾上限 +10 并立即补满同等数值",
-    "up.shieldMax.name": "应急护盾"
+    "up.shieldMax.name": "应急护盾",
+    "objective.sectorClear": "扇区已清空",
+    "toast.upgradeAria": "获得强化：{name}，等级 {level}，{description}",
+    "up.style.prism.name": "棱晶脉冲",
+    "up.style.prism.desc": "棱晶分束，额外穿透 1 个目标",
+    "up.style.arc.name": "电弧脉冲",
+    "up.style.arc.desc": "电弧弹跳 1 次，伤害略低",
+    "up.style.plasma.name": "等离子脉冲",
+    "up.style.plasma.desc": "大范围等离子核心，弹速较慢",
+    "up.style.needle.name": "针束脉冲",
+    "up.style.needle.desc": "高速针束，额外穿透 2 个目标",
+    "up.style.missile.name": "微导弹脉冲",
+    "up.style.missile.desc": "锁定最近敌人，爆裂范围更大"
   }
 }

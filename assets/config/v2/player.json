@@ -1,19 +1,31 @@
 {
   "id": "player.default",
   "contentVersion": "2.1.0-neon-flow",
-  "spawnPosition": [960, 900],
+  "spawnPosition": [
+    960,
+    900
+  ],
   "moveSpeed": 340,
-  "bodyHitbox": { "shape": "circle", "radius": 30 },
-  "worldBounds": { "minX": 30, "maxX": 1890, "minY": 30, "maxY": 1050 },
-
-  "health": { "initial": 100, "max": 100 },
+  "bodyHitbox": {
+    "shape": "circle",
+    "radius": 30
+  },
+  "worldBounds": {
+    "minX": 30,
+    "maxX": 1890,
+    "minY": 30,
+    "maxY": 1050
+  },
+  "health": {
+    "initial": 100,
+    "max": 100
+  },
   "shield": {
     "initial": 30,
     "max": 30,
     "regenDelaySeconds": 8.0,
     "regenPerSecond": 3
   },
-
   "dash": {
     "maxCharges": 2,
     "rechargeSeconds": 6.0,
@@ -23,12 +35,15 @@
     "endLockSeconds": 0.12,
     "directionFallbackWindowSeconds": 0.5
   },
-
   "damage": {
     "sameSourceIntervalSeconds": 0.25,
-    "order": ["invulnerable", "shield", "hp", "death"]
+    "order": [
+      "invulnerable",
+      "shield",
+      "hp",
+      "death"
+    ]
   },
-
   "combo": {
     "windowSeconds": 4.0,
     "killsPerStep": 10,
@@ -38,20 +53,17 @@
     "hpDamageMultiplierPenalty": 0.2,
     "resetsLayersOnHpDamage": false
   },
-
   "score": {
     "normalEnemy": 100,
     "eliteEnemy": 800,
     "boss": 5000,
     "rounding": "floor"
   },
-
   "objective": {
-    "maxCombatSeconds": 190,
+    "hardDefeatSeconds": 190,
     "bossEntrySecond": 150,
     "bossEnrageSecond": 180
   },
-
   "breach": {
     "warningY": 920,
     "removeY": 1140,
@@ -59,7 +71,6 @@
     "eliteHpDamage": 15,
     "grantsRewards": false
   },
-
   "assets": {
     "bodyAssetId": "GFX-PLAYER-BASE",
     "dashTrailAssetId": "GFX-PLAYER-DASH-TRAIL",
