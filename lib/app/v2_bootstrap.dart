@@ -62,6 +62,27 @@ import '../game/infrastructure/haptics_director.dart';
 /// 内容根目录（构建复制品）。
 const String kConfigRoot = 'assets/config/v2';
 
+/// 解析 `weapons.json.mainWeaponStyles` 为 `styleId → WeaponStyleSpec`。
+///
+/// 抽出成函数是为了让 `buildRuntime` 保持可读；解析失败（缺 styleId）
+/// 的条目**直接跳过**并在内容校验阶段已被拒绝，这里不重复报错。
+Map<String, WeaponStyleSpec> _parseMainWeaponStyles(
+  Map<String, Object?> weapons,
+) {
+  final out = <String, WeaponStyleSpec>{};
+  for (final raw in (weapons['mainWeaponStyles'] as List? ??
+      const <Object?>[])) {
+    if (raw is! Map) {
+      continue;
+    }
+    final spec = WeaponStyleSpec.fromConfig(raw.cast<String, Object?>());
+    if (spec != null) {
+      out[spec.styleId] = spec;
+    }
+  }
+  return out;
+}
+
 /// **v2.1 唯一版本入口**（蓝图 §2.1）。
 ///
 /// ⚠️ **全项目只允许此处出现内容版本字面量**（门禁："代码中没有第二个
@@ -221,16 +242,7 @@ class V2Bootstrap {
       enemySystem: EnemySystem(breachWarningY: 920, breachRemoveY: 1140),
       pulse: PulseWeapon(),
       // **v2.1**：主弹道形态规格，来自 weapons.json.mainWeaponStyles。
-      mainWeaponStyles: <String, WeaponStyleSpec>{
-        for (final raw in (catalog.weapons['mainWeaponStyles'] as List? ??
-                const <Object?>[]))
-          if (raw is Map)
-            if (WeaponStyleSpec.fromConfig(
-                  raw.cast<String, Object?>(),
-                )
-                case final spec?)
-              spec.styleId: spec,
-      },
+      mainWeaponStyles: _parseMainWeaponStyles(catalog.weapons),
       breachNormalHpDamage: (breach['normalHpDamage'] as num?)?.toInt() ?? 8,
       breachEliteHpDamage: (breach['eliteHpDamage'] as num?)?.toInt() ?? 15,
       upgradeSystem: buildUpgradeSystem(catalog),

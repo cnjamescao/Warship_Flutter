@@ -345,8 +345,7 @@ class PulseWeapon {
 
   double get effectiveCadence => baseCadence * cadenceMultiplier;
 
-  /// 形态生效后的**伤害倍率**（无形态时为 1，保证 v2.0 等价）。
-  double get _styleDamageMultiplier => activeStyle?.damageMultiplier ?? 1;
+  /// 形态倍率（无形态时为 1，保证 v2.0 等价）。
   double get _styleSpeedMultiplier => activeStyle?.speedMultiplier ?? 1;
   double get _styleRadiusMultiplier => activeStyle?.radiusMultiplier ?? 1;
   int get effectiveDamage => baseDamage + bonusDamage;
