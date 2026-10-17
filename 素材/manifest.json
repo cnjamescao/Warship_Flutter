@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "contentVersion": "2.0.6-material-repair",
+  "contentVersion": "2.1.0-neon-flow",
   "assets": [
     {
       "assetId": "GFX-PLAYER-BASE",
@@ -15621,6 +15621,1450 @@
       "createdAt": "2026-10-14T00:00:00+08:00",
       "contentVersion": "2.0.6-material-repair",
       "status": "release_ready"
+    },
+    {
+      "assetId": "GFX-V21-PLAYER-SHIELD-HIT",
+      "category": "graphic",
+      "sourceFile": "图形/动效序列/GFX-V21-PLAYER-SHIELD-HIT-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/GFX-V21-PLAYER-SHIELD-HIT-SHEET.png"
+      ],
+      "sha256": "313eae4956e3617c535e90f050f7c14669156f650c5e3d8fc8698c7751e17c6c",
+      "runtimeSha256": [
+        "313eae4956e3617c535e90f050f7c14669156f650c5e3d8fc8698c7751e17c6c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/GFX-V21-PLAYER-SHIELD-HIT-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            3
+          ],
+          "frameCount": 4,
+          "fps": 14.9,
+          "blendMode": "screen",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            [
+              0,
+              0,
+              543,
+              724
+            ],
+            [
+              543,
+              0,
+              543,
+              724
+            ],
+            [
+              1086,
+              0,
+              543,
+              724
+            ],
+            [
+              1629,
+              0,
+              543,
+              724
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-PLAYER-HP-HIT",
+      "category": "graphic",
+      "sourceFile": "图形/动效序列/GFX-V21-PLAYER-HP-HIT-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/GFX-V21-PLAYER-HP-HIT-SHEET.png"
+      ],
+      "sha256": "29572fc02b46c08c515a70a2a7244518fa63f3b8a48b8310b0fbcedac68b6f9f",
+      "runtimeSha256": [
+        "29572fc02b46c08c515a70a2a7244518fa63f3b8a48b8310b0fbcedac68b6f9f"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/GFX-V21-PLAYER-HP-HIT-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            2
+          ],
+          "frameCount": 3,
+          "fps": 9.1,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            [
+              0,
+              0,
+              724,
+              724
+            ],
+            [
+              724,
+              0,
+              724,
+              724
+            ],
+            [
+              1448,
+              0,
+              724,
+              724
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-PLAYER-LOW",
+      "category": "graphic",
+      "sourceFile": "图形/动效序列/GFX-V21-PLAYER-LOW-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/GFX-V21-PLAYER-LOW-SHEET.png"
+      ],
+      "sha256": "fd1cce18cc97e47fd50450fa0d9287d8c567492056e93846af7afa3f648cf608",
+      "runtimeSha256": [
+        "fd1cce18cc97e47fd50450fa0d9287d8c567492056e93846af7afa3f648cf608"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/GFX-V21-PLAYER-LOW-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            2
+          ],
+          "frameCount": 3,
+          "fps": 3.3,
+          "blendMode": "screen",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            [
+              0,
+              0,
+              724,
+              724
+            ],
+            [
+              724,
+              0,
+              724,
+              724
+            ],
+            [
+              1448,
+              0,
+              724,
+              724
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-PLAYER-CRITICAL",
+      "category": "graphic",
+      "sourceFile": "图形/动效序列/GFX-V21-PLAYER-CRITICAL-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/GFX-V21-PLAYER-CRITICAL-SHEET.png"
+      ],
+      "sha256": "e38bbab4e8e8ee067acab5490a1d8c06d9e613ca655804182516a04bcf489167",
+      "runtimeSha256": [
+        "e38bbab4e8e8ee067acab5490a1d8c06d9e613ca655804182516a04bcf489167"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/GFX-V21-PLAYER-CRITICAL-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            2
+          ],
+          "frameCount": 3,
+          "fps": 5.0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            [
+              0,
+              0,
+              724,
+              724
+            ],
+            [
+              724,
+              0,
+              724,
+              724
+            ],
+            [
+              1448,
+              0,
+              724,
+              724
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-ENEMY-DESTROY",
+      "category": "graphic",
+      "sourceFile": "图形/动效序列/GFX-V21-ENEMY-DESTROY-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/GFX-V21-ENEMY-DESTROY-SHEET.png"
+      ],
+      "sha256": "d3bd613c39b150894b7c44d8fc0a0bfe4d8b15785874ef4092b6f4128a914580",
+      "runtimeSha256": [
+        "d3bd613c39b150894b7c44d8fc0a0bfe4d8b15785874ef4092b6f4128a914580"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/GFX-V21-ENEMY-DESTROY-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            2
+          ],
+          "frameCount": 3,
+          "fps": 7.1,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            [
+              0,
+              0,
+              724,
+              724
+            ],
+            [
+              724,
+              0,
+              724,
+              724
+            ],
+            [
+              1448,
+              0,
+              724,
+              724
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-PRISM",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+      ],
+      "sha256": "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d",
+      "runtimeSha256": [
+        "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            0,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-ARC",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+      ],
+      "sha256": "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d",
+      "runtimeSha256": [
+        "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            434,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-PLASMA",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+      ],
+      "sha256": "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d",
+      "runtimeSha256": [
+        "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            868,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-NEEDLE",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+      ],
+      "sha256": "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d",
+      "runtimeSha256": [
+        "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1302,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-MISSILE",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+      ],
+      "sha256": "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d",
+      "runtimeSha256": [
+        "524c267d2078cb60a1d8f670842c8dc39c264cbd7efb19ab314dbb41c410999d"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-STYLES-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1736,
+            0,
+            436,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-PRISM-IMPACT",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+      ],
+      "sha256": "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c",
+      "runtimeSha256": [
+        "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            0,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-ARC-IMPACT",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+      ],
+      "sha256": "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c",
+      "runtimeSha256": [
+        "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            434,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-PLASMA-IMPACT",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+      ],
+      "sha256": "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c",
+      "runtimeSha256": [
+        "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            868,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-NEEDLE-IMPACT",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+      ],
+      "sha256": "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c",
+      "runtimeSha256": [
+        "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1302,
+            0,
+            434,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "GFX-V21-WPN-MISSILE-IMPACT",
+      "category": "graphic",
+      "sourceFile": "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png",
+      "runtimeFiles": [
+        "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+      ],
+      "sha256": "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c",
+      "runtimeSha256": [
+        "6ffe48ae7ddf174ca6f94cdb4689d7ca4a9d2debeef3b1ee3d07618aa1d15d0c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/武器形态/GFX-V21-WEAPON-IMPACTS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "additive",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1736,
+            0,
+            436,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-UPGRADE-NOTICE",
+      "category": "ui",
+      "sourceFile": "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+      ],
+      "sha256": "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c",
+      "runtimeSha256": [
+        "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            0,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-SECTOR-CLEAR-NOTICE",
+      "category": "ui",
+      "sourceFile": "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+      ],
+      "sha256": "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c",
+      "runtimeSha256": [
+        "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            724,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-NOTICE-SPARK",
+      "category": "ui",
+      "sourceFile": "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png",
+      "runtimeFiles": [
+        "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+      ],
+      "sha256": "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c",
+      "runtimeSha256": [
+        "dc9ec452d64f15ba25028348709e6173973e8b71adddd130ae867ed13c938a9c"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/动效序列/UI-V21-NONBLOCKING-NOTICE-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "screen",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1448,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RESULT-MEDAL-GOLD",
+      "category": "ui",
+      "sourceFile": "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png",
+      "runtimeFiles": [
+        "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+      ],
+      "sha256": "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99",
+      "runtimeSha256": [
+        "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            0,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RESULT-MEDAL-SILVER",
+      "category": "ui",
+      "sourceFile": "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png",
+      "runtimeFiles": [
+        "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+      ],
+      "sha256": "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99",
+      "runtimeSha256": [
+        "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            724,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RESULT-MEDAL-BRONZE",
+      "category": "ui",
+      "sourceFile": "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png",
+      "runtimeFiles": [
+        "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+      ],
+      "sha256": "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99",
+      "runtimeSha256": [
+        "374ae8474efd27872d49b690bd02c25cafb6b39de72f0d9e41dcb1690cbabb99"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/奖章/UI-V21-RESULT-MEDALS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1448,
+            0,
+            724,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "SFX-V21-SHIELD-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-SHIELD-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-SHIELD-HIT.wav"
+      ],
+      "sha256": "7aaeb9cb959f27c8685a764255fe6246ded465e62f49e1670118383e6e8df6e6",
+      "runtimeSha256": [
+        "7aaeb9cb959f27c8685a764255fe6246ded465e62f49e1670118383e6e8df6e6"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-SHIELD-HIT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-HP-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-HP-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-HP-HIT.wav"
+      ],
+      "sha256": "71ae115ab28c19cf6bd82b8c5e03bfe6819af2a8cdfd42d0a1703d247c745cdb",
+      "runtimeSha256": [
+        "71ae115ab28c19cf6bd82b8c5e03bfe6819af2a8cdfd42d0a1703d247c745cdb"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-HP-HIT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-UPGRADE-GAIN",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-UPGRADE-GAIN.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-UPGRADE-GAIN.wav"
+      ],
+      "sha256": "71f487ee2f52ba98f637d0f374a811145816acac8df397ca8da05df1bec703b1",
+      "runtimeSha256": [
+        "71f487ee2f52ba98f637d0f374a811145816acac8df397ca8da05df1bec703b1"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-UPGRADE-GAIN",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-SECTOR-CLEAR",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-SECTOR-CLEAR.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-SECTOR-CLEAR.wav"
+      ],
+      "sha256": "2bb05ec8fd8901dff74067a2cd0267e1927b98b68f7e6052ebb5dd2a210d66ff",
+      "runtimeSha256": [
+        "2bb05ec8fd8901dff74067a2cd0267e1927b98b68f7e6052ebb5dd2a210d66ff"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-SECTOR-CLEAR",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-MEDAL-GOLD",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-MEDAL-GOLD.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-MEDAL-GOLD.wav"
+      ],
+      "sha256": "1b06b24ffe3012d598e7143ba6d25f7bccd1a3fa0cd11ed3c7d53daddcf87fc1",
+      "runtimeSha256": [
+        "1b06b24ffe3012d598e7143ba6d25f7bccd1a3fa0cd11ed3c7d53daddcf87fc1"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-MEDAL-GOLD",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-MEDAL-SILVER",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-MEDAL-SILVER.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-MEDAL-SILVER.wav"
+      ],
+      "sha256": "376c4ca0439bfc1b9e9688c015dfc40e78b59c43764c35905e29007c1e718be5",
+      "runtimeSha256": [
+        "376c4ca0439bfc1b9e9688c015dfc40e78b59c43764c35905e29007c1e718be5"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-MEDAL-SILVER",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-MEDAL-BRONZE",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-MEDAL-BRONZE.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-MEDAL-BRONZE.wav"
+      ],
+      "sha256": "726f2e4f440ab47ddc09bc1679796687b07d7039d292d5b9fd7db204212853da",
+      "runtimeSha256": [
+        "726f2e4f440ab47ddc09bc1679796687b07d7039d292d5b9fd7db204212853da"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-MEDAL-BRONZE",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-WPN-PRISM-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-WPN-PRISM-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-WPN-PRISM-IMPACT.wav"
+      ],
+      "sha256": "df4c4328b461e9089ebef9535f405890c5b13946af9a32f50e69b18a629018d6",
+      "runtimeSha256": [
+        "df4c4328b461e9089ebef9535f405890c5b13946af9a32f50e69b18a629018d6"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-WPN-PRISM-IMPACT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-WPN-ARC-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-WPN-ARC-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-WPN-ARC-IMPACT.wav"
+      ],
+      "sha256": "6f785659d7a427eb3516c0421c5cdf1c93600ffcd64e3865f0a2b040e9a03185",
+      "runtimeSha256": [
+        "6f785659d7a427eb3516c0421c5cdf1c93600ffcd64e3865f0a2b040e9a03185"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-WPN-ARC-IMPACT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-WPN-PLASMA-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-WPN-PLASMA-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-WPN-PLASMA-IMPACT.wav"
+      ],
+      "sha256": "561d79fe5d43249df3537c2cf499416db07fa721fb95a1b1284cf3d4b0f096ea",
+      "runtimeSha256": [
+        "561d79fe5d43249df3537c2cf499416db07fa721fb95a1b1284cf3d4b0f096ea"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-WPN-PLASMA-IMPACT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-WPN-NEEDLE-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-WPN-NEEDLE-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-WPN-NEEDLE-IMPACT.wav"
+      ],
+      "sha256": "231e94eee278ae0f69f9d607399a9178ad8dab79ccc9c0c05fb32a618183a7e2",
+      "runtimeSha256": [
+        "231e94eee278ae0f69f9d607399a9178ad8dab79ccc9c0c05fb32a618183a7e2"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-WPN-NEEDLE-IMPACT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
+    },
+    {
+      "assetId": "SFX-V21-WPN-MISSILE-IMPACT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-WPN-MISSILE-IMPACT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-WPN-MISSILE-IMPACT.wav"
+      ],
+      "sha256": "d5c17b43f838b5d0393b0c842730dceb6a3a0a0c042373bd8990038a85c6fb91",
+      "runtimeSha256": [
+        "d5c17b43f838b5d0393b0c842730dceb6a3a0a0c042373bd8990038a85c6fb91"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "cueId": "SFX-V21-WPN-MISSILE-IMPACT",
+      "bus": "sfx",
+      "loadGroup": "lazy",
+      "states": [],
+      "triggerEvents": [],
+      "eventBindings": [],
+      "renderStates": {}
     }
   ]
 }

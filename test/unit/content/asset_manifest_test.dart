@@ -64,7 +64,7 @@ void main() {
         }
       }
 
-      expect(visual, 374, reason: '图形/UI 状态文件数量应与素材包一致');
+      expect(visual, 395, reason: '图形/UI 状态文件数量应与素材包一致');
       expect(audio, 67, reason: '物理音频数量应与素材包一致');
     });
 
@@ -116,8 +116,8 @@ void main() {
       manifest = result.requireValue;
     });
 
-    test('共 199 条记录，分五大类', () {
-      expect(manifest.length, 199);
+    test('共 232 条记录，分五大类', () {
+      expect(manifest.length, 232);
 
       int countOf(AssetCategory category) =>
           manifest.records.where((r) => r.category == category).length;

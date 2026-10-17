@@ -29,6 +29,15 @@ import 'dart:convert';
 import 'dart:io';
 
 const String kSourceManifest = '素材/manifest.json';
+
+/// **v2.1 交付源根目录**（蓝图 §2.1：「根目录 `素材/v2.1` 是**交付源**，
+/// 不是运行时目录；构建脚本必须复制/打包审核通过的文件到 manifest 路径」）。
+///
+/// 解析顺序：**先在 `素材/v2.1/` 找，再回落到 `素材/`** ——
+/// v2.1 保留了全部 v2.0 素材（199 条）并新增 33 条，
+/// 因此两者都要能解析，且**新文件以 `素材/v2.1/` 为准**（防止误用旧副本）。
+const String kV21SourceRoot = '素材/v2.1';
+const String kLegacySourceRoot = '素材';
 const String kTargetManifest = 'assets/config/v2/manifest.json';
 const String kImageDir = 'assets/images/v2';
 const String kAudioDir = 'assets/audio/v2';
@@ -52,7 +61,24 @@ void main(List<String> args) {
   final contentVersion = decoded['contentVersion'];
   stdout.writeln('内容版本：$contentVersion');
 
-  // basename 唯一性是扁平化的前提 —— 不满足就必须失败，不能静默覆盖。
+  // **basename 唯一性（v2.1 放宽）**。
+  //
+  // 背景：v2.0 是"**每帧一个 PNG**"，一个 basename 只属于一个 Asset，
+  // 因此"basename 全局唯一"是扁平化复制的前提。
+  //
+  // v2.1 改为"**整张 sheet + 每个子图的 frameRect**"模型
+  // （素材规范 §2/§4.2），**多组 Asset ID 共用同一张 sheet** 是其固有形态：
+  // 5 个武器形态共用 `GFX-V21-WEAPON-STYLES-SHEET.png`，
+  // 5 个命中共用 `…-IMPACTS-SHEET.png`，3 个通知、3 个奖章同理。
+  //
+  // 若仍强制"basename 全局唯一"，只能按 ID 复制 N 份 ——
+  // 实测会额外膨胀 **约 70 MB（12×）**，且同一张图可能在内存中被加载多次。
+  //
+  // 因此判据放宽为：**同一个 basename 只允许来自同一个源文件**
+  // （即真正共享同一张图）；**不同源文件撞名仍然必须失败**，
+  // 那条"不能静默覆盖"的保护完整保留。
+  //
+  // 值 = 该 basename 首次出现时的**源文件相对路径**。
   final seen = <String, String>{};
   final assets = (decoded['assets'] as List?) ?? const <Object?>[];
 
@@ -86,16 +112,32 @@ void main(List<String> args) {
         continue;
       }
       final basename = entry.split('/').last;
-      final owner = seen[basename];
-      if (owner != null) {
-        failures.add('basename 冲突：$basename 同时属于 $owner 与 ${raw['assetId']}');
+      final ownerSource = seen[basename];
+      if (ownerSource != null) {
+        if (ownerSource == entry) {
+          // **同一张 sheet 被多个 Asset ID 共享** —— v2.1 的正常形态。
+          // 只复制一次（首次已复制），这里把它登记进本条的运行时文件即可。
+          rewritten.add('$targetDir/$basename');
+          continue;
+        }
+        // 不同源文件撞名 —— 这才是真正的冲突，仍然必须失败。
+        failures.add(
+          'basename 冲突：$basename 同时来自 $ownerSource 与 $entry'
+          '（${raw['assetId']}）',
+        );
         continue;
       }
-      seen[basename] = '${raw['assetId']}';
+      seen[basename] = entry;
 
-      final src = File('${root.path}/素材/$entry');
+      // 多根解析：v2.1 交付源优先，其次 v2.0 历史源。
+      final v21 = File('${root.path}/$kV21SourceRoot/$entry');
+      final legacy = File('${root.path}/$kLegacySourceRoot/$entry');
+      final src = v21.existsSync() ? v21 : legacy;
       if (!src.existsSync()) {
-        failures.add('运行时文件缺失：$entry（${raw['assetId']}）');
+        failures.add(
+          '运行时文件缺失：$entry（${raw['assetId']}）—— '
+          '已查找 $kV21SourceRoot/ 与 $kLegacySourceRoot/',
+        );
         continue;
       }
       final targetPath = '$targetDir/$basename';

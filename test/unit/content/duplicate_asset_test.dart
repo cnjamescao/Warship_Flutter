@@ -24,8 +24,20 @@ void main() {
     manifest = (await loadV2CatalogForTests()).manifest;
   });
 
-  test('T-ASSET-03 不同 Asset ID 的运行时图形文件不得互相同一', () {
-    // path -> 持有它的 assetId 集合
+  test('T-ASSET-03 不同 Asset ID 的运行时图形内容不得互相同一', () {
+    // 判重键 -> 持有它的 assetId 集合
+    //
+    // **v2.1 细化**：判重键由"仅文件内容"改为"**文件内容 + frameRect**"。
+    //
+    // 理由：v2.1 的素材是"**整张 sheet + 每个子图的 frameRect**"模型
+    // （素材规范 §2/§4.2），**多组 Asset ID 共用同一张 sheet** 是其固有形态
+    // （5 个武器形态、5 条命中、3 个通知、3 档奖章）。
+    // 它们**渲染出来并不相同**（各自裁切不同格子），因此**不构成 F-29 缺陷** ——
+    // F-29 的症状是"四种敌机**长得一样**"，即**渲染结果相同**。
+    //
+    // 判重键加上 frameRect 后：
+    //   * 同文件 + **同** frameRect  → 仍判为重复 ✓ **F-29 的保护完整保留**；
+    //   * 同文件 + **不同** frameRect → 不再误报 ✓ 支持 v2.1 sheet 模型。
     final byContent = <String, Set<String>>{};
 
     for (final record in manifest.records) {
@@ -42,8 +54,13 @@ void main() {
         // 指纹实际是坏的 —— 它把毫不相干的资源（例如首页 Logo 与敌机）
         // 归成同一组。**差一点又报出一个假发现。**
         final bytes = file.readAsBytesSync();
+        // frameRect 参与判重键（v2.1）：同一张 sheet 的不同格子是**不同画面**。
+        final rects = <String>[
+          for (final state in record.renderStates.values)
+            for (final r in state.frameRects) r.join(','),
+        ].join('|');
         final key =
-            '${bytes.length}:${Object.hashAll(bytes)}';
+            '${bytes.length}:${Object.hashAll(bytes)}#$rects';
         byContent.putIfAbsent(key, () => <String>{}).add(record.assetId.value);
       }
     }
