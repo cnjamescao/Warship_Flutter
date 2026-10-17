@@ -80,12 +80,12 @@ void main() {
   group('T-UP-00 首抽时间门', () {
     test('经验在 15 秒前达到 20：14.99 秒不打开，15.00 秒打开', () {
       expect(
-        system.isDraftDue(xp: 20, draftCount: 0, combatSeconds: 14.99),
+        system.isAutoGrantDue(xp: 20, grantCount: 0, combatSeconds: 14.99),
         isFalse,
         reason: '第 1 次草案不得早于 15.0 秒',
       );
       expect(
-        system.isDraftDue(xp: 20, draftCount: 0, combatSeconds: 15.00),
+        system.isAutoGrantDue(xp: 20, grantCount: 0, combatSeconds: 15.00),
         isTrue,
       );
     });
@@ -93,37 +93,37 @@ void main() {
     test('15 秒前积累的经验照常保留（到达 15 秒时立即打开）', () {
       // 14 秒时积攒了 30 点经验，但门未开。
       expect(
-        system.isDraftDue(xp: 30, draftCount: 0, combatSeconds: 14.0),
+        system.isAutoGrantDue(xp: 30, grantCount: 0, combatSeconds: 14.0),
         isFalse,
       );
       // 15 秒时不需要重新积累，直接打开。
       expect(
-        system.isDraftDue(xp: 30, draftCount: 0, combatSeconds: 15.0),
+        system.isAutoGrantDue(xp: 30, grantCount: 0, combatSeconds: 15.0),
         isTrue,
       );
     });
 
     test('未达阈值时不打开，达到后才打开', () {
       expect(
-        system.isDraftDue(xp: 19, draftCount: 1, combatSeconds: 60),
+        system.isAutoGrantDue(xp: 19, grantCount: 1, combatSeconds: 60),
         isFalse,
       );
       expect(
-        system.isDraftDue(xp: 55, draftCount: 1, combatSeconds: 60),
+        system.isAutoGrantDue(xp: 55, grantCount: 1, combatSeconds: 60),
         isTrue,
       );
     });
 
     test('第 2–6 次没有额外时间门', () {
       expect(
-        system.isDraftDue(xp: 55, draftCount: 1, combatSeconds: 0.1),
+        system.isAutoGrantDue(xp: 55, grantCount: 1, combatSeconds: 0.1),
         isTrue,
       );
     });
 
     test('达到 6 次后经验仍计分但不再触发草案', () {
       expect(
-        system.isDraftDue(xp: 9999, draftCount: 6, combatSeconds: 200),
+        system.isAutoGrantDue(xp: 9999, grantCount: 6, combatSeconds: 200),
         isFalse,
       );
     });
@@ -194,7 +194,7 @@ void main() {
         system.applyCard(state, offer.candidates.first);
       }
 
-      expect(state.draftCount, 6);
+      expect(state.grantCount, 6);
     });
   });
 
@@ -241,7 +241,7 @@ void main() {
 
     test('连续两次无伤害卡后，第三次强制加入伤害卡', () {
       final state = newState(system);
-      state.consecutiveDraftsWithoutDamage = 2;
+      state.consecutiveGrantsWithoutDamage = 2;
 
       final offer = system.generateDraft(
         state: state,
@@ -258,7 +258,7 @@ void main() {
 
     test('连续两次无伤害卡的计数会随草案结果更新', () {
       final state = newState(system);
-      state.consecutiveDraftsWithoutDamage = 2;
+      state.consecutiveGrantsWithoutDamage = 2;
 
       final offer = system.generateDraft(
         state: state,
@@ -267,7 +267,7 @@ void main() {
       );
       final hasDamage = offer!.candidates.any(system.damageCardIds.contains);
 
-      expect(state.consecutiveDraftsWithoutDamage, hasDamage ? 0 : 3);
+      expect(state.consecutiveGrantsWithoutDamage, hasDamage ? 0 : 3);
     });
   });
 

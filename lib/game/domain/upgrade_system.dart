@@ -145,17 +145,29 @@ class UpgradeState {
   /// 卡 ID → 已取得等级。
   final Map<String, int> levels = <String, int>{};
 
-  /// 已完成的草案次数。
-  int draftCount = 0;
+  /// **已完成的自动强化授予次数**（v2.1 / 蓝图 §3.2）。
+  ///
+  /// 原为 `draftCount`（"草案次数"）—— v2.1 起标准 XP 路径**不再打开三选一
+  /// 草案**，而是达标即**单张**授予（冻结表 §2.2），故改名以反映真实语义。
+  /// 它同时是下一条强化的 **`grantOrdinal`**（从 0 开始），
+  /// 且**必须作为快照/回放状态保存**（冻结表 §2.2 明文）。
+  int grantCount = 0;
 
-  /// 连续未出现伤害卡的草案次数。
-  int consecutiveDraftsWithoutDamage = 0;
+  /// 连续**没拿到伤害类卡**的授予次数（用于 §2.2 的"伤害干旱"优先）。
+  int consecutiveGrantsWithoutDamage = 0;
 
-  /// 本局已选择的升级卡次数（等于 `draftCount`；产品基线 §6 的"升级数"
+  /// 当前**主弹道形态**的 style ID（v2.1 / 蓝图 §3.2）。
+  ///
+  /// `null` = 仍用 v2.0 的基础脉冲炮行为（**字节级等价**）。
+  /// 五张 `UP-WSTYLE-*` 卡仅能拥有一张，故这里是**单值**而非集合。
+  /// 必须随 `reset()` 清零，并进入回放/调试输出。
+  String? mainWeaponStyleId;
+
+  /// 本局已选择的升级卡次数（等于 `grantCount`；产品基线 §6 的"升级数"
   /// 定义为此值，**不是** HUD 的 Lv 数字）。
-  int get upgradeCount => draftCount;
+  int get upgradeCount => grantCount;
 
-  bool get isMaxed => draftCount >= maxDrafts;
+  bool get isMaxed => grantCount >= maxDrafts;
 
   int levelOf(String cardId) => levels[cardId] ?? 0;
 
@@ -170,8 +182,9 @@ class UpgradeState {
   /// 已拥有的卡的系列集合（需要卡片表才能解析，由系统注入）。
   void reset() {
     levels.clear();
-    draftCount = 0;
-    consecutiveDraftsWithoutDamage = 0;
+    grantCount = 0;
+    consecutiveGrantsWithoutDamage = 0;
+    mainWeaponStyleId = null;
   }
 }
 
@@ -238,19 +251,19 @@ class UpgradeSystem {
   /// * 已达到最大草案次数 → 不再打开（经验仍可计分）；
   /// * 未达该次阈值 → 不打开；
   /// * 第 1 次且未到 15.0 秒 → 不打开，但**经验保留**。
-  bool isDraftDue({
+  bool isAutoGrantDue({
     required int xp,
-    required int draftCount,
+    required int grantCount,
     required double combatSeconds,
   }) {
-    if (draftCount >= maxDrafts) {
+    if (grantCount >= maxDrafts) {
       return false;
     }
-    final threshold = thresholdFor(draftCount);
+    final threshold = thresholdFor(grantCount);
     if (threshold == null || xp < threshold) {
       return false;
     }
-    if (draftCount == 0 && combatSeconds < firstDraftEarliestSecond) {
+    if (grantCount == 0 && combatSeconds < firstDraftEarliestSecond) {
       return false;
     }
     return true;
@@ -350,11 +363,11 @@ class UpgradeSystem {
     }
 
     // ---- 保证卡 ----
-    if (state.draftCount == 0) {
+    if (state.grantCount == 0) {
       for (final id in guaranteedFirstDraft) {
         tryGuarantee(id);
       }
-    } else if (state.draftCount == 1) {
+    } else if (state.grantCount == 1) {
       // 「或」关系：取第一个可用的即可，不把两张都塞进去。
       for (final id in guaranteedSecondDraftAnyOf) {
         if (available.contains(id) && !picked.contains(id)) {
@@ -378,7 +391,7 @@ class UpgradeSystem {
     }
 
     // 连续两次没有伤害卡 → 强制加入一张伤害卡。
-    if (state.consecutiveDraftsWithoutDamage >= 2) {
+    if (state.consecutiveGrantsWithoutDamage >= 2) {
       final damageCard = available.firstWhere(
         (id) => damageCardIds.contains(id) && !picked.contains(id),
         orElse: () => '',
@@ -396,18 +409,18 @@ class UpgradeSystem {
       picked.add(chosen);
     }
 
-    state.draftCount += 1;
+    state.grantCount += 1;
 
     // 记录"本次是否含伤害卡"，供下一次的干旱规则使用。
     final hasDamage = picked.any(damageCardIds.contains);
-    state.consecutiveDraftsWithoutDamage = hasDamage
+    state.consecutiveGrantsWithoutDamage = hasDamage
         ? 0
-        : state.consecutiveDraftsWithoutDamage + 1;
+        : state.consecutiveGrantsWithoutDamage + 1;
 
     return DraftOffer(
       candidates: List<String>.unmodifiable(picked),
       guaranteed: List<String>.unmodifiable(guaranteed),
-      draftIndex: state.draftCount - 1,
+      draftIndex: state.grantCount - 1,
     );
   }
 

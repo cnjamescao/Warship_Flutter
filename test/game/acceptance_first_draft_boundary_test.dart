@@ -113,7 +113,7 @@ void main() {
       reason: 'T-UP-00：第 1 次草案不得早于 15.0 秒；'
           '当前 ${rt.combatSeconds.toStringAsFixed(3)} 秒就打开了',
     );
-    expect(rt.upgradeState.draftCount, 0, reason: '不应已产生草案');
+    expect(rt.upgradeState.grantCount, 0, reason: '不应已产生草案');
   });
 
   test('T-UP-00 第 900 帧（恰好 15.00 秒）打开草案，且只打开一次', () {
@@ -146,7 +146,7 @@ void main() {
       reason: 'T-UP-00：应"只打开一次" —— 草案期内不得重复打开',
     );
     expect(
-      rt.upgradeState.draftCount,
+      rt.upgradeState.grantCount,
       1,
       reason: 'T-UP-00：应"只打开一次"第 1 次草案',
     );

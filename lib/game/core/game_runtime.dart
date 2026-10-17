@@ -338,7 +338,7 @@ class GameRuntime {
   DraftOffer? currentOffer;
 
   /// 已完成的升级次数（产品基线 §6 的"升级数"定义）。
-  int get upgradeCount => upgradeState.draftCount;
+  int get upgradeCount => upgradeState.grantCount;
 
   /// 当前选中的卡等级，供结算页与调试。
   Map<String, int> get selectedUpgrades =>
@@ -1764,15 +1764,15 @@ class GameRuntime {
   /// 经验达到阈值且满足时间门时打开草案。
   ///
   /// 第 1 次草案不得早于有效战斗时间 15.0 秒 —— 15 秒前积累的经验
-  /// 由 `UpgradeSystem.isDraftDue` 保留，不做任何补偿。
+  /// 由 `UpgradeSystem.isAutoGrantDue` 保留，不做任何补偿。
   void _checkDraftDue() {
     final system = upgradeSystem;
     if (system == null) {
       return;
     }
-    if (!system.isDraftDue(
+    if (!system.isAutoGrantDue(
       xp: xp,
-      draftCount: upgradeState.draftCount,
+      grantCount: upgradeState.grantCount,
       combatSeconds: combatSeconds,
     )) {
       return;

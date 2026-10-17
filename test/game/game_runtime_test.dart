@@ -540,7 +540,7 @@ void main() {
 
       // 战斗时间因暂停/相位切换可能不精确，但应已进入草案或已选完。
       expect(
-        rt.upgradeState.draftCount + (rt.currentOffer == null ? 0 : 1),
+        rt.upgradeState.grantCount + (rt.currentOffer == null ? 0 : 1),
         greaterThanOrEqualTo(1),
         reason: '15 秒后应打开草案',
       );
