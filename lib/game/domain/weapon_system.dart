@@ -164,6 +164,88 @@ class TargetingSystem {
 }
 
 /// 一次发射请求（交给上层生成投射物实体）。
+/// **五种主弹道形态的不可变规格**（v2.1 / 蓝图 §3.4、冻结表 §3）。
+///
+/// **无 style 时（`activeStyle == null`）必须与 v2.0 行为字节级等价** ——
+/// 因此所有形态效果只在 style 非空时生效，绝不影响既有武器。
+class WeaponStyleSpec {
+  const WeaponStyleSpec({
+    required this.styleId,
+    required this.cardId,
+    required this.damageMultiplier,
+    required this.speedMultiplier,
+    required this.radiusMultiplier,
+    required this.extraPierce,
+    required this.bounce,
+    required this.homing,
+    required this.projectileAssetId,
+    required this.impactAssetId,
+    required this.impactCueId,
+    required this.projectileWidth,
+    required this.projectileHeight,
+    required this.impactSize,
+    this.impactDamageRadius = 0,
+  });
+
+  final String styleId;
+  final String cardId;
+  final double damageMultiplier;
+  final double speedMultiplier;
+  final double radiusMultiplier;
+
+  /// 命中后**还能再命中**几个不同目标（Prism 1 / Needle 2）。
+  final int extraPierce;
+
+  /// 首次命中后**弹跳**次数（Arc 1）；0 表示不弹跳。
+  final int bounce;
+
+  /// 是否追踪最近合法目标（Missile）。
+  final bool homing;
+
+  final String projectileAssetId;
+  final String impactAssetId;
+  final String impactCueId;
+
+  final double projectileWidth;
+  final double projectileHeight;
+  final double impactSize;
+
+  /// **爆裂伤害半径**（logical px）。
+  ///
+  /// ⚠️ 蓝图 §3.4 要求它**显式配置**且「**绝不从 96px 图片尺寸推断**」。
+  /// 当前 v2.1 文档**未给出该数值**（见 `docs/研发反馈意见.md` 的 **FV21-03**），
+  /// 因此这里默认为 0（= 无范围伤害），**待裁决后由配置补入**。
+  /// **不得**用 `impactSize` 充当半径。
+  final double impactDamageRadius;
+
+  static WeaponStyleSpec? fromConfig(Map<String, Object?> c) {
+    final styleId = c['styleId'];
+    if (styleId is! String || styleId.isEmpty) {
+      return null;
+    }
+    final psz = (c['projectileSize'] as List?) ?? const <Object?>[];
+    final isz = (c['impactSize'] as List?) ?? const <Object?>[];
+    return WeaponStyleSpec(
+      styleId: styleId,
+      cardId: c['cardId'] as String? ?? '',
+      damageMultiplier: (c['damageMultiplier'] as num?)?.toDouble() ?? 1,
+      speedMultiplier: (c['speedMultiplier'] as num?)?.toDouble() ?? 1,
+      radiusMultiplier: (c['radiusMultiplier'] as num?)?.toDouble() ?? 1,
+      extraPierce: (c['extraPierce'] as num?)?.toInt() ?? 0,
+      bounce: (c['bounce'] as num?)?.toInt() ?? 0,
+      homing: c['homing'] == true,
+      projectileAssetId: c['projectileAssetId'] as String? ?? '',
+      impactAssetId: c['impactAssetId'] as String? ?? '',
+      impactCueId: c['impactCueId'] as String? ?? '',
+      projectileWidth: psz.length >= 2 ? (psz[0] as num).toDouble() : 0,
+      projectileHeight: psz.length >= 2 ? (psz[1] as num).toDouble() : 0,
+      impactSize: isz.isNotEmpty ? (isz[0] as num).toDouble() : 0,
+      impactDamageRadius:
+          (c['impactDamageRadius'] as num?)?.toDouble() ?? 0,
+    );
+  }
+}
+
 class FiringRequest {
   const FiringRequest({
     required this.weaponId,
@@ -175,6 +257,14 @@ class FiringRequest {
     this.speed = 0,
     this.radius = 0,
     this.lifetimeSeconds = 0,
+    this.weaponStyleId,
+    this.projectileAssetId,
+    this.impactAssetId,
+    this.impactCueId,
+    this.pierceRemaining = 0,
+    this.bounceRemaining = 0,
+    this.homingTargetId,
+    this.impactDamageRadius = 0,
   });
 
   final String weaponId;
@@ -186,6 +276,33 @@ class FiringRequest {
   final double speed;
   final double radius;
   final double lifetimeSeconds;
+
+  // ---- v2.1 主弹道形态（蓝图 §3.4）----
+  //
+  // 全部为 null/0 时等价于 v2.0 的基础脉冲炮（**字节级等价**）。
+
+  /// 五种形态之一的稳定 ID；旧主炮与副武器为 `null`。
+  final String? weaponStyleId;
+
+  /// 弹体与命中特效的 Asset ID —— **由 Domain 锁定**，
+  /// 表现层**不得**按武器名去 manifest 猜（会命中错的图）。
+  final String? projectileAssetId;
+  final String? impactAssetId;
+
+  /// 命中 cue（**不是**开火 cue —— 冻结表 §3 明文）。
+  final String? impactCueId;
+
+  /// 命中后还能再命中几个**不同**目标（Prism 1 / Needle 2）。
+  final int pierceRemaining;
+
+  /// 首次命中后还能弹跳几次（Arc 1）。
+  final int bounceRemaining;
+
+  /// 追踪锁定的目标（Missile）；null 表示直线飞行。
+  final EntityId? homingTargetId;
+
+  /// 爆裂伤害半径（logical px）；0 表示无范围伤害（见 FV21-03）。
+  final double impactDamageRadius;
 }
 
 /// 脉冲炮的运行时状态与规则（§4.1 + §4.2 的升级效果）。
@@ -197,6 +314,7 @@ class PulseWeapon {
     this.radius = 6,
     this.lifetimeSeconds = 1.2,
     this.range = 980,
+    this.activeStyle,
   });
 
   final int baseDamage;
@@ -219,7 +337,18 @@ class PulseWeapon {
 
   static const double criticalDamageMultiplier = 1.8;
 
+  /// **当前主弹道形态**（v2.1）；`null` = v2.0 基础脉冲炮。
+  ///
+  /// 五张 `UP-WSTYLE-*` 仅能拥有一张，因此这里是**单值**。
+  /// 切换时必须同步更新，不得在多处各存一份。
+  WeaponStyleSpec? activeStyle;
+
   double get effectiveCadence => baseCadence * cadenceMultiplier;
+
+  /// 形态生效后的**伤害倍率**（无形态时为 1，保证 v2.0 等价）。
+  double get _styleDamageMultiplier => activeStyle?.damageMultiplier ?? 1;
+  double get _styleSpeedMultiplier => activeStyle?.speedMultiplier ?? 1;
+  double get _styleRadiusMultiplier => activeStyle?.radiusMultiplier ?? 1;
   int get effectiveDamage => baseDamage + bonusDamage;
 
   /// 推进一个逻辑步并返回本次的发射请求。
@@ -260,9 +389,15 @@ class PulseWeapon {
 
       final isCritical = criticalChance > 0 &&
           (rng.nextInt(10000) < (criticalChance * 10000).round());
-      final damage = isCritical
+      final baseDamage = isCritical
           ? (effectiveDamage * criticalDamageMultiplier).round()
           : effectiveDamage;
+      // **v2.1**：形态倍率在**此处**应用（Domain 锁定已应用的数值），
+      // 表现层不再二次换算，避免"画面与规则各算一遍"漂移。
+      final style = activeStyle;
+      final damage = style == null
+          ? baseDamage
+          : (baseDamage * style.damageMultiplier).round();
 
       requests.add(
         FiringRequest(
@@ -272,9 +407,19 @@ class PulseWeapon {
           damage: damage,
           isCritical: isCritical,
           targetId: target?.id,
-          speed: speed,
-          radius: radius,
+          speed: speed * _styleSpeedMultiplier,
+          radius: radius * _styleRadiusMultiplier,
           lifetimeSeconds: lifetimeSeconds,
+          // 形态信息（无形态时全部为 null/0 ⇒ 与 v2.0 等价）。
+          weaponStyleId: style?.styleId,
+          projectileAssetId: style?.projectileAssetId,
+          impactAssetId: style?.impactAssetId,
+          impactCueId: style?.impactCueId,
+          pierceRemaining: style?.extraPierce ?? 0,
+          bounceRemaining: style?.bounce ?? 0,
+          homingTargetId:
+              (style?.homing ?? false) ? target?.id : null,
+          impactDamageRadius: style?.impactDamageRadius ?? 0,
         ),
       );
     }

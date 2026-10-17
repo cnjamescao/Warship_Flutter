@@ -228,6 +228,7 @@ class GameRuntime {
     required this.director,
     required this.enemySystem,
     required this.pulse,
+    this.mainWeaponStyles = const <String, WeaponStyleSpec>{},
     this.tuning,
     this.breachNormalHpDamage = 8,
     this.breachEliteHpDamage = 15,
@@ -258,6 +259,13 @@ class GameRuntime {
   final DirectorSystem director;
   final EnemySystem enemySystem;
   final PulseWeapon pulse;
+
+  /// **五种主弹道形态的规格表**（v2.1 / 蓝图 §3.4），按 styleId 索引。
+  ///
+  /// 由 `V2Bootstrap` 从 `weapons.json.mainWeaponStyles` 解析后注入。
+  /// 空表 ⇒ 所有形态都不可用，且 `PulseWeapon.activeStyle` 恒为 null
+  /// （与 v2.0 **字节级等价**）。
+  final Map<String, WeaponStyleSpec> mainWeaponStyles;
   final PlayerTuning? tuning;
 
   /// 突破伤害（穿透护盾）：普通 8、精英 15。
@@ -1996,6 +2004,14 @@ class GameRuntime {
   ///
   /// 用 [ModifierStack] 的语义（同源覆盖、先加后乘），因此重复调用幂等。
   void _recomputeModifiers() {
+    // **v2.1**：主弹道形态的**唯一同步点**。
+    // 放在这里是因为它已在"升级变化后"被调用（草案/风险门/自动授予）。
+    // 若分散在多处设置 activeStyle，极易出现"卡片已授予但武器没换"的
+    // 静默不一致（v2.0 的"声明了没接上"类缺陷）。
+    final styleId = upgradeState.mainWeaponStyleId;
+    pulse.activeStyle =
+        styleId == null ? null : mainWeaponStyles[styleId];
+
     final system = upgradeSystem;
     if (system == null) {
       return;

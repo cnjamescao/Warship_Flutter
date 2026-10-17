@@ -220,6 +220,17 @@ class V2Bootstrap {
       bossSystem: BossSystem(),
       enemySystem: EnemySystem(breachWarningY: 920, breachRemoveY: 1140),
       pulse: PulseWeapon(),
+      // **v2.1**：主弹道形态规格，来自 weapons.json.mainWeaponStyles。
+      mainWeaponStyles: <String, WeaponStyleSpec>{
+        for (final raw in (catalog.weapons['mainWeaponStyles'] as List? ??
+                const <Object?>[]))
+          if (raw is Map)
+            if (WeaponStyleSpec.fromConfig(
+                  raw.cast<String, Object?>(),
+                )
+                case final spec?)
+              spec.styleId: spec,
+      },
       breachNormalHpDamage: (breach['normalHpDamage'] as num?)?.toInt() ?? 8,
       breachEliteHpDamage: (breach['eliteHpDamage'] as num?)?.toInt() ?? 15,
       upgradeSystem: buildUpgradeSystem(catalog),
