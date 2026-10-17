@@ -589,6 +589,35 @@ class UpgradeSystem {
     );
   }
 
+  /// **应用一次自动强化授予**（v2.1）—— 状态簿记的**单一事实来源**。
+  ///
+  /// 做四件事，且**只**做这四件事：
+  ///   ① `applyCard` **一次**（升级等级 +1，返回 effects 供折算 modifier）；
+  ///   ② `grantCount += 1`（下一条的 `grantOrdinal`）；
+  ///   ③ 更新"伤害干旱"计数（伤害类卡归零，否则 +1）；
+  ///   ④ 若该卡是主弹道形态，写入 `mainWeaponStyleId`。
+  ///
+  /// **为什么集中在这里**：如果调用方各自写这几步，参数极容易不同步
+  /// （例如忘了 `grantCount` 就会无限发同一序号的强化）。
+  ///
+  /// 返回 effects（可能为空 —— 理论上可达上限后不会再调用）。
+  List<UpgradeEffect> applyGrant(UpgradeState state, AutoUpgradeGrant grant) {
+    final card = _cards[grant.cardId];
+    if (card == null) {
+      throw StateError('applyGrant 收到未知卡 ${grant.cardId}');
+    }
+    final effects = applyCard(state, grant.cardId);
+    state.grantCount += 1;
+    final damage = damageCardIds.contains(grant.cardId) || card.countsAsDamage;
+    state.consecutiveGrantsWithoutDamage = damage
+        ? 0
+        : state.consecutiveGrantsWithoutDamage + 1;
+    if (grant.styleId != null) {
+      state.mainWeaponStyleId = grant.styleId;
+    }
+    return effects;
+  }
+
   /// 五张主弹道形态卡的固定 ID（顺序即等权抽取的候选顺序）。
   static const List<String> _mainStyleCardIds = <String>[
     'UP-WSTYLE-PRISM',

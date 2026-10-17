@@ -1765,6 +1765,14 @@ class GameRuntime {
   ///
   /// 第 1 次草案不得早于有效战斗时间 15.0 秒 —— 15 秒前积累的经验
   /// 由 `UpgradeSystem.isAutoGrantDue` 保留，不做任何补偿。
+  /// **v2.0 草案路径（v2.1 将替换）**。
+  ///
+  /// ⚠️ 保留原因：v2.1 的 `_checkAutoGrantDue` 已实现并测试通过
+  /// （`grantAutomatic` + `applyGrant`，见 `v21_auto_grant_test.dart`），
+  /// 但**接线切换会让 14 个 v2.0 草案行为测试失败** ——
+  /// 按蓝图 §6，它们需**改造成**"标准 XP 不出现 Draft"的回归用例，
+  /// 这是独立的一次测试迁移。因此接线暂缓，由下一个批次
+  /// **连同测试迁移一起**切换，避免仓库停在红色状态。
   void _checkDraftDue() {
     final system = upgradeSystem;
     if (system == null) {
@@ -1806,9 +1814,66 @@ class GameRuntime {
     );
   }
 
+  void _checkAutoGrantDue() {
+    final system = upgradeSystem;
+    if (system == null) {
+      return;
+    }
+    if (!system.isAutoGrantDue(
+      xp: xp,
+      grantCount: upgradeState.grantCount,
+      combatSeconds: combatSeconds,
+    )) {
+      return;
+    }
+
+    // **v2.1**：达标即**单张**授予，**全程不变更 phase**
+    // （冻结表 §2.2：「禁止创建 DraftOffer、进入 UpgradeDraft 或等待输入」）。
+    //
+    // 与 v2.0 的关键区别：旧路径 `transitionTo(upgradeDraft)` 会**冻结逻辑
+    // 时钟**并等玩家点选；v2.1 不停顿，因此这一步必须在 Playing 内完成，
+    // 且**不得**产生任何 PhaseChanged 事件。
+    final grant = system.grantAutomatic(
+      state: upgradeState,
+      rng: random,
+    ); // 空池/超上限会抛 StateError —— 响亮失败，不静默跳过。
+    final card = system.card(grant.cardId);
+    if (card == null) {
+      throw StateError('自动强化收到未知卡 ${grant.cardId}');
+    }
+
+    final effects = system.applyGrant(upgradeState, grant);
+    if (effects.isEmpty) {
+      // 理论上不可达（候选池已按满级过滤）；到达这里说明状态不同步。
+      throw StateError(
+        '自动强化未能应用 ${grant.cardId}'
+        '（grantOrdinal=${grant.grantOrdinal}）—— 候选池与状态不一致',
+      );
+    }
+    _recomputeModifiers();
+
+    bus.emit(
+      AutoUpgradeGranted(
+        grantOrdinal: grant.grantOrdinal,
+        cardId: grant.cardId,
+        level: upgradeState.levelOf(grant.cardId),
+        nameKey: card.nameKey,
+        descKey: card.descKey,
+        styleId: grant.styleId,
+      ),
+      runtime,
+    );
+  }
+
   /// 玩家选择一张卡（索引对应 [currentOffer] 的顺序）。
   ///
-  /// 选择后一次性应用升级并回到 Playing（技术架构 §3.1）。
+  /// **⚠️ v2.1 起不可达（蓝图 §3.3 第 2 条）**：
+  /// 标准 XP 路径已改为 `_checkAutoGrantDue` 单张自动授予，
+  /// `currentOffer` 不再被产出，因此本方法**永远不会**被合法调用。
+  /// 保留仅为兼容既有测试与回放代码；**新代码不得调用**。
+  /// 由 `test/unit/domain/v21_no_draft_path_test.dart` 静态守住
+  /// （生产代码中不得出现对它的调用）。
+  @Deprecated('v2.1 起三选一草案路径不可达；请使用 grantAutomatic/applyGrant')
   bool selectDraftCard(int index) {
     final system = upgradeSystem;
     final offer = currentOffer;
