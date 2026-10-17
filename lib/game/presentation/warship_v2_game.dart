@@ -381,30 +381,39 @@ class WarshipV2Game extends FlameGame {
   }
 
   /// **v2.1 状态动效实例管理**（冻结表 §5.1）。
+  /// **v2.1 状态动效实例管理**（冻结表 §5.1）。
+  ///
+  /// 由本类持有（生成点在本类的 `update`），并通过
+  /// `_battlefield.v21Effects = v21Effects` 让绘制侧拿到**同一个实例**。
+  /// 若两边各持一份，重开一局时必然只清一边（AC-03 残留）。
   final V21EffectRuntime v21Effects = V21EffectRuntime();
 
   /// 把事件映射到 v2.1 状态动效（冻结表 §5.1）。
   ///
-  /// 只处理**玩家中心**的四类 —— 它们都以玩家为中心，位置天然可得。
-  /// 击毁动效需要**已移除实体**的位置，无法从事件取到，故另行处理。
-  void _spawnV21Effect(DomainEvent event) {
+  /// 只处理**玩家中心**的两类 + **击毁**（事件带 position）。
+  /// 全部用 `runtime.combatSeconds`（**逻辑时间**）⇒ 暂停即冻结 ✓
+  void _spawnV21Effect(DomainEvent event, RenderSnapshot snap) {
     final now = runtime.combatSeconds;
-    final player = latestSnapshot.player;
-    if (player == null) {
-      return; // 玩家视图未就绪（首帧/结算）：不生成动效。
-    }
-    final p = Offset(player.position.x, player.position.y);
+    final player = snap.player;
     switch (event) {
       case PlayerDamaged(:final shieldDamage):
-        // 护盾伤害优先显示护盾环（同时有护盾与 HP 伤害时，
-        // 护盾那一下是玩家最需要看到的）。
-        final spec = kV21StateEffects[
-            shieldDamage > 0 ? 'shieldHit' : 'hpHit']!;
+        if (player == null) {
+          return;
+        }
+        // 同时有护盾与 HP 伤害时，**护盾那一下优先**显示
+        // （玩家最需要看到"盾被打掉了"）。
+        final key = shieldDamage > 0 ? 'shieldHit' : 'hpHit';
         v21Effects.spawn(
-          spec: spec, nowSeconds: now, centerX: p.dx, centerY: p.dy,
+          spec: kV21StateEffects[key]!,
+          nowSeconds: now,
+          centerX: player.position.x,
+          centerY: player.position.y,
         );
+
       case PlayerVitalStateChanged(:final hpRatio):
-        // 低血 / 濒危是**状态**：进入时生成一次，离开时移除。
+        if (player == null) {
+          return;
+        }
         final want = hpRatio <= 0.10
             ? 'critical'
             : (hpRatio <= 0.30 ? 'low' : null);
@@ -415,12 +424,36 @@ class WarshipV2Game extends FlameGame {
           v21Effects.removeKind(want == 'low' ? 'critical' : 'low');
           v21Effects.ensurePersistent(
             spec: kV21StateEffects[want]!,
-            nowSeconds: now, centerX: p.dx, centerY: p.dy,
+            nowSeconds: now,
+            centerX: player.position.x,
+            centerY: player.position.y,
           );
         }
+
+      case EnemyDestroyed(:final position):
+        // 尺寸按敌人本轮半径；实体已从运行时移除，故从**快照**里取。
+        final radius = _radiusInSnapshot(snap, event.entityId);
+        v21Effects.spawn(
+          spec: kV21StateEffects['enemyDestroy']!,
+          nowSeconds: now,
+          centerX: position.x,
+          centerY: position.y,
+          size: enemyDestroySize(radius),
+        );
+
       default:
         break;
     }
+  }
+
+  /// 从快照里查实体半径（击毁动效尺寸用）；取不到用 50 兜底。
+  double _radiusInSnapshot(RenderSnapshot snap, EntityId id) {
+    for (final e in snap.enemies) {
+      if (e.id == id) {
+        return e.radius;
+      }
+    }
+    return 50;
   }
 
   @override
@@ -428,6 +461,8 @@ class WarshipV2Game extends FlameGame {
     // 0. 帧时间采样 → 降级决策（产品基线 §2 的 95%/99% 预算）。
     performance.recordFrame(dt);
     _battlefield.degradation = _effectiveDegradation;
+    _battlefield.reduceMotion = reduceMotion;
+    _battlefield.v21Effects = v21Effects;
 
     // 1. 取本帧输入（锁定后交给运行时）。
     final frame = input.consume();
@@ -454,7 +489,16 @@ class WarshipV2Game extends FlameGame {
     // **v2.1 状态动效**（冻结表 §5.1）：玩家侧 4 类。
     // 与 `effects`（旧的粒子/伤害数字）并行，互不替代。
     for (final stamped in runtime.lastFrameEvents) {
-      _spawnV21Effect(stamped.event);
+      _spawnV21Effect(stamped.event, latestSnapshot);
+    }
+    v21Effects.prune(
+      runtime.combatSeconds,
+      reduceMotion: reduceMotion,
+    );
+
+    // **v2.1 状态动效**（冻结表 §5.1）：生成 → 淘汰。
+    for (final stamped in runtime.lastFrameEvents) {
+      _spawnV21Effect(stamped.event, latestSnapshot);
     }
     v21Effects.prune(
       runtime.combatSeconds,
@@ -477,6 +521,12 @@ class WarshipV2Game extends FlameGame {
 
 /// 战场绘制组件。
 class BattlefieldComponent extends Component {
+  /// **v2.1 状态动效**（由 `WarshipV2Game` 注入的同一实例）。
+  V21EffectRuntime? v21Effects;
+
+  /// 是否降低动效（由 `WarshipV2Game` 每帧同步，与 `degradation` 同模式）。
+  bool reduceMotion = false;
+
   BattlefieldComponent({
     required this.runtime,
     required this.assets,
@@ -700,6 +750,10 @@ class BattlefieldComponent extends Component {
     _drawEnemies(canvas);
     _drawProjectiles(canvas);
     _drawPlayer(canvas);
+    // **v2.1 状态动效**：作为**实体之上的叠加层**。
+    // 它们是"状态指示"（护盾环/受击闪光/濒危电弧），必须盖在机体上
+    // 才看得见；粒子与伤害数字（`_drawEffects`）再叠在其上。
+    _drawV21Effects(canvas);
     _drawEffects(canvas);
     _drawPickups(canvas);
   }
@@ -794,6 +848,35 @@ class BattlefieldComponent extends Component {
     for (var y = 0.0; y <= kLogicalHeight; y += 120) {
       canvas.drawLine(Offset(0, y), Offset(kLogicalWidth, y), grid);
     }
+  }
+
+  /// 绘制 v2.1 状态动效的当前帧（冻结表 §5.1）。
+  ///
+  /// 每帧按**逻辑时间**取帧：`reduceMotion` 走另一套取帧规则
+  /// （受击保留峰值帧 160ms / 状态类周期闪现 120ms），
+  /// 但**状态、碰撞、伤害、时钟完全不变**。
+  void _drawV21Effects(Canvas canvas) {
+    final fx = v21Effects;
+    if (fx == null || fx.instances.isEmpty) {
+      return;
+    }
+    final now = runtime.combatSeconds;
+    for (final inst in fx.instances) {
+      final frame = inst.frameAt(now, reduceMotion: reduceMotion);
+      if (frame < 0) {
+        continue; // 已结束 / 闪现间隙
+      }
+      _spritePaint.blendMode = inst.spec.blendMode;
+      _drawSpriteOrNull(
+        canvas,
+        inst.spec.assetId,
+        'default',
+        Offset(inst.centerX, inst.centerY),
+        inst.size / 2,
+        frameIndex: frame,
+      );
+    }
+    _spritePaint.blendMode = BlendMode.srcOver; // 复位，避免污染后续绘制
   }
 
   void _drawPlayer(Canvas canvas) {
