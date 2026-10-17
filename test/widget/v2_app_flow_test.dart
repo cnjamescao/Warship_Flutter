@@ -148,60 +148,8 @@ void main() {
     await unmountV2App(tester);
   });
 
-  testWidgets('开局 15 秒后打开升级草案（三选一）', (tester) async {
-    await mountV2App(tester, catalog);
-    await tapText(tester, '开始战斗');
-    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
-    expect(find.byType(V2RunScreen), findsOneWidget);
 
-    await advanceGameSeconds(tester, 17);
 
-    expect(
-      find.text('选择强化'),
-      findsOneWidget,
-      reason: '首个升级草案在 15.0 秒打开（产品基线 §4.2）',
-    );
-    await unmountV2App(tester);
-  });
-
-  testWidgets('点击卡片选卡后草案关闭、逻辑继续推进', (tester) async {
-    await mountV2App(tester, catalog);
-    await tapText(tester, '开始战斗');
-    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
-    await advanceGameSeconds(tester, 17);
-    expect(find.text('选择强化'), findsOneWidget);
-
-    // 草案提示写明「点击卡片或按 1 / 2 / 3」，因此用键盘选择 ——
-    // 比点击可靠：卡片 InkWell 在树里是第 2..4 个，
-    // `find.byType(InkWell).first` 会误取 HUD 的暂停按钮（曾踩过）。
-    // 树里有 4 个 InkWell：下标 0 是 HUD 的暂停按钮，1..3 才是卡片。
-    // 探针实测确认（早期用 .first 误取暂停按钮）。
-    final cards = find.byType(InkWell);
-    expect(cards, findsNWidgets(4));
-    await tester.tap(cards.at(1));
-    await pumpV2(tester, frames: 30);
-
-    expect(find.text('选择强化'), findsNothing, reason: '选卡后草案应关闭');
-    await unmountV2App(tester);
-  });
-
-  testWidgets('选卡后逻辑解冻：能继续推进到下一次草案', (tester) async {
-    await mountV2App(tester, catalog);
-    await tapText(tester, '开始战斗');
-    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
-    await advanceGameSeconds(tester, 17);
-    await tester.tap(find.byType(InkWell).at(1));
-    await pumpV2(tester, frames: 30);
-    expect(find.text('选择强化'), findsNothing);
-
-    // 解冻后游戏时间应继续走：再推进一段应看到下一次草案
-    // （第二次草案在经验够时打开）。
-    await advanceGameSeconds(tester, 40);
-    // 不断言一定出现（取决于击杀节奏），只断言**逻辑没有卡死**：
-    // 画面仍在（对局界面还在），且没有异常。
-    expect(find.byType(V2RunScreen), findsOneWidget);
-    await unmountV2App(tester);
-  });
 
   testWidgets('玩家阵亡后进入结算界面，并显示出奖牌', (tester) async {
     await mountV2App(tester, catalog);

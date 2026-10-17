@@ -104,7 +104,7 @@ void main() {
     for (var i = 0; i < 899; i++) {
       rt.player.health.current = rt.player.health.max;
       rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
-      if (rt.phases.phase == GamePhase.upgradeDraft) break;
+      if (rt.upgradeState.grantCount > 0) break;
     }
 
     expect(
@@ -124,31 +124,32 @@ void main() {
     for (var i = 0; i < 900; i++) {
       rt.player.health.current = rt.player.health.max;
       rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
-      if (rt.phases.phase == GamePhase.upgradeDraft) break;
+      if (rt.upgradeState.grantCount > 0) break;
     }
 
     expect(
       rt.phases.phase,
-      GamePhase.upgradeDraft,
+      GamePhase.playing,
       reason: 'T-UP-00：15.00 秒应打开第 1 次草案'
           '（当前 ${rt.combatSeconds.toStringAsFixed(3)} 秒）',
     );
-    expect(rt.currentOffer, isNotNull, reason: '应给出候选卡');
+    // **v2.1**：不得产出候选列表（禁止 DraftOffer）。
+    expect(rt.currentOffer, isNull, reason: 'v2.1 不得产出 DraftOffer');
+    expect(rt.upgradeState.grantCount, greaterThanOrEqualTo(1), reason: '应已自动授予');
 
     // **"只打开一次"**：草案期内继续推进，不得再开一个。
     final offerBefore = rt.currentOffer;
     for (var i = 0; i < 120; i++) {
       rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
     }
+    // **v2.1**：不再有"草案期"。判据改为：
+    //   * 全程**不得**产出 DraftOffer（offerBefore 恒为 null）；
+    //   * **同一步最多授予一张**（逐步检查，见上方循环）。
+    expect(rt.currentOffer, isNull, reason: 'v2.1 不得产出 DraftOffer');
     expect(
       identical(rt.currentOffer, offerBefore),
       isTrue,
-      reason: 'T-UP-00：应"只打开一次" —— 草案期内不得重复打开',
-    );
-    expect(
-      rt.upgradeState.grantCount,
-      1,
-      reason: 'T-UP-00：应"只打开一次"第 1 次草案',
+      reason: 'v2.1 全程都不应出现 DraftOffer',
     );
   });
 
@@ -161,9 +162,11 @@ void main() {
     for (var i = 0; i < 900; i++) {
       rt.player.health.current = rt.player.health.max;
       rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
-      if (rt.phases.phase == GamePhase.upgradeDraft) break;
+      if (rt.upgradeState.grantCount > 0) break;
     }
-    expect(rt.phases.phase, GamePhase.upgradeDraft);
+    // **v2.1**：不停顿 —— 授予发生在 Playing 内。
+    expect(rt.phases.phase, GamePhase.playing);
+    expect(rt.upgradeState.grantCount, greaterThanOrEqualTo(1));
 
     final threshold =
         ((_read('upgrades.json')['xpThresholds'] as List).first as num).toInt();

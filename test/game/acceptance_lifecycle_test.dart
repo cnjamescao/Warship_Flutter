@@ -18,6 +18,7 @@ import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
 import 'package:warship_flutter/game/core/game_clock.dart';
 import 'package:warship_flutter/game/core/game_phase.dart';
+import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/core/game_runtime.dart';
 import 'package:warship_flutter/game/core/input_frame.dart';
 import 'package:warship_flutter/game/core/phase_controller.dart';
@@ -177,9 +178,12 @@ void exerciseRun(GameRuntime rt) {
     rt.player.health.current = rt.player.health.max;
 
     final offer = rt.currentOffer;
-    if (offer != null) {
-      picked.add(offer.candidates.join(','));
-      rt.selectDraftCard(0);
+    // **v2.1**：不再有草案；"升级"由自动授予体现。
+    for (final stamped in rt.lastFrameEvents) {
+      final e = stamped.event;
+      if (e is AutoUpgradeGranted) {
+        picked.add('${e.grantOrdinal}:${e.cardId}');
+      }
     }
     final gate = rt.riskGate;
     if (gate != null && !gate.isResolved) {

@@ -546,84 +546,51 @@ void main() {
       );
     });
 
-    test('选中卡片后应用升级、回到 Playing 并提升脉冲数值', () {
+    test('自动授予后应用升级、**不进入** upgradeDraft 并提升脉冲数值', () {
       final rt = buildRuntime(upgrades: buildUpgradeSystem());
       rt.xp = 20;
 
-      // 推进到草案打开。
+      // 推进到发生第一次自动授予。
       var guard = 0;
-      while (rt.currentOffer == null && guard < 60 * 25) {
+      while (rt.upgradeState.grantCount == 0 && guard < 60 * 25) {
         rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
         guard++;
       }
-      expect(rt.currentOffer, isNotNull, reason: '应打开草案');
-      expect(rt.phases.phase, GamePhase.upgradeDraft);
-      expect(rt.currentOffer!.candidates.length, 3);
-      expect(
-        rt.currentOffer!.candidates,
-        contains('UP-PULSE-RATE'),
-        reason: '第 1 次必有保证卡',
-      );
+      expect(rt.upgradeState.grantCount, 1, reason: '应恰好自动授予一张');
+      // **v2.1（冻结表 §2.2）**：不得进入 upgradeDraft，也不得产出候选。
+      expect(rt.phases.phase, GamePhase.playing, reason: '自动授予不得暂停逻辑');
+      expect(rt.currentOffer, isNull, reason: 'v2.1 禁止 DraftOffer');
 
-      // 草案期间逻辑冻结。
-      final stepsBefore = rt.logicSteps;
-      runSeconds(rt, 3.0);
-      expect(rt.logicSteps, stepsBefore, reason: '选卡时逻辑必须冻结');
-
-      // 选第 1 张（保证卡）。
-      final cadenceBefore = rt.pulse.effectiveCadence;
-      final ok = rt.selectDraftCard(0);
-      expect(ok, isTrue);
-      expect(rt.phases.phase, GamePhase.playing);
-      expect(rt.currentOffer, isNull);
-      expect(rt.upgradeCount, 1);
-      expect(rt.pulse.effectiveCadence, lessThan(cadenceBefore),
-          reason: '脉冲增幅应缩短发射间隔');
+      // 第 1 张按冻结表 §2.2 必须是 Pulse Rate。
       expect(rt.upgradeState.levelOf('UP-PULSE-RATE'), 1);
+      expect(rt.upgradeCount, 1);
+      // 与"未强化"的同构运行时对比脉冲间隔，确认强化真的生效。
+      final baseline = buildRuntime(upgrades: buildUpgradeSystem());
+      expect(
+        rt.pulse.effectiveCadence,
+        lessThan(baseline.pulse.effectiveCadence),
+        reason: '脉冲增幅应缩短发射间隔',
+      );
     });
 
-    test('选卡后逻辑恢复推进', () {
+    test('快照**不含**草案卡片数据（v2.1 禁止 DraftOffer）', () {
       final rt = buildRuntime(upgrades: buildUpgradeSystem());
       rt.xp = 20;
       var guard = 0;
-      while (rt.currentOffer == null && guard < 60 * 25) {
-        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
-        guard++;
-      }
-      rt.selectDraftCard(0);
-
-      // 走到 15 秒的过程中已经攒够了后续草案的经验，选完一张可能立刻
-      // 又开下一次。先把当前所有待选草案清空，再测量逻辑推进。
-      var guard2 = 0;
-      while (rt.currentOffer != null && guard2 < 10) {
-        rt.selectDraftCard(0);
-        guard2++;
-      }
-      expect(rt.phases.phase, GamePhase.playing);
-
-      final stepsBefore = rt.logicSteps;
-      runSeconds(rt, 1.0);
-      expect(rt.logicSteps, greaterThan(stepsBefore),
-          reason: '选卡结束后逻辑应恢复推进');
-    });
-
-    test('快照携带草案卡片数据', () {
-      final rt = buildRuntime(upgrades: buildUpgradeSystem());
-      rt.xp = 20;
-      var guard = 0;
-      while (rt.currentOffer == null && guard < 60 * 25) {
+      while (rt.upgradeState.grantCount == 0 && guard < 60 * 25) {
         rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
         guard++;
       }
 
-      final draft = rt.snapshot().upgradeDraft;
-      expect(draft, isNotNull);
-      expect(draft!.cards.length, 3);
-      for (final card in draft.cards) {
-        expect(card.cardId, isNotEmpty);
-        expect(card.maxLevel, greaterThan(0));
-        expect(card.nextLevel, card.currentLevel + 1);
-      }
+      // **v2.1**：自动授予**不产生** upgradeDraft 快照数据。
+      expect(
+        rt.snapshot().upgradeDraft,
+        isNull,
+        reason: 'v2.1 不得产出 DraftOffer 快照',
+      );
+      expect(rt.currentOffer, isNull, reason: 'v2.1 禁止 DraftOffer');
+      expect(rt.upgradeState.grantCount, greaterThanOrEqualTo(1));
+      expect(rt.upgradeState.levels, isNotEmpty, reason: '应已应用升级');
     });
 
     test('未启用升级系统时不会打开草案', () {

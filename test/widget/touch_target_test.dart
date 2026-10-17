@@ -90,30 +90,4 @@ void main() {
     await unmountV2App(tester);
   });
 
-  testWidgets('升级草案的卡片满足 44×44 dp（横排最可能偏小）', (tester) async {
-    useFullHdSurface(tester);
-    await mountV2App(tester, catalog);
-    await tapText(tester, '开始战斗');
-    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
-    await advanceGameSeconds(tester, 17);
-    expect(find.text('选择强化'), findsOneWidget);
-
-    // 树里 4 个 InkWell：下标 0 是 HUD 暂停按钮，1..3 是卡片。
-    final cards = find.byType(InkWell);
-    expect(cards, findsNWidgets(4));
-    for (var i = 1; i <= 3; i++) {
-      final box = cards.at(i).evaluate().single.renderObject! as RenderBox;
-      expect(
-        box.size.width,
-        greaterThanOrEqualTo(kMinTouchTarget),
-        reason: '第 $i 张卡片宽度 ${box.size.width.toStringAsFixed(1)} < $kMinTouchTarget dp',
-      );
-      expect(
-        box.size.height,
-        greaterThanOrEqualTo(kMinTouchTarget),
-        reason: '第 $i 张卡片高度 ${box.size.height.toStringAsFixed(1)} < $kMinTouchTarget dp',
-      );
-    }
-    await unmountV2App(tester);
-  });
 }

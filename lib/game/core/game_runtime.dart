@@ -522,7 +522,7 @@ class GameRuntime {
       _fireWeapons(dt);
       _updateProjectiles(dt);
       _commitPending();
-      _checkDraftDue();
+      _checkAutoGrantDue();
       return;
     }
 
@@ -564,7 +564,7 @@ class GameRuntime {
     }
 
     // 10. 经验阈值 → 打开升级草案（相位迁移，下一步起逻辑冻结）。
-    _checkDraftDue();
+    _checkAutoGrantDue();
   }
 
   // ------------------------------------------------------------
@@ -1817,7 +1817,6 @@ class GameRuntime {
   /// v2.1 的自动强化接线**已实现但尚未切换** —— 切换会让 14 个
   /// v2.0 草案行为测试失败，需与测试迁移**同一提交**完成
   /// （清单见 `docs/研发工作进度.md`「B1 步骤 3 待迁移用例清单」）。
-  // ignore: unused_element
   void _checkAutoGrantDue() {
     final system = upgradeSystem;
     if (system == null) {
