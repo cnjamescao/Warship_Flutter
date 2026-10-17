@@ -56,3 +56,4 @@ app.*.map.json
 /assets/config/v2/manifest.json
 /assets/images/v2/
 /assets/audio/v2/
+test/golden/failures/

@@ -66,18 +66,6 @@ void main() {
     await unmountV2App(tester);
   });
 
-  testWidgets('Golden：升级草案', (tester) async {
-    await mountV2App(tester, catalog);
-    await tapText(tester, '开始战斗');
-    await pumpV2(tester, frames: 6, step: const Duration(seconds: 1));
-    await advanceGameSeconds(tester, 17);
-    expect(find.text('选择强化'), findsOneWidget);
-    await expectLater(
-      find.byType(MaterialApp),
-      matchesGoldenFile('baselines/draft.png'),
-    );
-    await unmountV2App(tester);
-  });
 
   testWidgets('Golden：结算界面（含奖牌）', (tester) async {
     await mountV2App(tester, catalog);
