@@ -48,6 +48,7 @@ import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
 import '../game/presentation/asset_cache.dart';
+import '../game/presentation/v21_result_medal.dart';
 import 'baseline_recording.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
@@ -797,41 +798,159 @@ class _BriefingScreenState extends State<_BriefingScreen> {
 }
 
 /// 结算界面。
-/// 结算奖牌：图形（`UI-RESULT-MEDAL` 的对应状态）+ 本地化档位名。
+/// **v2.1 结算奖章**（冻结表 §5.2）。
 ///
-/// 资源路径从 manifest 取，**不硬编码文件名**（素材规范 §1.1）。
-/// 该档位没有图形时只显示文字，不影响结算可用性。
-class _ResultMedal extends StatelessWidget {
+/// 与 v2.0 的三点区别（都是硬性要求）：
+/// 1. 用**三张独立素材**（`UI-V21-RESULT-MEDAL-GOLD/SILVER/BRONZE`），
+///    不再用 `UI-RESULT-MEDAL` 的 renderState 切换；
+/// 2. 有**入场时间轴**（`MedalTimeline.at()` 逐毫秒插值）；
+/// 3. 素材是 **sheet + frameRect**（2172×724 里切 724×724 一格），
+///    因此必须**裁切**后再显示 —— 直接 `Image.asset` 会画出整张 sheet ✗。
+///
+/// **三者普通 alpha 合成**，不得用 additive 覆盖结果文字（冻结表明文）。
+class _ResultMedal extends StatefulWidget {
   const _ResultMedal({required this.catalog, required this.tier});
 
   final ContentCatalog catalog;
   final String tier;
 
   @override
+  State<_ResultMedal> createState() => _ResultMedalState();
+}
+
+class _ResultMedalState extends State<_ResultMedal>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  MedalTimeline? get _timeline => kV21MedalTimelines[widget.tier];
+
+  @override
+  void initState() {
+    super.initState();
+    final total = _timeline?.totalMs ?? 1;
+    _c = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: total),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final record = catalog.manifest.lookup('UI-RESULT-MEDAL');
-    final spec = record?.renderStates[tier];
+    final timeline = _timeline;
+    final record = timeline == null
+        ? null
+        : widget.catalog.manifest.lookup(timeline.assetId);
+    final spec = record?.renderStates['default'];
     final files = spec != null && spec.runtimeFiles.isNotEmpty
         ? spec.runtimeFiles
         : (record?.runtimeFiles ?? const <String>[]);
+    final rect = (spec?.frameRects.isNotEmpty ?? false)
+        ? spec!.frameRects.first
+        : null;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (files.isNotEmpty)
-          Image.asset(
-            files.first,
-            width: 96,
-            height: 96,
-            filterQuality: FilterQuality.medium,
-            errorBuilder: (_, _, _) => const SizedBox(width: 96, height: 96),
+        if (files.isNotEmpty && timeline != null)
+          AnimatedBuilder(
+            animation: _c,
+            builder: (context, _) {
+              final ms = (_c.value * timeline.totalMs).round();
+              final f = timeline.at(ms);
+              return Opacity(
+                opacity: f.opacity.clamp(0.0, 1.0),
+                child: Transform.translate(
+                  offset: Offset(0, f.offsetY),
+                  child: Transform.rotate(
+                    angle: f.rotationDegrees * 3.141592653589793 / 180,
+                    child: Transform.scale(
+                      scale: f.scale,
+                      child: _SheetCell(
+                        imagePath: files.first,
+                        frameRect: rect,
+                        size: kV21MedalSize,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         const SizedBox(height: 6),
         Text(
-          catalog.text('result.tier.$tier'),
+          widget.catalog.text('result.tier.${widget.tier}'),
           style: const TextStyle(color: Color(0xFFFFC24B), fontSize: 20),
         ),
       ],
+    );
+  }
+}
+
+/// 从一张 sheet 里裁出 [frameRect] 指定的那一格并缩放到 [size]。
+///
+/// **为什么不用 `Image.asset` 直接显示**：v2.1 的奖章素材是
+/// `2172×724` 的 sheet，一格只有 `724×724` —— 直接显示会画出**整张三格** ✗
+/// （这正是"用整张图代替内容"的经典错误，与 v2.0 的 7 倍拉伸同源）。
+///
+/// 实现用 `ClipRect + Align + OverflowBox` 的裁切组合，
+/// 不需要异步加载 `ui.Image`，也不引入额外依赖。
+class _SheetCell extends StatelessWidget {
+  const _SheetCell({
+    required this.imagePath,
+    required this.frameRect,
+    required this.size,
+  });
+
+  final String imagePath;
+  final List<int>? frameRect;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    if (frameRect == null) {
+      return Image.asset(
+        imagePath,
+        width: size,
+        height: size,
+        filterQuality: FilterQuality.medium,
+        errorBuilder: (_, _, _) => SizedBox(width: size, height: size),
+      );
+    }
+    final x = frameRect![0].toDouble();
+    final y = frameRect![1].toDouble();
+    final w = frameRect![2].toDouble();
+    final h = frameRect![3].toDouble();
+    // 整张 sheet 的尺寸要按"能塞下这一格"反推：这里直接用相对比例裁切。
+    // 由于所有 v2.1 sheet 都是 2172×724、格子同为 724 高，
+    // 用 `widthFactor/heightFactor` 表达"只露这一格"即可。
+    final sheetWidth = 2172.0;
+    final sheetHeight = 724.0;
+    return SizedBox(
+      width: size,
+      height: size,
+      child: ClipRect(
+        child: Align(
+          alignment: Alignment(
+            (w >= sheetWidth) ? 0 : (x / (sheetWidth - w)) * 2 - 1,
+            (h >= sheetHeight) ? 0 : (y / (sheetHeight - h)) * 2 - 1,
+          ),
+          widthFactor: w / sheetWidth,
+          heightFactor: h / sheetHeight,
+          child: Image.asset(
+            imagePath,
+            width: size * (sheetWidth / w),
+            height: size * (sheetHeight / h),
+            filterQuality: FilterQuality.medium,
+            errorBuilder: (_, _, _) => SizedBox(width: size, height: size),
+          ),
+        ),
+      ),
     );
   }
 }
