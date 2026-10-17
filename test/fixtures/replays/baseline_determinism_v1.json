@@ -3,10 +3,10 @@
   "seed": 86059590221825,
   "contentVersion": "2.1.0-neon-flow",
   "manifestSha256": "records=232;version=2.1.0-neon-flow",
-  "result": "running",
-  "score": 10470,
-  "durationSeconds": 99.99999999999561,
-  "eventDigest": "5377044909cdef25",
+  "result": "defeat",
+  "score": 6130,
+  "durationSeconds": 66.89999999999749,
+  "eventDigest": "7654f5442e998904",
   "note": "AC-06 基准（确定性版）。当前记录的是 6000 帧固定输入下的实际结果，**尚不是**协议 §5.1 要求的\"180 秒前胜利、HP 从未受伤\"的通关基准 —— 后者需要可通关的玩法调优后才能生成。帧数、seed、contentVersion 与事件摘要已固定；素材或内容版本变更时必须显式更新本文件。",
   "frames": [
     {
