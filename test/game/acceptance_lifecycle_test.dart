@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
 import 'package:warship_flutter/game/core/game_clock.dart';
@@ -32,7 +33,7 @@ import 'package:warship_flutter/game/infrastructure/asset_loader.dart';
 import 'package:warship_flutter/game/infrastructure/audio_director.dart';
 import 'package:warship_flutter/game/infrastructure/audio_port.dart';
 
-const String kContentVersion = '2.0.6-material-repair';
+const String kContentVersion = '2.1.0-neon-flow';
 const int kCycles = 20;
 
 Map<String, Object?> readJson(String name) =>
@@ -66,7 +67,10 @@ class Harness {
     final manifestJson =
         jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
             as Map<String, Object?>;
-    final manifest = AssetManifest.parse(manifestJson).requireValue;
+    final manifest = AssetManifest.parse(
+      manifestJson,
+      expectedVersion: kActiveContentVersion,
+    ).requireValue;
     director = AudioDirector(
       table: const AssetLoader().build(manifest),
       service: audio,

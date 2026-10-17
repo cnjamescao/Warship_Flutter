@@ -41,11 +41,11 @@ void main() {
     expect(find.text('设置'), findsOneWidget);
   });
 
-  testWidgets('内容目录经生产路径加载成功（199 条 / 2.0.6-material-repair）', (tester) async {
+  testWidgets('内容目录经生产路径加载成功（199 条 / 2.1.0-neon-flow）', (tester) async {
     await mountV2App(tester, catalog);
 
     expect(catalog.manifest.length, 199);
-    expect(catalog.manifest.contentVersion, '2.0.6-material-repair');
+    expect(catalog.manifest.contentVersion, '2.1.0-neon-flow');
   });
 
   // 未覆盖：首页的"最高分/最快通关"显示逻辑 —— 我对它的文案假设

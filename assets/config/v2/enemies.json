@@ -1,6 +1,6 @@
 {
   "id": "enemies.v2",
-  "contentVersion": "2.0.6-material-repair",
+  "contentVersion": "2.1.0-neon-flow",
   "spawnY": -80,
   "spawnXPoints": [
     240,

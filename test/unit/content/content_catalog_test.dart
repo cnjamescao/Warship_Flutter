@@ -12,6 +12,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/content/content_catalog.dart';
 import 'package:warship_flutter/game/content/content_error.dart';
@@ -37,6 +38,7 @@ AssetManifest loadRealManifest() {
   );
   final result = AssetManifest.parse(
     jsonDecode(file.readAsStringSync()) as Map<String, Object?>,
+    expectedVersion: kActiveContentVersion,
   );
   expect(result.isSuccess, isTrue, reason: result.describeErrors());
   return result.requireValue;
@@ -55,7 +57,10 @@ void main() {
     late ContentCatalog catalog;
 
     setUpAll(() {
-      final result = ContentCatalog.load(files: files, manifest: manifest);
+      final result = ContentCatalog.load(
+        files: files, manifest: manifest,
+        expectedVersion: kActiveContentVersion,
+      );
       expect(
         result.isSuccess,
         isTrue,
@@ -64,8 +69,8 @@ void main() {
       catalog = result.requireValue;
     });
 
-    test('内容版本为 2.0.6-material-repair', () {
-      expect(catalog.contentVersion, '2.0.6-material-repair');
+    test('内容版本为 2.1.0-neon-flow', () {
+      expect(catalog.contentVersion, '2.1.0-neon-flow');
     });
 
     test('五类敌人、十六张升级卡、六个武器系统均被加载', () {
@@ -239,7 +244,10 @@ void main() {
           entry.key: jsonDecode(jsonEncode(entry.value)) as Map<String, Object?>,
       };
       mutate(copy);
-      return ContentCatalog.load(files: copy, manifest: manifest);
+      return ContentCatalog.load(
+        files: copy, manifest: manifest,
+        expectedVersion: kActiveContentVersion,
+      );
     }
 
     test('未知资产 ID 被拒绝', () {
@@ -360,7 +368,10 @@ void main() {
       final copy = <String, Map<String, Object?>>{...files}
         ..remove(ContentFiles.boss);
 
-      final result = ContentCatalog.load(files: copy, manifest: manifest);
+      final result = ContentCatalog.load(
+        files: copy, manifest: manifest,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(

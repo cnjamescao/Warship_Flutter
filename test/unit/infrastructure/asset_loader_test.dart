@@ -16,6 +16,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/infrastructure/asset_loader.dart';
 
@@ -79,7 +80,10 @@ void main() {
 
   setUpAll(() {
     json = loadManifestJson();
-    final parsed = AssetManifest.parse(json);
+    final parsed = AssetManifest.parse(
+      json,
+      expectedVersion: kActiveContentVersion,
+    );
     expect(parsed.isSuccess, isTrue, reason: parsed.describeErrors());
     manifest = parsed.requireValue;
     table = const AssetLoader().build(manifest);

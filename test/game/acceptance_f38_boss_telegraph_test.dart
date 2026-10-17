@@ -82,7 +82,7 @@ GameRuntime _build() {
         runId: 'f38-boss-telegraph',
         seed: 0x4E454F4E0001,
         prngAlgorithm: 'pcg32-xsh-rr',
-        contentVersion: '2.0.6-material-repair',
+        contentVersion: '2.1.0-neon-flow',
         contentManifestSha256: '',
       ),
       random: Pcg32(0x4E454F4E0001),

@@ -62,6 +62,14 @@ import '../game/infrastructure/haptics_director.dart';
 /// 内容根目录（构建复制品）。
 const String kConfigRoot = 'assets/config/v2';
 
+/// **v2.1 唯一版本入口**（蓝图 §2.1）。
+///
+/// ⚠️ **全项目只允许此处出现内容版本字面量**（门禁："代码中没有第二个
+/// v2.1 版本字面量"）。`AssetManifest.parse` 与 `ContentCatalog.load`
+/// 都必须接收它，从而保证 manifest 与 8 份内容文件**校验同一个版本**。
+/// 新增/升级版本时**只改这一行**。
+const String kActiveContentVersion = '2.1.0-neon-flow';
+
 /// 启动结果。
 class BootResult {
   const BootResult({
@@ -116,7 +124,10 @@ class V2Bootstrap {
         jsonDecode(await rootBundle.loadString('$kConfigRoot/manifest.json'))
             as Map<String, Object?>;
 
-    final manifestResult = AssetManifest.parse(manifestJson);
+    final manifestResult = AssetManifest.parse(
+      manifestJson,
+      expectedVersion: kActiveContentVersion,
+    );
     if (manifestResult.isFailure) {
       throw ContentFailure(manifestResult.describeErrors());
     }
@@ -131,6 +142,7 @@ class V2Bootstrap {
     final catalogResult = ContentCatalog.load(
       files: files,
       manifest: manifestResult.requireValue,
+      expectedVersion: kActiveContentVersion,
     );
     if (catalogResult.isFailure) {
       throw ContentFailure(catalogResult.describeErrors());

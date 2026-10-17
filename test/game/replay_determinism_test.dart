@@ -32,7 +32,7 @@ import 'package:warship_flutter/game/domain/weapon_system.dart';
 
 /// AC-06 基准固定值（协议 §5.1）。
 const int kBaselineSeed = 0x4E454F4E0001;
-const String kContentVersion = '2.0.6-material-repair';
+const String kContentVersion = '2.1.0-neon-flow';
 const String kFixturePath =
     'test/fixtures/replays/baseline_determinism_v1.json';
 
@@ -233,7 +233,7 @@ void main() {
         version: ReplayRecord.currentVersion,
         seed: kBaselineSeed,
         contentVersion: kContentVersion,
-        manifestSha256: 'records=193;version=2.0.6-material-repair',
+        manifestSha256: 'records=193;version=2.1.0-neon-flow',
         frames: <ReplayFrame>[
           ReplayFrame(moveX: -1, moveY: 0),
           ReplayFrame(moveX: 0, moveY: -1, dash: true),

@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 
 late AssetManifest manifest;
@@ -34,7 +35,10 @@ void main() {
     final json =
         jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
             as Map<String, Object?>;
-    manifest = AssetManifest.parse(json).requireValue;
+    manifest = AssetManifest.parse(
+      json,
+      expectedVersion: kActiveContentVersion,
+    ).requireValue;
   });
 
   group('§7.5 我方命中普通敌人：「有并发上限」', () {
@@ -86,7 +90,7 @@ void main() {
   });
 
   group('§7.5 玩家低护盾 / 濒危：「最短间隔 8 秒」—— 2.0.5 已接入', () {
-    // 素材侧已在 2.0.6-material-repair 修正：两个提示的 minRetriggerMs 均为 8000。
+    // 素材侧已在 2.1.0-neon-flow 修正：两个提示的 minRetriggerMs 均为 8000。
     // 原先这里是「缺口冻结」断言（断言等于 0）；缺口修好后按约定
     // 改为**正向接入断言** —— 若再退回 0，本用例会失败。
     test('低护盾 / 低血提示的最短重触发间隔为 8000 ms（§7.5 的 8 秒）', () {

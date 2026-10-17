@@ -21,7 +21,7 @@ import 'package:warship_flutter/game/domain/values.dart';
 
 BaselineRecording _newRecorder() => BaselineRecording(
   seed: 0x4E454F4E0001,
-  contentVersion: '2.0.6-material-repair',
+  contentVersion: '2.1.0-neon-flow',
   manifestSha256: 'sha-test',
 );
 
@@ -131,6 +131,6 @@ void main() {
     ]) {
       expect(json.containsKey(key), isTrue, reason: '缺少 §5.1 要求的字段：$key');
     }
-    expect(json['contentVersion'], '2.0.6-material-repair');
+    expect(json['contentVersion'], '2.1.0-neon-flow');
   });
 }

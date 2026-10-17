@@ -211,10 +211,12 @@ class ContentCatalog {
   static ContentResult<ContentCatalog> load({
     required Map<String, Map<String, Object?>> files,
     required AssetManifest manifest,
-    String? expectedVersion,
+    // **B0（v2.1 蓝图 §2.1）**：**必填**且**不得回落**到任何默认常量 ——
+    // 内容文件的版本校验必须与 manifest 用**同一个**来源，
+    // 否则会出现"manifest 已是 v2.1、内容还是 v2.0"的不一致而无人发现。
+    required String expectedVersion,
   }) {
-    final wantVersion =
-        expectedVersion ?? AssetManifest.requiredContentVersion;
+    final wantVersion = expectedVersion;
     final errors = <ContentError>[];
 
     // ---- 0. 必需文件齐全 ----

@@ -42,7 +42,8 @@ class RunIdentity {
   /// PRNG 算法名，写入 `RunStarted`。
   final String prngAlgorithm;
 
-  /// 内容版本，当前唯一允许值为 `2.0.6-material-repair`。
+  /// 内容版本，当前唯一允许值为 `v2_bootstrap.kActiveContentVersion`
+  /// （v2.1 = `2.1.0-neon-flow`）。**不要在别处再写版本字面量。**
   final String contentVersion;
 
   /// 正式 `素材/manifest.json` 的 SHA-256；回放与验收依赖它。

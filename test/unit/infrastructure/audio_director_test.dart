@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/core/random_source.dart';
@@ -28,7 +29,7 @@ RunContext context() => RunContext(
     runId: 'audio-test',
     seed: 1,
     prngAlgorithm: 'pcg32-xsh-rr',
-    contentVersion: '2.0.6-material-repair',
+    contentVersion: '2.1.0-neon-flow',
     contentManifestSha256: 'test',
   ),
   random: Pcg32(1),
@@ -46,7 +47,10 @@ void main() {
               File('assets/config/v2/manifest.json').readAsStringSync(),
             )
             as Map<String, Object?>;
-    final parsed = AssetManifest.parse(json);
+    final parsed = AssetManifest.parse(
+      json,
+      expectedVersion: kActiveContentVersion,
+    );
     expect(parsed.isSuccess, isTrue, reason: parsed.describeErrors());
     table = const AssetLoader().build(parsed.requireValue);
   });
@@ -163,7 +167,7 @@ void main() {
           const RunStarted(
             seed: 1,
             prngAlgorithm: 'pcg32-xsh-rr',
-            contentVersion: '2.0.6-material-repair',
+            contentVersion: '2.1.0-neon-flow',
           ),
         ),
         returnsNormally,

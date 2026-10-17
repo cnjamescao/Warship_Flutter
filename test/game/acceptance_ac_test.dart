@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_id.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
@@ -33,7 +34,7 @@ import 'package:warship_flutter/game/domain/upgrade_system.dart';
 import 'package:warship_flutter/game/domain/values.dart';
 import 'package:warship_flutter/game/domain/weapon_system.dart';
 
-const String kContentVersion = '2.0.6-material-repair';
+const String kContentVersion = '2.1.0-neon-flow';
 const int kFramesPerRun = 1200; // 20 秒有效战斗：覆盖首个升级草案（15 秒）
 
 Map<String, Object?> readJson(String name) =>
@@ -254,7 +255,10 @@ void main() {
                 File('assets/config/v2/manifest.json').readAsStringSync(),
               )
               as Map<String, Object?>;
-      final parsed = AssetManifest.parse(json);
+      final parsed = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
       expect(parsed.isSuccess, isTrue, reason: parsed.describeErrors());
       manifest = parsed.requireValue;
     });

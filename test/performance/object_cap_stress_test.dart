@@ -38,7 +38,7 @@ import 'package:warship_flutter/game/infrastructure/performance_report.dart';
 import 'package:warship_flutter/game/presentation/visual_effects.dart';
 
 const int kSeed = 0x4E454F4E0001;
-const String kContentVersion = '2.0.6-material-repair';
+const String kContentVersion = '2.1.0-neon-flow';
 const String kReportPath =
     'test/fixtures/performance/object_cap_stress_v1.json';
 

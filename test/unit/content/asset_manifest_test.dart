@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/content/content_error.dart';
 
@@ -32,9 +33,9 @@ Map<String, Object?> loadBuiltManifest() {
 
 void main() {
   group('构建复制链路', () {
-    test('构建复制品存在且内容版本为 2.0.6-material-repair', () {
+    test('构建复制品存在且内容版本为 2.1.0-neon-flow', () {
       final json = loadBuiltManifest();
-      expect(json['contentVersion'], '2.0.6-material-repair');
+      expect(json['contentVersion'], '2.1.0-neon-flow');
       expect(json['schemaVersion'], AssetManifest.expectedSchemaVersion);
     });
 
@@ -103,7 +104,10 @@ void main() {
     late AssetManifest manifest;
 
     setUpAll(() {
-      final result = AssetManifest.parse(loadBuiltManifest());
+      final result = AssetManifest.parse(
+        loadBuiltManifest(),
+        expectedVersion: kActiveContentVersion,
+      );
       expect(
         result.isSuccess,
         isTrue,
@@ -319,7 +323,10 @@ void main() {
     test('内容版本不符时返回 versionMismatch', () {
       final json = loadBuiltManifest()..['contentVersion'] = '1.0.0-old';
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(
@@ -331,8 +338,8 @@ void main() {
     test('缺少 assets 数组时返回结构化错误而不是抛异常', () {
       final result = AssetManifest.parse(<String, Object?>{
         'schemaVersion': '1.1.0',
-        'contentVersion': AssetManifest.requiredContentVersion,
-      });
+        'contentVersion': kActiveContentVersion,
+      }, expectedVersion: kActiveContentVersion);
 
       expect(result.isFailure, isTrue);
       expect(result.errors.first.kind, ContentErrorKind.schemaViolation);
@@ -343,7 +350,10 @@ void main() {
       final assets = (json['assets'] as List).cast<Map>();
       assets.first['fallbackAssetId'] = 'GFX-DOES-NOT-EXIST';
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(
@@ -357,7 +367,10 @@ void main() {
       final assets = (json['assets'] as List).cast<Map>();
       assets.add(Map<String, Object?>.from(assets.first));
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(
@@ -371,7 +384,10 @@ void main() {
       final assets = (json['assets'] as List).cast<Map>();
       assets.first['license'] = '   ';
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(result.describeErrors(), contains('许可证'));
@@ -385,7 +401,10 @@ void main() {
       );
       (graphic['states'] as List).add('never-mapped');
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(result.describeErrors(), contains('never-mapped'));
@@ -397,7 +416,10 @@ void main() {
       final audio = assets.firstWhere((a) => a['category'] == 'sfx');
       audio.remove('cueId');
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(result.describeErrors(), contains('cueId'));
@@ -408,7 +430,10 @@ void main() {
       final assets = (json['assets'] as List).cast<Map>();
       assets.first['assetId'] = 'gfx-lowercase-and space';
 
-      final result = AssetManifest.parse(json);
+      final result = AssetManifest.parse(
+        json,
+        expectedVersion: kActiveContentVersion,
+      );
 
       expect(result.isFailure, isTrue);
       expect(

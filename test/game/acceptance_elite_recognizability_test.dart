@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/presentation/elite_affix_visuals.dart';
 
@@ -31,6 +32,7 @@ void main() {
     manifest = AssetManifest.parse(
       jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
           as Map<String, Object?>,
+      expectedVersion: kActiveContentVersion,
     ).requireValue;
     enemiesJson =
         jsonDecode(File('assets/config/v2/enemies.json').readAsStringSync())
@@ -79,7 +81,7 @@ void main() {
   });
 
   test('§7.5「名称条」：UI-ELITE-NAMEPLATE 已入正式 manifest 并按 isElite 路由', () {
-    // 2.0.6-material-repair 已补齐。原先这里是「缺口冻结」断言（断言不存在）；
+    // 2.1.0-neon-flow 已补齐。原先这里是「缺口冻结」断言（断言不存在）；
     // 素材交付后按约定改为**正向接入断言**。
     final r = manifest.lookup('UI-ELITE-NAMEPLATE');
     expect(r, isNotNull, reason: '精英名称条应存在');

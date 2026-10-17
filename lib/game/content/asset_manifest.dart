@@ -38,7 +38,8 @@
 //   * `AssetLoader` 必须在首次播放/渲染前把 `eventBindings` 解析为
 //     不可变表，且只按 `event + when` 条件匹配 ——
 //     禁止仅凭 `triggerEvents`、文件名或显示文本选资源；
-//   * `contentVersion` 当前唯一允许值为 `2.0.6-material-repair`。
+//   * `contentVersion` 由调用方显式传入（唯一来源 `kActiveContentVersion`），
+//     本文件**不再**持有版本字面量。
 // ================================================================
 
 import 'asset_id.dart';
@@ -221,8 +222,14 @@ class AssetManifest {
     required this.byId,
   });
 
-  /// 当前唯一允许的内容版本（协议 §1）。
-  static const String requiredContentVersion = '2.0.6-material-repair';
+  // **B0（v2.1 蓝图 §2.1）**：此处**不再**硬编码内容版本。
+  //
+  // 存在理由：v2.0 时版本号写死在本文件，导致 `parse` 有一个**隐式默认值** ——
+  // 调用方漏传也能"看起来正确"，升级版本时容易只改一处而漏改其他。
+  // 现在 `expectedVersion` **必填**，唯一来源是
+  // `v2_bootstrap.kActiveContentVersion`，从编译期就杜绝漏传。
+  //
+  // 门禁（蓝图）：**代码中不得出现第二个 v2.1 版本字面量**。
 
   /// 预期 schema 版本（素材规范 §8 的 v2.0.2 补充）。
   static const String expectedSchemaVersion = '1.1.0';
@@ -251,15 +258,15 @@ class AssetManifest {
 
   /// 从 manifest JSON 解析并校验。
   ///
-  /// [expectedVersion] 默认取 [requiredContentVersion]；
+  /// [expectedVersion] **必填**，由 `V2Bootstrap` 传入唯一版本常量。
   /// 版本不符时返回 [ContentErrorKind.versionMismatch] 而不是抛异常，
-  /// 让 Loading 页可以显示可重试错误。
+  /// 让 Loading 页可以显示可重试错误（保留 v2.0 的可重试行为）。
   static ContentResult<AssetManifest> parse(
     Map<String, Object?> json, {
-    String? expectedVersion,
+    required String expectedVersion,
   }) {
     final errors = <ContentError>[];
-    final wantVersion = expectedVersion ?? requiredContentVersion;
+    final wantVersion = expectedVersion;
 
     final schemaVersion = json['schemaVersion'];
     if (schemaVersion is! String || schemaVersion.isEmpty) {

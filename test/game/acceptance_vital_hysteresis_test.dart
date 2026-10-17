@@ -20,6 +20,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 
 void main() {
@@ -31,6 +32,7 @@ void main() {
     manifest = AssetManifest.parse(
       jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
           as Map<String, Object?>,
+      expectedVersion: kActiveContentVersion,
     ).requireValue;
   });
 

@@ -16,6 +16,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:warship_flutter/app/v2_bootstrap.dart';
 import 'package:warship_flutter/game/content/asset_manifest.dart';
 import 'package:warship_flutter/game/core/domain_event.dart';
 import 'package:warship_flutter/game/core/event_bus.dart';
@@ -40,7 +41,10 @@ void main() {
     final json =
         jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
             as Map<String, Object?>;
-    final manifest = AssetManifest.parse(json).requireValue;
+    final manifest = AssetManifest.parse(
+      json,
+      expectedVersion: kActiveContentVersion,
+    ).requireValue;
     table = const AssetLoader().build(manifest);
   });
 
@@ -95,7 +99,7 @@ void main() {
         const RunStarted(
           seed: 0x4E454F4E0001,
           prngAlgorithm: 'pcg32-xsh-rr',
-          contentVersion: '2.0.6-material-repair',
+          contentVersion: '2.1.0-neon-flow',
         ),
       ),
     ]);
