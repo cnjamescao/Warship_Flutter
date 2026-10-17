@@ -15692,7 +15692,8 @@
             ]
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-PLAYER-HP-HIT",
@@ -15758,7 +15759,8 @@
             ]
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-PLAYER-LOW",
@@ -15824,7 +15826,8 @@
             ]
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-PLAYER-CRITICAL",
@@ -15890,7 +15893,8 @@
             ]
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-ENEMY-DESTROY",
@@ -15956,7 +15960,8 @@
             ]
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-PRISM",
@@ -16008,7 +16013,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-ARC",
@@ -16060,7 +16066,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-PLASMA",
@@ -16112,7 +16119,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-NEEDLE",
@@ -16164,7 +16172,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-MISSILE",
@@ -16216,7 +16225,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-PRISM-IMPACT",
@@ -16268,7 +16278,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-ARC-IMPACT",
@@ -16320,7 +16331,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-PLASMA-IMPACT",
@@ -16372,7 +16384,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-NEEDLE-IMPACT",
@@ -16424,7 +16437,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "GFX-V21-WPN-MISSILE-IMPACT",
@@ -16476,7 +16490,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-UPGRADE-NOTICE",
@@ -16528,7 +16543,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-SECTOR-CLEAR-NOTICE",
@@ -16580,7 +16596,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-NOTICE-SPARK",
@@ -16632,7 +16649,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-RESULT-MEDAL-GOLD",
@@ -16684,7 +16702,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-RESULT-MEDAL-SILVER",
@@ -16736,7 +16755,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "UI-V21-RESULT-MEDAL-BRONZE",
@@ -16788,7 +16808,8 @@
             724
           ]
         }
-      }
+      },
+      "status": "release_ready"
     },
     {
       "assetId": "SFX-V21-SHIELD-HIT",
@@ -16806,12 +16827,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-SHIELD-HIT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-HP-HIT",
@@ -16829,12 +16856,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-HP-HIT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-UPGRADE-GAIN",
@@ -16852,12 +16885,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-UPGRADE-GAIN",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 1,
+      "minRetriggerMs": 0
     },
     {
       "assetId": "SFX-V21-SECTOR-CLEAR",
@@ -16875,12 +16914,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-SECTOR-CLEAR",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 1,
+      "minRetriggerMs": 0
     },
     {
       "assetId": "SFX-V21-MEDAL-GOLD",
@@ -16898,12 +16943,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-MEDAL-GOLD",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 1,
+      "minRetriggerMs": 0
     },
     {
       "assetId": "SFX-V21-MEDAL-SILVER",
@@ -16921,12 +16972,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-MEDAL-SILVER",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 1,
+      "minRetriggerMs": 0
     },
     {
       "assetId": "SFX-V21-MEDAL-BRONZE",
@@ -16944,12 +17001,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-MEDAL-BRONZE",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 1,
+      "minRetriggerMs": 0
     },
     {
       "assetId": "SFX-V21-WPN-PRISM-IMPACT",
@@ -16967,12 +17030,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-WPN-PRISM-IMPACT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-WPN-ARC-IMPACT",
@@ -16990,12 +17059,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-WPN-ARC-IMPACT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-WPN-PLASMA-IMPACT",
@@ -17013,12 +17088,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-WPN-PLASMA-IMPACT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-WPN-NEEDLE-IMPACT",
@@ -17036,12 +17117,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-WPN-NEEDLE-IMPACT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     },
     {
       "assetId": "SFX-V21-WPN-MISSILE-IMPACT",
@@ -17059,12 +17146,18 @@
       "createdAt": "2026-10-17T00:00:00+08:00",
       "contentVersion": "2.1.0-neon-flow",
       "cueId": "SFX-V21-WPN-MISSILE-IMPACT",
-      "bus": "sfx",
+      "bus": "SFX",
       "loadGroup": "lazy",
-      "states": [],
+      "states": [
+        "ready"
+      ],
       "triggerEvents": [],
       "eventBindings": [],
-      "renderStates": {}
+      "renderStates": {},
+      "status": "generated",
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "maxVoices": 2,
+      "minRetriggerMs": 80
     }
   ]
 }

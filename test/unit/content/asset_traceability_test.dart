@@ -27,6 +27,24 @@ Map<String, Object?> _runtimeManifest() =>
     jsonDecode(File('assets/config/v2/manifest.json').readAsStringSync())
         as Map<String, Object?>;
 
+
+/// **v2.1 交付源多根解析**（与 `tool/build_v2_assets.dart` 的判据保持一致）。
+///
+/// v2.0 素材在 `素材/`，v2.1 新增素材在 `素材/v2.1/`（蓝图 §2.1：
+/// 「根目录 `素材/v2.1` 是**交付源**」）。两者都要能解析，
+/// 且**新文件以 `素材/v2.1/` 为准**（防止误用旧副本）。
+File resolveSource(String relative) {
+  final v21 = File('素材/v2.1/$relative');
+  if (v21.existsSync()) {
+    return v21;
+  }
+  return File('素材/$relative');
+}
+
+/// 供错误信息使用的可读路径。
+String describeSource(String relative) =>
+    resolveSource(relative).path;
+
 void main() {
   test('AC-09 素材溯源：源稿存在，且 sha256 语义与类别一致', () {
     // ⚠️ **先说明一个我差点搞错的语义**（记录在此以免后人重踩）：
@@ -59,8 +77,8 @@ void main() {
       final category = raw['category'];
 
       if (sourceFile != null) {
-        if (!File('素材/$sourceFile').existsSync()) {
-          missingSource.add('$id → 素材/$sourceFile');
+        if (!resolveSource(sourceFile).existsSync()) {
+          missingSource.add('$id → ${describeSource(sourceFile)}');
         }
         sourcesChecked++;
       }
@@ -72,8 +90,8 @@ void main() {
       // 我第一版只判 'audio'，于是 68 条音频全部掉进图形分支误报。
       if (category == 'sfx' || category == 'bgm' || category == 'music') {
         // 音频：sha256 应等于源母带哈希。
-        final file = File('素材/$sourceFile');
-        if (sourceFile != null && file.existsSync()) {
+        final file = sourceFile == null ? null : resolveSource(sourceFile);
+        if (file != null && file.existsSync()) {
           final actual = sha256Hex(file.readAsBytesSync());
           if (actual != sha) {
             audioHashMismatch.add('$id\n    登记 $sha\n    实际 $actual');
@@ -142,9 +160,9 @@ void main() {
       // runtimeSha256 与汇总顺序一致（素材侧按 states 顺序登记）。
       for (var i = 0; i < runtimeFiles.length; i++) {
         final relative = runtimeFiles[i];
-        final file = File('素材/$relative');
+        final file = resolveSource(relative);
         if (!file.existsSync()) {
-          mismatched.add('$id → 缺文件 素材/$relative');
+          mismatched.add('$id → 缺文件 ${describeSource(relative)}');
           continue;
         }
         if (i >= expectedHashes.length) {
@@ -200,7 +218,7 @@ void main() {
       // 应用侧逐个文件与素材包对应文件比对**内容哈希**。
       for (var i = 0; i < appFiles.length && i < packFiles.length; i++) {
         final appFile = File(appFiles[i]);
-        final packFile = File('素材/${packFiles[i]}');
+        final packFile = resolveSource(packFiles[i]);
         if (!appFile.existsSync() || !packFile.existsSync()) {
           mismatched.add('$id → 文件缺失（app=${appFiles[i]}）');
           continue;
