@@ -177,7 +177,6 @@ void exerciseRun(GameRuntime rt) {
   while (rt.combatSeconds < 60 && frame < 200 * 60) {
     rt.player.health.current = rt.player.health.max;
 
-    final offer = rt.currentOffer;
     // **v2.1**：不再有草案；"升级"由自动授予体现。
     for (final stamped in rt.lastFrameEvents) {
       final e = stamped.event;

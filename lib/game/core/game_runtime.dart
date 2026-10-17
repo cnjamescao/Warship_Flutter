@@ -1765,58 +1765,6 @@ class GameRuntime {
   ///
   /// 第 1 次草案不得早于有效战斗时间 15.0 秒 —— 15 秒前积累的经验
   /// 由 `UpgradeSystem.isAutoGrantDue` 保留，不做任何补偿。
-  /// **v2.0 草案路径（v2.1 将替换）**。
-  ///
-  /// ⚠️ 保留原因：v2.1 的 `_checkAutoGrantDue` 已实现并测试通过
-  /// （`grantAutomatic` + `applyGrant`，见 `v21_auto_grant_test.dart`），
-  /// 但**接线切换会让 14 个 v2.0 草案行为测试失败** ——
-  /// 按蓝图 §6，它们需**改造成**"标准 XP 不出现 Draft"的回归用例，
-  /// 这是独立的一次测试迁移。因此接线暂缓，由下一个批次
-  /// **连同测试迁移一起**切换，避免仓库停在红色状态。
-  void _checkDraftDue() {
-    final system = upgradeSystem;
-    if (system == null) {
-      return;
-    }
-    if (!system.isAutoGrantDue(
-      xp: xp,
-      grantCount: upgradeState.grantCount,
-      combatSeconds: combatSeconds,
-    )) {
-      return;
-    }
-    final offer = system.generateDraft(
-      state: upgradeState,
-      rng: random,
-      context: DraftContext(
-        combatSeconds: combatSeconds,
-        xp: xp,
-        damageCardIds: system.damageCardIds,
-      ),
-    );
-    if (offer == null) {
-      return; // 候选池为空：安全跳过，不崩溃
-    }
-    currentOffer = offer;
-    final event = phases.transitionTo(
-      GamePhase.upgradeDraft,
-      reason: 'xpThreshold',
-    );
-    if (event != null) {
-      bus.emit(event, runtime);
-    }
-    bus.emit(
-      UpgradeDraftOpened(
-        draftIndex: offer.draftIndex,
-        candidateIds: offer.candidates,
-      ),
-      runtime,
-    );
-  }
-
-  /// v2.1 的自动强化接线**已实现但尚未切换** —— 切换会让 14 个
-  /// v2.0 草案行为测试失败，需与测试迁移**同一提交**完成
-  /// （清单见 `docs/研发工作进度.md`「B1 步骤 3 待迁移用例清单」）。
   void _checkAutoGrantDue() {
     final system = upgradeSystem;
     if (system == null) {
