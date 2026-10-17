@@ -85,7 +85,7 @@ Map<String, Object?> conditionalParamsOf(DomainEvent event) {
         'weaponId': _audioWeaponId(weaponId),
         // **v2.1**：五种主弹道的稳定 style ID（null 表示旧主炮/副武器，
         // 此时不参与任何 weaponStyleId 路由 —— 符合"旧主炮传 null"）。
-        if (weaponStyleId != null) 'weaponStyleId': weaponStyleId,
+        'weaponStyleId': ?weaponStyleId,
       };
     case WeaponHit(:final weaponId, :final critical, :final weaponStyleId):
       return <String, Object?>{
@@ -93,7 +93,7 @@ Map<String, Object?> conditionalParamsOf(DomainEvent event) {
         'critical': critical,
         // **v2.1**：命中资源按 style 精确路由（五形态各自一张命中图 + cue）。
         // 旧主炮/副武器为 null ⇒ 不参与 weaponStyleId 路由。
-        if (weaponStyleId != null) 'weaponStyleId': weaponStyleId,
+        'weaponStyleId': ?weaponStyleId,
       };
     case BossPhaseChanged(:final phase):
       return <String, Object?>{'phase': phase};
