@@ -129,6 +129,9 @@ class HudView {
     this.bossHpRatio,
     this.bossPhase,
     this.objectiveWarning = false,
+    this.objectiveKey,
+    this.objectiveArgs = const <String, Object?>{},
+    this.isSectorClearConfirming = false,
   });
 
   final int hp;
@@ -155,6 +158,29 @@ class HudView {
 
   /// 是否应显示"敌人正在逃逸"预警。
   final bool objectiveWarning;
+
+  // ---- v2.1 Objective HUD（产品冻结表 §4）----
+  //
+  // **UI 只能从这三个字段显示文案，不能自行根据时间猜测** ——
+  // 冻结表 §4 原文：「顶部中间从 v2.1 起**不得显示**
+  // `190-combatSeconds` 或裸数字」。
+  //
+  // 为什么把 key 放在快照里而不是让 UI 自己算：
+  // 目标文案的切换点（145 / 150 / Boss 存活 / 清场确认）**属于规则**，
+  // 若散落在表现层，App 层就会再次"自己推断状态"（v2.0 的 Old 问题）。
+
+  /// 当前目标文案的 catalog key（如 `objective.survive`）。
+  ///
+  /// `null` 表示本帧不显示目标（例如结算）。
+  final String? objectiveKey;
+
+  /// 该 key 的模板参数（如 `{'seconds': 135}`）。
+  ///
+  /// **不得**由 UI 自行拼数字 —— 一律经 `catalog.text(key, params)`。
+  final Map<String, Object?> objectiveArgs;
+
+  /// 是否处于清场确认窗（0.8s 内）。UI 据此显示 `objective.sectorClear`。
+  final bool isSectorClearConfirming;
 
   double get hpRatio => hpMax == 0 ? 0 : hp / hpMax;
   double get shieldRatio => shieldMax == 0 ? 0 : shield / shieldMax;

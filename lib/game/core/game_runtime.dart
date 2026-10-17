@@ -435,6 +435,45 @@ class GameRuntime {
   /// 清场确认窗时长（技术协议 §3.2：固定 0.8 s）。
   static const double kSectorClearConfirmSeconds = 0.8;
 
+  /// 当前目标文案 key（v2.1 / 冻结表 §4）。
+  ///
+  /// | 条件 | key |
+  /// | --- | --- |
+  /// | `combatSeconds < 145` | `objective.survive`（`seconds=ceil(150-t)`） |
+  /// | `145 ≤ t < 150` 且 Boss 未入场 | `objective.bossIncoming` |
+  /// | Boss 已入场且存活 | `objective.defeatBoss` |
+  /// | 清场确认窗 | `objective.sectorClear` |
+  ///
+  /// **注意**：v2.1 **不得**再显示 `190 - combatSeconds` 或裸倒数。
+  String? get _objectiveKey {
+    if (sectorClearState == SectorClearState.confirming) {
+      return 'objective.sectorClear';
+    }
+    final b = boss;
+    if (b != null && !b.isDefeated) {
+      return 'objective.defeatBoss';
+    }
+    if (combatSeconds < 145) {
+      return 'objective.survive';
+    }
+    if (combatSeconds < 150) {
+      return 'objective.bossIncoming';
+    }
+    // 150 秒后 Boss 仍为 null：理论上不可达（150 秒必入场），
+    // 但保持确定行为 —— 继续显示"击败守门者"之前的过渡提示。
+    return 'objective.bossIncoming';
+  }
+
+  /// 目标文案的模板参数（冻结表 §4：`seconds=ceil(150 - combatSeconds)`）。
+  Map<String, Object?> get _objectiveArgs {
+    if (_objectiveKey == 'objective.survive') {
+      return <String, Object?>{
+        'seconds': (150 - combatSeconds).ceil().clamp(0, 150),
+      };
+    }
+    return const <String, Object?>{};
+  }
+
   /// 构建**同一逻辑步内一致**的威胁快照。
   ThreatSnapshot threatSnapshot() {
     final d = director;
@@ -2408,6 +2447,12 @@ class GameRuntime {
               ],
             ),
       hud: HudView(
+        // **v2.1 Objective HUD**（冻结表 §4）。
+        // 切换点属于**规则**，因此在这里算好，UI 只负责渲染。
+        objectiveKey: _objectiveKey,
+        objectiveArgs: _objectiveArgs,
+        isSectorClearConfirming:
+            sectorClearState == SectorClearState.confirming,
         hp: player.health.current,
         hpMax: player.health.max,
         shield: player.shield.current,
