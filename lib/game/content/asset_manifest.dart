@@ -95,6 +95,7 @@ class RenderStateSpec {
     required this.fps,
     required this.blendMode,
     required this.anchor,
+    this.frameRects = const <List<int>>[],
   });
 
   /// Flutter 资源键（由构建复制阶段写入，运行时原样使用）。
@@ -107,6 +108,23 @@ class RenderStateSpec {
   final double fps;
   final String blendMode;
   final List<double> anchor;
+
+  /// **v2.1 新增**：每个子图在整张 **sheet** 中的像素裁切矩形。
+  ///
+  /// 语义：`frameRects[i] = [x, y, w, h]`（左上原点，单位 px），
+  /// 沿同一张 sheet（`runtimeFiles` 的单张图）裁切出第 `i` 帧。
+  ///
+  /// **为什么需要它**：v2.0 资源是"**每帧一个 PNG**"，运行时不需要裁切；
+  /// v2.1 的素材是**整张 sheet（2172×724）+ 精确 frameRect**
+  /// （素材规范 §2），因此裁切信息必须由 manifest 承载 ——
+  /// **绝不允许从文件名或格子等分去推断帧**（素材规范 §1 明文禁止）。
+  ///
+  /// 契约：**长度必须等于 `frameCount`**（静态单帧则为 1 项或空）。
+  /// 数量不符会让帧错位（画出相邻子图或空白），由 `parse` 直接拒绝。
+  final List<List<int>> frameRects;
+
+  /// 是否使用 sheet + frameRect 模型（v2.1），而非"每帧一文件"（v2.0）。
+  bool get usesSheetFrameRects => frameRects.isNotEmpty;
 
   bool get isAnimated => frameCount > 1;
 }
@@ -472,6 +490,8 @@ class AssetManifest {
         renderStates[stateName] = _parseRenderState(
           value.cast<String, Object?>(),
           '$where.renderStates.$stateName',
+          errors: errors,
+          assetId: assetId.value,
         );
       }
     }
@@ -571,8 +591,10 @@ class AssetManifest {
 
   static RenderStateSpec _parseRenderState(
     Map<String, Object?> map,
-    String location,
-  ) {
+    String location, {
+    required List<ContentError> errors,
+    required String assetId,
+  }) {
     final interval = map['frameInterval'];
     var frameStart = 0;
     var frameEnd = 0;
@@ -580,17 +602,84 @@ class AssetManifest {
       frameStart = interval[0] is int ? interval[0] as int : 0;
       frameEnd = interval[1] is int ? interval[1] as int : 0;
     }
+    final frameCount =
+        map['frameCount'] is int ? map['frameCount'] as int : 1;
+
+    // **v2.1**：解析 `frameRect`（整张 sheet 的子图裁切表）。
+    // 支持两种写法：
+    //   * 单帧：`[x, y, w, h]`
+    //   * 多帧：`[[x,y,w,h], [x,y,w,h], ...]`
+    final frameRects = _parseFrameRects(map['frameRect']);
+    if (frameRects.isNotEmpty && frameRects.length != frameCount) {
+      // ⚠️ **必须是结构化错误，不能抛异常** ——
+      // 本文件的既有设计是"返回 `ContentError` 而不是抛异常"，
+      // 以便 Loading 页显示**可重试**错误（见 `parse` 的文档）。
+      // 我第一版写成 `throw`，会绕过这条契约，已修正。
+      errors.add(
+        ContentError(
+          kind: ContentErrorKind.schemaViolation,
+          location: location,
+          assetId: assetId,
+          field: 'renderStates.frameRect',
+          message: 'frameRect 数量（${frameRects.length}）与 '
+              'frameCount（$frameCount）不一致 —— 会导致帧错位；'
+              '素材规范 §2 要求每个子图各自给出精确裁切。',
+        ),
+      );
+    }
+
     return RenderStateSpec(
       runtimeFiles: _stringList(map['runtimeFiles']),
       frameStart: frameStart,
       frameEnd: frameEnd,
-      frameCount: map['frameCount'] is int ? map['frameCount'] as int : 1,
+      frameCount: frameCount,
       fps: map['fps'] is num ? (map['fps'] as num).toDouble() : 0,
       blendMode: map['blendMode'] is String
           ? map['blendMode'] as String
           : 'normal',
       anchor: _doubleList(map['anchor'], fallback: const <double>[0.5, 0.5]),
+      frameRects: frameRects,
     );
+  }
+
+  /// 解析 `frameRect`：接受 `[x,y,w,h]`（单帧）或 `[[x,y,w,h], ...]`（多帧）。
+  ///
+  /// 每项必须是**恰好 4 个整数**且 `w`/`h` **为正** ——
+  /// 宽高为 0 的裁切会画出空白帧，属于应当**响亮失败**的配置错误。
+  static List<List<int>> _parseFrameRects(Object? raw) {
+    if (raw == null) {
+      return const <List<int>>[];
+    }
+    final asList = raw is List ? raw : null;
+    if (asList == null || asList.isEmpty) {
+      return const <List<int>>[];
+    }
+    // 单帧写法：[0, 0, 543, 724]
+    if (asList.length == 4 && asList.every((e) => e is int)) {
+      final rect = asList.cast<int>();
+      return rect[2] > 0 && rect[3] > 0
+          ? <List<int>>[rect]
+          : const <List<int>>[];
+    }
+    // 多帧写法：[[...], [...]]
+    final out = <List<int>>[];
+    for (final item in asList) {
+      if (item is! List || item.length != 4) {
+        return const <List<int>>[];
+      }
+      final rect = <int>[];
+      for (final v in item) {
+        if (v is! int) {
+          return const <List<int>>[];
+        }
+        rect.add(v);
+      }
+      if (rect[2] <= 0 || rect[3] <= 0) {
+        return const <List<int>>[];
+      }
+      out.add(rect);
+    }
+    return out;
   }
 
   static EventBinding? _parseBinding(
