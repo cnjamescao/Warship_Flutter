@@ -49,6 +49,7 @@ import 'package:flutter/material.dart';
 import '../game/content/content_catalog.dart';
 import '../game/presentation/asset_cache.dart';
 import '../game/presentation/v21_result_medal.dart';
+import '../game/presentation/v21_sheet_cell.dart';
 import 'baseline_recording.dart';
 import '../game/core/domain_event.dart';
 import '../game/core/game_phase.dart';
@@ -871,7 +872,7 @@ class _ResultMedalState extends State<_ResultMedal>
                     angle: f.rotationDegrees * 3.141592653589793 / 180,
                     child: Transform.scale(
                       scale: f.scale,
-                      child: _SheetCell(
+                      child: V21SheetCell(
                         imagePath: files.first,
                         frameRect: rect,
                         size: kV21MedalSize,
@@ -888,69 +889,6 @@ class _ResultMedalState extends State<_ResultMedal>
           style: const TextStyle(color: Color(0xFFFFC24B), fontSize: 20),
         ),
       ],
-    );
-  }
-}
-
-/// 从一张 sheet 里裁出 [frameRect] 指定的那一格并缩放到 [size]。
-///
-/// **为什么不用 `Image.asset` 直接显示**：v2.1 的奖章素材是
-/// `2172×724` 的 sheet，一格只有 `724×724` —— 直接显示会画出**整张三格** ✗
-/// （这正是"用整张图代替内容"的经典错误，与 v2.0 的 7 倍拉伸同源）。
-///
-/// 实现用 `ClipRect + Align + OverflowBox` 的裁切组合，
-/// 不需要异步加载 `ui.Image`，也不引入额外依赖。
-class _SheetCell extends StatelessWidget {
-  const _SheetCell({
-    required this.imagePath,
-    required this.frameRect,
-    required this.size,
-  });
-
-  final String imagePath;
-  final List<int>? frameRect;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    if (frameRect == null) {
-      return Image.asset(
-        imagePath,
-        width: size,
-        height: size,
-        filterQuality: FilterQuality.medium,
-        errorBuilder: (_, _, _) => SizedBox(width: size, height: size),
-      );
-    }
-    final x = frameRect![0].toDouble();
-    final y = frameRect![1].toDouble();
-    final w = frameRect![2].toDouble();
-    final h = frameRect![3].toDouble();
-    // 整张 sheet 的尺寸要按"能塞下这一格"反推：这里直接用相对比例裁切。
-    // 由于所有 v2.1 sheet 都是 2172×724、格子同为 724 高，
-    // 用 `widthFactor/heightFactor` 表达"只露这一格"即可。
-    final sheetWidth = 2172.0;
-    final sheetHeight = 724.0;
-    return SizedBox(
-      width: size,
-      height: size,
-      child: ClipRect(
-        child: Align(
-          alignment: Alignment(
-            (w >= sheetWidth) ? 0 : (x / (sheetWidth - w)) * 2 - 1,
-            (h >= sheetHeight) ? 0 : (y / (sheetHeight - h)) * 2 - 1,
-          ),
-          widthFactor: w / sheetWidth,
-          heightFactor: h / sheetHeight,
-          child: Image.asset(
-            imagePath,
-            width: size * (sheetWidth / w),
-            height: size * (sheetHeight / h),
-            filterQuality: FilterQuality.medium,
-            errorBuilder: (_, _, _) => SizedBox(width: size, height: size),
-          ),
-        ),
-      ),
     );
   }
 }
