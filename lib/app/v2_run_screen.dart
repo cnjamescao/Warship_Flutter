@@ -631,20 +631,37 @@ class _TimerPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final remaining = (190 - hud.combatSeconds).clamp(0, 190).ceil();
+    // **v2.1（冻结表 §4）**：
+    // 「顶部中间从 v2.1 起**不得显示** `190-combatSeconds` 或裸数字。
+    //   UI **只能**从 `objectiveKey`/`objectiveArgs` 显示文案，
+    //   **不能自行根据时间猜测**。」
+    //
+    // 因此这里**不再自己算秒数** —— 一切都来自规则层填好的字段。
+    // 这不是"少了个倒计时"，而是**目标提示从裸数字改成了语义文案**。
+    final key = hud.objectiveKey;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text(
-          remaining.toString().padLeft(3, '0'),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 34 * scale,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 3,
-            fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+        if (key != null)
+          Text(
+            catalog.text(key, Map<String, Object?>.from(hud.objectiveArgs)),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22 * scale,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
           ),
-        ),
+        if (hud.isSectorClearConfirming)
+          Text(
+            catalog.text('objective.sectorClear'),
+            style: TextStyle(
+              color: const Color(0xFF6BE59A),
+              fontSize: 18 * scale,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         if (hud.objectiveWarning)
           Text(
             catalog.text('hud.objective.warning'),
