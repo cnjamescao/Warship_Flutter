@@ -164,10 +164,12 @@ runSeed(int seed, {int frames = kFramesPerRun}) {
         drafts.add('${e.grantOrdinal}:${e.cardId}');
       }
     }
-    final gate = rt.riskGate;
-    if (gate != null && !gate.isResolved) {
-      risks.add(gate.availableOptions.join(','));
-      rt.selectRiskOption(RiskOptionIds.supply);
+    // **R2**：风险门到点**自动结算**，不再有"等待中的门"。
+    for (final res in rt.riskGateResolutions) {
+      final key2 = '${res.gateId}:${res.optionId}';
+      if (!risks.contains(key2)) {
+        risks.add(key2);
+      }
     }
   }
 
@@ -440,10 +442,11 @@ void main() {
           rt.selectDraftCard(0);
         }
         rt.advance(GameClock.fixedStepSeconds, inputFor(frame));
-        final gate = rt.riskGate;
-        if (gate != null && gateId == null) {
-          gateId = gate.gateId;
-          options = List<String>.from(gate.availableOptions);
+        // **R2**：以自动结算记录为准确认"门确实发生了"。
+        if (gateId == null && rt.riskGateResolutions.isNotEmpty) {
+          final res = rt.riskGateResolutions.first;
+          gateId = res.gateId;
+          options = <String>[res.optionId];
         }
         frame++;
       }

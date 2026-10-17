@@ -331,6 +331,15 @@ class GameRuntime {
   /// 进行中的风险门；null 表示没有。
   RiskGateSession? riskGate;
 
+  /// **R2**：每次风险门自动结算的记录（gateId / 序号 / 选项 / 徽记序号）。
+  final List<RiskGateResolution> riskGateResolutions =
+      <RiskGateResolution>[];
+
+  final Map<String, int> _riskGateOccurrences = <String, int>{};
+
+  /// 结果徽记的**全局序号**（强化与风险门共用一个队列）。
+  int _resultNoticeCounter = 0;
+
   /// **胜利过渡态**：Boss 被击败后置位，此后本局不再结算任何伤害。
   ///
   /// 依 F-20 裁决（选 A）：「`BossDefeated` 被确认后…**原子切换**到
@@ -533,10 +542,10 @@ class GameRuntime {
     }
     _lockedInput = input;
 
-    // 风险门：窗口按表现时间推进，但战斗逻辑完全冻结。
+    // **R2**：不再有 `riskGate` 活动阶段 —— 进入该 phase 只可能是
+    // 旧回放/旧快照的残留数据，此时**直接恢复为 playing**（不阻断）。
     if (phases.phase == GamePhase.riskGate) {
-      _updateRiskGate(renderDeltaSeconds, _lockedInput.riskSelection);
-      return 0;
+      phases.transitionTo(GamePhase.playing, reason: 'r2NoRiskGatePhase');
     }
 
     // 升级草案：只接受选卡，逻辑完全冻结。
@@ -1034,15 +1043,28 @@ class GameRuntime {
   /// 打开一道风险门。
   ///
   /// 出现前清除所有普通敌弹、停止新敌生成；**玩家位置不锁定**。
+  /// **v2.1-R2：风险门到点自动结算**（冻结表 §2.4）。
+  ///
+  /// 与 v2.0 的关键差别 —— **不再有任何玩法阻断**：
+  /// * **不清子弹**（`clearNormalEnemyBulletsBefore` 不参与正常对局）；
+  /// * **不停刷怪**（`stopNewEnemySpawns` 同上）；
+  /// * **不切换 phase**（不进入 `GamePhase.riskGate`，战斗不中断）；
+  /// * **不等待玩家输入**，没有选择窗、没有超时回退。
+  ///
+  /// 抽取由 `RandomSource` 的**带标签固定调用**完成（等权），
+  /// 因此同 seed 同输入必得同一结果，且不受帧率/暂停/渲染影响。
+  ///
+  /// 没有合法项属**内容配置错误** —— 抛错（Release 阻断），
+  /// 而不是静默跳过（那会让"这一局少了风险门"变成不可见的缺陷）。
   void _openRiskGate(String gateId) {
     final system = riskGateSystem;
     if (system == null || !openedRiskGates.add(gateId)) {
       return;
     }
 
-    projectiles.removeWhere((p) => p.faction == ProjectileFaction.enemy);
-    hazards.clear();
-      _pendingAttacks.clear();
+    // 记录本次是该 gate 的第几次（0 基），供快照与回放对账。
+    final ordinal = _riskGateOccurrences[gateId] ?? 0;
+    _riskGateOccurrences[gateId] = ordinal + 1;
 
     // 过载的可选项＝稀有池 ∩ 当前可用卡（满级/互斥/前置不满足的要过滤）。
     final rarePool = <String>[];
@@ -1056,47 +1078,43 @@ class GameRuntime {
       }
     }
 
+    final optionId = system.autoPickOption(
+      gateId: gateId,
+      occurrenceOrdinal: ordinal,
+      playerHp: player.health.current,
+      availableRareCards: rarePool,
+      rng: random,
+    );
+    if (optionId == null) {
+      throw StateError(
+        '风险门 $gateId 没有合法选项 —— 内容配置错误，必须修复配置 '
+        '（冻结表 §2.4：不得静默跳过）。',
+      );
+    }
+
+    // 结算：与手动选择**走同一条** `_applyRiskOutcome`（避免两套效果）。
     final session = system.open(
       gateId: gateId,
       playerHp: player.health.current,
       availableRareCards: rarePool,
     );
-    riskGate = session;
-
-    final event = phases.transitionTo(GamePhase.riskGate, reason: 'riskGate');
-    if (event != null) {
-      bus.emit(event, runtime);
+    final outcome = session.select(optionId);
+    if (outcome == null) {
+      throw StateError('风险门 $gateId 的选项 $optionId 无法结算');
     }
-    bus.emit(
-      RiskGateOpened(
+    _applyRiskOutcome(outcome);
+
+    // 记录供回放/快照对账（冻结表 §2.4 要求）。
+    riskGateResolutions.add(
+      RiskGateResolution(
         gateId: gateId,
-        availableOptionIds: session.availableOptions,
-        lockedOptionIds: session.lockedOptions,
+        occurrenceOrdinal: ordinal,
+        optionId: optionId,
+        resultNoticeOrdinal: _resultNoticeCounter++,
       ),
-      runtime,
     );
   }
 
-  /// 推进风险门窗口（用**表现时间**，因为战斗逻辑已冻结）。
-  void _updateRiskGate(double dt, String? selection) {
-    final session = riskGate;
-    if (session == null || session.isResolved) {
-      return;
-    }
-    if (selection != null) {
-      final outcome = session.select(selection);
-      if (outcome != null) {
-        _applyRiskOutcome(outcome);
-      }
-      return;
-    }
-    final outcome = session.tick(dt);
-    if (outcome != null) {
-      _applyRiskOutcome(outcome);
-    }
-  }
-
-  /// 玩家选择一个选项（供界面直接调用）。
   bool selectRiskOption(String optionId) {
     final session = riskGate;
     if (session == null || session.isResolved) {

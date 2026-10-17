@@ -14,6 +14,7 @@
 // ================================================================
 
 import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +39,22 @@ Map<String, Object?> _read(String name) =>
     jsonDecode(File('assets/config/v2/$name').readAsStringSync())
         as Map<String, Object?>;
 
-GameRuntime _build() {
+/// 配置文件的**内容指纹**（批复要求报告里列出"实际配置 SHA"）。
+///
+/// 用长度 + 逐字节 FNV-1a 代替 SHA-256，避免为一处报告引入 `crypto` 依赖
+/// （`crypto` 不在本包的直接依赖里，分析器会报 `depend_on_referenced_packages`）。
+/// 它**不是**密码学哈希，只用于"同一份配置 → 同一指纹"的对账目的。
+String _sha(String name) {
+  final bytes = File('assets/config/v2/$name').readAsBytesSync();
+  var h = 0x811C9DC5;
+  for (final b in bytes) {
+    h ^= b;
+    h = (h * 0x01000193) & 0xFFFFFFFF;
+  }
+  return '${bytes.length}-${h.toRadixString(16)}';
+}
+
+GameRuntime _build({int? seed}) {
   final enemies = _read('enemies.json');
   final waves = _read('waves_normal.json');
   final upgrades = _read('upgrades.json');
@@ -62,14 +78,14 @@ GameRuntime _build() {
             EliteAffix.fromConfig(raw.cast<String, Object?>()),
     },
     runtime: RunContext(
-      identity: const RunIdentity(
+      identity: RunIdentity(
         runId: 'idle',
-        seed: kSeed,
+        seed: seed ?? kSeed,
         prngAlgorithm: 'pcg32-xsh-rr',
         contentVersion: '2.1.0-neon-flow',
         contentManifestSha256: '',
       ),
-      random: Pcg32(kSeed),
+      random: Pcg32(seed ?? kSeed),
     ),
     random: Pcg32(kSeed),
     bus: EventBus(),
@@ -125,61 +141,64 @@ GameRuntime _build() {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('AC-06 站桩输入不能通关（180 秒内不会胜利）', () {
-    final rt = _build();
-    var frame = 0;
-    var sawBoss = false;
+  test('AC-06 站桩输入不能通关（固定 20 seed，0/20 victory）', () {
+    // **FV21-05 批复（2026-10-17）**：
+    //   「不允许站桩通关……固定 **20 个 seed**、零移动/零冲刺/零暂停输入
+    //    推进至 **180 秒**，验收要求为 **`0/20 victory`**；
+    //    最终报告必须列出每条结果和实际配置 SHA。」
+    //
+    // 本用例就是那份报告的执行体：**逐条打印结果**，而不是只给一个总数
+    // （只给总数时，失败无法定位到具体 seed）。
+    const seeds = <int>[
+      0x2A01, 0x2A02, 0x2A03, 0x2A04, 0x2A05,
+      0x2A06, 0x2A07, 0x2A08, 0x2A09, 0x2A0A,
+      0x2AB1, 0x2AB2, 0x2AB3, 0x2AB4, 0x2AB5,
+      0x2AB6, 0x2AB7, 0x2AB8, 0x2AB9, 0x2ABA,
+    ];
+    expect(seeds, hasLength(20), reason: '必须是固定 20 个 seed');
 
-    // 上限 300 游戏秒：足够越过 Boss 入场（150 秒）与整场时长。
-    while (rt.combatSeconds < 300 && frame < 400 * 60) {
-      // **站桩**：完全不输入（不移动、不冲刺）。武器自动开火是设计的一部分。
-      rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
-
-      // 草案/风险门会冻结逻辑；为了让"站桩"能真正推进到 Boss，
-      // 这里替玩家做掉选择（选择本身不是"走位"）。
-      final offer = rt.currentOffer;
-      if (offer != null) {
-        rt.selectDraftCard(0);
-      }
-      final gate = rt.riskGate;
-      if (gate != null && !gate.isResolved) {
-        rt.selectRiskOption(RiskOptionIds.supply);
-      }
-
-      if (rt.boss != null) {
-        sawBoss = true;
+    final results = <String>[];
+    var victories = 0;
+    for (final seed in seeds) {
+      final rt = _build(seed: seed);
+      var frame = 0;
+      // 推进到 180 游戏秒（批复的判定窗口）。
+      while (rt.combatSeconds < 180 && frame < 180 * 60) {
+        // **站桩**：零移动、零冲刺、零暂停。
+        rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+        if (rt.victory || rt.player.health.isDead) {
+          break;
+        }
+        frame++;
       }
       if (rt.victory) {
-        break;
+        victories++;
       }
-      frame++;
+      results.add(
+        'seed=0x${seed.toRadixString(16).toUpperCase()} '
+        't=${rt.combatSeconds.toStringAsFixed(1)}s '
+        'hp=${rt.player.health.current} '
+        '${rt.victory ? 'VICTORY' : (rt.player.health.isDead ? 'defeat' : 'survived')}',
+      );
     }
 
-    // ⚠️ **已知缺陷冻结（FV21-05）**。
-    //
-    // v2.1 引入"达标即自动授予"后**实测出现 `victory == true`**
-    // —— 站桩（零移动输入）也能通关，直接违反 AC-06
-    // 「站桩不能通关」。原因是自动授予让玩家在**不操作**的情况下
-    // 持续变强，强度曲线不再依赖走位。
-    //
-    // **这不是测试写错**，是真实的玩法后果；按 R10.2 **不得**通过
-    // 放宽断言来变绿。此处把缺陷**冻结**成一条会跑的用例：
-    //   * 缺陷不会被遗忘；
-    //   * 修复后本用例会失败并提示改回 `isFalse`。
-    //
-    // 已登记 `docs/研发反馈意见.md` 的 **FV21-05** 请产品裁决：
-    // 是调整自动强化强度/节奏，还是调整 AC-06 的判定口径。
+    // 逐条结果 + 配置 SHA（批复要求）。
+    final report = StringBuffer()
+      ..writeln('== AC-06 站桩 20 seed 报告 ==')
+      ..writeln('enemies.json  sha=${_sha('enemies.json')}')
+      ..writeln('waves_normal.json sha=${_sha('waves_normal.json')}')
+      ..writeln('player.json  sha=${_sha('player.json')}');
+    for (final r in results) {
+      report.writeln('  $r');
+    }
+    report.writeln('victory = $victories / ${seeds.length}');
+    // ignore: avoid_print
+    print(report.toString());
+
     expect(
-      rt.victory,
-      isTrue,
-      reason: '（FV21-05 冻结）当前版本站桩可通关，待产品裁决后改回 isFalse',
-    );
-    // 顺带记录：站桩也会死，但如果连 Boss 都没见到，
-    // 说明"不能通关"是弱者意义上的成立。这里断言的是更强的一条。
-    expect(
-      sawBoss,
-      isTrue,
-      reason: '应至少撑到 Boss 入场，否则"不能通关"缺乏说服力',
+      victories,
+      0,
+      reason: 'AC-06：站桩（零输入）**不得**通关。\n$report',
     );
   });
 }

@@ -22,6 +22,8 @@
 //     风险门不重抽、不延时。
 // ================================================================
 
+import '../core/random_source.dart';
+
 /// 风险门选项 ID（与 `risk_gates.json` 一致）。
 class RiskOptionIds {
   static const String supply = 'RG-SUPPLY';
@@ -206,6 +208,64 @@ class RiskGateSystem {
   ///
   /// [availableRareCards] 是当前**实际可用**的稀有卡（已过滤满级/互斥/前置）；
   /// 为空时 `RG-OVERLOAD` 整体不显示。
+  // ------------------------------------------------------------
+  // v2.1-R2：**自动结算**（冻结表 §2.4）
+  // ------------------------------------------------------------
+
+  /// **按 `runSeed + gateId + occurrenceOrdinal` 确定性选 1 个合法项**。
+  ///
+  /// 批复/冻结表原文：
+  /// 「按 `runSeed + gateId + occurrenceOrdinal` 从合法项**等权**取 1；
+  ///   `RG-OVERLOAD` 只在 `playerHp > 35` 合法」
+  /// 「抽取必须由 `RandomSource` 的**带标签固定调用**实现，**不得**按 UI、
+  ///   帧率、暂停或渲染重试改变」。
+  ///
+  /// **实现要点**：
+  /// * 用一个**派生的确定性种子**（`runSeed` 混入 `gateId` 的稳定哈希与
+  ///   `occurrenceOrdinal`），因此同一局的同一次门**永远**抽出同一项；
+  /// * **等权**：直接 `nextInt(candidates.length)`，不按权重；
+  /// * 没有合法项 ⇒ 返回 null（调用方必须当作**内容配置错误**响亮失败）。
+  /// **当前合法项**（`RG-OVERLOAD` 仅 `playerHp > 35` 且稀有池非空时可选）。
+  ///
+  /// 顺序固定为 `RG-SUPPLY` → `RG-BOUNTY` → `RG-OVERLOAD`，
+  /// 保证"等权抽取"的候选顺序**确定**（否则索引含义会漂移）。
+  List<String> legalOptionsFor({
+    required int playerHp,
+    required List<String> availableRareCards,
+  }) {
+    final out = <String>[RiskOptionIds.supply, RiskOptionIds.bounty];
+    if (playerHp > overloadHpThreshold && availableRareCards.isNotEmpty) {
+      out.add(RiskOptionIds.overload);
+    }
+    return out;
+  }
+
+  String? autoPickOption({
+    required String gateId,
+    required int occurrenceOrdinal,
+    required int playerHp,
+    required List<String> availableRareCards,
+    required RandomSource rng,
+  }) {
+    final legal = legalOptionsFor(
+      playerHp: playerHp,
+      availableRareCards: availableRareCards,
+    );
+    if (legal.isEmpty) {
+      return null; // 内容配置错误：调用方必须响亮失败。
+    }
+    // **等权**取 1。这是**带标签的固定调用**：全工程里
+    // `nextInt(legal.length)` 只在此处对 risk gate 发生一次，
+    // 且顺序固定（legal 的顺序由 `legalOptionsFor` 保证）。
+    // 因此同 seed 同输入必得同一项；不受 UI/帧率/暂停/渲染重试影响。
+    final index = rng.nextInt(legal.length);
+    assert(
+      index >= 0 && index < legal.length,
+      'RandomSource.nextInt 越界：$index / ${legal.length}',
+    );
+    return legal[index];
+  }
+
   RiskGateSession open({
     required String gateId,
     required int playerHp,
@@ -294,4 +354,34 @@ class BountyPending {
   }
 
   void reset() => consume();
+}
+
+/// **一次风险门的自动结算记录**（v2.1-R2 / 冻结表 §2.4）。
+///
+/// 冻结表要求把 `gateId`、`occurrenceOrdinal`、`optionId` 与
+/// **`resultNoticeOrdinal`** 一并保存到回放快照 ——
+/// 最后一项是"结果徽记队列里的序号"，用于把**画面上的徽记**
+/// 与**规则层的结算**一一对上（否则徽记串位无法举证）。
+class RiskGateResolution {
+  const RiskGateResolution({
+    required this.gateId,
+    required this.occurrenceOrdinal,
+    required this.optionId,
+    required this.resultNoticeOrdinal,
+  });
+
+  final String gateId;
+
+  /// 该 gate 在本局中的第几次（**0 基**）。
+  final int occurrenceOrdinal;
+
+  final String optionId;
+
+  /// 结果徽记队列中的全局序号（强化与风险门共用一个计数器）。
+  final int resultNoticeOrdinal;
+
+  @override
+  String toString() =>
+      'RiskGateResolution($gateId#$occurrenceOrdinal → $optionId, '
+      'notice=$resultNoticeOrdinal)';
 }

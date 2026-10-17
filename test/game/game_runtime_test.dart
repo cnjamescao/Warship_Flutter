@@ -148,22 +148,20 @@ void main() {
       expect(rt.combatSeconds, closeTo(3.0, 1e-9), reason: '战斗时间不得推进');
     });
 
-    test('升级草案与风险门同样冻结全部逻辑', () {
-      for (final phase in <GamePhase>[
-        GamePhase.upgradeDraft,
-        GamePhase.riskGate,
-      ]) {
-        final rt = buildRuntime();
-        runSeconds(rt, 2.0);
-        final stepsBefore = rt.logicSteps;
-        final positionBefore = rt.player.position;
+    test('R2：升级草案（历史阶段）仍冻结逻辑', () {
+      final rt = buildRuntime();
+      runSeconds(rt, 2.0);
 
-        rt.phases.transitionTo(phase, reason: 'test');
-        runSeconds(rt, 5.0, input: const InputFrame(moveDirection: Vec2(1, 0)));
+      // 升级草案：仍然冻结（正常对局已不再进入，仅作历史阶段行为）。
+      rt.phases.transitionTo(GamePhase.upgradeDraft, reason: 'test');
+      final stepsBefore = rt.logicSteps;
+      runSeconds(rt, 1.0);
+      expect(rt.logicSteps, stepsBefore, reason: '升级草案期间逻辑冻结');
 
-        expect(rt.logicSteps, stepsBefore, reason: '${phase.name} 必须冻结');
-        expect(rt.player.position, positionBefore);
-      }
+      // **R2**：风险门不再是活动阶段。
+      // 这条由 "R2：55 秒自动结算风险门" 用例直接断言
+      // （结算后 `phase` 仍为 playing、`riskGate` 为 null）；
+      // 此处不再人为构造非法转移 —— 阶段机本就不允许进入它。
     });
 
     test('恢复 Playing 后逻辑继续推进', () {
@@ -293,81 +291,56 @@ void main() {
       ],
     );
 
-    test('55 秒打开风险门，逻辑冻结且清空普通敌弹', () {
+    test('R2：55 秒自动结算风险门，**不中断战斗**', () {
+      // **v2.1-R2 冻结表 §2.4**：风险门到点自动结算 ——
+      // 不得出现选择窗、超时回退、遮罩，也不得清子弹或停刷怪。
       final rt = buildRuntime(riskGates: gates());
 
-      // 推进到风险门打开（保持玩家存活）。
       var guard = 0;
-      while (rt.riskGate == null && guard < 300000) {
+      while (rt.riskGateResolutions.isEmpty && guard < 300000) {
         rt.player.health.current = 100;
         rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
         guard++;
       }
 
-      expect(rt.riskGate, isNotNull, reason: '55 秒应打开风险门');
-      expect(rt.phases.phase, GamePhase.riskGate);
+      expect(rt.riskGateResolutions, isNotEmpty,
+          reason: '55 秒应自动结算风险门');
+      final res = rt.riskGateResolutions.first;
+      expect(res.gateId, 'RG-55');
+      expect(res.occurrenceOrdinal, 0, reason: '首次为 0 基第 0 次');
       expect(
-        rt.projectiles.where((p) => p.faction == ProjectileFaction.enemy),
-        isEmpty,
-        reason: '出现前应清除所有普通敌弹',
+        <String>['RG-SUPPLY', 'RG-BOUNTY', 'RG-OVERLOAD'],
+        contains(res.optionId),
       );
 
-      // 逻辑冻结。
+      // **关键**：phase 必须仍是 playing（战斗没有被打断）。
+      expect(rt.phases.phase, GamePhase.playing,
+          reason: 'R2 不得进入 riskGate 阶段');
+      expect(rt.riskGate, isNull, reason: 'R2 不保留等待中的门会话');
+
+      // 逻辑**继续推进**（不是冻结）。
       final stepsBefore = rt.logicSteps;
       runSeconds(rt, 2.0);
-      expect(rt.logicSteps, stepsBefore, reason: '风险门期间逻辑必须冻结');
-      expect(rt.riskGate!.remainingSeconds, lessThan(5.0),
-          reason: '窗口按表现时间推进');
+      expect(rt.logicSteps, greaterThan(stepsBefore),
+          reason: 'R2：风险门不得冻结逻辑');
     });
 
-    test('5 秒不操作只执行保底 RG-SUPPLY', () {
+    test('R2：不操作也无需保底 —— 结算在触发当步完成', () {
       final rt = buildRuntime(riskGates: gates());
       var guard = 0;
-      while (rt.riskGate == null && guard < 300000) {
+      while (rt.riskGateResolutions.isEmpty && guard < 300000) {
         rt.player.health.current = 100;
-        rt.player.shield.current = 0;
         rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
         guard++;
       }
-
-      final shieldBefore = rt.player.shield.current;
-      // 推进超过 5 秒窗口。
-      runSeconds(rt, 6.0);
-
+      // 风险门已结算完毕，**不存在**等待窗口。
+      expect(rt.riskGateResolutions, hasLength(1));
       expect(rt.riskGate, isNull);
-      expect(rt.phases.phase, GamePhase.playing);
-      expect(
-        rt.player.shield.current,
-        greaterThan(shieldBefore),
-        reason: '保底给护盾 +20',
-      );
-      final selected = rt.bus.debugHistory
-          .map((e) => e.event)
-          .whereType<RiskSelected>()
-          .toList();
-      expect(selected, isNotEmpty);
-      expect(selected.last.optionId, RiskOptionIds.supply);
-      expect(selected.last.wasTimeout, isTrue);
-    });
-
-    test('HP ≤35 时过载锁定；HP >35 时可选', () {
-      final system = gates();
-
-      final low = system.open(
-        gateId: 'RG-55',
-        playerHp: 35,
-        availableRareCards: const <String>['UP-CRIT-ARC'],
-      );
-      expect(low.lockedOptions, contains(RiskOptionIds.overload));
-      expect(low.availableOptions, isNot(contains(RiskOptionIds.overload)));
-
-      final high = system.open(
-        gateId: 'RG-55',
-        playerHp: 36,
-        availableRareCards: const <String>['UP-CRIT-ARC'],
-      );
-      expect(high.lockedOptions, isEmpty);
-      expect(high.availableOptions, contains(RiskOptionIds.overload));
+      // 再推进 6 秒也不会出现第二个 RG-55（同一 gate 只结算一次）。
+      runSeconds(rt, 6.0);
+      final gate55 =
+          rt.riskGateResolutions.where((r) => r.gateId == 'RG-55').length;
+      expect(gate55, 1, reason: '同一 gate 只结算一次');
     });
 
     test('过载代价：20 秒内所受伤害加重', () {

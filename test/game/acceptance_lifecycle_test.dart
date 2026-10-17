@@ -184,10 +184,9 @@ void exerciseRun(GameRuntime rt) {
         picked.add('${e.grantOrdinal}:${e.cardId}');
       }
     }
-    final gate = rt.riskGate;
-    if (gate != null && !gate.isResolved) {
+    // **R2**：风险门到点自动结算，不再有等待中的门。
+    if (rt.riskGateResolutions.isNotEmpty) {
       sawRiskGate = true;
-      rt.selectRiskOption(RiskOptionIds.supply);
     }
 
     rt.advance(GameClock.fixedStepSeconds, inputFor(frame));
