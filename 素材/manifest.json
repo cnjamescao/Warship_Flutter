@@ -17409,6 +17409,218 @@
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
       "maxVoices": 2,
       "minRetriggerMs": 80
+    },
+    {
+      "assetId": "UI-V21-AUTO-UPGRADE-EMBLEM",
+      "category": "ui",
+      "sourceFile": "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png",
+      "runtimeFiles": [
+        "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+      ],
+      "sha256": "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee",
+      "runtimeSha256": [
+        "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "status": "release_ready",
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            0,
+            0,
+            543,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RISK-SUPPLY-EMBLEM",
+      "category": "ui",
+      "sourceFile": "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png",
+      "runtimeFiles": [
+        "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+      ],
+      "sha256": "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee",
+      "runtimeSha256": [
+        "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "status": "release_ready",
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            543,
+            0,
+            543,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RISK-BOUNTY-EMBLEM",
+      "category": "ui",
+      "sourceFile": "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png",
+      "runtimeFiles": [
+        "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+      ],
+      "sha256": "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee",
+      "runtimeSha256": [
+        "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "status": "release_ready",
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1086,
+            0,
+            543,
+            724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "UI-V21-RISK-OVERLOAD-EMBLEM",
+      "category": "ui",
+      "sourceFile": "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png",
+      "runtimeFiles": [
+        "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+      ],
+      "sha256": "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee",
+      "runtimeSha256": [
+        "6595c5848965ab8cc962efe47ca01b91ee13d377e2231a3a5f9e16e0a0292bee"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-17T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [],
+      "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
+      "memoryEstimateBytes": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "eventBindings": [],
+      "status": "release_ready",
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "图形/交互结果/UI-V21-AUTO-RESULT-EMBLEMS-SHEET.png"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "frameRect": [
+            1629,
+            0,
+            543,
+            724
+          ]
+        }
+      }
     }
   ]
 }

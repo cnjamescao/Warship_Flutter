@@ -41,10 +41,10 @@ void main() {
     expect(find.text('设置'), findsOneWidget);
   });
 
-  testWidgets('内容目录经生产路径加载成功（232 条 / 2.1.0-neon-flow）', (tester) async {
+  testWidgets('内容目录经生产路径加载成功（236 条 / 2.1.0-neon-flow）', (tester) async {
     await mountV2App(tester, catalog);
 
-    expect(catalog.manifest.length, 232);
+    expect(catalog.manifest.length, 236);
     expect(catalog.manifest.contentVersion, '2.1.0-neon-flow');
   });
 
