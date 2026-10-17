@@ -96,6 +96,14 @@ class Projectile {
     this.isCritical = false,
     this.attackId,
     this.assetId,
+    this.weaponStyleId,
+    this.projectileAssetId,
+    this.impactAssetId,
+    this.impactCueId,
+    this.pierceRemaining = 0,
+    this.bounceRemaining = 0,
+    this.homingTargetId,
+    this.impactDamageRadius = 0,
   });
 
   final EntityId id;
@@ -111,6 +119,30 @@ class Projectile {
   final bool isCritical;
   final String? attackId;
   final String? assetId;
+
+  // ---- v2.1 主弹道形态（蓝图 §3.4）----
+  final String? weaponStyleId;
+  final String? projectileAssetId;
+  final String? impactAssetId;
+  final String? impactCueId;
+
+  /// 命中后还能再命中几个**不同**目标（Prism 1 / Needle 2）。
+  int pierceRemaining;
+
+  /// 首次命中后还能弹跳几次（Arc 1）。
+  int bounceRemaining;
+
+  /// 追踪锁定目标（Missile）；null = 直线飞行。
+  EntityId? homingTargetId;
+
+  /// 爆裂伤害半径（logical px）；0 = 无范围伤害（FV21-03 待裁决）。
+  final double impactDamageRadius;
+
+  /// **已命中的目标集合** —— 穿透与弹跳**不得重复命中同一个目标**。
+  ///
+  /// 蓝图 §3.4：「`Projectile` 生命周期保存**已命中的 EntityId 集合**。
+  /// 弹跳、穿透、追踪**永不命中玩家、拾取物或已移除实体**。」
+  final Set<EntityId> hitTargetIds = <EntityId>{};
 
   double age = 0;
   bool consumed = false;
@@ -1414,12 +1446,25 @@ class GameRuntime {
         lifetimeSeconds: request.lifetimeSeconds,
         weaponId: request.weaponId,
         isCritical: request.isCritical,
+        // **v2.1**：把 Domain 锁定的形态信息**原样**带给投射物 ——
+        // 表现层据此取弹体/命中图，**不得**按武器名猜（会命中错的图）。
+        weaponStyleId: request.weaponStyleId,
+        projectileAssetId: request.projectileAssetId,
+        impactAssetId: request.impactAssetId,
+        impactCueId: request.impactCueId,
+        pierceRemaining: request.pierceRemaining,
+        bounceRemaining: request.bounceRemaining,
+        homingTargetId: request.homingTargetId,
+        impactDamageRadius: request.impactDamageRadius,
+        // 首帧即把锁定目标记为"已命中"是**不正确**的（还没打到），
+        // 因此这里不预填 hitTargetIds。
       );
       _pendingProjectiles.add(projectile);
 
       bus.emit(
         WeaponFired(
           weaponId: request.weaponId,
+          weaponStyleId: request.weaponStyleId,
           sourceId: const EntityId(EntityKind.player, 0),
           position: request.origin,
           direction: request.direction,
@@ -1615,6 +1660,43 @@ class GameRuntime {
     return 0;
   }
 
+  /// **Arc 弹跳的目标选择**（蓝图 §3.4 原文）。
+  ///
+  /// 「首命中后在 **360 logical px 内**以**距离、EntityId** 选一个
+  /// **未命中**合法目标；**无候选即销毁**。」
+  ///
+  /// 排序必须**确定**（同距离时按 EntityId），否则回放不可复现。
+  /// 只考虑**存活**敌人 —— 已移除实体不得被选中。
+  EnemyState? _pickBounceTarget(Projectile projectile) {
+    const maxDistance = 360.0;
+    final candidates = <EnemyState>[];
+    for (final enemy in enemies) {
+      if (enemy.isDead) {
+        continue;
+      }
+      if (projectile.hitTargetIds.contains(enemy.id)) {
+        continue;
+      }
+      if ((enemy.position - projectile.position).length > maxDistance) {
+        continue;
+      }
+      candidates.add(enemy);
+    }
+    if (candidates.isEmpty) {
+      return null;
+    }
+    candidates.sort((a, b) {
+      final da = (a.position - projectile.position).length;
+      final db = (b.position - projectile.position).length;
+      final byDistance = da.compareTo(db);
+      if (byDistance != 0) {
+        return byDistance;
+      }
+      return a.id.compareTo(b.id); // 同距离按 EntityId，保证确定性。
+    });
+    return candidates.first;
+  }
+
   void _resolvePlayerProjectileHits() {
     for (final projectile in projectiles) {
       if (projectile.consumed || projectile.faction != ProjectileFaction.player) {
@@ -1622,6 +1704,10 @@ class GameRuntime {
       }
       for (final enemy in enemies) {
         if (enemy.isDead) {
+          continue;
+        }
+        // **v2.1**：穿透/弹跳不得重复命中同一目标。
+        if (projectile.hitTargetIds.contains(enemy.id)) {
           continue;
         }
         if (!projectile.hitbox.intersects(enemy.hitbox)) {
@@ -1634,7 +1720,7 @@ class GameRuntime {
           projectile.damage,
         );
         final applied = enemy.health.applyDamage(reduced);
-        projectile.consumed = true;
+        projectile.hitTargetIds.add(enemy.id);
 
         bus.emit(
           WeaponHit(
@@ -1644,6 +1730,7 @@ class GameRuntime {
             critical: projectile.isCritical,
             damage: applied,
             targetEnemyId: enemy.tuning.id,
+            weaponStyleId: projectile.weaponStyleId,
           ),
           runtime,
         );
@@ -1661,6 +1748,25 @@ class GameRuntime {
         if (enemy.isDead) {
           _onEnemyKilled(enemy);
         }
+
+        // ---- v2.1 穿透 / 弹跳（蓝图 §3.4）----
+        if (projectile.pierceRemaining > 0) {
+          // **Prism / Needle**：继续飞行，还能再命中 N 个**不同**目标。
+          projectile.pierceRemaining -= 1;
+          continue;
+        }
+        if (projectile.bounceRemaining > 0) {
+          final next = _pickBounceTarget(projectile);
+          if (next == null) {
+            // **Arc**：无候选即销毁（蓝图明确）。
+            projectile.consumed = true;
+            break;
+          }
+          projectile.bounceRemaining -= 1;
+          projectile.direction = (next.position - projectile.position).normalized;
+          continue;
+        }
+        projectile.consumed = true;
         break; // 单体命中后销毁
       }
 
