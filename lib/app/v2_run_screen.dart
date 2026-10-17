@@ -62,6 +62,7 @@ import '../game/content/content_catalog.dart';
 import '../game/core/baseline_recorder.dart';
 import '../game/core/render_snapshot.dart';
 import '../game/presentation/asset_cache.dart';
+import '../game/presentation/v21_result_medal.dart';
 import '../game/presentation/input_gateway.dart';
 import '../game/presentation/warship_v2_game.dart';
 
@@ -340,6 +341,9 @@ class _V2RunScreenState extends State<V2RunScreen> with WidgetsBindingObserver {
 }
 
 /// HUD 覆盖层。所有坐标都从逻辑安全区换算到屏幕空间。
+/// 与 `GameRuntime.kUpgradeToastSeconds` 一致的显示时长（秒）。
+const double _kToastSeconds = 1.2;
+
 class _HudOverlay extends StatelessWidget {
   const _HudOverlay({
     required this.catalog,
@@ -394,6 +398,28 @@ class _HudOverlay extends StatelessWidget {
 
     return Stack(
       children: <Widget>[
+        // **v2.1 强化 Toast**（冻结表 §2.3）：固定右上安全区，
+        // 位置由 `toastRectFor()` 按视口算；不参与输入（`IgnorePointer`）。
+        if (hud.upgradeToastKey != null &&
+            hud.upgradeToastAgeSeconds >= 0 &&
+            hud.upgradeToastAgeSeconds < _kToastSeconds)
+          Positioned.fromRect(
+            rect: toastRectFor(
+              viewport.viewportSize.width,
+              viewport.viewportSize.height,
+            ),
+            child: IgnorePointer(
+              child: _UpgradeToast(
+                catalog: catalog,
+                key0: hud.upgradeToastKey!,
+                args: hud.upgradeToastArgs,
+                scale: scale,
+                opacity: (1 -
+                        hud.upgradeToastAgeSeconds / _kToastSeconds)
+                    .clamp(0.0, 1.0),
+              ),
+            ),
+          ),
         // 左上：HP / 护盾
         _at(
           kHudSafeArea.left,
@@ -1340,6 +1366,64 @@ class _PauseOverlay extends StatelessWidget {
                 ),
               ],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// **v2.1 强化提示（Toast）**（冻结表 §2.3）。
+///
+/// * 位置由 `toastRectFor()` 决定（设计基准 1920×1080 的
+///   `left=1540, top=104, 332×76`，窄屏等比缩放且距边 ≥24）；
+/// * **不拦截输入**（外层 `IgnorePointer`）—— 它是提示，不是按钮；
+/// * 语义标签固定 `toast.upgradeAria`，经 `catalog.text` 解析。
+class _UpgradeToast extends StatelessWidget {
+  const _UpgradeToast({
+    required this.catalog,
+    required this.key0,
+    required this.args,
+    required this.scale,
+    required this.opacity,
+  });
+
+  final ContentCatalog catalog;
+  final String key0;
+  final Map<String, Object?> args;
+  final double scale;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    // 注意：`name`/`description` 存的是 **catalog key**，
+    // 必须先各自解析成中文，再套进 `toast.upgradeAria` 的模板 ——
+    // 否则玩家会看到 `up.pulseRate.name` 这样的原文。
+    final resolved = <String, Object?>{
+      'name': catalog.text('${args['name']}'),
+      'level': args['level'],
+      'description': catalog.text('${args['description']}'),
+    };
+    return Opacity(
+      opacity: opacity,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 12 * scale,
+          vertical: 8 * scale,
+        ),
+        decoration: BoxDecoration(
+          color: const Color(0xE6202A3A),
+          borderRadius: BorderRadius.circular(8 * scale),
+          border: Border.all(color: const Color(0xFF8E7BFF), width: 1.5),
+        ),
+        child: Text(
+          catalog.text(key0, resolved),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15 * scale,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

@@ -432,6 +432,18 @@ class GameRuntime {
   /// `combatSeconds >= 190` 自行推断胜负（蓝图 §4.2）。
   RunEnded? terminalResult;
 
+  /// 最近一次自动强化的提示（v2.1 / 冻结表 §2.3）。
+  ///
+  /// 只保存**最近一次**：冻结表明确「每局强化间隔远大于 1.2 秒，不设队列」；
+  /// 同帧多发时按 `grantOrdinal` 升序逐张展示由**事件顺序**保证，
+  /// 而这里只承载"当前该显示哪一条"。
+  String? _upgradeToastKey;
+  Map<String, Object?> _upgradeToastArgs = const <String, Object?>{};
+  double? _upgradeToastAtSeconds;
+
+  /// Toast 显示时长（冻结表 §2.3：「每局强化间隔远大于 1.2 秒」）。
+  static const double kUpgradeToastSeconds = 1.2;
+
   /// 清场确认窗时长（技术协议 §3.2：固定 0.8 s）。
   static const double kSectorClearConfirmSeconds = 0.8;
 
@@ -2190,6 +2202,16 @@ class GameRuntime {
       ),
       runtime,
     );
+    // **v2.1 Toast**（冻结表 §2.3）：记录文案与时刻，由 UI 决定位置。
+    // 语义标签固定为 `toast.upgradeAria`：
+    // 「获得强化：{name}，等级 {level}，{description}」。
+    _upgradeToastKey = 'toast.upgradeAria';
+    _upgradeToastArgs = <String, Object?>{
+      'name': card.nameKey,
+      'level': upgradeState.levelOf(grant.cardId),
+      'description': card.descKey,
+    };
+    _upgradeToastAtSeconds = combatSeconds;
   }
 
   /// 玩家选择一张卡（索引对应 [currentOffer] 的顺序）。
@@ -2453,6 +2475,11 @@ class GameRuntime {
         objectiveArgs: _objectiveArgs,
         isSectorClearConfirming:
             sectorClearState == SectorClearState.confirming,
+        upgradeToastKey: _upgradeToastKey,
+        upgradeToastArgs: _upgradeToastArgs,
+        upgradeToastAgeSeconds: _upgradeToastAtSeconds == null
+            ? -1
+            : combatSeconds - _upgradeToastAtSeconds!,
         hp: player.health.current,
         hpMax: player.health.max,
         shield: player.shield.current,

@@ -132,6 +132,9 @@ class HudView {
     this.objectiveKey,
     this.objectiveArgs = const <String, Object?>{},
     this.isSectorClearConfirming = false,
+    this.upgradeToastKey,
+    this.upgradeToastArgs = const <String, Object?>{},
+    this.upgradeToastAgeSeconds = -1,
   });
 
   final int hp;
@@ -181,6 +184,20 @@ class HudView {
 
   /// 是否处于清场确认窗（0.8s 内）。UI 据此显示 `objective.sectorClear`。
   final bool isSectorClearConfirming;
+
+  // ---- v2.1 强化 To**ast**（冻结表 §2.3）----
+  //
+  // Toast 的**位置**由 `toastRectFor()` 算（UI 侧），
+  // 这里只带**文案与时间**：规则层不该关心像素。
+
+  /// 提示文案 key（`toast.upgradeAria`）；null 表示当前无提示。
+  final String? upgradeToastKey;
+
+  /// 模板参数：`{'name': ..., 'level': ..., 'description': ...}`。
+  final Map<String, Object?> upgradeToastArgs;
+
+  /// 距离该提示产生的秒数；负数表示没有提示或已超时。
+  final double upgradeToastAgeSeconds;
 
   double get hpRatio => hpMax == 0 ? 0 : hp / hpMax;
   double get shieldRatio => shieldMax == 0 ? 0 : shield / shieldMax;
