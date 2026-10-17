@@ -190,6 +190,38 @@ class VisualAssetCache {
     return spec?.anchor ?? const <double>[0.5, 0.5];
   }
 
+  /// **某一帧在整张 sheet 中的裁切矩形**（v2.1 / 素材规范 §2）。
+  ///
+  /// 返回 `null` 表示该素材**不使用 sheet 模型**（v2.0 的"每帧一个 PNG"），
+  /// 调用方应画整张图。
+  ///
+  /// ⚠️ **这是 v2.1 最容易出错的一处**：sheet 是 `2172×724`，
+  /// 而单帧只有 `434×724` 之类。若仍按**整张图**的宽高算缩放，
+  /// 帧会缩小到 1/5 并带上旁边几格的残影 —— 与我在 v2.0 犯过的
+  /// "用画布高度当带宽导致 7 倍拉伸"是**同一类错误**。
+  ///
+  /// [frameIndex] 会被夹紧到合法范围，避免越界访问。
+  List<int>? frameRectFor(String? assetIdValue, String? state, int frameIndex) {
+    if (assetIdValue == null) {
+      return null;
+    }
+    final assetId = AssetId.tryParse(assetIdValue);
+    if (assetId == null) {
+      return null;
+    }
+    final record = manifest[assetId];
+    if (record == null) {
+      return null;
+    }
+    final spec = state == null ? null : record.renderStates[state];
+    final rects = spec?.frameRects ?? const <List<int>>[];
+    if (rects.isEmpty) {
+      return null; // v2.0 模型：整张图即一帧。
+    }
+    final i = frameIndex.clamp(0, rects.length - 1);
+    return rects[i];
+  }
+
   void clear() {
     _images.clear();
     _failures.clear();

@@ -510,13 +510,18 @@ class BattlefieldComponent extends Component {
   ///
   /// 回退是**逐资源**的：一张贴图载入失败不影响其他实体，
   /// 也完全不影响规则（架构 §7）。
+  /// 画一张精灵（可选按 `frameRect` 裁切 sheet 的第 N 帧）。
+  ///
+  /// [frameIndex] 为 null 时按 v2.0 语义画整张图；
+  /// v2.1 的多帧 sheet 必须传帧号，否则会画出整张 2172×724 的 sheet。
   bool _drawSpriteOrNull(
     Canvas canvas,
     String? assetId,
     String? state,
     Offset center,
-    double radius,
-  ) {
+    double radius, {
+    int? frameIndex,
+  }) {
     final image = assets.imageFor(assetId, state);
     if (image == null) {
       return false;
@@ -537,20 +542,43 @@ class BattlefieldComponent extends Component {
       drawHistoryCount[signature] = (drawHistoryCount[signature] ?? 0) + 1;
     }
     final anchor = assets.anchorFor(assetId, state);
-    final iw = image.width.toDouble();
-    final ih = image.height.toDouble();
-    final longest = iw > ih ? iw : ih;
+
+    // **v2.1**：按 `frameRect` 从整张 sheet 裁出当前帧。
+    // 无 frameRect（v2.0 的"每帧一个 PNG"）时退化为整张图 —— 行为不变。
+    final frameRect = frameIndex == null
+        ? null
+        : assets.frameRectFor(assetId, state, frameIndex);
+    final src = frameRect == null
+        ? Rect.fromLTWH(
+            0,
+            0,
+            image.width.toDouble(),
+            image.height.toDouble(),
+          )
+        : Rect.fromLTWH(
+            frameRect[0].toDouble(),
+            frameRect[1].toDouble(),
+            frameRect[2].toDouble(),
+            frameRect[3].toDouble(),
+          );
+
+    // ⚠️ **缩放必须基于"帧"的尺寸，不是整张 sheet 的尺寸**。
+    // sheet 是 2172×724，单帧可能只有 434×724 —— 按整张算会把帧
+    // 缩到 1/5 并带上旁边几格的残影（与 v2.0 的"7 倍拉伸"同类错误）。
+    final fw = src.width;
+    final fh = src.height;
+    final longest = fw > fh ? fw : fh;
     if (longest <= 0) {
       return false;
     }
     final scale = (radius * 2 * kSpriteScale) / longest;
-    final w = iw * scale;
-    final h = ih * scale;
+    final w = fw * scale;
+    final h = fh * scale;
     final left = center.dx - w * anchor[0];
     final top = center.dy - h * (anchor.length > 1 ? anchor[1] : 0.5);
     canvas.drawImageRect(
       image,
-      Rect.fromLTWH(0, 0, iw, ih),
+      src,
       Rect.fromLTWH(left, top, w, h),
       _spritePaint,
     );
