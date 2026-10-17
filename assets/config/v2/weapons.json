@@ -301,7 +301,8 @@
       "impactSize": [
         72,
         72
-      ]
+      ],
+      "impactDamageRadius": 0
     },
     {
       "styleId": "arc",
@@ -323,7 +324,8 @@
       "impactSize": [
         80,
         80
-      ]
+      ],
+      "impactDamageRadius": 0
     },
     {
       "styleId": "plasma",
@@ -345,7 +347,8 @@
       "impactSize": [
         96,
         96
-      ]
+      ],
+      "impactDamageRadius": 84
     },
     {
       "styleId": "needle",
@@ -367,7 +370,8 @@
       "impactSize": [
         60,
         60
-      ]
+      ],
+      "impactDamageRadius": 0
     },
     {
       "styleId": "missile",
@@ -389,7 +393,8 @@
       "impactSize": [
         92,
         92
-      ]
+      ],
+      "impactDamageRadius": 0
     }
   ]
 }

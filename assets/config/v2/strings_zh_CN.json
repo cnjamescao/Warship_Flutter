@@ -146,6 +146,7 @@
     "up.style.needle.name": "针束脉冲",
     "up.style.needle.desc": "高速针束，额外穿透 2 个目标",
     "up.style.missile.name": "微导弹脉冲",
-    "up.style.missile.desc": "锁定最近敌人，爆裂范围更大"
+    "up.style.missile.desc": "锁定最近敌人，爆裂范围更大",
+    "objective.timeLimit": "作战时限已到"
   }
 }

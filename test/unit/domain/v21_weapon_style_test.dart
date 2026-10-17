@@ -127,20 +127,27 @@ void main() {
     }
   });
 
-  test('V21-STYLE-02c 爆裂半径不得由图片尺寸推断（FV21-03 待裁决）', () {
+  test('V21-STYLE-02c 爆裂半径由**显式配置**给出（FV21-03 已裁决）', () {
     // 蓝图 §3.4：「伤害半径由**显式** impactDamageRadius 配置，
     // **绝不从 96px 图片尺寸推断**」。
-    // 当前文档未给出该数值 ⇒ 配置缺省为 0。
-    // 本用例锁住"**不得**偷偷用 impactSize 充当半径"这条。
-    for (final s in styles.values) {
+    //
+    // FV21-03 批复（2026-10-17）：Prism/Arc/Needle/Missile = 0，Plasma = 84。
+    const expected = <String, double>{
+      'prism': 0,
+      'arc': 0,
+      'needle': 0,
+      'missile': 0,
+      'plasma': 84,
+    };
+    for (final e in expected.entries) {
+      final s = styles[e.key]!;
+      expect(s.impactDamageRadius, e.value, reason: '${e.key} 的爆裂半径');
+      // **关键**：半径不得等于命中图尺寸（那就是"从图片推断"了 ✗）。
       expect(
         s.impactDamageRadius,
-        0,
-        reason: '${s.styleId} 的 impactDamageRadius 尚未由产品给出（FV21-03）；'
-            '不得用 impactSize（${s.impactSize}）充当',
+        isNot(s.impactSize),
+        reason: '${e.key} 不得把命中图尺寸（${s.impactSize}）当作伤害半径',
       );
-      expect(s.impactDamageRadius, isNot(s.impactSize),
-          reason: '${s.styleId} 不得把命中图尺寸当作伤害半径');
     }
   });
 }

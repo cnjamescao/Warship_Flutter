@@ -1803,6 +1803,70 @@ class GameRuntime {
 
   void _markHomingRetried(Projectile p) => _homingRetryDone.add(p.id);
 
+  /// **Plasma 爆裂**（FV21-03 批复的精确算法）。
+  ///
+  /// 直接目标 [direct] **已被结算过一次**，这里**必须排除**它 ——
+  /// 否则直接目标会被"命中 + 爆裂"打两次（批复明令禁止）。
+  void _applyPlasmaSplash(Projectile projectile, EnemyState direct) {
+    const maxTargets = 4;
+    const splashRatio = 0.55;
+    final radius = projectile.impactDamageRadius;
+    final splashDamage = (projectile.damage * splashRatio).floor();
+    if (splashDamage <= 0) {
+      return;
+    }
+
+    final candidates = <EnemyState>[];
+    for (final e in enemies) {
+      if (e.isDead || e.id == direct.id) {
+        continue; // 排除直接目标与已死敌人。
+      }
+      if ((e.position - projectile.position).length > radius) {
+        continue;
+      }
+      candidates.add(e);
+    }
+    if (candidates.isEmpty) {
+      return;
+    }
+    // **稳定排序**：距离优先，同距离按 EntityId（确定性，回放可复现）。
+    candidates.sort((a, b) {
+      final da = (a.position - projectile.position).length;
+      final db = (b.position - projectile.position).length;
+      final byDistance = da.compareTo(db);
+      return byDistance != 0 ? byDistance : a.id.compareTo(b.id);
+    });
+
+    for (final e in candidates.take(maxTargets)) {
+      final applied = e.health.applyDamage(splashDamage);
+      bus.emit(
+        WeaponHit(
+          weaponId: projectile.weaponId,
+          sourceId: const EntityId(EntityKind.player, 0),
+          targetId: e.id,
+          critical: false,
+          damage: applied,
+          targetEnemyId: e.tuning.id,
+          weaponStyleId: projectile.weaponStyleId,
+        ),
+        runtime,
+      );
+      bus.emit(
+        EnemyDamaged(
+          entityId: e.id,
+          enemyId: e.tuning.id,
+          damage: applied,
+          hpAfter: e.health.current,
+          hpMax: e.health.max,
+        ),
+        runtime,
+      );
+      if (e.isDead) {
+        _onEnemyKilled(e);
+      }
+    }
+  }
+
   EnemyState? _pickBounceTarget(Projectile projectile) {
     const maxDistance = 360.0;
     final candidates = <EnemyState>[];
@@ -1883,6 +1947,17 @@ class GameRuntime {
 
         if (enemy.isDead) {
           _onEnemyKilled(enemy);
+        }
+
+        // ---- v2.1 Plasma 爆裂（FV21-03 批复）----
+        //
+        // 规则（逐条来自批复）：
+        //   * **直接目标只受一次** `effectiveDamage`（上面已结算，此处**不再**伤它）；
+        //   * 范围内**最多 4 个其他**合法敌人，按**距离 → EntityId** 稳定排序；
+        //   * 各受 `floor(effectiveDamage × 0.55)`；
+        //   * 半径来自**显式配置** `impactDamageRadius`，**绝不从图片尺寸推断**。
+        if (projectile.impactDamageRadius > 0) {
+          _applyPlasmaSplash(projectile, enemy);
         }
 
         // ---- v2.1 穿透 / 弹跳（蓝图 §3.4）----

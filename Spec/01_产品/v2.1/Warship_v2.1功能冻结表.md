@@ -5,7 +5,7 @@
 ## 1. 固定范围与版本边界
 
 - v2.1 manifest/config `contentVersion`：`2.1.0-neon-flow`。
-- 只变更升级授予流程、清场胜利、HUD 目标/提示、主弹道形态、表现层与结算奖章；风险门的玩家选项、离线/无登录、敌人波次、Boss 招式和 v2.0 基础数值均不重做。
+- 只变更升级授予流程、风险门结算流程、清场胜利、HUD 目标/提示、主弹道形态、表现层与结算奖章；离线/无登录、敌人波次、Boss 招式和 v2.0 基础数值均不重做。**[变更 v2.1-R2] 风险门不再保留玩家选项。**
 - 现有 `assets/config/v2/upgrades.json` 的 16 张基础卡的名称、说明、前置、互斥、最大等级、效果和权重**原样继承**；不要复制后重新平衡。v2.1 仅新增本表 §3 的五张主弹道形态卡。
 - 所有 v2.1 新 ID、中文文案与 manifest 条目在新版本配置中新增，不覆盖 v2.0 已发布资源或配置。
 
@@ -34,17 +34,26 @@
 
 - 若一个强制集合在内容错误下为空，测试必须失败并打印 `grantOrdinal` 与可用 ID；Release 记录阻断诊断，禁止悄悄跳过。
 - 第三次形态卡取代原 v2.0 “第三次及以后偏好已拥有/生存系列”的该**单次**保证；第 4–6 次恢复该偏好。
-- 风险门本身继续保留玩家选择；若风险门的结果要授予稀有强化，也调用本节的单卡自动授予流程，不得额外打开三选一草案。
+- **[变更 v2.1-R2]** 风险门不保留玩家选择：触发即在当前合法结果中等权确定性抽取一项，代价与收益在同一逻辑步原子生效；若结果为稀有强化，只授予一张确定性抽出的合法稀有卡，不得额外打开草案。
 
 ### 2.3 可见反馈与历史
 
 | 结果类型 | 立即反馈 | 结算/暂停历史 |
 | --- | --- | --- |
-| 基础卡（16 张） | `UI-V21-UPGRADE-NOTICE` + 当前卡既有中文 `nameKey`/`descKey`；不强制再造 16 张新图标 | 按卡中文名称、等级、说明逐行显示 |
-| 五种主弹道卡 | 同上，且立即切换对应弹体、命中图与命中 cue | 名称、形态 ID、等级 1 显示在最前 |
-| 护盾/冲刺/无人机等状态卡 | 同上，且本帧后的状态/武器变化必须可见 | 按获得顺序显示，允许同卡升级合并为 `Lv N` |
+| 任意自动强化 | `UI-V21-AUTO-UPGRADE-EMBLEM`；无文字、无卡片、无边框；本帧后的状态/武器变化必须可见 | 按中文名称、等级、说明逐行显示 |
+| 自动风险：Supply / Bounty / Overload | 分别为 `UI-V21-RISK-SUPPLY-EMBLEM` / `UI-V21-RISK-BOUNTY-EMBLEM` / `UI-V21-RISK-OVERLOAD-EMBLEM`；无文字、无卡片、无边框 | 按 gate、结果、代价、收益与生效时间逐行显示 |
 
-提示固定在逻辑设计基准 `1920×1080` 的右上安全区：`left=1540, top=104, width=332, height=76`。小于该宽度的视口按等比缩放且距右/上边至少 24 logical px。每局强化间隔远大于 1.2 秒，不设队列；异常同帧多发时按 `grantOrdinal` 升序逐张展示，后项延后至前项结束，不丢失任何事件。语义标签固定为：`获得强化：{name}，等级 {level}，{description}`。
+结果徽记固定在逻辑设计基准 `1920×1080` 的右上安全区：外接目标区域 `left=1728, top=28, width=132, height=176`，实际图形按源图纵横比 contain 绘制；这里不是可见卡片或点击区域。小于该宽度的视口等比缩放且距右/上至少 24 logical px。时序固定为 `90ms` 弹出、`580ms` 停留、`330ms` 收束，总 `1000ms`。并发事件按产生顺序进入单一结果队列，前项结束后才显示后项；队列不暂停战斗、不丢事件。视觉层无文字；语义标签分别为：`获得强化：{name}，等级 {level}，{description}`、`风险结果：{name}，{effect}`。
+
+### 2.4 风险门自动结算【新增 v2.1-R2】
+
+`risk_gates.json` 仅保留门的秒数、条件、效果和 ID；其 UI 选择字段必须删除或标为不再消费。`selectionWindowSeconds`、`timeoutFallbackId`、`clickOutsideCountsAsTimeout`、`freezesAllLogicClocks`、`stopNewEnemySpawns`、`clearNormalEnemyBulletsBefore` 都不得参与 v2.1 正常对局。每个 gate 到时：
+
+| gateId | 合法候选与抽取 | 同步结果 |
+| --- | --- | --- |
+| `RG-55` / `RG-115` | 按 `runSeed + gateId + occurrenceOrdinal` 从合法项等权取 1；`RG-OVERLOAD` 只在 `playerHp > 35` 合法 | `RG-SUPPLY`：shield +20、HP +8；`RG-BOUNTY`：下一固定精英 Core 额外掉落且 HP×1.25；`RG-OVERLOAD`：从 `UP-CRIT-ARC`、`UP-MISSILE-SALVO`、`UP-LASER-PRISM`、`UP-DRONE-COUNT`、`UP-DASH-REPAIR` 中确定性授予**一张**，并施加最终伤害×1.15、20s |
+
+抽取必须由 `RandomSource` 的带标签固定调用实现，不得按 UI、帧率、暂停或渲染重试改变；同时保存 `gateId`、`occurrenceOrdinal`、`optionId`、应用后的状态与 `resultNoticeOrdinal` 到回放快照。没有合法项属于内容配置错误，测试失败、Release 阻断。
 
 ## 3. 五种主弹道形态
 
@@ -54,13 +63,14 @@
 | --- | --- | ---: | ---: | --- |
 | `UP-WSTYLE-PRISM` / `prism` / 棱晶脉冲 | damage×1.00、speed×0.95、radius×1.00、额外穿透 1 | 16×38 | 72×72 | `SFX-V21-WPN-PRISM-IMPACT` |
 | `UP-WSTYLE-ARC` / `arc` / 电弧脉冲 | damage×0.82、speed×1.00、radius×0.90、一次弹跳 | 22×46 | 80×80 | `SFX-V21-WPN-ARC-IMPACT` |
-| `UP-WSTYLE-PLASMA` / `plasma` / 等离子脉冲 | damage×1.22、speed×0.78、radius×1.35、无穿透/追踪 | 42×42 | 96×96 | `SFX-V21-WPN-PLASMA-IMPACT` |
+| `UP-WSTYLE-PLASMA` / `plasma` / 等离子脉冲 | damage×1.22、speed×0.78、radius×1.35、无穿透/追踪、`impactDamageRadius=84` | 42×42 | 96×96 | `SFX-V21-WPN-PLASMA-IMPACT` |
 | `UP-WSTYLE-NEEDLE` / `needle` / 针束脉冲 | damage×0.72、speed×1.48、radius×0.62、额外穿透 2 | 10×54 | 60×60 | `SFX-V21-WPN-NEEDLE-IMPACT` |
 | `UP-WSTYLE-MISSILE` / `missile` / 微导弹脉冲 | damage×1.08、speed×0.86、radius×1.05、最近合法敌人追踪 | 20×46 | 92×92 | `SFX-V21-WPN-MISSILE-IMPACT` |
 
 - 无合法目标时 `UP-WSTYLE-MISSILE` 直线飞行；不得消耗额外随机数、创建新敌人或改变既有副武器锁定。
+- `impactDamageRadius`：Prism / Arc / Needle / Missile 固定为 `0` logical px；Plasma 固定为 `84` logical px。Plasma 直接命中目标承受 `effectiveDamage`；半径内最多 4 个其他合法敌人按距离、`EntityId` 稳定排序，各承受 `floor(effectiveDamage×0.55)`；直接目标不重复受伤，玩家、拾取物和已移除实体永不入选。
 - 弹体和命中特效 Asset ID 固定采用 `05` §4.3/`08` §2 的同名 `GFX-V21-WPN-*`。各形态继续使用既有基础射击 cue；本表 cue 是**命中** cue，不是另一个开火 cue。
-- 每张形态卡的配置固定补充：`prerequisites=[]`、`iconAssetId="UI-V21-UPGRADE-NOTICE"`、`rarity="rare"`、`effects=[{kind:"grantMainWeaponStyle",styleId:"<对应 styleId>"}]`。不新增第二套“形态图标”资源，也不借用已知可能为旧占位的 `UI-UP-*` 资源。
+- 每张形态卡的配置固定补充：`prerequisites=[]`、`iconAssetId="UI-V21-AUTO-UPGRADE-EMBLEM"`、`rarity="rare"`、`effects=[{kind:"grantMainWeaponStyle",styleId:"<对应 styleId>"}]`。该字段仅供暂停/结算历史与语义使用；战斗内统一显示无文字结果徽记，不借用旧 `UI-UP-*` 资源。
 
 ### 3.1 新增本地化 key
 
@@ -75,6 +85,7 @@
 | `up.style.plasma.name` / `up.style.plasma.desc` | `等离子脉冲` / `大范围等离子核心，弹速较慢` |
 | `up.style.needle.name` / `up.style.needle.desc` | `针束脉冲` / `高速针束，额外穿透 2 个目标` |
 | `up.style.missile.name` / `up.style.missile.desc` | `微导弹脉冲` / `锁定最近敌人，爆裂范围更大` |
+| `objective.timeLimit` | `作战时限已到` |
 
 ## 4. 清场、目标 HUD 与结果流
 
@@ -130,7 +141,7 @@
 ## 7. 实施顺序与交付门禁
 
 1. **B0/P0**：新增 config/manifest/localization/DTO/快照字段，先通过 V21-AU-03、V21-HUD-01 与素材 hash 检查。
-2. **B1/P0**：替换标准升级触发与清场状态机，删除普通 `UpgradeDraft` 路径；风险门选择路径保留。
+2. **B1/P0**：替换标准升级触发、风险门自动结算与清场状态机，删除所有玩法性 `UpgradeDraft` / `RiskGate` 选择路径。
 3. **B2/P1**：实现五形态和其资源路由，完成 V21-STYLE-01/02。
 4. **B3/P1**：实现状态动效、提示和奖章，完成 V21-FX-01/02/03、V21-MEDAL-01/02。
 5. **B4/P0**：完整回归、Golden、Code Review、真实 Release 试听/录屏；任何素材、文案、路径或注释未闭环都不可发布。

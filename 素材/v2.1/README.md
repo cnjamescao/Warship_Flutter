@@ -5,6 +5,7 @@
 ## 目录
 
 - 图形/动效序列：玩家受击、低血/濒危、敌机击毁、非阻断提示。
+- 图形/交互结果：自动强化、补给、悬赏、超载的四枚无文字结果徽记；运行时按素材规范的 `frameRect` 裁切，绝不当作卡片或文字提示背景。
 - 图形/武器形态：Prism、Arc、Plasma、Needle、Missile 的弹体和命中特效 sheet。
 - 图形/奖章：Gold、Silver、Bronze 独立奖章 sheet。
 - 音频/运行时WAV：12 条 v2.1 运行时 cue，48kHz、单声道、16-bit PCM WAV。
