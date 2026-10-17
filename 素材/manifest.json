@@ -15640,7 +15640,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -15648,7 +15650,16 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "damageLayer": "shield"
+          },
+          "renderState": "default",
+          "transientMs": 267
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -15713,7 +15724,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -15721,7 +15734,16 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "damageLayer": "hp"
+          },
+          "renderState": "default",
+          "transientMs": 320
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -15780,7 +15802,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "PlayerVitalStateChanged"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -15788,7 +15812,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "PlayerVitalStateChanged",
+          "when": {
+            "hpVisualState": "low"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -15847,7 +15879,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "PlayerVitalStateChanged"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -15855,7 +15889,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "PlayerVitalStateChanged",
+          "when": {
+            "hpVisualState": "critical"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -15914,7 +15956,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "EnemyDestroyed"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -15922,7 +15966,14 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "EnemyDestroyed",
+          "when": {},
+          "renderState": "default",
+          "transientMs": 420
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16246,7 +16297,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16254,7 +16307,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "prism"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16299,7 +16360,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16307,7 +16370,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "arc"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16352,7 +16423,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16360,7 +16433,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "plasma"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16405,7 +16486,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16413,7 +16496,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "needle"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16458,7 +16549,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16466,7 +16559,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "missile"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16511,7 +16612,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "AutoUpgradeGranted"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16519,7 +16622,13 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "AutoUpgradeGranted",
+          "when": {},
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16564,7 +16673,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "SectorClearStarted"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16572,7 +16683,13 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "SectorClearStarted",
+          "when": {},
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16670,7 +16787,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16678,7 +16797,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "gold"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16723,7 +16850,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16731,7 +16860,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "silver"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16776,7 +16913,9 @@
       "states": [
         "default"
       ],
-      "triggerEvents": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
       "fallbackAssetId": "GFX-FALLBACK-SILHOUETTE",
       "memoryEstimateBytes": 0,
       "anchor": [
@@ -16784,7 +16923,15 @@
         0.5
       ],
       "loadGroup": "lazy",
-      "eventBindings": [],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "bronze"
+          },
+          "renderState": "default"
+        }
+      ],
       "renderStates": {
         "default": {
           "runtimeFiles": [
@@ -16832,8 +16979,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "damageLayer": "shield"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -16861,8 +17017,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "PlayerDamaged"
+      ],
+      "eventBindings": [
+        {
+          "event": "PlayerDamaged",
+          "when": {
+            "damageLayer": "hp"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -16890,8 +17055,15 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "AutoUpgradeGranted"
+      ],
+      "eventBindings": [
+        {
+          "event": "AutoUpgradeGranted",
+          "when": {}
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -16919,8 +17091,15 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "SectorClearStarted"
+      ],
+      "eventBindings": [
+        {
+          "event": "SectorClearStarted",
+          "when": {}
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -16948,8 +17127,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "gold"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -16977,8 +17165,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "silver"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17006,8 +17203,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "RunEnded"
+      ],
+      "eventBindings": [
+        {
+          "event": "RunEnded",
+          "when": {
+            "resultTier": "bronze"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17035,8 +17241,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "prism"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17064,8 +17279,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "arc"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17093,8 +17317,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "plasma"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17122,8 +17355,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "needle"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17151,8 +17393,17 @@
       "states": [
         "ready"
       ],
-      "triggerEvents": [],
-      "eventBindings": [],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "weaponStyleId": "missile"
+          }
+        }
+      ],
       "renderStates": {},
       "status": "generated",
       "fallbackAssetId": "SFX-FALLBACK-SILENT",

@@ -179,8 +179,8 @@ void main() {
       }
     });
 
-    test('36 种表现事件全部有绑定', () {
-      expect(table.boundEvents.length, 36);
+    test('38 种表现事件全部有绑定（v2.1 新增 2 种）', () {
+      expect(table.boundEvents.length, 38);
       for (final event in <String>[
         'DashStarted',
         'DashEnded',
@@ -191,6 +191,9 @@ void main() {
         'RunEnded',
         'WeaponSustainStarted',
         'WeaponSustainStopped',
+        // v2.1 新增的两种无条件路由事件（蓝图 §2.2）。
+        'AutoUpgradeGranted',
+        'SectorClearStarted',
       ]) {
         expect(
           table.hasVisualBinding(event) || table.hasAudioBinding(event),

@@ -145,6 +145,10 @@ const Map<String, Set<String>> kWhenKeysByEvent = <String, Set<String>>{
   'EnemyDamaged': <String>{'enemyId', 'critical', 'hpRatioLte', 'hpRatioGt'},
   'EnemyVitalStateChanged': <String>{'enemyId', 'hpRatioLte', 'hpRatioGt'},
   'EnemyDestroyed': <String>{'enemyId', 'isElite'},
+  // **v2.1**：自动强化授予（无条件路由 —— 强化提示图 + 强化 cue）。
+  'AutoUpgradeGranted': <String>{},
+  // **v2.1**：清场确认窗开始（无条件路由 —— 清场提示图 + 清场 cue）。
+  'SectorClearStarted': <String>{},
   'EnemyAttackTelegraphed': <String>{'enemyId', 'attackId'},
   'EnemyAttackFired': <String>{'enemyId', 'attackId'},
   'EnemyBreached': <String>{'enemyId'},
@@ -154,12 +158,25 @@ const Map<String, Set<String>> kWhenKeysByEvent = <String, Set<String>>{
     'shieldDamageGt', 'hpDamageGt',
     // 受击方向扇形（UI-HUD-DAMAGE-DIRECTION）依赖这个字段。
     'direction',
+    // **v2.1**：稳定枚举，区分这一击打在护盾还是 HP。
+    // 蓝图 §2.2：「manifest 只允许等值 when，因此 conditionalParamsOf
+    // **必须输出稳定枚举** damageLayer=shield 或 hp，不得隐式扩展 schema
+    // 做数值表达式比较。」值由 B1 的适配器产出（当前登记为已知死路由）。
+    'damageLayer',
   },
   'PlayerVitalStateChanged': <String>{
     'shieldRatioLte', 'shieldRatioGt', 'hpRatioLte', 'hpRatioGt',
+    // **v2.1**：低血 / 濒危的稳定枚举（B3 产出）。
+    'hpVisualState',
   },
-  'WeaponFired': <String>{'weaponId'},
-  'WeaponHit': <String>{'weaponId', 'critical'},
+  'WeaponFired': <String>{'weaponId', 'weaponStyleId'},
+  'WeaponHit': <String>{
+    'weaponId', 'critical',
+    // **v2.1**：五种主弹道的稳定 style ID，用于精确路由命中图与命中 cue。
+    // 蓝图 §3.1：「WeaponFired 与 WeaponHit **增加** nullable weaponStyleId；
+    // 旧主炮和副武器传 null，五种主弹道传稳定 style ID」（B1/B2 产出）。
+    'weaponStyleId',
+  },
   'WeaponSustainStarted': <String>{'weaponId'},
   'WeaponSustainStopped': <String>{'weaponId'},
   'DashStarted': <String>{'direction'},
@@ -372,6 +389,24 @@ void main() {
       'controlId:UiControlStateChanged',
       // 正是文档冲突未裁决的那一项：
       'resultTier:RunEnded',
+
+      // ---- v2.1 B0 登记的"配置先行"条件 ----
+      //
+      // B0（配置装配）先于 B1/B2（代码实现），因此这些**路由已写入 manifest，
+      // 但事件的载荷字段尚未由适配器产出** —— 属**预期的暂时死路由**，
+      // 不是写错的绑定。蓝图已明文要求后续批次补齐：
+      //   * `weaponStyleId`：蓝图 §3.1「WeaponFired 与 WeaponHit **增加**
+      //     nullable weaponStyleId；旧主炮和副武器传 null，五种主弹道传稳定
+      //     style ID」（B1/B2 实现）；
+      //   * `damageLayer`：蓝图 §2.2「`conditionalParamsOf` **必须输出稳定枚举**
+      //     damageLayer=shield 或 hp」（B1 实现）；
+      //   * `hpVisualState`：低血/濒危状态字段（B3 实现）。
+      //
+      // ⚠️ **B1/B2 完成时必须从本登记表删除对应项** ——
+      // 本用例会在集合**减少**时失败并提示，正是为此设计。
+      'weaponStyleId:WeaponHit',
+      'damageLayer:PlayerDamaged',
+      'hpVisualState:PlayerVitalStateChanged',
     };
 
     test('条件键的基名必须由适配器产出，或已登记为已知死路由', () {
