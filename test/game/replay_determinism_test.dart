@@ -199,6 +199,48 @@ InputFrame inputFor(int frame) {
   );
 }
 
+/// **是否允许重建回放基线**（FV21-04：只有显式开关才可写）。
+const bool kUpdateReplayBaseline = bool.fromEnvironment(
+  'UPDATE_REPLAY_BASELINE',
+);
+
+/// 报告目录（gitignore；**不写回 fixtures**）。
+const String kRebuildReportDir = 'build/reports/replay';
+
+/// **内容指纹**（非密码学）。用于"基线是否被改动"的守卫。
+///
+/// 不引入 `crypto` 依赖（它不在本包直接依赖里，分析器会报
+/// `depend_on_referenced_packages`）；FNV-1a 对"文件是否变化"足够。
+String _sha256Of(List<int> bytes) {
+  var h = 0x811C9DC5;
+  for (final b in bytes) {
+    h ^= b;
+    h = (h * 0x01000193) & 0xFFFFFFFF;
+  }
+  return '${bytes.length}-${h.toRadixString(16)}';
+}
+
+void _writeRebuildReport({
+  required String oldHash,
+  required String newHash,
+  required int frames,
+  required String digest,
+}) {
+  final dir = Directory(kRebuildReportDir);
+  dir.createSync(recursive: true);
+  File('${dir.path}/rebuild.json').writeAsStringSync(
+    const JsonEncoder.withIndent('  ').convert(<String, Object?>{
+      'triggeredAt': DateTime.now().toIso8601String(),
+      'reason': 'UPDATE_REPLAY_BASELINE=1（人工重建 AC-06 基准）',
+      'oldSha256': oldHash,
+      'newSha256': newHash,
+      'frames': frames,
+      'eventDigest': digest,
+      'diffSummary': '旧/新 hash 不同 ⇒ 基线内容已变更，需人眼复核差异',
+    }),
+  );
+}
+
 void main() {
   group('T-CORE-04 同一 seed + 同一输入序列完全一致', () {
     test('两次重放的事件摘要、分数、时长、敌人数量完全相同', () {
@@ -336,11 +378,37 @@ void main() {
             '素材或内容版本变更时必须显式更新本文件。',
       );
 
+      // **FV21-04 批复（2026-10-17）**：
+      //  「正常测试**不得**写入 `test/fixtures/replays/`。历史 fixture 是
+      //    **只读输入**……仅 `--dart-define=UPDATE_REPLAY_BASELINE=1`
+      //    **可重建**，且必须记录触发原因、旧/新 SHA-256 与差异摘要；
+      //    普通 `flutter test` 结束后 fixture diff 必须为空。」
       final file = File(kFixturePath);
-      file.parent.createSync(recursive: true);
-      file.writeAsStringSync(record.encode());
+      if (kUpdateReplayBaseline) {
+        file.parent.createSync(recursive: true);
+        final oldHash =
+            file.existsSync() ? _sha256Of(file.readAsBytesSync()) : '（不存在）';
+        file.writeAsStringSync(record.encode());
+        final newHash = _sha256Of(file.readAsBytesSync());
+        // 重建时把**触发原因与新旧 hash** 落到报告目录（gitignore）。
+        _writeRebuildReport(
+          oldHash: oldHash,
+          newHash: newHash,
+          frames: record.frames.length,
+          digest: record.eventDigest,
+        );
+      } else {
+        // 正常路径：**只读**。若文件不存在，说明基线缺失 —— 失败并提示。
+        expect(
+          file.existsSync(),
+          isTrue,
+          reason: '回放基线缺失。请用 '
+              '`flutter test --dart-define=UPDATE_REPLAY_BASELINE=1` 重建。',
+        );
+      }
 
       expect(file.existsSync(), isTrue);
+      // **只读校验**：文件内容必须与本次确定性重放的结果一致。
       final reloaded = ReplayRecord.decode(file.readAsStringSync());
       expect(reloaded.seed, kBaselineSeed);
       expect(reloaded.frames.length, 6000);

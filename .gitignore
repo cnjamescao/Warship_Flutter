@@ -57,3 +57,4 @@ app.*.map.json
 /assets/images/v2/
 /assets/audio/v2/
 test/golden/failures/
+build/reports/
