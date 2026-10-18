@@ -224,58 +224,75 @@ void main() {
       );
     });
 
-    test('不同 seed 会产生不同的数值轨迹（确保随机真的被使用）', () {
-      // 注意：**不能用事件摘要**做这条断言。摘要是刻意设计成
-      // "只看事件类型 + 帧号 + 序号、不看负载"的 ——
-      // 因为负载里的浮点坐标跨平台可能有极小差异，纳入摘要会造成
-      // 无意义的失败。代价是：它验证的是事件**结构**的确定性，
-      // 而不是数值的确定性。
-      //
-      // 因此 AC-01 的"得分完全一致"由双跑比对 score 保证，
-      // 而"随机确实被使用"要用**seed 相关**的观测量来验证。
-      // **v2.1 说明**：第 1 次授予是**强制**的（冻结表 §2.2：ordinal 0
-      // 必为 UP-PULSE-RATE），第 3 次也是强制进形态池 —— 这两个都不体现
-      // seed。真正 seed 敏感的是 **ordinal 1 的加权抽取**（两张保证卡二选一）
-      // 与风险门选项。因此这里跑更长的时间窗来覆盖 ordinal≥1。
-      final a = runSeed(0x4E454F4E0001, frames: 60 * 40);
-      final b = runSeed(0x4E454F4E0002, frames: 60 * 40);
+    test('FV21-06 组合样本：10 个固定 seed 至少产生 3 种不同签名', () {
+      // **负责人批复（2026-10-17）**：
+      //   「保留"同 seed + 同输入完全一致"的确定性测试。不同 seed 的
+      //    随机性验证改为固定组合样本 `0x2A01` 至 `0x2A0A`：每局推进到
+      //    **至少 125 秒**并覆盖**前 4 次自动强化与所有可到达风险门**；
+      //    比较按顺序的 `[cardId/styleId, riskOptionId]` **完整签名**，
+      //    10 局中至少有 **3 个不同签名**，且出现过至少 **2 种不同风险结果**。
+      //    **不要求任意两局都不同**（避免合法的随机碰撞）；
+      //    也**不以 `nextUint32` 调用次数**作为玩家可见随机性的替代。」
+      const seeds = <int>[
+        0x2A01, 0x2A02, 0x2A03, 0x2A04, 0x2A05,
+        0x2A06, 0x2A07, 0x2A08, 0x2A09, 0x2A0A,
+      ];
+      expect(seeds, hasLength(10));
 
-      // **v2.1 加强**：同时比较**完整事件摘要**。
-      //
-      // 原实现只比 score 与升级候选；v2.1 的自动授予序列在小样本下
-      // 可能两次恰好相同，而 score 也可能巧合一致 —— 那样会漏判
-      // "PRNG 未被使用"。事件摘要包含**事件类型 + 帧号 + 序号**，
-      // 不同 seed 的生成/击杀帧必然不同，因此是更强的观测量。
-      final differs = a.score != b.score ||
-          a.digest != b.digest ||
-          a.draftCandidates.join('|') != b.draftCandidates.join('|') ||
-          // 风险门选项由 seed 决定（v2.1 保留风险门），是可靠的
-          // seed 敏感观测量 —— 摘要只看事件类型/帧号，可能两次一致。
-          a.risks.join('|') != b.risks.join('|');
-      // ⚠️ **已知缺口冻结（FV21-06）**。
-      //
-      // 实测（20 秒与 40 秒两个窗口都一样）：
-      //   score=900/900 · 事件摘要相同 · 授予 1/1 · 风险门 0/0
-      // 即**两个不同 seed 的这局完全相同**。
-      //
-      // 根因不在 PRNG 未使用，而在 **v2.1 压缩了 seed 敏感面**：
-      // 冻结表 §2.2 规定 ordinal 0 **强制** UP-PULSE-RATE、
-      // ordinal 2 **强制**进五形态池 —— 这两次都不体现 seed；
-      // 真正加权的是 ordinal 1（只在**两张**保证卡间二选一）与风险门选项，
-      // 而 20–40 秒内往往只走到 ordinal 1，两张卡又常抽出同一张。
-      //
-      // **不是测试写错，也不是 PRNG 失效** —— 是"用不同 seed 必须产生
-      // 不同轨迹"这条**观测口径**在 v2.1 下需要重新定义（更长窗口，
-      // 或改用直接检查随机流消耗）。
-      //
-      // 已登记 `docs/研发反馈意见.md` 的 **FV21-06** 请裁决；
-      // 修复后本用例会失败并提示改回 `isTrue`。
+      /// 跑一局到 125 秒，收集**按顺序**的完整签名。
+      String signatureFor(int seed) {
+        final rt = buildRuntime(seed);
+        final parts = <String>[];
+        var frame = 0;
+        while (rt.combatSeconds < 125 && frame < 125 * 60) {
+          // 保持存活 —— 本用例检验**随机性可观测性**，不是难度。
+          // 死亡会让"推进到 125 秒"无法达成，从而掩盖真正的观测面。
+          rt.player.health.current = rt.player.health.max;
+          rt.advance(GameClock.fixedStepSeconds, InputFrame.idle);
+          for (final stamped in rt.lastFrameEvents) {
+            final e = stamped.event;
+            if (e is AutoUpgradeGranted) {
+              // 强化签名：序号 + 卡 + 形态（若有）。**保持顺序**。
+              parts.add('U${e.grantOrdinal}:${e.cardId}:${e.styleId ?? '-'}');
+            }
+          }
+          // 风险门为**自动结算**：每帧把新增的决议并入签名（按顺序）。
+          for (final res in rt.riskGateResolutions) {
+            final key = 'R${res.gateId}#${res.occurrenceOrdinal}:${res.optionId}';
+            if (!parts.contains(key)) {
+              parts.add(key);
+            }
+          }
+          frame++;
+        }
+        return parts.join('|');
+      }
+
+      final signatures = <String, int>{};
+      for (final seed in seeds) {
+        final sig = signatureFor(seed);
+        signatures[sig] = (signatures[sig] ?? 0) + 1;
+      }
+
+      // ① 至少 3 种不同签名。
       expect(
-        differs,
-        isFalse,
-        reason: '（FV21-06 冻结）v2.1 强制序号压缩了 seed 敏感面；'
-            '20/40 秒窗口下两个 seed 观测相同，待裁决观测口径后改回 isTrue'
-            '（score ${a.score}/${b.score}）',
+        signatures.length,
+        greaterThanOrEqualTo(3),
+        reason: '10 局至少应出现 3 种不同签名（批复要求）；\n'
+            '实际 ${signatures.length} 种：\n${signatures.keys.join("\n")}',
+      );
+
+      // ② 至少 2 种不同风险结果（在所有局里出现过）。
+      final riskOutcomes = <String>{
+        for (final sig in signatures.keys)
+          for (final part in sig.split('|'))
+            if (part.startsWith('R') && part.contains(':'))
+              part.substring(part.indexOf(':') + 1),
+      };
+      expect(
+        riskOutcomes.length,
+        greaterThanOrEqualTo(2),
+        reason: '应至少出现 2 种不同风险结果；实际：$riskOutcomes',
       );
     });
   });
