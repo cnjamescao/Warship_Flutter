@@ -385,3 +385,20 @@ class RiskGateResolution {
       'RiskGateResolution($gateId#$occurrenceOrdinal → $optionId, '
       'notice=$resultNoticeOrdinal)';
 }
+
+/// 风险选项的**文案 key 映射**（语义模板参数用）。
+///
+/// 与 `assets/config/v2/risk_gates.json` 的 `options[].nameKey` /
+/// `descKey` **逐项对应**；由 `v21_risk_notice_keys_test.dart` 自动对账，
+/// 任何一边改动而另一边没跟，测试立刻失败（防止静默漂移）。
+const Map<String, String> kRiskOptionNameKeys = <String, String>{
+  RiskOptionIds.supply: 'risk.supply.name',
+  RiskOptionIds.bounty: 'risk.bounty.name',
+  RiskOptionIds.overload: 'risk.overload.name',
+};
+
+const Map<String, String> kRiskOptionDescKeys = <String, String>{
+  RiskOptionIds.supply: 'risk.supply.desc',
+  RiskOptionIds.bounty: 'risk.bounty.desc',
+  RiskOptionIds.overload: 'risk.overload.desc',
+};

@@ -38,6 +38,7 @@
 // ================================================================
 
 import '../domain/values.dart';
+import '../presentation/v21_result_notice.dart';
 
 /// 渲染用的单个实体视图。
 class EntityView {
@@ -132,9 +133,9 @@ class HudView {
     this.objectiveKey,
     this.objectiveArgs = const <String, Object?>{},
     this.isSectorClearConfirming = false,
-    this.upgradeToastKey,
-    this.upgradeToastArgs = const <String, Object?>{},
-    this.upgradeToastAgeSeconds = -1,
+    this.resultNoticeKind,
+    this.resultNoticeArgs = const <String, Object?>{},
+    this.resultNoticeElapsedMs = 0,
   });
 
   final int hp;
@@ -185,19 +186,23 @@ class HudView {
   /// 是否处于清场确认窗（0.8s 内）。UI 据此显示 `objective.sectorClear`。
   final bool isSectorClearConfirming;
 
-  // ---- v2.1 强化 To**ast**（冻结表 §2.3）----
+  // ---- v2.1-R2 结果徽记（冻结表 §2.3）----
   //
-  // Toast 的**位置**由 `toastRectFor()` 算（UI 侧），
-  // 这里只带**文案与时间**：规则层不该关心像素。
+  // 「战斗结果只显示**无文字、无卡片**的独立徽记，
+  //   并由暂停/结算历史和无障碍语义承担完整文本说明。」
+  //
+  // 因此快照**只带**"显示哪一枚 + 播到第几毫秒"，
+  // **不带任何可见文本**；语义文案由 UI 侧用 args 解析。
 
-  /// 提示文案 key（`toast.upgradeAria`）；null 表示当前无提示。
-  final String? upgradeToastKey;
+  /// 当前结果徽记的类型；null 表示此刻无徽记。
+  final V21ResultKind? resultNoticeKind;
 
-  /// 模板参数：`{'name': ..., 'level': ..., 'description': ...}`。
-  final Map<String, Object?> upgradeToastArgs;
+  /// 语义模板参数（强化：`name`/`level`/`description`；
+  /// 风险：`name`/`effect`）。**只用于无障碍语义，不用于绘制。**
+  final Map<String, Object?> resultNoticeArgs;
 
-  /// 距离该提示产生的秒数；负数表示没有提示或已超时。
-  final double upgradeToastAgeSeconds;
+  /// 该徽记已播放的毫秒数（0…1000）。
+  final int resultNoticeElapsedMs;
 
   double get hpRatio => hpMax == 0 ? 0 : hp / hpMax;
   double get shieldRatio => shieldMax == 0 ? 0 : shield / shieldMax;

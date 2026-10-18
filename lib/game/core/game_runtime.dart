@@ -62,6 +62,7 @@ import '../domain/enemy_system.dart';
 import '../domain/player_system.dart';
 import '../domain/risk_gate_system.dart';
 import '../domain/upgrade_system.dart';
+import '../presentation/v21_result_notice.dart';
 import '../domain/result_tier.dart';
 import '../domain/values.dart';
 import '../infrastructure/audio_director.dart';
@@ -337,8 +338,7 @@ class GameRuntime {
 
   final Map<String, int> _riskGateOccurrences = <String, int>{};
 
-  /// 结果徽记的**全局序号**（强化与风险门共用一个队列）。
-  int _resultNoticeCounter = 0;
+
 
   /// **胜利过渡态**：Boss 被击败后置位，此后本局不再结算任何伤害。
   ///
@@ -446,12 +446,17 @@ class GameRuntime {
   /// 只保存**最近一次**：冻结表明确「每局强化间隔远大于 1.2 秒，不设队列」；
   /// 同帧多发时按 `grantOrdinal` 升序逐张展示由**事件顺序**保证，
   /// 而这里只承载"当前该显示哪一条"。
-  String? _upgradeToastKey;
-  Map<String, Object?> _upgradeToastArgs = const <String, Object?>{};
-  double? _upgradeToastAtSeconds;
 
-  /// Toast 显示时长（冻结表 §2.3：「每局强化间隔远大于 1.2 秒」）。
-  static const double kUpgradeToastSeconds = 1.2;
+  /// **v2.1-R2 结果徽记队列**（冻结表 §2.3）。
+  ///
+  /// 「并发事件按产生顺序进入**单一结果队列**，前项结束后才显示后项；
+  ///   队列**不暂停战斗、不丢事件**。」
+  ///
+  /// 队列用**逻辑时间**推进 ⇒ 暂停即冻结 ✓
+  final V21ResultNoticeQueue resultNotices = V21ResultNoticeQueue();
+
+  /// 结果徽记的**全局序号**（强化与风险门共用一个计数器）。
+  int _resultNoticeOrdinal = 0;
 
   /// 清场确认窗时长（技术协议 §3.2：固定 0.8 s）。
   static const double kSectorClearConfirmSeconds = 0.8;
@@ -1104,13 +1109,30 @@ class GameRuntime {
     }
     _applyRiskOutcome(outcome);
 
+    // **R2**：风险门结果同样进**同一个**结果队列（视觉层无文字）。
+    final kind = switch (optionId) {
+      RiskOptionIds.supply => V21ResultKind.supply,
+      RiskOptionIds.bounty => V21ResultKind.bounty,
+      _ => V21ResultKind.overload,
+    };
+    resultNotices.enqueue(
+      V21ResultNotice(
+        kind: kind,
+        args: <String, Object?>{
+          'name': _riskOptionNameKey(optionId),
+          'effect': _riskOptionDescKey(optionId),
+        },
+        ordinal: _resultNoticeOrdinal,
+      ),
+    );
+
     // 记录供回放/快照对账（冻结表 §2.4 要求）。
     riskGateResolutions.add(
       RiskGateResolution(
         gateId: gateId,
         occurrenceOrdinal: ordinal,
         optionId: optionId,
-        resultNoticeOrdinal: _resultNoticeCounter++,
+        resultNoticeOrdinal: _resultNoticeOrdinal++,
       ),
     );
   }
@@ -1127,6 +1149,14 @@ class GameRuntime {
     _applyRiskOutcome(outcome);
     return true;
   }
+
+  /// 风险选项的**名称 key**（语义模板参数；不显示在画面）。
+  String _riskOptionNameKey(String optionId) =>
+      kRiskOptionNameKeys[optionId] ?? optionId;
+
+  /// 风险选项的**效果 key**（语义模板参数）。
+  String _riskOptionDescKey(String optionId) =>
+      kRiskOptionDescKeys[optionId] ?? optionId;
 
   void _applyRiskOutcome(RiskGateOutcome outcome) {
     final effect = outcome.effect;
@@ -2295,16 +2325,19 @@ class GameRuntime {
       ),
       runtime,
     );
-    // **v2.1 Toast**（冻结表 §2.3）：记录文案与时刻，由 UI 决定位置。
-    // 语义标签固定为 `toast.upgradeAria`：
-    // 「获得强化：{name}，等级 {level}，{description}」。
-    _upgradeToastKey = 'toast.upgradeAria';
-    _upgradeToastArgs = <String, Object?>{
-      'name': card.nameKey,
-      'level': upgradeState.levelOf(grant.cardId),
-      'description': card.descKey,
-    };
-    _upgradeToastAtSeconds = combatSeconds;
+    // **v2.1-R2 结果徽记**（冻结表 §2.3）：视觉层**无文字**，
+    // 只有图形；文字说明只进无障碍语义（`toast.upgradeAria`）。
+    resultNotices.enqueue(
+      V21ResultNotice(
+        kind: V21ResultKind.upgrade,
+        args: <String, Object?>{
+          'name': card.nameKey,
+          'level': upgradeState.levelOf(grant.cardId),
+          'description': card.descKey,
+        },
+        ordinal: _resultNoticeOrdinal++,
+      ),
+    );
   }
 
   /// 玩家选择一张卡（索引对应 [currentOffer] 的顺序）。
@@ -2445,6 +2478,9 @@ class GameRuntime {
   // 快照
   // ------------------------------------------------------------
 
+  /// 当前应显示的结果徽记（队列按**逻辑时间**推进）。
+  V21ResultNotice? get currentNotice => resultNotices.current;
+
   /// 生成当前帧的只读快照。可在任意相位调用。
   RenderSnapshot snapshot({
     String? playerAssetId = 'GFX-PLAYER-BASE',
@@ -2568,11 +2604,13 @@ class GameRuntime {
         objectiveArgs: _objectiveArgs,
         isSectorClearConfirming:
             sectorClearState == SectorClearState.confirming,
-        upgradeToastKey: _upgradeToastKey,
-        upgradeToastArgs: _upgradeToastArgs,
-        upgradeToastAgeSeconds: _upgradeToastAtSeconds == null
-            ? -1
-            : combatSeconds - _upgradeToastAtSeconds!,
+        // **R2 结果徽记**：只携带"该显示哪一条 + 播到第几毫秒"。
+        // 视觉层无文字；文案只在 UI 的 `Semantics` 里用。
+        resultNoticeKind: currentNotice?.kind,
+        resultNoticeArgs: currentNotice?.args ?? const <String, Object?>{},
+        resultNoticeElapsedMs: currentNotice == null
+            ? 0
+            : resultNotices.elapsedMsAt(combatSeconds),
         hp: player.health.current,
         hpMax: player.health.max,
         shield: player.shield.current,
