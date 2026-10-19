@@ -274,7 +274,11 @@ class FlameAudioPort implements AudioPort {
   /// 供测试重写的挂起点。
   void unawaitedPlay(AudioCue cue) {
     if (cue.loop) {
-      FlameAudio.bgm.play(cue.assetId, volume: 0.6).catchError((Object _) {});
+      // **FV21-AUDIO-01（玩家要求）**：「射击声要高过背景音」。
+      // BGM 固定 0.32，而 SFX 用 1.0（`FlameAudio.play` 默认）
+      // ⇒ SFX 明显压过 BGM，但 BGM 仍"全程都在"。
+      // 若日后调音量，必须保持 **BGM < SFX** 这个关系。
+      FlameAudio.bgm.play(cue.assetId, volume: 0.32).catchError((Object _) {});
       return;
     }
     _loadAndPlay(cue.assetId);

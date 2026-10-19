@@ -2485,6 +2485,26 @@ class GameRuntime {
   // 快照
   // ------------------------------------------------------------
 
+  /// 把**直接发出**（不经 `lastFrameEvents`）的事件也送进音频/震动。
+  ///
+  /// ⚠️ **F-45（2026-10-19 玩家实测：没有背景音）**：
+  /// `RunStarted` 是 `bus.emit()` 直接发的，不进 `lastFrameEvents`，
+  /// 于是音频分发（只消费 `lastFrameEvents`）**永远收不到它** ⇒
+  /// 绑在 `RunStarted` 上的 `BGM-RUN-BASE` **从未播放** ✗。
+  ///
+  /// 现在由调用方在 emit 之后调用本方法，保证"发出去的事件"与
+  /// "音频听到的事件"**是同一份**。
+  void pushSideEffectEvent(DomainEvent event) {
+    final stamped = StampedEvent(
+      event: event,
+      runId: runtime.identity.runId,
+      frameIndex: logicSteps,
+      eventIndex: 0,
+    );
+    audioDirector?.handleAll(<StampedEvent>[stamped]);
+    hapticsDirector?.handleAll(<StampedEvent>[stamped]);
+  }
+
   /// 当前应显示的结果徽记（队列按**逻辑时间**推进）。
   V21ResultNotice? get currentNotice => resultNotices.current;
 

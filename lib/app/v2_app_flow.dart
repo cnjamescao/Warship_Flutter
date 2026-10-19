@@ -293,14 +293,15 @@ class _V2AppFlowState extends State<V2AppFlow> {
     }
     runtime.phases.transitionTo(GamePhase.playing, reason: 'countdownDone');
     // 记录开局，供回放与调试。
-    runtime.bus.emit(
-      RunStarted(
-        seed: runtime.runtime.seed,
-        prngAlgorithm: runtime.runtime.identity.prngAlgorithm,
-        contentVersion: runtime.runtime.identity.contentVersion,
-      ),
-      runtime.runtime,
+    final runStarted = RunStarted(
+      seed: runtime.runtime.seed,
+      prngAlgorithm: runtime.runtime.identity.prngAlgorithm,
+      contentVersion: runtime.runtime.identity.contentVersion,
     );
+    runtime.bus.emit(runStarted, runtime.runtime);
+    // **F-45**：直接 emit 的事件不会进 `lastFrameEvents`，
+    // 因此必须显式再送一次音频分发 —— 否则 BGM **永远不响** ✗。
+    runtime.pushSideEffectEvent(runStarted);
     setState(() {});
   }
 
