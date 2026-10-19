@@ -584,6 +584,13 @@ class GameRuntime {
         runtime.setFrameIndex(frameIndex);
         _stepOnce();
         logicSteps++;
+        // **R2：推进结果徽记队列**（每逻辑步一次）。
+        //
+        // ⚠️ 这里曾经漏掉 —— 只做了 `enqueue` 而没做 `advance`，
+        // 于是 `current` 恒为 null、**徽记永远不显示** ✗。
+        // 这是典型的"声明了没接上"，而且只靠"有 enqueue"的静态守卫
+        // 抓不到（守卫已同步加强：必须同时存在 advance）。
+        resultNotices.advance(clock.elapsedSeconds);
       } finally {
         _inStep = false;
       }

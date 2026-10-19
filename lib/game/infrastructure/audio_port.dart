@@ -109,6 +109,12 @@ abstract interface class AudioPort {
 /// 记录调用的假实现，供测试与无音频环境使用。
 class RecordingAudioPort implements AudioPort {
   final List<String> playedCueIds = <String>[];
+
+  /// **完整的 cue 对象**（含 `assetId`）。
+  ///
+  /// 只记 `cueId` 不够 —— F-44 的缺陷正是"`assetId` 传错"，
+  /// 而只记 id 的假实现**根本发现不了** ✗。
+  final List<AudioCue> playedCues = <AudioCue>[];
   final List<String> stoppedCueIds = <String>[];
   final List<AudioBus> stoppedBuses = <AudioBus>[];
 
@@ -124,6 +130,7 @@ class RecordingAudioPort implements AudioPort {
     if (_muted) {
       return;
     }
+    playedCues.add(cue);
     playedCueIds.add(cue.cueId);
     if (cue.loop) {
       activeLoops.add(cue.cueId);

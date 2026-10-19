@@ -27,6 +27,12 @@ void main() {
   test('V21-HUD-02 自动强化处**真的**入队（不是只声明了队列）', () {
     expect(src, contains('resultNotices.enqueue('),
         reason: '规则层必须在事件处入队，否则徽记永远不会出现');
+    // **血的教训（2026-10-19 玩家实测发现）**：
+    // 我只写了 `enqueue` 却没写 `advance`，于是 `current` 恒为 null、
+    // **徽记永远不显示** —— 而当时这条守卫只检查 enqueue，**照样通过** ✗。
+    // 现在强制要求**两者同时存在**：
+    expect(src, contains('resultNotices.advance('),
+        reason: '必须每步推进队列；否则入队了也永远不会成为 current（徽记不显示）');
     expect(src, contains('kind: V21ResultKind.upgrade'),
         reason: '自动强化应入队 upgrade 类徽记');
   });

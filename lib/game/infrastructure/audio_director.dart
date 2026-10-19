@@ -150,6 +150,24 @@ class AudioDirector {
     }
   }
 
+  /// 从绑定里取**音频文件路径**（相对 `assets/audio/`）。
+  ///
+  /// `FlameAudio` 的 `audioCache` 前缀是 `assets/audio/`，
+  /// 因此 manifest 里的 `assets/audio/v2/SFX-xxx.wav` 要裁掉前缀，
+  /// 传 `v2/SFX-xxx.wav`。
+  ///
+  /// 找不到文件时**回退到 Asset ID** —— 播放会失败，但
+  /// `_loadAndPlay` 里有日志（见 F-44 的可见性修复），不会完全静默。
+  static String _audioFileOf(ResolvedCue match) {
+    final files = match.binding.record.runtimeFiles;
+    if (files.isEmpty) {
+      return match.assetId.value;
+    }
+    const prefix = 'assets/audio/';
+    final f = files.first;
+    return f.startsWith(prefix) ? f.substring(prefix.length) : f;
+  }
+
   /// 处理单个事件：解析出 cue 并请求播放。
   List<AudioCue> handle(DomainEvent event) {
     final params = audioParamsOf(event);
@@ -166,7 +184,15 @@ class AudioDirector {
       }
       final cue = AudioCue(
         cueId: cueId,
-        assetId: match.assetId.value,
+        // ⚠️ **F-44（2026-10-19 玩家实测：全程无声）**
+        //
+        // 这里原来填的是 **Asset ID**（如 `SFX-V21-...`），
+        // 而 `FlameAudio.play()` 要的是**文件路径** ⇒ 每次播放都抛异常，
+        // 又被 `_loadAndPlay` 的 `catch (_) {}` **静默吞掉** ⇒ **一声不响** ✗。
+        //
+        // 现在改为 manifest 里的**真实运行时文件**，并去掉
+        // `FlameAudio` 的默认前缀 `assets/audio/`（它自己会加）。
+        assetId: _audioFileOf(match),
         bus: _busOf(match.bus),
         priority: match.priority,
         maxVoices: match.maxVoices,
@@ -254,6 +280,9 @@ class FlameAudioPort implements AudioPort {
     _loadAndPlay(cue.assetId);
   }
 
+  /// **已告警过的资源**（每个只警告一次，避免刷屏）。
+  final Set<String> _warned = <String>{};
+
   Future<void> _loadAndPlay(String assetId) async {
     try {
       if (!_loaded.contains(assetId)) {
@@ -261,8 +290,17 @@ class FlameAudioPort implements AudioPort {
         _loaded.add(assetId);
       }
       await FlameAudio.play(assetId);
-    } catch (_) {
-      // 架构 §7：音频失败静默继续。
+    } catch (e) {
+      // 架构 §7：音频失败**静默继续**（不能因音频崩掉战斗）。
+      //
+      // 但**完全静默**让我在 2026-10-19 白白多花了一轮排查 ——
+      // 玩家报"全程没声音"，而代码把真实原因（传了 Asset ID 而不是路径）
+      // 吞得干干净净。现在每个资源**只警告一次**：战斗照常，
+      // 但开发者能在日志里看到根因。
+      if (_warned.add(assetId)) {
+        // ignore: avoid_print
+        print('[audio] 播放失败（将静默继续）："$assetId" → $e');
+      }
     }
   }
 
