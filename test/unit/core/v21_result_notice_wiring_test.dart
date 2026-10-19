@@ -46,11 +46,17 @@ void main() {
     // R2 明文：「战斗结果只显示**无文字、无卡片**的独立徽记，
     // 并由暂停/结算历史和无障碍语义承担完整文本说明。」
     final hud = File('lib/app/v2_run_screen.dart').readAsStringSync();
-    // 徽记组件必须走 Semantics（无障碍），而不是 Text。
-    expect(hud, contains('Semantics('), reason: '完整说明必须走无障碍语义');
-    expect(hud, contains('_ResultEmblem'), reason: '必须是图形徽记组件');
+    // HUD 侧必须使用**图形徽记组件**（而非文字）。
+    expect(hud, contains('V21ResultEmblem'), reason: '必须是图形徽记组件');
     // 旧的文字 Toast 组件必须已不存在。
     expect(hud.contains('_UpgradeToast'), isFalse,
         reason: 'R2 不得保留文字 Toast（视觉层无文字）');
+
+    // 徽记组件自身的合同：走 Semantics、且内部**没有 Text**。
+    final emblem =
+        File('lib/game/presentation/v21_result_emblem.dart').readAsStringSync();
+    expect(emblem, contains('Semantics('), reason: '完整说明必须走无障碍语义');
+    expect(emblem.contains('Text('), isFalse,
+        reason: 'R2：徽记组件内部不得出现 Text（视觉层无文字）');
   });
 }

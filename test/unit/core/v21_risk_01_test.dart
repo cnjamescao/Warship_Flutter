@@ -93,15 +93,17 @@ void main() {
           reason: '必须用 combatSeconds（逻辑时间），不得用表现时间');
     });
 
-    test('不拦截输入：徽记组件必须包在 IgnorePointer 里', () {
+    test('不拦截输入：徽记必须是 IgnorePointer 的子节点', () {
       final hud = File('lib/app/v2_run_screen.dart').readAsStringSync();
-      final i = hud.indexOf('_ResultEmblem');
-      expect(i, greaterThan(0));
-      // 向前找最近的 IgnorePointer。
+      final i = hud.indexOf('V21ResultEmblem(');
+      expect(i, greaterThan(0), reason: 'HUD 必须使用图形徽记组件');
+      // 向前找最近的 IgnorePointer —— 必须在 Positioned 与徽记之间。
       final before = hud.substring(0, i);
-      expect(before.lastIndexOf('IgnorePointer'), greaterThan(
-        before.lastIndexOf('Positioned') - 200,
-      ), reason: '徽记必须是 IgnorePointer 的子节点（输入穿透）');
+      final ignoreAt = before.lastIndexOf('IgnorePointer');
+      final positionAt = before.lastIndexOf('Positioned');
+      expect(ignoreAt, greaterThan(0), reason: '徽记应包在 IgnorePointer 里');
+      expect(ignoreAt, greaterThan(positionAt),
+          reason: '顺序应为 Positioned → IgnorePointer → 徽记（输入穿透）');
     });
   });
 }

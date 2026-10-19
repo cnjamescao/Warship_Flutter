@@ -63,7 +63,7 @@ import '../game/core/baseline_recorder.dart';
 import '../game/core/render_snapshot.dart';
 import '../game/presentation/asset_cache.dart';
 import '../game/presentation/v21_result_notice.dart';
-import '../game/presentation/v21_sheet_cell.dart';
+import '../game/presentation/v21_result_emblem.dart';
 import '../game/presentation/input_gateway.dart';
 import '../game/presentation/warship_v2_game.dart';
 
@@ -410,12 +410,11 @@ class _HudOverlay extends StatelessWidget {
               viewport.viewportSize.height,
             ),
             child: IgnorePointer(
-              child: _ResultEmblem(
+              child: V21ResultEmblem(
                 kind: hud.resultNoticeKind!,
                 args: hud.resultNoticeArgs,
                 elapsedMs: hud.resultNoticeElapsedMs,
                 catalog: catalog,
-                viewport: viewport.viewportSize,
               ),
             ),
           ),
@@ -1372,75 +1371,3 @@ class _PauseOverlay extends StatelessWidget {
   }
 }
 
-/// **v2.1-R2 结果徽记**（冻结表 §2.3）。
-///
-/// **视觉层无文字** —— 这里**不出现任何 `Text`**，只有：
-/// * 一枚真实素材图形（按 `frameRect` 裁切）；
-/// * `Semantics` 里的完整说明（供读屏与自动化查询）。
-///
-/// 三种结果分支的语义文案固定为：
-/// * 强化：`获得强化：{name}，等级 {level}，{description}`；
-/// * 风险：`风险结果：{name}，{effect}`。
-class _ResultEmblem extends StatelessWidget {
-  const _ResultEmblem({
-    required this.kind,
-    required this.args,
-    required this.elapsedMs,
-    required this.catalog,
-    required this.viewport,
-  });
-
-  final V21ResultKind kind;
-  final Map<String, Object?> args;
-  final int elapsedMs;
-  final ContentCatalog catalog;
-  final Size viewport;
-
-  @override
-  Widget build(BuildContext context) {
-    // 逐级解析：`args` 里存的是 **catalog key**，必须先各自解析成中文，
-    // 再套进语义模板 —— 否则读屏会念出 `up.pulseRate.name` 原文 ✗。
-    final resolved = <String, Object?>{
-      if (args.containsKey('name')) 'name': catalog.text('${args['name']}'),
-      if (args.containsKey('level')) 'level': args['level'],
-      if (args.containsKey('description'))
-        'description': catalog.text('${args['description']}'),
-      if (args.containsKey('effect')) 'effect': catalog.text('${args['effect']}'),
-    };
-    final label = catalog.text(kind.ariaKey, resolved);
-
-    // 素材与裁切矩形（沿用 v2.1 的 sheet 模型）。
-    final record = catalog.manifest.lookup(kind.assetId);
-    final spec = record?.renderStates['default'];
-    final files = spec != null && spec.runtimeFiles.isNotEmpty
-        ? spec.runtimeFiles
-        : (record?.runtimeFiles ?? const <String>[]);
-    final rect = (spec?.frameRects.isNotEmpty ?? false) ? spec!.frameRects.first : null;
-    final target = emblemRectFor(viewport.width, viewport.height);
-
-    final scale = V21EmblemTiming.scaleAt(elapsedMs);
-    final opacity = V21EmblemTiming.opacityAt(elapsedMs);
-
-    final graphic = files.isEmpty
-        ? const SizedBox.shrink()
-        : V21SheetCell(
-            imagePath: files.first,
-            frameRect: rect,
-            size: target.shortestSide,
-          );
-
-    return Semantics(
-      // 完整说明**只在这里**（视觉层无文字）。
-      label: label,
-      container: true,
-      child: Opacity(
-        opacity: opacity.clamp(0.0, 1.0),
-        child: Transform.scale(
-          scale: scale,
-          // 按源图纵横比 contain 进目标区域（不拉伸）。
-          child: Center(child: AspectRatio(aspectRatio: 132 / 176, child: graphic)),
-        ),
-      ),
-    );
-  }
-}
