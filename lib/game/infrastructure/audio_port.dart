@@ -104,6 +104,20 @@ abstract interface class AudioPort {
   void setMuted(bool muted);
 
   bool get isMuted;
+
+  /// **命中/弹体 impact 子总线的增益**（1.0 = 不衰减）。
+  ///
+  /// 技术协议要求：Boss 命中时对 impact 子总线 duck **-6dB**、释放 **110ms**，
+  /// 而 **BGM 不受影响**。
+  ///
+  /// 为什么不用 `AudioBus` 表达：现有 `AudioBus` 只有
+  /// music / sfx / ui / warning，**没有 impact 子总线** ✗；
+  /// 若把 impact 提升为总线，会牵动所有既有绑定。
+  /// 因此用"**子总线增益**"这个更窄的接口：
+  /// 只有实现方（`FlameAudioPort`）需要知道**哪些 cue 算 impact**。
+  ///
+  /// 默认实现是 **no-op**（测试与无音频环境不需要它）✓
+  void setImpactGain(double gain) {}
 }
 
 /// 记录调用的假实现，供测试与无音频环境使用。
@@ -154,6 +168,12 @@ class RecordingAudioPort implements AudioPort {
   @override
   void resumeAll() => resumeCount++;
 
+  /// 记录被施加的 impact 增益（供测试断言"真的 duck 了"）。
+  final List<double> impactGains = <double>[];
+
+  @override
+  void setImpactGain(double gain) => impactGains.add(gain);
+
   @override
   void setMuted(bool muted) => _muted = muted;
 
@@ -174,6 +194,8 @@ class RecordingAudioPort implements AudioPort {
 class SilentAudioPort implements AudioPort {
   const SilentAudioPort();
 
+  @override
+  void setImpactGain(double gain) {}
   @override
   void play(AudioCue cue) {}
   @override
@@ -320,6 +342,9 @@ class AudioService {
   final Map<AudioBus, bool> _busEnabled = <AudioBus, bool>{};
 
   /// 设置某条总线是否启用。
+  /// 转发到端口：**impact 子总线增益**（Boss duck 用，见 `AudioPort`）。
+  void setImpactGain(double gain) => port.setImpactGain(gain);
+
   void setBusEnabled(AudioBus bus, bool enabled) {
     _busEnabled[bus] = enabled;
     if (!enabled) {

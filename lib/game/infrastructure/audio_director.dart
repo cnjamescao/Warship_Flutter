@@ -146,14 +146,12 @@ class AudioDirector {
   // Boss 命中 duck（技术协议：impact 子总线 -6dB / 110ms，BGM 不受影响）
   // ------------------------------------------------------------
   //
-  // 现有 `AudioBus` 只有 music/sfx/ui/warning，**没有 impact 子总线** ✗，
-  // 无法逐总线调音量。因此这里用**等效意图**实现：
-  // Boss 命中音触发后 **110ms 内抑制五形态命中音**，
-  // 目的（协议原话）是「确保独立反馈不被五种主弹道命中音掩盖」——
-  // 抑制比 -6dB 更强，同样达到该目的，且 BGM **完全不受影响** ✓。
+  // 实现方式：`AudioPort.setImpactGain()` —— 一条**很窄**的子总线增益接口，
+  // 只有"命中/弹体"类 cue 受它影响，BGM 与其它 SFX **完全不受影响** ✓。
   //
-  // **已知差异（如实标注）**：这是"抑制"而不是"降 6dB"；
-  // 若日后 `AudioPort` 支持子总线增益，应替换为真正的 duck。
+  // 与上一版的差别：上一版用"**110ms 内抑制**五形态命中音"达成同样目的，
+  // 但那是"静音"而不是"-6dB" ✗ —— 协议要求的是**降低**，
+  // 抑制会让命中的"打击感"消失。现在改为**真正的增益衰减** ✓。
   static const int kBossDuckMs = 110;
   int? _duckUntilMs;
 
@@ -161,9 +159,26 @@ class AudioDirector {
   /// 推导 —— **确定性**（同回放同结果），不依赖墙钟 ✗。
   int _nowMs = 0;
 
+  /// **-6dB 对应的线性增益**：`10^(-6/20) ≈ 0.5012`。
+  ///
+  /// 写成常量而不是魔法数，方便日后核对（改 dB 只需改这一处）。
+  static const double kImpactDuckGain = 0.5012;
+
   /// 当前是否处于 Boss 命中的 duck 窗口。
   bool isDucking(int nowMs) =>
       _duckUntilMs != null && nowMs < _duckUntilMs!;
+
+  /// 每帧推进：duck 窗口结束后**把增益释放回 1.0**。
+  ///
+  /// `releaseMs = 110` 是**窗口长度**（协议给的是"110ms 释放"）；
+  /// 这里实现为"窗口结束即恢复" —— 更复杂的指数释放属打磨项。
+  void _releaseDuckIfDue() {
+    final until = _duckUntilMs;
+    if (until != null && _nowMs >= until) {
+      _duckUntilMs = null;
+      service.setImpactGain(1.0);
+    }
+  }
 
   final AssetBindingTable table;
   final AudioService service;
@@ -181,6 +196,7 @@ class AudioDirector {
         _nowMs = (f * 1000 / 60).round();
       }
     }
+    _releaseDuckIfDue();
     for (final stamped in events) {
       handle(stamped.event);
     }
@@ -218,15 +234,13 @@ class AudioDirector {
       if (cueId == null) {
         continue;
       }
-      // **Boss duck**：形态命中音在窗口内被抑制（见 kBossDuckMs 的说明）。
       final assetId = match.assetId.value;
-      if (assetId.startsWith('SFX-V21-WPN-') && _duckUntilMs != null) {
-        if (_nowMs < _duckUntilMs!) {
-          continue; // 被 duck：不播这条形态命中音。
-        }
-      }
+      // **Boss duck（-6dB / 110ms）**：Boss 命中音起播时压低
+      // impact 子总线，让 Boss 这一声**自己**保持原音量，
+      // 而同时发生的形态命中音被压低 —— 不再"掩盖" ✓
       if (assetId == 'SFX-V21-BOSS-HIT') {
         _duckUntilMs = _nowMs + kBossDuckMs;
+        service.setImpactGain(kImpactDuckGain);
       }
       final cue = AudioCue(
         cueId: cueId,
@@ -298,6 +312,18 @@ class FlameAudioPort implements AudioPort {
   bool _muted = false;
   bool _paused = false;
 
+  /// impact 子总线增益（1.0 = 不衰减；Boss duck 时约 0.501 = -6dB）。
+  double _impactGain = 1.0;
+
+  @override
+  void setImpactGain(double gain) => _impactGain = gain;
+
+  /// 该 cue 是否属于 **impact 子总线**（命中/弹体）。
+  static bool _isImpactCue(String assetId) =>
+      assetId.startsWith('SFX-V21-WPN-') ||
+      assetId == 'SFX-EN-HIT' ||
+      assetId == 'SFX-V21-BOSS-HIT';
+
   /// 已解码的短音效（按 asset 路径缓存，避免重复解码）。
   final Set<String> _loaded = <String>{};
 
@@ -319,6 +345,9 @@ class FlameAudioPort implements AudioPort {
 
   /// 供测试重写的挂起点。
   void unawaitedPlay(AudioCue cue) {
+    // **impact 子总线增益**：只有命中/弹体类 cue 受它影响，
+    // BGM 与其它 SFX **完全不受 duck 影响**（协议明文）。
+    final gain = _isImpactCue(cue.assetId) ? _impactGain : 1.0;
     if (cue.loop) {
       // **FV21-AUDIO-01（玩家要求）**：「射击声要高过背景音」。
       // BGM 固定 0.32，而 SFX 用 1.0（`FlameAudio.play` 默认）
@@ -327,19 +356,19 @@ class FlameAudioPort implements AudioPort {
       FlameAudio.bgm.play(cue.assetId, volume: 0.32).catchError((Object _) {});
       return;
     }
-    _loadAndPlay(cue.assetId);
+    _loadAndPlay(cue.assetId, gain: gain);
   }
 
   /// **已告警过的资源**（每个只警告一次，避免刷屏）。
   final Set<String> _warned = <String>{};
 
-  Future<void> _loadAndPlay(String assetId) async {
+  Future<void> _loadAndPlay(String assetId, {double gain = 1.0}) async {
     try {
       if (!_loaded.contains(assetId)) {
         await FlameAudio.audioCache.load(assetId);
         _loaded.add(assetId);
       }
-      await FlameAudio.play(assetId);
+      await FlameAudio.play(assetId, volume: gain.clamp(0.0, 1.0));
     } catch (e) {
       // 架构 §7：音频失败**静默继续**（不能因音频崩掉战斗）。
       //

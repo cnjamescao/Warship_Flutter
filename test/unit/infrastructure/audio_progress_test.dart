@@ -381,6 +381,9 @@ class _ThrowingAudioPort implements AudioPort {
   const _ThrowingAudioPort();
 
   @override
+  void setImpactGain(double gain) {}
+
+  @override
   void play(AudioCue cue) => throw StateError('audio device exploded');
   @override
   void stop(String cueId) => throw StateError('stop failed');
