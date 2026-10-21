@@ -58,3 +58,4 @@ app.*.map.json
 /assets/audio/v2/
 test/golden/failures/
 build/reports/
+build/release/
