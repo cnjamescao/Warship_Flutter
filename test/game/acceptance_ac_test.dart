@@ -381,8 +381,8 @@ void main() {
       }
     });
 
-    test('Assets 规模与素材包一致（236 条）', () {
-      expect(manifest.length, 236);
+    test('Assets 规模与素材包一致（237 条）', () {
+      expect(manifest.length, 237);
     });
   });
 

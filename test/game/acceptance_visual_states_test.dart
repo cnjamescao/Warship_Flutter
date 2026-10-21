@@ -61,9 +61,17 @@ const List<StateCheck> kStates = <StateCheck>[
   StateCheck(
     name: '玩家护盾受击',
     event: 'PlayerDamaged',
-    params: <String, Object?>{'shieldDamage': 12, 'hpDamage': 0},
+    // v2.1 的受击音按 `damageLayer` 精确路由，因此这里的 params 必须带上它
+    // （真实运行时由 `conditionalParamsOf` 产出，测试需手工补全）。
+    params: <String, Object?>{
+      'shieldDamage': 12,
+      'hpDamage': 0,
+      'damageLayer': 'shield',
+    },
     mustContainVisual: 'GFX-PLAYER-SHIELD-HIT',
-    mustContainCue: 'cue.sfx.player.shield.hit',
+    // **FV21-AUDIO-02 方案 A（2026-10-21 批复）**：v2.1 只保留两条新受击音，
+    // v2.0 的 `SFX-PLAYER-SHIELD-HIT` 已解绑 ⇒ cue 也随之改为 v2.1。
+    mustContainCue: 'SFX-V21-SHIELD-HIT',
   ),
   StateCheck(
     name: '玩家低护盾',
@@ -172,6 +180,8 @@ const Map<String, Set<String>> kWhenKeysByEvent = <String, Set<String>>{
   'WeaponFired': <String>{'weaponId', 'weaponStyleId'},
   'WeaponHit': <String>{
     'weaponId', 'critical',
+    // **v2.1**：Boss 命中的精确路由键（Domain 写入，不得推断）。
+    'targetIsBoss',
     // **v2.1**：五种主弹道的稳定 style ID，用于精确路由命中图与命中 cue。
     // 蓝图 §3.1：「WeaponFired 与 WeaponHit **增加** nullable weaponStyleId；
     // 旧主炮和副武器传 null，五种主弹道传稳定 style ID」（B1/B2 产出）。
@@ -351,7 +361,7 @@ void main() {
         'hpVisualState',
       },
       'WeaponFired': <String>{'weaponId'},
-      'WeaponHit': <String>{'weaponId', 'critical', 'weaponStyleId'},
+      'WeaponHit': <String>{'weaponId', 'critical', 'weaponStyleId', 'targetIsBoss'},
       'BossPhaseChanged': <String>{'phase'},
       'BossAttackTelegraphed': <String>{'attackId'},
       'BossAttackFired': <String>{'attackId'},

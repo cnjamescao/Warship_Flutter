@@ -87,10 +87,17 @@ Map<String, Object?> conditionalParamsOf(DomainEvent event) {
         // 此时不参与任何 weaponStyleId 路由 —— 符合"旧主炮传 null"）。
         'weaponStyleId': ?weaponStyleId,
       };
-    case WeaponHit(:final weaponId, :final critical, :final weaponStyleId):
+    case WeaponHit(
+        :final weaponId,
+        :final critical,
+        :final weaponStyleId,
+        :final targetIsBoss,
+      ):
       return <String, Object?>{
         'weaponId': _audioWeaponId(weaponId),
         'critical': critical,
+        // **v2.1**：Boss 命中音按此**精确**路由（不推断）。
+        'targetIsBoss': targetIsBoss,
         // **v2.1**：命中资源按 style 精确路由（五形态各自一张命中图 + cue）。
         // 旧主炮/副武器为 null ⇒ 不参与 weaponStyleId 路由。
         'weaponStyleId': ?weaponStyleId,
@@ -135,6 +142,29 @@ String _audioWeaponId(String domainWeaponId) {
 class AudioDirector {
   AudioDirector({required this.table, required this.service});
 
+  // ------------------------------------------------------------
+  // Boss 命中 duck（技术协议：impact 子总线 -6dB / 110ms，BGM 不受影响）
+  // ------------------------------------------------------------
+  //
+  // 现有 `AudioBus` 只有 music/sfx/ui/warning，**没有 impact 子总线** ✗，
+  // 无法逐总线调音量。因此这里用**等效意图**实现：
+  // Boss 命中音触发后 **110ms 内抑制五形态命中音**，
+  // 目的（协议原话）是「确保独立反馈不被五种主弹道命中音掩盖」——
+  // 抑制比 -6dB 更强，同样达到该目的，且 BGM **完全不受影响** ✓。
+  //
+  // **已知差异（如实标注）**：这是"抑制"而不是"降 6dB"；
+  // 若日后 `AudioPort` 支持子总线增益，应替换为真正的 duck。
+  static const int kBossDuckMs = 110;
+  int? _duckUntilMs;
+
+  /// 当前"音频时间"（毫秒），由 `handleAll` 按 `StampedEvent.frameIndex`
+  /// 推导 —— **确定性**（同回放同结果），不依赖墙钟 ✗。
+  int _nowMs = 0;
+
+  /// 当前是否处于 Boss 命中的 duck 窗口。
+  bool isDucking(int nowMs) =>
+      _duckUntilMs != null && nowMs < _duckUntilMs!;
+
   final AssetBindingTable table;
   final AudioService service;
 
@@ -145,6 +175,12 @@ class AudioDirector {
 
   /// 处理一批本步事件。
   void handleAll(List<StampedEvent> events) {
+    if (events.isNotEmpty) {
+      final f = events.last.frameIndex;
+      if (f > 0) {
+        _nowMs = (f * 1000 / 60).round();
+      }
+    }
     for (final stamped in events) {
       handle(stamped.event);
     }
@@ -181,6 +217,16 @@ class AudioDirector {
       final cueId = match.cueId;
       if (cueId == null) {
         continue;
+      }
+      // **Boss duck**：形态命中音在窗口内被抑制（见 kBossDuckMs 的说明）。
+      final assetId = match.assetId.value;
+      if (assetId.startsWith('SFX-V21-WPN-') && _duckUntilMs != null) {
+        if (_nowMs < _duckUntilMs!) {
+          continue; // 被 duck：不播这条形态命中音。
+        }
+      }
+      if (assetId == 'SFX-V21-BOSS-HIT') {
+        _duckUntilMs = _nowMs + kBossDuckMs;
       }
       final cue = AudioCue(
         cueId: cueId,

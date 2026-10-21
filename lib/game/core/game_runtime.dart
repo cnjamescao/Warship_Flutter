@@ -2068,6 +2068,9 @@ class GameRuntime {
           critical: projectile.isCritical,
           damage: applied,
           targetEnemyId: 'boss.aegis',
+          // **v2.1**：由 Domain 明确写入 —— 音频与表现层**只看这个布尔值**，
+          // 不得用 `targetEnemyId` 字符串去猜（换 Boss ID 会静默失配 ✗）。
+          targetIsBoss: true,
         ),
         runtime,
       );

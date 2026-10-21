@@ -354,6 +354,14 @@ class WeaponFired extends DomainEvent {
 
 /// 命中。
 class WeaponHit extends DomainEvent {
+  // **v2.1（技术协议 §…）**：`targetIsBoss` 必须由 **Domain 在命中时写入**
+  // 不可变布尔值；Presentation 与 AudioDirector **不得**用
+  // `targetEnemyId` 字符串或画面状态去推断。
+  //
+  // 为什么强调"不可推断"：`targetEnemyId == 'boss.aegis'` 今天成立，
+  // 但一旦换 Boss ID、或加第二个 Boss，推断就**静默失配** ✗ ——
+  // 而路由错了只会"听起来不对"，不会报错。
+
   const WeaponHit({
     required this.weaponId,
     required this.sourceId,
@@ -362,6 +370,7 @@ class WeaponHit extends DomainEvent {
     required this.damage,
     this.targetEnemyId,
     this.weaponStyleId,
+    this.targetIsBoss = false,
   });
 
   final String weaponId;
@@ -370,6 +379,9 @@ class WeaponHit extends DomainEvent {
   final bool critical;
   final int damage;
   final String? targetEnemyId;
+
+  /// 命中目标是否是 Boss（由 Domain 写入，见类注释）。
+  final bool targetIsBoss;
 
   /// 同 [WeaponFired.weaponStyleId]：命中资源路由用（v2.1）。
   final String? weaponStyleId;

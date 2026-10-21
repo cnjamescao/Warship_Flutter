@@ -13391,14 +13391,7 @@
       "triggerEvents": [
         "PlayerDamaged"
       ],
-      "eventBindings": [
-        {
-          "event": "PlayerDamaged",
-          "when": {
-            "shieldDamageGt": 0
-          }
-        }
-      ],
+      "eventBindings": [],
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
       "memoryEstimateBytes": 93688,
       "loadGroup": "firstRun",
@@ -13438,14 +13431,7 @@
       "triggerEvents": [
         "PlayerDamaged"
       ],
-      "eventBindings": [
-        {
-          "event": "PlayerDamaged",
-          "when": {
-            "hpDamageGt": 0
-          }
-        }
-      ],
+      "eventBindings": [],
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
       "memoryEstimateBytes": 93688,
       "loadGroup": "firstRun",
@@ -14053,7 +14039,9 @@
       "eventBindings": [
         {
           "event": "WeaponHit",
-          "when": {}
+          "when": {
+            "targetIsBoss": false
+          }
         }
       ],
       "fallbackAssetId": "SFX-FALLBACK-SILENT",
@@ -17618,6 +17606,67 @@
             0,
             543,
             724
+          ]
+        }
+      }
+    },
+    {
+      "assetId": "SFX-V21-BOSS-HIT",
+      "cueId": "SFX-V21-BOSS-HIT",
+      "category": "sfx",
+      "sourceFile": "音频/运行时WAV/SFX-V21-BOSS-HIT.wav",
+      "runtimeFiles": [
+        "音频/运行时WAV/SFX-V21-BOSS-HIT.wav"
+      ],
+      "sha256": "ddb9c9308c8d0142d21a8391acd55e9076a85dbecd75968004e85cedae723ffe",
+      "runtimeSha256": [
+        "ddb9c9308c8d0142d21a8391acd55e9076a85dbecd75968004e85cedae723ffe"
+      ],
+      "license": "Original workspace asset; no third-party source used.",
+      "authorOrVendor": "Warship asset pipeline",
+      "createdAt": "2026-10-21T00:00:00+08:00",
+      "contentVersion": "2.1.0-neon-flow",
+      "states": [
+        "default"
+      ],
+      "triggerEvents": [
+        "WeaponHit"
+      ],
+      "fallbackAssetId": "SFX-FALLBACK-SILENT",
+      "memoryEstimateBytes": 30798,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "loadGroup": "lazy",
+      "maxVoices": 1,
+      "minRetriggerMs": 140,
+      "priority": 90,
+      "eventBindings": [
+        {
+          "event": "WeaponHit",
+          "when": {
+            "targetIsBoss": true
+          },
+          "renderState": "default"
+        }
+      ],
+      "status": "release_ready",
+      "renderStates": {
+        "default": {
+          "runtimeFiles": [
+            "音频/运行时WAV/SFX-V21-BOSS-HIT.wav"
+          ],
+          "frameInterval": [
+            0,
+            0
+          ],
+          "frameCount": 1,
+          "fps": 0,
+          "blendMode": "normal",
+          "anchor": [
+            0.5,
+            0.5
           ]
         }
       }
