@@ -405,7 +405,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
         );
 
       case GamePhase.loading:
-        return const _LoadingSurface();
+        return const LoadingSurface();
 
       case GamePhase.briefing:
         return _BriefingScreen(
@@ -452,19 +452,98 @@ class _V2AppFlowState extends State<V2AppFlow> {
 // 界面
 // ----------------------------------------------------------------
 
-class _LoadingSurface extends StatelessWidget {
-  const _LoadingSurface();
+/// **加载页**（WEB-T-05：20 秒超时 → 显示重试，**不伪造"已加载"**）。
+///
+/// 规范原文：「加载失败显示重试，**20 秒超时不伪造"已加载"**」。
+///
+/// 为什么必须有超时：Web 上资源可能**永远不返回**（连接挂住、
+/// Service Worker 拿到半截响应），转圈会一直转 ✗ —— 玩家会以为"卡死"。
+/// 超时后**明确告诉玩家**并给重试，比无限转圈诚实 ✓。
+///
+/// 为什么超时不进 Domain：这是**纯 UI 的等待策略**，
+/// 不改变任何规则、随机或状态机 —— 因此放在表现层 ✓。
+class LoadingSurface extends StatefulWidget {
+  const LoadingSurface({super.key, this.onRetry});
+
+  /// 重试回调；为 null 时只显示提示（没有可重试的动作）。
+  final VoidCallback? onRetry;
 
   @override
-  Widget build(BuildContext context) => const Scaffold(
-    body: Center(
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: CircularProgressIndicator(strokeWidth: 3),
+  State<LoadingSurface> createState() => _LoadingSurfaceState();
+}
+
+/// 加载超时（秒）。规范给的**固定值**，不得随手改。
+const int kLoadingTimeoutSeconds = 20;
+
+class _LoadingSurfaceState extends State<LoadingSurface> {
+  bool _timedOut = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: kLoadingTimeoutSeconds), () {
+      if (mounted) {
+        // **只改显示**，不伪造"已加载" ✓
+        setState(() => _timedOut = true);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_timedOut) {
+      return const Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: CircularProgressIndicator(strokeWidth: 3),
+          ),
+        ),
+      );
+    }
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            // 文案经 catalog 取；这里拿不到 catalog 时用固定中文，
+            // 但**不会**显示 key 原文。
+            const Text(
+              '加载超时',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            if (widget.onRetry != null)
+              TextButton(
+                onPressed: () {
+                  // 重试前先把超时状态清掉，重新开始等待。
+                  setState(() => _timedOut = false);
+                  _timer?.cancel();
+                  _timer = Timer(
+                    const Duration(seconds: kLoadingTimeoutSeconds),
+                    () {
+                      if (mounted) {
+                        setState(() => _timedOut = true);
+                      }
+                    },
+                  );
+                  widget.onRetry!();
+                },
+                child: const Text('重试'),
+              ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// 首页。
