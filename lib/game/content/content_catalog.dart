@@ -41,6 +41,12 @@ import 'asset_manifest.dart';
 import 'content_error.dart';
 
 /// 内容文件名（协议 §1 的固定集合）。
+/// 九份配置文件的**原始 JSON**（已解码，尚未结构化为强类型）。
+///
+/// 设计意图：这一层只负责"把文件读成 Map"，**不做语义校验** ——
+/// 语义校验分散在各自的领域系统里（`EnemyTuning.fromConfig` 等）。
+/// 好处是**错误信息能指向具体字段**；坏处是"缺文件"和"字段写错"
+/// 会在不同阶段暴露，因此 `ContentCatalog.load` 会**先**检查必需文件齐全。
 class ContentFiles {
   static const String player = 'player.json';
   static const String weapons = 'weapons.json';
@@ -65,6 +71,17 @@ class ContentFiles {
 }
 
 /// 已加载并校验通过的内容目录（只读）。
+/// **内容目录**：一局游戏看到的全部配置与本地化文案。
+///
+/// 三条贯穿全项目的约束：
+///
+/// 1. **只读**。加载后没有任何 `setter` —— 若允许运行时改配置，
+///    "同一份内容版本产生同一场对局"就不再成立（回放/验收都会失效）。
+/// 2. **不猜**。取不到的 key **不返回空串**、不返回 key 本身，
+///    而是走 `text()` 的断言/受控错误标记 —— 让"缺文案"在测试里**响亮失败**，
+///    而不是把 `objective.survive` 这样的原文显示给玩家（v2.0 的 F-25-01）。
+/// 3. **不做数值推断**。这里只搬运配置；任何"从图片尺寸/文件名推数值"
+///    都属违规（技术协议 §3 明文禁止）。
 class ContentCatalog {
   const ContentCatalog({
     required this.contentVersion,
@@ -135,6 +152,16 @@ class ContentCatalog {
   ///
   /// 因此这里**刻意不写 `?? key`** —— 那种"回退显示 key"的做法会让
   /// 未翻译项**静默通过**，正是规范禁止的。
+  /// **按 key 取本地化文案**（唯一的文案入口）。
+  ///
+  /// * 缺 key：debug/测试下 `assert` 抛错（CI 立刻红），
+  ///   Release 下返回**受控错误标记**（不崩、也不假装正常）；
+  /// * 参数不匹配：同样**响亮失败** —— 模板里的占位符与传入参数
+  ///   必须一一对应（多传/少传都算错，因为两者都会让玩家看到乱码）；
+  /// * 支持 `{name}` 形式占位符。
+  ///
+  /// 为什么把校验做得这么严：文案错配**不会报错**，只会显示成
+  /// 半截句子或原文 key —— 那是玩家最先看到、也最难被自动化发现的问题。
   String text(String key, [Map<String, Object?>? params]) {
     final template = strings[key];
     if (template == null) {

@@ -43,6 +43,12 @@ import 'game/presentation/input_gateway.dart';
 /// 本局随机种子。同一 seed + 同一输入序列产出完全相同的对局。
 const int kDefaultRunSeed = 0x4E454F4E0001;
 
+/// **应用入口**。
+///
+/// 这里刻意只做三件事：绑定、加载内容、挂载 App。
+/// 具体装配在 `v2_bootstrap.dart` —— 入口保持"薄"，
+/// 让**内容版本与装配失败**能在同一条路径上被诊断（F-39 的教训：
+/// 装配漏项只会在运行时表现为"某个功能永远不触发"）。
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const WarshipV2App());

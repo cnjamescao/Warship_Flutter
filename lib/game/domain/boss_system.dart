@@ -74,6 +74,11 @@ class BossPhaseConfig {
 }
 
 /// Boss 数值（从 `boss_aegis.json` 映射）。
+/// Boss 的**静态调参**（来自 `enemies.json`，一局内不变）。
+///
+/// 与 [BossState] 的分工：这里只放"配置里写了什么"，
+/// 任何"随时间变化的量"都在 `BossState` 里 —— 混在一起会让
+/// 回放/快照难以表达"当时用的到底是哪份配置" ✗。
 class BossTuning {
   const BossTuning({
     this.maxHp = 2600,
@@ -145,6 +150,16 @@ class BossAttackEvent {
 }
 
 /// Boss 一局状态。
+/// Boss 的**运行时状态**（阶段、无敌、攻击节奏、弱点窗口）。
+///
+/// 设计要点：
+/// * **所有计时都是逻辑秒**，只在 `Playing` 推进 ⇒ 暂停即冻结 ✓；
+/// * 阶段切换期间有一段 `transitionInvulnerableRemaining` 无敌，
+///   目的是不让玩家在演出中"白打" —— 这段时间的命中**不结算伤害**；
+/// * 攻击按 `loopIndex` 在招式表里循环，**同一招不会连出两次**
+///   （除了只有一招的极端配置），避免连续同招把玩家逼死；
+/// * 弱点窗口 `weakpointRemaining` 打开时，命中弱点伤害 ×1.5
+///   （产品基线 §3.4），窗口外的弱点**不可命中**。
 class BossState {
   BossState({required this.tuning})
     : health = Health(max: tuning.maxHp),
