@@ -231,7 +231,14 @@ class ProgressStore {
   /// 任何异常都会被吞掉并退化为默认值 —— 存档问题**绝不阻断开局**。
   Future<ProgressLoadResult> load() async {
     try {
-      final versionRaw = await store.read(ProgressKeys.schemaVersion);
+      // **WEB-T-05 内存态回退**：写盘失败时值只在 `_memoryMirror` 里，
+      // 因此读路径必须先看镜像 —— 否则"退化为内存态"只是写了个寂寞 ✗。
+      Future<String?> readWithMirror(String key) async {
+        final fromStore = await store.read(key);
+        return fromStore ?? _memoryMirror[key];
+      }
+
+      final versionRaw = await readWithMirror(ProgressKeys.schemaVersion);
       final version = int.tryParse(versionRaw ?? '');
 
       // 空存档：使用默认值。
@@ -265,8 +272,8 @@ class ProgressStore {
         ),
       );
 
-      final scoreRaw = await store.read(ProgressKeys.highScore);
-      final clearRaw = await store.read(ProgressKeys.bestClearSeconds);
+      final scoreRaw = await readWithMirror(ProgressKeys.highScore);
+      final clearRaw = await readWithMirror(ProgressKeys.bestClearSeconds);
 
       return ProgressLoadResult(
         settings: settings,
@@ -326,16 +333,30 @@ class ProgressStore {
     return _writeAll(values);
   }
 
+  /// **内存态镜像**（WEB-T-05 要求）。
+  ///
+  /// 浏览器里 localStorage 可能因*隐私模式*、*配额满*、*策略禁用*而
+  /// **写不进去** —— 规范要求此时设置与记录**"退化为内存态"** ✓，
+  /// 而不是"这次存档丢掉" ✗。
+  ///
+  /// 差别很实际：玩家在隐私模式里打出一局好成绩，
+  /// 至少**本次会话**能看到它（刷新后自然没了，那是浏览器的语义）。
+  final Map<String, String> _memoryMirror = <String, String>{};
+
   Future<bool> _writeAll(Map<String, String> values) async {
     try {
       for (final entry in values.entries) {
         await store.write(entry.key, entry.value);
       }
       _lastError = null;
+      // 写盘成功时内存镜像保持同步（让读路径单一）。
+      _memoryMirror.addAll(values);
       return true;
     } catch (error) {
       // 架构 §7：记录错误，下一次仍可尝试写入。
       _lastError = '$error';
+      // **退化而不是丢弃**：把值留在内存里，本次会话仍可读回 ✓
+      _memoryMirror.addAll(values);
       return false;
     }
   }
