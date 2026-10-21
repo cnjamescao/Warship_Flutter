@@ -48,7 +48,6 @@ import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
 import '../game/presentation/asset_cache.dart';
-import '../game/presentation/viewport_gate.dart';
 import '../game/presentation/v21_result_medal.dart';
 import '../game/presentation/v21_sheet_cell.dart';
 import 'baseline_recording.dart';
@@ -390,36 +389,6 @@ class _V2AppFlowState extends State<V2AppFlow> {
         settings: _settings,
         onSettingsChanged: _updateSettings,
         progressReady: _progressReady,
-      );
-    }
-
-    // **WEB-T-02 视口门槛**：宽度/高度不足时**不进入对局、不推进逻辑**，
-    // 而是明确提示玩家调整窗口。
-    //
-    // 为什么拦在**界面层**而不是 Domain：这是"能不能给玩家看 HUD"的
-    // 可用性问题，不是规则问题 —— 逻辑世界本身与视口无关 ✓。
-    final size = MediaQuery.sizeOf(context);
-    if (!isViewportSupported(size)) {
-      return Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  widget.catalog.text('viewport.tooSmall'),
-                  style: const TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  widget.catalog.text('viewport.requirement'),
-                  style: const TextStyle(fontSize: 14, color: Colors.white70),
-                ),
-              ],
-            ),
-          ),
-        ),
       );
     }
 
