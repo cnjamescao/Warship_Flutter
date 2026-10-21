@@ -21,52 +21,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-/// 从 `pubspec.yaml` 取 `version:`（形如 `2.1.0+210`）。
-String readPubspecVersion(String pubspecPath) {
-  final lines = File(pubspecPath).readAsLinesSync();
-  for (final line in lines) {
-    final t = line.trim();
-    if (t.startsWith('version:')) {
-      return t.substring('version:'.length).trim();
-    }
-  }
-  throw StateError('$pubspecPath 里没有 version: 字段');
-}
-
-/// 从内容配置取 `contentVersion`（唯一来源：`assets/config/v2/*.json`）。
-///
-/// 代码里只有**一处**版本字面量（`kActiveContentVersion`），但它不可从
-/// 工具进程直接 import（Flutter 依赖）。因此这里读**配置本身**，
-/// 并用「所有配置文件必须同版本」来防串版本。
-String readContentVersion(String configDir) {
-  final dir = Directory(configDir);
-  final versions = <String>{};
-  for (final f in dir.listSync().whereType<File>()) {
-    if (!f.path.endsWith('.json')) {
-      continue;
-    }
-    final decoded = jsonDecode(f.readAsStringSync());
-    if (decoded is Map && decoded['contentVersion'] is String) {
-      versions.add(decoded['contentVersion'] as String);
-    }
-  }
-  if (versions.isEmpty) {
-    throw StateError('$configDir 下没有任何 contentVersion 字段');
-  }
-  if (versions.length > 1) {
-    throw StateError('配置文件 contentVersion 不一致：$versions');
-  }
-  return versions.single;
-}
-
-/// `git rev-parse HEAD`（失败即抛 —— 发布必须能追溯到 commit）。
-String gitCommit() {
-  final r = Process.runSync('git', <String>['rev-parse', 'HEAD']);
-  if (r.exitCode != 0) {
-    throw StateError('无法获取 git commit: ${r.stderr}');
-  }
-  return (r.stdout as String).trim();
-}
+// 唯一来源：版本/内容版本/commit 的读取全部来自这里。
+// 本文件不再自带任何读取实现（否则就是第二份版本号）。
+import 'release_identity.dart';
 
 String flutterVersion() {
   final r = Process.runSync('flutter', <String>['--version']);
@@ -114,9 +71,11 @@ void main(List<String> args) {
   final outDir = args.length > 2 ? args[2] : 'build/release';
   final baseHref = args.length > 3 ? args[3] : '/';
 
-  final commit = gitCommit();
-  final releaseVersion = readPubspecVersion('pubspec.yaml');
-  final contentVersion = readContentVersion('assets/config/v2');
+  // W0 身份入口：唯一来源，此处不得再写一份读取逻辑。
+  final id = ReleaseIdentity.read();
+  final commit = id.gitCommit;
+  final releaseVersion = id.releaseVersion;
+  final contentVersion = id.contentVersion;
   final artifactSha =
       artifact.isEmpty ? '0' * 64 : sha256OfFile(artifact);
 
@@ -138,7 +97,6 @@ void main(List<String> args) {
     const JsonEncoder.withIndent('  ').convert(manifest),
   );
   stdout.writeln('✅ 已生成 ${out.path}（platform=$platform）');
-  stdout.writeln('   releaseVersion=$releaseVersion · '
-      'contentVersion=$contentVersion · commit=${commit.substring(0, 7)}');
+  stdout.writeln('   $id');
 }
 

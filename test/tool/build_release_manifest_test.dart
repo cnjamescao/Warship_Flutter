@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../tool/build_release_manifest.dart';
+import '../../tool/release_identity.dart';
 import '../../tool/verify_dual_release.dart';
 
 void main() {
@@ -57,7 +58,7 @@ void main() {
   });
 
   test('DUAL-T-01d gitCommit **来自 git**，且是 40 位十六进制', () {
-    final c = gitCommit();
+    final c = readGitCommit();
     expect(RegExp(r'^[0-9a-f]{40}$').hasMatch(c), isTrue,
         reason: '实际 "$c"');
   });

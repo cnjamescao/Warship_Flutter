@@ -71,7 +71,6 @@
 // 表现层只读快照，绝不回写 Domain。
 // ================================================================
 
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flame/components.dart';
@@ -84,6 +83,7 @@ import '../core/game_runtime.dart';
 import '../domain/values.dart';
 import '../core/baseline_recorder.dart';
 import '../core/render_snapshot.dart';
+import '../infrastructure/diagnostics/diagnostics_sink.dart';
 import '../infrastructure/performance_monitor.dart';
 import '../infrastructure/asset_loader.dart';
 import 'asset_cache.dart';
@@ -197,24 +197,14 @@ void writeAssetDiagnostics(String text) {
   // 我第一版写死 `/tmp/warship_assets.log` 并被 catch 静默吞掉 ——
   // 结果**什么都没写出来，而我以为写了**。因此这里把失败也记下来，
   // 绝不再静默。
-  for (final dir in <String>[
-    '${Platform.environment['HOME'] ?? ''}/Documents',
-    Directory.systemTemp.path,
-  ]) {
-    if (dir.isEmpty) {
-      continue;
-    }
-    try {
-      final target = File('$dir/warship_assets.log');
-      target.writeAsStringSync(
-        '${DateTime.now().toIso8601String()}\n$text\n',
-      );
-      return;
-    } catch (error) {
-      debugPrint('[assets] 诊断写入失败（$dir）：$error');
-    }
-  }
+  // **W1 平台隔离**：这里**不再直接**用 `dart:io` ——
+  // 改为通过条件导出端口写入。Web 上端口是静默 stub（`canPersist == false`），
+  // 因此 Web 产物里**根本不会**出现 io 引用 ✓。
+  _diagnosticsSink.append('${DateTime.now().toIso8601String()}\n$text\n');
 }
+
+/// **诊断输出端口**（W1：表现层只依赖抽象接口，不直接碰 io）。
+final DiagnosticsSink _diagnosticsSink = createDiagnosticsSink();
 
 /// v2.0 逻辑世界尺寸（产品基线 §2）。
 const double kLogicalWidth = 1920;
