@@ -405,7 +405,7 @@ class _V2AppFlowState extends State<V2AppFlow> {
         );
 
       case GamePhase.loading:
-        return const LoadingSurface();
+        return LoadingSurface(catalog: widget.catalog);
 
       case GamePhase.briefing:
         return _BriefingScreen(
@@ -463,10 +463,14 @@ class _V2AppFlowState extends State<V2AppFlow> {
 /// 为什么超时不进 Domain：这是**纯 UI 的等待策略**，
 /// 不改变任何规则、随机或状态机 —— 因此放在表现层 ✓。
 class LoadingSurface extends StatefulWidget {
-  const LoadingSurface({super.key, this.onRetry});
+  const LoadingSurface({super.key, this.onRetry, this.catalog});
 
   /// 重试回调；为 null 时只显示提示（没有可重试的动作）。
   final VoidCallback? onRetry;
+
+  /// 文案来源。**UI 不得硬编码中文**（T-COPY-01），
+  /// 因此超时与重试两个文案都经 `catalog.text` 取。
+  final ContentCatalog? catalog;
 
   @override
   State<LoadingSurface> createState() => _LoadingSurfaceState();
@@ -516,9 +520,9 @@ class _LoadingSurfaceState extends State<LoadingSurface> {
           children: <Widget>[
             // 文案经 catalog 取；这里拿不到 catalog 时用固定中文，
             // 但**不会**显示 key 原文。
-            const Text(
-              '加载超时',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            Text(
+              widget.catalog?.text('loading.timeout') ?? 'loading.timeout',
+              style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
             const SizedBox(height: 12),
             if (widget.onRetry != null)
@@ -537,7 +541,9 @@ class _LoadingSurfaceState extends State<LoadingSurface> {
                   );
                   widget.onRetry!();
                 },
-                child: const Text('重试'),
+                child: Text(
+                  widget.catalog?.text('loading.retry') ?? 'loading.retry',
+                ),
               ),
           ],
         ),

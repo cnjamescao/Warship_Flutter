@@ -17,17 +17,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:warship_flutter/app/v2_app_flow.dart';
+import 'package:warship_flutter/game/content/content_catalog.dart';
+
+import '../support/v2_harness.dart';
+
+late ContentCatalog catalog;
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  // **必须放在 `setUpAll`**：`loadV2CatalogForTests()` 在 `testWidgets`
+  // 的 fake-async 区里会**永远挂住**（我因此在 Golden 上白白耗过两轮 ✗）。
+  setUpAll(() async {
+    catalog = await loadV2CatalogForTests();
+  });
+
   test('WEB-T-05d 超时阈值是 **20 秒**（规范固定值）', () {
     expect(kLoadingTimeoutSeconds, 20);
   });
 
   testWidgets('WEB-T-05e 超时前一直转圈，超时后出现**重试**', (tester) async {
+    // 文案经 catalog 取（T-COPY-01：UI 不得硬编码中文）。
     var retried = 0;
     await tester.pumpWidget(
       MaterialApp(
-        home: LoadingSurface(onRetry: () => retried++),
+        home: LoadingSurface(catalog: catalog, onRetry: () => retried++),
       ),
     );
 
