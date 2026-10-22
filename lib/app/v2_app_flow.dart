@@ -48,6 +48,7 @@ import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
 import '../game/presentation/asset_cache.dart';
+import '../game/presentation/web_audio_unlock.dart';
 import '../game/presentation/v21_result_medal.dart';
 import '../game/presentation/v21_sheet_cell.dart';
 import 'baseline_recording.dart';
@@ -134,6 +135,13 @@ class _V2AppFlowState extends State<V2AppFlow> {
 
   /// 音频（跨局复用：设置是全局的，不随重开重建）。
   late final AudioService _audio;
+
+  /// **WEB-T-04 音频手势解锁**（幂等：只解锁/起播一次）。
+  ///
+  /// 浏览器自动播放策略要求"用户手势之后才允许发声"，
+  /// 因此**首个**指针/键盘手势要用来解锁；后续手势必须无副作用，
+  /// 否则 BGM 会**层层叠加** ✗。
+  final WebAudioUnlock _audioUnlock = WebAudioUnlock();
   AudioDirector? _audioDirector;
 
   /// AC-06 基准录制器（协议 §5.1）。**默认 null —— 不录制**；
@@ -376,6 +384,24 @@ class _V2AppFlowState extends State<V2AppFlow> {
 
   @override
   Widget build(BuildContext context) {
+    // **WEB-T-04**：用一层**透明** `Listener` 捕获首个指针手势做音频解锁。
+    //
+    // 为什么用 `Listener` 而不是 `GestureDetector`：
+    // 后者会参与手势竞技场（可能与游戏内输入/按钮竞争）✗；
+    // `Listener` 只是**旁听**指针事件，不拦截、不改变布局 ✓。
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_) => _onUserGesture(),
+      child: _buildBody(context),
+    );
+  }
+
+  /// 首个有效手势 → 解锁音频（**只执行一次副作用**）。
+  void _onUserGesture() {
+    _audioUnlock.onGesture();
+  }
+
+  Widget _buildBody(BuildContext context) {
     final runtime = _runtime;
     final input = _input;
 
