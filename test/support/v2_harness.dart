@@ -61,6 +61,17 @@ Future<void> mountV2App(
   // SharedPreferences 也必须 mock，否则 initState 里的存档读取会等平台通道。
   SharedPreferences.setMockInitialValues(<String, Object>{});
 
+  // **WEB-T-02 视口门槛**：测试默认画布 800×600 低于门槛 1024×640，
+  // 进入简报/对局后会被门禁拦下 ✗。
+  //
+  // ⚠️ **实测结论**：`tester.binding.setSurfaceSize()` **不会**改变
+  // `MediaQuery.sizeOf`（我用探针验证过：设了 1920×1080 它仍返回 800×600 ✗）。
+  // 真正改变 `MediaQuery` 的是 **`tester.view`** ✓。
+  // 我此前三次回退就是找错了 API —— 见 `test/probe/surface_probe_test.dart`。
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(1920, 1080);
+  addTearDown(tester.view.reset);
+
   await tester.pumpWidget(
     MaterialApp(
       home: V2AppFlow(

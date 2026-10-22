@@ -48,6 +48,7 @@ import 'package:flutter/material.dart';
 
 import '../game/content/content_catalog.dart';
 import '../game/presentation/asset_cache.dart';
+import '../game/presentation/viewport_gate.dart';
 import '../game/presentation/web_audio_unlock.dart';
 import '../game/presentation/v21_result_medal.dart';
 import '../game/presentation/v21_sheet_cell.dart';
@@ -415,6 +416,41 @@ class _V2AppFlowState extends State<V2AppFlow> {
         settings: _settings,
         onSettingsChanged: _updateSettings,
         progressReady: _progressReady,
+      );
+    }
+
+    // **WEB-T-02 视口门槛**：只在"即将进入对局/已在对局"时生效。
+    //
+    // 规范原文是「1023×640、1024×639 **不进入 Playing**」——
+    // 因此门槛不必拦首页/设置（那些界面本就纵向滚动，小窗口可用 ✓），
+    // 只拦"需要完整 HUD 安全区"的那些阶段 ✓。
+    final phaseNow = runtime.phases.phase;
+    final needsFullHud = phaseNow == GamePhase.briefing ||
+        phaseNow == GamePhase.playing ||
+        phaseNow == GamePhase.paused ||
+        phaseNow == GamePhase.upgradeDraft ||
+        phaseNow == GamePhase.riskGate;
+    if (needsFullHud && !isViewportSupported(MediaQuery.sizeOf(context))) {
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  widget.catalog.text('viewport.tooSmall'),
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  widget.catalog.text('viewport.requirement'),
+                  style: const TextStyle(fontSize: 14, color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
