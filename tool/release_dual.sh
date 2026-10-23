@@ -69,6 +69,10 @@ dart run tool/verify_dual_release.dart \
     "$OUT/macos/release-manifest.json" \
     "$OUT/web/release-manifest.json"
 
+# ── 5. 静态托管探测（WEB-T-06）────────────────────────────────
+echo "[5/5] 静态托管探测（WEB-T-06）..."
+dart run tool/probe_web_hosting.dart build/web "$BASE_HREF"
+
 echo
 echo "✅ 双端候选就绪：$OUT/{macos,web}"
 echo "   下一步（W3）：静态托管探测 + 双端人工证据归档后才能标记发布。"
