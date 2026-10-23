@@ -69,7 +69,7 @@ void main() {
       contentVersion: 'x',
       commit: 'c',
       buildUtc: 't',
-      macosArtifactSha256: '0' * 64,
+      macosArtifactSha256: 'c' * 64,
       webArchiveSha256: '1' * 64,
       webBaseHref: '/',
       flutterVer: 'f',

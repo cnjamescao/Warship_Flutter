@@ -124,13 +124,29 @@ DualReleaseReport verifyDualRelease(
   // ⑤ 两个 SHA-256 必须"看起来是真的"（64 位十六进制）。
   checked.add('macosArtifactSha256');
   checked.add('webArchiveSha256');
+  // **四个都要查**：两份 manifest 各自都该带**两个** SHA ✓。
+  //
+  // ⚠️ 我第一版只查了"各自那一半"（macos 文件的 macos-SHA、web 文件的
+  // web-SHA）✗ —— 于是实测中"对方那一半是 64 个 0"**完全没被发现** ✗，
+  // 而那正是 DUAL-T-01「两个 SHA-256 完整」要挡的东西 ✓。
   for (final pair in <(String, Object?)>[
-    ('macosArtifactSha256', macos.manifest['macosArtifactSha256']),
-    ('webArchiveSha256', web.manifest['webArchiveSha256']),
+    ('macos: macosArtifactSha256', macos.manifest['macosArtifactSha256']),
+    ('macos: webArchiveSha256', macos.manifest['webArchiveSha256']),
+    ('web: macosArtifactSha256', web.manifest['macosArtifactSha256']),
+    ('web: webArchiveSha256', web.manifest['webArchiveSha256']),
   ]) {
     final v = pair.$2;
     if (v is! String || !RegExp(r'^[0-9a-f]{64}$').hasMatch(v)) {
       problems.add('${pair.$1} 必须是 64 位小写十六进制 SHA-256（当前 "$v"）');
+      continue;
+    }
+    // **格式对不等于内容真**：全零是"这一端没算"的占位符 ✗。
+    // DUAL-T-01 要求「两个 SHA-256 **完整**」—— 因此这里必须挡 0。
+    if (RegExp(r'^0{64}$').hasMatch(v)) {
+      problems.add(
+        '${pair.$1} 全为 0 —— 说明该端产物 SHA 根本没有计算 '
+        '（DUAL-T-01 要求两个 SHA 都完整）',
+      );
     }
   }
 

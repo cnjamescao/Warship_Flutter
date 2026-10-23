@@ -94,6 +94,26 @@ void main() {
     }
   });
 
+  test('DUAL-T-01g **全零 SHA** 必须被拒（这是"没算"的占位符）', () {
+    // 实测抓到过：两端 manifest 里"对方那一半"是 64 个 0 ✗ ——
+    // 格式合法（64 位十六进制），但内容根本不存在 ✓。
+    // DUAL-T-01 要求"两个 SHA-256 **完整**"，因此必须挡 0 ✓。
+    final r = verifyDualRelease(
+      cand('macos', goodManifest(overrides: {
+        'webArchiveSha256': '0' * 64,
+      })),
+      cand('web', goodManifest(overrides: {
+        'macosArtifactSha256': '0' * 64,
+      })),
+    );
+    expect(r.ok, isFalse, reason: '全零 SHA 必须被拒');
+    expect(
+      r.problems.where((p) => p.contains('全为 0')).length,
+      2,
+      reason: '两端都要各自报告（一次列出全部问题）',
+    );
+  });
+
   test('DUAL-T-01f Web 端 wasmEnabled 必须为 true', () {
     final r = verifyDualRelease(
       cand('macos', goodManifest()),

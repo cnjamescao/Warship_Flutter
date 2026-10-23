@@ -67,7 +67,6 @@ void main(List<String> args) {
   // 用法：dart run tool/build_release_manifest.dart <平台 macos|web>
   //        <产物路径> [输出目录=build/release] [baseHref=/]
   final platform = args.isNotEmpty ? args[0] : 'macos';
-  final artifact = args.length > 1 ? args[1] : '';
   final outDir = args.length > 2 ? args[2] : 'build/release';
   final baseHref = args.length > 3 ? args[3] : '/';
 
@@ -76,16 +75,23 @@ void main(List<String> args) {
   final commit = id.gitCommit;
   final releaseVersion = id.releaseVersion;
   final contentVersion = id.contentVersion;
-  final artifactSha =
-      artifact.isEmpty ? '0' * 64 : sha256OfFile(artifact);
+  // **两端 SHA 都要算**（DUAL-T-01 要求"两个 SHA-256 完整"）。
+  // 用法：第 5 个参数传"另一端产物路径"；缺省时退化为全零，
+  // 但**校验器会拒绝全零** ⇒ 漏传会在校验阶段被拦下 ✓。
+  final macosArtifactPath = args.length > 4 ? args[4] : '';
+  final webArtifactPath = args.length > 5 ? args[5] : '';
+  final macosSha =
+      macosArtifactPath.isEmpty ? '0' * 64 : sha256OfFile(macosArtifactPath);
+  final webSha =
+      webArtifactPath.isEmpty ? '0' * 64 : sha256OfFile(webArtifactPath);
 
   final manifest = buildManifest(
     releaseVersion: releaseVersion,
     contentVersion: contentVersion,
     commit: commit,
     buildUtc: DateTime.now().toUtc().toIso8601String(),
-    macosArtifactSha256: platform == 'macos' ? artifactSha : '0' * 64,
-    webArchiveSha256: platform == 'web' ? artifactSha : '0' * 64,
+    macosArtifactSha256: macosSha,
+    webArchiveSha256: webSha,
     webBaseHref: baseHref,
     flutterVer: flutterVersion(),
     wasmEnabled: platform == 'web',

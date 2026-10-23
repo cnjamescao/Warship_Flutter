@@ -55,10 +55,13 @@ if [ "$MODE" != "--verify" ]; then
   # Web：整个 build/web 打成 zip（不可拆分的静态目录）
   (cd "$WEB_DIR" && zip -qr "$OLDPWD/$OUT/web/web.zip" .)
 
+  # **两端 SHA 都要算**：第 5/6 个参数分别是 macos / web 产物路径。
   dart run tool/build_release_manifest.dart macos \
-      "$OUT/macos/warship_flutter.app.zip" "$OUT/macos" "$BASE_HREF"
+      "$OUT/macos/warship_flutter.app.zip" "$OUT/macos" "$BASE_HREF" \
+      "$OUT/macos/warship_flutter.app.zip" "$OUT/web/web.zip"
   dart run tool/build_release_manifest.dart web \
-      "$OUT/web/web.zip" "$OUT/web" "$BASE_HREF"
+      "$OUT/web/web.zip" "$OUT/web" "$BASE_HREF" \
+      "$OUT/macos/warship_flutter.app.zip" "$OUT/web/web.zip"
 else
   echo "[跳过构建] 只做校验"
 fi
